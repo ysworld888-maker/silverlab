@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SILVER LAB - 최고 관리자 통제 패널</title>
+    <style>
+        /* 기본 마스터 레이아웃 최적화 */
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Malgun Gothic', sans-serif; }
+        body { color: #2D3748; line-height: 1.8; background-color: #F7FAFC; }
+        a { text-decoration: none; color: inherit; }
+        
+        /* 상단 전용 관리 헤더 바 (클립패스 정밀 컷팅 물결 비커 로고 탑재) */
+        header { display: flex; justify-content: space-between; align-items: center; padding: 15px 5%; background-color: #1A202C; box-shadow: 0 4px 12px rgba(0,0,0,0.15); position: sticky; top: 0; z-index: 100; }
+        .brand-logo-wrap { display: flex; align-items: center; gap: 12px; cursor: pointer; }
+        .beaker-icon { width: 34px; height: 34px; }
+        .logo-text { font-size: 22px; font-weight: 800; color: #E2E8F0; letter-spacing: 1px; }
+        .admin-badge { background-color: #E53E3E; color: #FFFFFF; font-size: 12px; font-weight: bold; padding: 2px 8px; border-radius: 4px; margin-left: 5px; letter-spacing: 0.5px; }
+        .logout-btn { background-color: #4A5568; color: #E2E8F0; padding: 8px 18px; border-radius: 4px; font-weight: bold; cursor: pointer; border: none; font-size: 15px; transition: 0.2s; }
+        .logout-btn:hover { background-color: #718096; color: #FFFFFF; }
+        
+        /* 최상위 게이트웨이 보안 로그인 샌드박스 */
+        .login-overlay { display: flex; align-items: center; justify-content: center; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: #23272E; z-index: 1000; }
+        .admin-login-box { background-color: #FFFFFF; width: 100%; max-width: 450px; padding: 50px 40px; border-radius: 8px; box-shadow: 0 20px 40px rgba(0,0,0,0.25); text-align: center; border: 2px solid #ECC94B; }
+        .admin-login-box h2 { font-size: 24px; color: #1A202C; margin-bottom: 10px; font-weight: 800; }
+        .admin-login-box p { color: #718096; font-size: 14px; margin-bottom: 30px; }
+        .form-group { margin-bottom: 22px; text-align: left; }
+        .form-group label { display: block; font-weight: bold; margin-bottom: 8px; font-size: 14px; color: #4A5568; }
+        .form-group input { width: 100%; padding: 13px; border: 1px solid #CBD5E0; border-radius: 4px; font-size: 16px; background-color: #F7FAFC; }
+        .form-group input:focus { outline: none; border-color: #ECC94B; background-color: #FFFFFF; }
+        .admin-login-btn { width: 100%; background-color: #ECC94B; color: #1A202C; border: none; padding: 14px; border-radius: 4px; font-size: 18px; font-weight: bold; cursor: pointer; transition: 0.3s; margin-top: 10px; box-shadow: 0 4px 10px rgba(236,201,75,0.2); }
+        .admin-login-btn:hover { background-color: #D69E2E; transform: translateY(-1px); }
+
+        /* 대시보드 코어 메인 섹션 */
+        .admin-main { display: none; max-width: 1400px; margin: 0 auto; padding: 40px 20px; }
+        .section-title { font-size: 24px; color: #1A202C; margin: 40px 0 20px; font-weight: bold; border-left: 5px solid #ECC94B; padding-left: 12px; display: flex; align-items: center; justify-content: space-between; }
+        
+        /* 엑셀 데이터 수집 뷰 테이블 공통 서식 */
+        .card-panel { background-color: #FFFFFF; border-radius: 6px; padding: 30px; box-shadow: 0 4px 16px rgba(0,0,0,0.02); border: 1px solid #E2E8F0; margin-bottom: 40px; }
+        .table-responsive { overflow-x: auto; max-height: 400px; border: 1px solid #CBD5E0; border-radius: 4px; }
+        table { width: 100%; border-collapse: collapse; font-size: 14px; background-color: #FFFFFF; text-align: left; }
+        th, td { padding: 12px 16px; border-bottom: 1px solid #E2E8F0; border-right: 1px solid #E2E8F0; white-space: nowrap; }
+        th { background-color: #2D3748; color: #ECC94B; font-weight: bold; position: sticky; top: 0; z-index: 10; }
+        tr:hover { background-color: #F7FAFC; }
+        .no-data-msg { text-align: center; padding: 40px; color: #A0AEC0; font-style: italic; font-size: 15px; }
+
+        /* 구인 카드 제어용 전용 폼 모듈 서식 */
+        .crud-grid-wrap { display: grid; grid-template-columns: 1fr 2fr; gap: 30px; }
+        .crud-form-box { background-color: #FFFFFF; border: 1px solid #ECC94B; border-radius: 6px; padding: 30px; box-shadow: 0 6px 20px rgba(0,0,0,0.03); position: sticky; top: 90px; }
+        .crud-form-box h3 { font-size: 18px; color: #1A202C; margin-bottom: 20px; font-weight: bold; border-bottom: 2px solid #F7FAFC; padding-bottom: 10px; }
+        .crud-btn-group { display: flex; gap: 10px; margin-top: 15px; }
+        .form-action-btn { flex: 1; padding: 12px; border: none; border-radius: 4px; font-size: 15px; font-weight: bold; cursor: pointer; transition: 0.2s; text-align: center; }
+        .save-card-btn { background-color: #ECC94B; color: #1A202C; }
+        .save-card-btn:hover { background-color: #D69E2E; }
+        .reset-form-btn { background-color: #E2E8F0; color: #4A5568; }
+        .reset-form-btn:hover { background-color: #CBD5E0; }
+
+        /* 일자리 관리 데이터 목록 보드 서식 */
+        .admin-job-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; }
+        .admin-job-item { background-color: #F7FAFC; border: 1px solid #E2E8F0; border-radius: 6px; padding: 20px; position: relative; transition: all 0.2s; }
+        .admin-job-item:hover { border-color: #ECC94B; box-shadow: 0 4px 12px rgba(0,0,0,0.04); }
+        .item-shop { font-size: 18px; font-weight: bold; color: #1A202C; margin-bottom: 12px; padding-right: 50px; border-bottom: 1px dashed #CBD5E0; padding-bottom: 8px; }
+        .item-detail { font-size: 14px; color: #4A5568; margin-bottom: 6px; }
+        .item-detail span { font-weight: bold; color: #A0AEC0; display: inline-block; width: 65px; }
+        
+        /* 카드 내 개별 편집/삭제 조작 단추 스페셜 컴포넌트 */
+        .item-actions { position: absolute; top: 18px; right: 15px; display: flex; gap: 6px; }
+        .action-tool-btn { border: none; background: none; font-size: 13px; font-weight: bold; cursor: pointer; padding: 2px 6px; border-radius: 3px; }
+        .edit-tool { color: #3182CE; background-color: #EBF8FF; }
+        .edit-tool:hover { background-color: #BEE3F8; }
+        .delete-tool { color: #E53E3E; background-color: #FFF5F5; }
+        .delete-tool:hover { background-color: #FED7D7; }
+    </style>
+</head>
+<body>
+
+    <!-- 1단계 관문: 최고 권한 보호 로그인 오버레이 스크린 -->
+    <div id="adminLoginOverlay" class="login-overlay">
+        <div class="admin-login-box">
+            <h2>SILVER LAB 최고 관리자</h2>
+            <p>본 서식은 철저히 보호되는 보안 구역입니다.<br>최고 관리자 자격 증명 계정을 입력해 주세요.<br>(아이디: admin / 비밀번호: admin123)</p>
+            <form onsubmit="verifyAdminCredentials(event)">
+                <div class="form-group"><label>관리자 계정 ID</label><input type="text" id="admId" required placeholder="아이디 기입"></div>
+                <div class="form-group"><label>보안 패스워드</label><input type="password" id="admPw" required placeholder="비밀번호 기입"></div>
+                <button type="submit" class="admin-login-btn">데이터베이스 권한 해제</button>
+            </form>
+        </div>
+    </div>
+    <!-- 2단계 관문 승인 후 노출될 마스터 메인 통제 대시보드 구조 -->
+    <header id="adminHeader" style="display: none;">
+        <div class="brand-logo-wrap" onclick="location.href='index.html'">
+            <svg class="beaker-icon" viewBox="0 0 64 64" fill="none" xmlns="http://w3.org">
+                <defs>
+                    <clipPath id="beakerInnerWall">
+                        <path d="M28 14V30L16 55H48L36 30V14H28Z" />
+                    </clipPath>
+                </defs>
+                <g clip-path="url(#beakerInnerWall)">
+                    <path d="M12 35C15 33.5 19 33.5 23 35C27 36.5 31 36.5 35 35C39 33.5 43 33.5 47 35C51 36.5 55 36.5 59 35V58H12V35Z" fill="#E2E8F0"/>
+                </g>
+                <line x1="29" y1="41" x2="35" y2="41" stroke="#23272E" stroke-width="1.5" stroke-linecap="round"/>
+                <line x1="27" y1="47" x2="37" y2="47" stroke="#23272E" stroke-width="1.5" stroke-linecap="round"/>
+                <path d="M26 10H38M32 10V14M28 14H36M28 14V30L16 55H48L36 30V14" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            <div class="logo-text">SILVER LAB <span class="admin-badge">MASTER</span></div>
+        </div>
+        <button class="logout-btn" onclick="terminateAdminSession()">대시보드 패닉 아웃(로그아웃)</button>
+    </header>
+
+    <div id="adminMainPanel" class="admin-main">
+        
+        <!-- [보안 데이터 1] 실시간 시니어 질문지 제출 내역 엑셀 보드 -->
+        <div class="section-title">1. 시니어 베테랑 질문지 보안 접수 현황 (엑셀 방식 실시간 누적)</div>
+        <div class="card-panel">
+            <div class="table-responsive">
+                <table id="seniorDataTable">
+                    <thead>
+                        <tr>
+                            <th>순번</th><th>신청대행</th><th>이름</th><th>생년월일</th><th>휴대전화</th><th>희망동네</th>
+                            <th>3층계단</th><th>1시간보행</th><th>현버지병</th><th>주문청력</th><th>카톡인지</th>
+                            <th>초단기확인</th><th>정부일자리</th><th>실시간 접수시각</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- 자바스크립트 비동기 동적 인젝션 로드 구역 -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- [보안 데이터 2] 실시간 사장님 구인 상담 신청 내역 엑셀 보드 -->
+        <div class="section-title">2. 사장님 구인 매칭 상담 신청 현황 (엑셀 방식 실시간 누적)</div>
+        <div class="card-panel">
+            <div class="table-responsive">
+                <table id="employerDataTable">
+                    <thead>
+                        <tr>
+                            <th>접수 번호</th><th>담당자명 / 매장명</th><th>비상 연락처</th><th>실시간 신청시각</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- 자바스크립트 비동기 동적 인젝션 로드 구역 -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- [마스터 제어 3] 구인구직 카드형 일자리 실시간 CRUD 통합 제어 패널 -->
+        <div class="section-title">3. 구인구직 카드형 일자리 마스터 CRUD 제어판</div>
+        
+        <div class="crud-grid-wrap">
+            <!-- 좌측: 카드 정보 입력 및 수정 양식 폼 -->
+            <div class="crud-form-box">
+                <h3 id="formModeTitle">새 구인 카드 등록하기</h3>
+                <form id="jobCrudForm" onsubmit="processJobCrudEvent(event)">
+                    <!-- 수정 모드 전환을 위한 히든 식별자 주입구 -->
+                    <input type="hidden" id="targetJobId" value="">
+                    
+                    <div class="form-group" style="margin-bottom:15px;">
+                        <label>가게 이름 / 매장명</label>
+                        <input type="text" id="crudShopName" required placeholder="예: 분당 파크카페">
+                    </div>
+                    <div class="form-group" style="margin-bottom:15px;">
+                        <label>근무 상세 장소</label>
+                        <input type="text" id="crudLocation" required placeholder="예: 경기도 성남시 분당구 정자동">
+                    </div>
+                    <div class="form-group" style="margin-bottom:15px;">
+                        <label>근무 시간 배정</label>
+                        <input type="text" id="crudWorkTime" required placeholder="예: 오전 파트 09:00 ~ 11:30 (월-금)">
+                    </div>
+                    <div class="form-group" style="margin-bottom:15px;">
+                        <label>대표 전화번호</label>
+                        <input type="text" id="crudPhone" required placeholder="예: 031-712-9876">
+                    </div>
+                    
+                    <div class="crud-btn-group">
+                        <button type="submit" id="submitFormBtn" class="form-action-btn save-card-btn">일자리 카드 생성하기</button>
+                        <button type="button" class="form-action-btn reset-form-btn" onclick="clearCrudForm()">작성 취소/초기화</button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- 우측: 현재 DB에 등록된 일자리 카드 현황 보드 (실시간 수정/삭제 버튼 포함) -->
+            <div class="card-panel" style="margin-bottom:0;">
+                <h3 style="font-size:16px; font-weight:bold; color:#718096; margin-bottom:20px; border-bottom:1px solid #F7FAFC; padding-bottom:10px;">현재 실시간 가동 중인 일자리 카드 목록</h3>
+                <div id="adminJobLiveGrid" class="admin-job-grid">
+                    <!-- 자바스크립트 비동기 동적 인젝션 로드 구역 -->
+                </div>
+            </div>
+        </div>
+
+    </div> <!-- .admin-main 패널 마감 -->
+    <!-- 푸터 영역 마감 -->
+    <footer style="background-color: #1A202C; border-top: 1px solid #2D3748; margin-top: 100px;">
+        <p>© 2026 SILVER LAB. Administrative Secure Panel.</p>
+    </footer>
+
+    <!-- 마스터 가동 자바스크립트 통신 엔진 모듈 -->
+    <script>
+        // [보안 로직 1] 최고 관리자 자격 인증 처리 함수
+        function verifyAdminCredentials(event) {
+            event.preventDefault();
+            const idVal = document.getElementById('admId').value;
+            const pwVal = document.getElementById('admPw').value;
+
+            // 백엔드 세션 보안 게이트웨이 호출
+            fetch('/api/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ username: idVal, password: pwVal })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success && data.role === 'admin') {
+                    document.getElementById('adminLoginOverlay').style.display = 'none';
+                    document.getElementById('adminHeader').style.display = 'flex';
+                    document.getElementById('adminMainPanel').style.display = 'block';
+                    alert('최고 관리자 데이터베이스 봉인이 해제되었습니다. 통합 관제 대시보드를 활성화합니다.');
+                    refreshAdminDashboard(); // 전체 누적 실시간 데이터 즉시 로드
+                } else {
+                    alert('관리자 승인 정보가 일치하지 않습니다. 인가되지 않은 접근은 기록됩니다.');
+                }
+            })
+            .catch(err => {
+                alert('보안 서버와 통신 장애가 발생했습니다.');
+                console.error(err);
+            });
+        }
+
+        // [관제 로직 2] 백엔드 영구 보존 데이터 동적 수집 패키징 동기화 함수
+        function refreshAdminDashboard() {
+            // 1. 보안 접수 데이터셋(시니어/사장님) 일괄 호출
+            fetch('/api/admin/data')
+            .then(res => res.json())
+            .then(data => {
+                // 시니어 엑셀 보드 렌더링
+                const seniorBody = document.querySelector('#seniorDataTable tbody');
+                seniorBody.innerHTML = '';
+                if (data.seniors.length === 0) {
+                    seniorBody.innerHTML = '<tr><td colspan="14" class="no-data-msg">접수된 보안 시니어 질문지 내역이 존재하지 않습니다.</td></tr>';
+                } else {
+                    data.seniors.forEach(row => {
+                        const tr = document.createElement('tr');
+                        tr.innerHTML = `<td>${row.id}</td><td>${row.q1}</td><td><strong>${row.q2}</strong></td><td>${row.q3}</td><td>${row.q4}</td><td>${row.q5}</td><td>${row.q6}</td><td>${row.q7}</td><td>${row.q8}</td><td>${row.q9}</td><td>${row.q10}</td><td>${row.q11}</td><td>${row.q12}</td><td style="color:#A0AEC0;">${row.date}</td>`;
+                        seniorBody.appendChild(tr);
+                    });
+                }
+
+                // 사장님 엑셀 보드 렌더링
+                const employerBody = document.querySelector('#employerDataTable tbody');
+                employerBody.innerHTML = '';
+                if (data.employers.length === 0) {
+                    employerBody.innerHTML = '<tr><td colspan="4" class="no-data-msg">접수된 사장님 구인 매칭 상담 신청 건수가 없습니다.</td></tr>';
+                } else {
+                    data.employers.forEach(row => {
+                        const tr = document.createElement('tr');
+                        tr.innerHTML = `<td>${row.id}</td><td><strong>${row.name}</strong></td><td>${row.phone}</td><td style="color:#A0AEC0;">${row.date}</td>`;
+                        employerBody.appendChild(tr);
+                    });
+                }
+            });
+
+            // 2. 동적 일자리 라이브 관리 목록 보드 호출
+            const liveGrid = document.getElementById('adminJobLiveGrid');
+            liveGrid.innerHTML = '';
+            
+            fetch('/api/jobs')
+            .then(res => res.json())
+            .then(jobs => {
+                if (jobs.length === 0) {
+                    liveGrid.innerHTML = '<div class="no-data-msg" style="width:100%;">현재 데이터베이스상에 가동 중인 일자리 카드가 비어 있습니다.</div>';
+                    return;
+                }
+                jobs.forEach(job => {
+                    const div = document.createElement('div');
+                    div.className = 'admin-job-item';
+                    div.innerHTML = `
+                        <div class="item-shop">${job.shop_name}</div>
+                        <div class="item-actions">
+                            <button class="action-tool-btn edit-tool" onclick="activateEditMode(${job.id}, '${job.shop_name}', '${job.location}', '${job.work_time}', '${job.phone}')">수정</button>
+                            <button class="action-tool-btn delete-tool" onclick="executeDeleteJob(${job.id})">삭제</button>
+                        </div>
+                        <div class="item-detail"><span>근무 장소</span>${job.location}</div>
+                        <div class="item-detail"><span>근무 시간</span>${job.work_time}</div>
+                        <div class="item-detail"><span>전화번호</span>${job.phone}</div>
+                    `;
+                    liveGrid.appendChild(div);
+                });
+            });
+        }
+
+        // [CRUD 엔진 3] 일자리 카드 등록(POST) 및 수정(PUT) 분기 핸들러
+        function processJobCrudEvent(event) {
+            event.preventDefault();
+            const jobId = document.getElementById('targetJobId').value;
+            const shopName = document.getElementById('crudShopName').value;
+            const location = document.getElementById('crudLocation').value;
+            const workTime = document.getElementById('crudWorkTime').value;
+            const phone = document.getElementById('crudPhone').value;
+
+            const payload = { shop_name: shopName, location: location, work_time: workTime, phone: phone };
+
+            if (jobId) {
+                // [UPDATE 모드 진입]: 기존 구인 카드 내용 동적 원격 수정 (PUT)
+                fetch('/api/jobs/' + jobId, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.success) {
+                        alert('가게 일자리 카드가 실시간으로 수정 완료되었습니다.');
+                        clearCrudForm();
+                        refreshAdminDashboard();
+                    }
+                });
+            } else {
+                // [CREATE 모드 진입]: 새로운 일자리 카드 데이터베이스 생성 등록 (POST)
+                fetch('/api/jobs', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.success) {
+                        alert('데이터베이스에 새로운 구인구직 매칭 카드가 안전하게 등록되었습니다.');
+                        clearCrudForm();
+                        refreshAdminDashboard();
+                    }
+                });
+            }
+        }
+
+        // [CRUD 엔진 4] 구인 목록 내 우측 수정 단추 클릭 시 데이터 폼 로드 매핑 함수
+        function activateEditMode(id, shop, loc, time, tel) {
+            document.getElementById('targetJobId').value = id;
+            document.getElementById('crudShopName').value = shop;
+            document.getElementById('crudLocation').value = loc;
+            document.getElementById('crudWorkTime').value = time;
+            document.getElementById('crudPhone').value = tel;
+            
+            document.getElementById('formModeTitle').innerText = '선택한 일자리 카드 내용 수정하기';
+            document.getElementById('submitFormBtn').innerText = '카드 정보 변경 사항 저장';
+            document.getElementById('jobCrudForm').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // [CRUD 엔진 5] 불필요 / 만료 일자리 카드 완전 영구 삭제 처리 함수 (DELETE)
+        function executeDeleteJob(id) {
+            if (!confirm('이 일자리 카드를 정말로 폐기하시겠습니까? 구인구직 게시판에서도 실시간으로 삭제 처리됩니다.')) return;
+            
+            fetch('/api/jobs/' + id, { method: 'DELETE' })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    alert('해당 구인구직 일자리 매칭 카드가 완벽히 파쇄/삭제되었습니다.');
+                    if (document.getElementById('targetJobId').value == id) clearCrudForm();
+                    refreshAdminDashboard();
+                }
+            });
+        }
+
+        // 폼 입력 요소 초기화
+        function clearCrudForm() {
+            document.getElementById('targetJobId').value = '';
+            document.getElementById('jobCrudForm').reset();
+            document.getElementById('formModeTitle').innerText = '새 구인 카드 등록하기';
+            document.getElementById('submitFormBtn').innerText = '일자리 카드 생성하기';
+        }
+
+        // 세션 강제 탈출 아웃 처리
+        function terminateAdminSession() {
+            document.getElementById('adminHeader').style.display = 'none';
+            document.getElementById('adminMainPanel').style.display = 'none';
+            document.getElementById('adminLoginOverlay').style.display = 'flex';
+            document.getElementById('admId').value = '';
+            document.getElementById('admPw').value = '';
+            alert('보안 관제 세션이 안전하게 폐쇄 로그아웃되었습니다.');
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SILVER LAB - 구인구직 게시판</title>
+    <style>
+        /* 기본 스타일 초기화 및 레이아웃 최적화 */
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Malgun Gothic', sans-serif; }
+        body { color: #2D3748; line-height: 1.9; background-color: #F7FAFC; }
+        a { text-decoration: none; color: inherit; }
+        
+        /* 상단 네비게이션 헤더 (정교한 물결 비커 로고 모노톤 고정) */
+        header { display: flex; justify-content: space-between; align-items: center; padding: 15px 8%; background-color: #23272E; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        .brand-logo-wrap { display: flex; align-items: center; gap: 12px; cursor: pointer; }
+        .beaker-icon { width: 36px; height: 36px; }
+        .logo-text { font-size: 24px; font-weight: 800; color: #E2E8F0; letter-spacing: 1px; }
+        .home-btn { font-size: 18px; font-weight: bold; color: #E2E8F0; transition: 0.3s; }
+        .home-btn:hover { color: #ECC94B; }
+        
+        /* 메인 본문 영역 */
+        .container { max-width: 1200px; margin: 0 auto; padding: 60px 20px; }
+        .page-title { font-size: 32px; margin-bottom: 10px; text-align: center; color: #1A202C; }
+        .page-desc { text-align: center; color: #718096; margin-bottom: 50px; font-size: 18px; }
+        
+        /* 보안 로그인 폼 스타일 */
+        .login-box { background-color: #FFFFFF; max-width: 480px; margin: 40px auto; padding: 45px 40px; border-radius: 6px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); border: 1px solid #E2E8F0; text-align: center; }
+        .login-box h3 { font-size: 22px; margin-bottom: 15px; color: #1A202C; }
+        .login-box p { color: #718096; font-size: 15px; margin-bottom: 30px; }
+        .form-group { margin-bottom: 20px; text-align: left; }
+        .form-group label { display: block; font-weight: bold; margin-bottom: 8px; font-size: 14px; color: #4A5568; }
+        .form-group input { width: 100%; padding: 13px; border: 1px solid #CBD5E0; border-radius: 4px; font-size: 16px; background-color: #F7FAFC; }
+        .form-group input:focus { outline: none; border-color: #ECC94B; background-color: #FFFFFF; }
+        .login-btn { width: 100%; background-color: #ECC94B; color: #1A202C; border: none; padding: 14px; border-radius: 4px; font-size: 18px; font-weight: bold; cursor: pointer; transition: 0.3s; margin-top: 10px; }
+        .login-btn:hover { background-color: #D69E2E; }
+        
+        /* 게시판 실제 카드 배치 그리드 레이아웃 */
+        .board-content { display: none; }
+        .logout-bar { text-align: right; margin-bottom: 25px; }
+        .logout-btn { background-color: #E2E8F0; color: #4A5568; padding: 8px 18px; border-radius: 4px; font-weight: bold; cursor: pointer; border: none; transition: 0.2s; }
+        .logout-btn:hover { background-color: #CBD5E0; }
+        .board-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 30px; }
+        
+        /* 백엔드 실시간 연동 카드의 동적 입체 서식 */
+        .job-card { background-color: #FFFFFF; border-radius: 6px; padding: 30px; box-shadow: 0 4px 15px rgba(0,0,0,0.02); border: 1px solid #E2E8F0; transition: transform 0.3s ease, border-color 0.3s ease; }
+        .job-card:hover { transform: translateY(-5px); border-color: #ECC94B; box-shadow: 0 8px 25px rgba(0,0,0,0.06); }
+        .shop-name { font-size: 22px; font-weight: bold; color: #1A202C; margin-bottom: 18px; border-bottom: 2px solid #F7FAFC; padding-bottom: 12px; }
+        .info-row { font-size: 16px; margin-bottom: 10px; display: flex; color: #4A5568; }
+        .info-row .label { font-weight: bold; color: #A0AEC0; width: 90px; flex-shrink: 0; }
+        
+        /* 일자리가 없을 때 노출할 특수 카드 스타일 */
+        .no-jobs { grid-column: 1 / -1; text-align: center; padding: 60px; background-color: #FFFFFF; border-radius: 6px; border: 1px dashed #CBD5E0; color: #718096; font-size: 18px; }
+        footer { background-color: #1A202C; color: #718096; text-align: center; padding: 40px 20px; font-size: 15px; border-top: 1px solid #2D3748; margin-top: 120px; }
+    </style>
+</head>
+<body>
+
+    <!-- 상단 헤더 영역 -->
+    <header>
+        <div class="brand-logo-wrap" onclick="location.href='index.html'">
+            <svg class="beaker-icon" viewBox="0 0 64 64" fill="none" xmlns="http://w3.org">
+                <defs>
+                    <clipPath id="beakerInnerWall">
+                        <path d="M28 14V30L16 55H48L36 30V14H28Z" />
+                    </clipPath>
+                </defs>
+                <g clip-path="url(#beakerInnerWall)">
+                    <path d="M12 35C15 33.5 19 33.5 23 35C27 36.5 31 36.5 35 35C39 33.5 43 33.5 47 35C51 36.5 55 36.5 59 35V58H12V35Z" fill="#E2E8F0"/>
+                </g>
+                <line x1="29" y1="41" x2="35" y2="41" stroke="#23272E" stroke-width="1.5" stroke-linecap="round"/>
+                <line x1="27" y1="47" x2="37" y2="47" stroke="#23272E" stroke-width="1.5" stroke-linecap="round"/>
+                <path d="M26 10H38M32 10V14M28 14H36M28 14V30L16 55H48L36 30V14" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            <div class="logo-text">SILVER LAB</div>
+        </div>
+        <a href="index.html" class="home-btn">홈으로 가기</a>
+    </header>
+
+    <div class="container">
+        <h2 class="page-title">구인구직 게시판</h2>
+        <p class="page-desc">실버랩 회원들을 위한 검증된 맞춤형 일자리 매칭 공간입니다.</p>
+
+        <!-- 인증 제어창 구역 (백엔드 진짜 회원 인증 연동 유도) -->
+        <div id="loginBox" class="login-box">
+            <h3>회원 전용 서비스</h3>
+            <p>보안 및 회원 관리를 위해 로그인이 필요한 서식입니다.<br>발급된 시니어용 테스트 계정으로 로그인을 처리해 주세요.<br>(아이디: senior / 비밀번호: 1234)</p>
+            <form onsubmit="executeLogin(event)">
+                <div class="form-group"><label for="userId">아이디</label><input type="text" id="userId" required placeholder="아이디를 입력해 주세요"></div>
+                <div class="form-group"><label for="userPw">비밀번호</label><input type="password" id="userPw" required placeholder="비밀번호를 입력해 주세요"></div>
+                <button type="submit" class="login-btn">로그인</button>
+            </form>
+        </div>
+        <!-- 로그인 성공 후 노출될 구인 카드 컨테이너 구역 -->
+        <div id="boardContent" class="board-content">
+            <div class="logout-bar">
+                <button class="logout-btn" onclick="executeLogout()">로그아웃</button>
+            </div>
+            <!-- 백엔드 DB 연동 데이터가 동적으로 생성되어 배치될 마크업 노드 -->
+            <div id="boardGrid" class="board-grid"></div>
+        </div>
+    </div>
+
+    <!-- 푸터 영역 -->
+    <footer>
+        <p>© 2026 SILVER LAB. All rights reserved.</p>
+    </footer>
+
+    <!-- 백엔드 통합 동적 인터랙션 자바스크립트 엔진 -->
+    <script>
+        // [기능 1] 백엔드 세션 인증 로그인 처리 엔진
+        function executeLogin(event) {
+            event.preventDefault();
+            const idInput = document.getElementById('userId').value;
+            const pwInput = document.getElementById('userPw').value;
+
+            // 백엔드 로그인 통제 API 호출
+            fetch('/api/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ username: idInput, password: pwInput })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    document.getElementById('loginBox').style.display = 'none';
+                    document.getElementById('boardContent').style.display = 'block';
+                    alert('로그인이 완료되었습니다. 회원 전용 실시간 일자리 데이터가 동적으로 동기화됩니다.');
+                    loadJobCards(); // 실제 DB에 저장된 구인 카드 불러오기 구동
+                } else {
+                    alert(data.message || '인증 정보가 틀렸습니다. 다시 확인해 주세요.');
+                }
+            })
+            .catch(err => {
+                alert('서버와 연결할 수 없습니다. 터미널의 서버 가동 상태를 검토해 주세요.');
+                console.error(err);
+            });
+        }
+
+        // [기능 2] 데이터베이스(DB) 실시간 연동 구인 카드 로드 엔진 (CRUD 연동 핵심)
+        function loadJobCards() {
+            const gridContainer = document.getElementById('boardGrid');
+            gridContainer.innerHTML = ''; // 기존 카드 리셋 초기화
+
+            // 백엔드 전체 일자리 목록 요청 API 호출
+            fetch('/api/jobs')
+            .then(res => res.json())
+            .then(jobs => {
+                if (jobs.length === 0) {
+                    gridContainer.innerHTML = '<div class="no-jobs">현재 등록된 유효한 맞춤형 구인 카드가 없습니다. 관리자에게 문의하세요.</div>';
+                    return;
+                }
+
+                // 수집된 배열 개수만큼 루프를 돌며 동적 엘리먼트 순차 드로잉 주입
+                jobs.forEach(job => {
+                    const card = document.createElement('div');
+                    card.className = 'job-card';
+                    card.innerHTML = 
+                        '<div class="shop-name">' + job.shop_name + '</div>' +
+                        '<div class="info-row"><span class="label">가게 이름</span><span>' + job.shop_name + '</span></div>' +
+                        '<div class="info-row"><span class="label">근무 장소</span><span>' + job.location + '</span></div>' +
+                        '<div class="info-row"><span class="label">근무 시간</span><span>' + job.work_time + '</span></div>' +
+                        '<div class="info-row"><span class="label">전화번호</span><span>' + job.phone + '</span></div>';
+                    gridContainer.appendChild(card);
+                });
+            })
+            .catch(err => {
+                gridContainer.innerHTML = '<div class="no-jobs" style="color: #E53E3E;">일자리 카드 통신 갱신 중 치명적인 서버 통신 장애가 포착되었습니다.</div>';
+                console.error(err);
+            });
+        }
+
+        // [기능 3] 세션 아웃 로그아웃 핸들러
+        function executeLogout() {
+            document.getElementById('boardContent').style.display = 'none';
+            document.getElementById('loginBox').style.display = 'block';
+            document.getElementById('userId').value = '';
+            document.getElementById('userPw').value = '';
+            document.getElementById('boardGrid').innerHTML = '';
+            alert('보안 로그아웃 처리가 완료되었습니다.');
+        }
+    </script>
+</body>
+</html>

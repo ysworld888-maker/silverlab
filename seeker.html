@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SILVER LAB - 시니어 페이지</title>
+    <style>
+        /* 기본 스타일 및 레이아웃 최적화 */
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Malgun Gothic', sans-serif; }
+        body { color: #2D3748; line-height: 1.9; background-color: #F7FAFC; }
+        a { text-decoration: none; color: inherit; }
+        
+        /* 상단 네비게이션 헤더 (물결 비커 로고 모노톤 적용) */
+        header { display: flex; justify-content: space-between; align-items: center; padding: 15px 8%; background-color: #23272E; box-shadow: 0 2px 10px rgba(0,0,0,0.1); position: sticky; top: 0; z-index: 100; }
+        .brand-logo-wrap { display: flex; align-items: center; gap: 12px; cursor: pointer; }
+        .beaker-icon { width: 36px; height: 36px; }
+        .logo-text { font-size: 24px; font-weight: 800; color: #E2E8F0; letter-spacing: 1px; }
+        .home-btn { font-size: 18px; font-weight: bold; color: #E2E8F0; }
+        .home-btn:hover { color: #ECC94B; }
+        
+        /* 인트로 안내 타이틀 */
+        .intro-hero { background-color: #3A3F47; color: #E2E8F0; text-align: center; padding: 60px 20px; }
+        .intro-hero h2 { font-size: 32px; color: #FFFFFF; margin-bottom: 15px; font-weight: bold; }
+        .intro-hero p { font-size: 19px; color: #CBD5E0; word-break: keep-all; }
+        
+        /* 본문 스토리 카드 서식 */
+        .container { max-width: 850px; margin: 0 auto; padding: 40px 20px; }
+        .story-card { background-color: #FFFFFF; padding: 40px; margin-bottom: 30px; box-shadow: 0 4px 12px rgba(0,0,0,0.02); border-left: 5px solid #3A3F47; border-radius: 4px; }
+        .story-card h3 { font-size: 20px; color: #1A202C; margin-bottom: 15px; padding-bottom: 8px; border-bottom: 2px solid #F7FAFC; }
+        .story-card p { font-size: 17px; color: #4A5568; margin-bottom: 15px; word-break: keep-all; }
+        
+        /* 미디어 공간 대체 박스 */
+        .image-placeholder { background-color: #E2E8F0; color: #4A5568; height: 180px; display: flex; align-items: center; justify-content: center; font-size: 15px; font-weight: bold; margin: 20px 0; text-align: center; border-radius: 4px; }
+        
+        /* 사례 및 인터뷰 예시 서식 */
+        .example-box { background-color: #F7FAFC; border: 1px dashed #718096; padding: 15px; border-radius: 4px; margin-top: 15px; font-size: 16px; }
+        .example-tag { display: inline-block; background-color: #ECC94B; color: #1A202C; padding: 2px 8px; font-size: 13px; font-weight: bold; margin-bottom: 8px; }
+        
+        /* 대화형 설문 진입 시작 단추 구역 */
+        .survey-start-area { text-align: center; padding: 20px 0; }
+        .start-btn { background-color: #ECC94B; color: #1A202C; border: none; padding: 15px 35px; border-radius: 4px; font-size: 19px; font-weight: bold; cursor: pointer; margin-top: 15px; }
+        .start-btn:hover { background-color: #D69E2E; }
+        
+        /* 대화형 질문지 서식 윈도우 스타일 */
+        .survey-window { display: none; background-color: #FFFFFF; padding: 40px; border-radius: 4px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); border: 1px solid #E2E8F0; margin-top: 20px; }
+        .survey-progress-text { font-size: 17px; font-weight: bold; color: #718096; text-align: right; margin-bottom: 15px; }
+        .health-info-banner { background-color: #3A3F47; color: #E2E8F0; padding: 12px; border-radius: 4px; margin-bottom: 25px; font-size: 15px; font-weight: bold; text-align: center; }
+        .notice-banner { background-color: #ECC94B; color: #1A202C; padding: 10px; border-radius: 4px; margin-bottom: 25px; font-size: 17px; font-weight: bold; text-align: center; }
+        
+        /* 단계별 문항 세트 스타일 */
+        .step-box { display: none; }
+        .step-box.active { display: block; }
+        .step-box h4 { font-size: 20px; font-weight: bold; margin-bottom: 20px; color: #1A202C; word-break: keep-all; }
+        .step-box input[type="text"] { width: 100%; padding: 12px; border: 1px solid #CBD5E0; border-radius: 4px; font-size: 16px; background-color: #F7FAFC; }
+        .radio-group { display: flex; flex-direction: column; gap: 12px; }
+        .radio-group label { font-size: 17px; display: flex; align-items: center; gap: 10px; cursor: pointer; color: #4A5568; }
+        .radio-group input[type="radio"] { width: 18px; height: 18px; accent-color: #D69E2E; }
+        
+        /* 하단 이전/다음 제어 버튼 */
+        .action-bar { display: flex; justify-content: space-between; margin-top: 30px; padding-top: 15px; border-top: 1px solid #F7FAFC; }
+        .action-btn { padding: 12px 25px; border-radius: 4px; font-size: 16px; font-weight: bold; cursor: pointer; border: none; }
+        .prev-btn { background-color: #E2E8F0; color: #4A5568; }
+        .next-btn { background-color: #ECC94B; color: #1A202C; margin-left: auto; }
+        
+        /* 제출 완료 전용 안내 박스 */
+        .success-box { display: none; background-color: #FFFFFF; border: 2px solid #ECC94B; border-radius: 4px; padding: 35px; text-align: center; margin-top: 30px; box-shadow: 0 10px 25px rgba(0,0,0,0.03); }
+        .success-box h3 { font-size: 22px; color: #1A202C; margin-bottom: 12px; }
+        .success-box p { font-size: 17px; color: #4A5568; margin-bottom: 8px; }
+        footer { background-color: #1A202C; color: #718096; text-align: center; padding: 30px 20px; font-size: 14px; margin-top: 80px; }
+    </style>
+</head>
+<body>
+
+    <!-- 헤더 영역 (정밀 컷팅 마스크 물결 비커 로고 탑재) -->
+    <header>
+        <div class="brand-logo-wrap" onclick="location.href='index.html'">
+            <svg class="beaker-icon" viewBox="0 0 64 64" fill="none" xmlns="http://w3.org">
+                <defs>
+                    <clipPath id="beakerInnerWall">
+                        <path d="M28 14V30L16 55H48L36 30V14H28Z" />
+                    </clipPath>
+                </defs>
+                <g clip-path="url(#beakerInnerWall)">
+                    <path d="M12 35C15 33.5 19 33.5 23 35C27 36.5 31 36.5 35 35C39 33.5 43 33.5 47 35C51 36.5 55 36.5 59 35V58H12V35Z" fill="#E2E8F0"/>
+                </g>
+                <line x1="29" y1="41" x2="35" y2="41" stroke="#23272E" stroke-width="1.5" stroke-linecap="round"/>
+                <line x1="27" y1="47" x2="37" y2="47" stroke="#23272E" stroke-width="1.5" stroke-linecap="round"/>
+                <path d="M26 10H38M32 10V14M28 14H36M28 14V30L16 55H48L36 30V14" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            <div class="logo-text">SILVER LAB</div>
+        </div>
+        <a href="index.html" class="home-btn">홈으로 이동</a>
+    </header>
+
+    <div class="intro-hero">
+        <h2>일자리에서 나이가 한계가 되지 않는 그날까지</h2>
+        <p>나이는 여러분을 가로막는 숫자가 아닌 베테랑의 증명 입니다.<br>실버랩은 '베테랑'이라는 이름으로 당신의 가치를 높게 평가합니다.</p>
+    </div>
+
+    <div class="container">
+        <div class="story-card">
+            <h3>1. 일하고 싶지만 어디서?, 나이 제한이 대부분 있지 않을까?</h3>
+            <p>이제는 직접 일자리를 찾지 않아도 됩니다. 여러분의 능력을 실버랩에게 보여주세요. 숙련된 당신이 가진 노하우를 기반으로 실버랩이 딱 알맞은 일자리를 찾아드립니다.</p>
+            <p>그동안 일자리를 구하시면서 스트레스 받아오셨다면 이제는 끝! 실버랩이 스트레스 없는 구직활동을 지원합니다.</p>
+        </div>
+
+        <div class="story-card">
+            <h3>2. 일하고 싶은 마음은 크지만 아픈곳이 있어서 걱정이에요!, 내 몸 상태로 일할 수 있을지 잘 모르겠어요!</h3>
+            <p>실버랩은 자체 신체능력 테스트를 시행합니다. 이후 테스트 결과에 맞는 일자리를 추천해 드리겠습니다.</p>
+            <p>몸에 무리 없는 시간만 일해주세요. 근로시간이 길지 않기를 원하신다면 2~3시간 집중해서 일하고 퇴근하세요. 체력에 무리를 주지 않으면서, 남은 하루는 소중한 취미와 일상으로 여유롭게 채울 수 있습니다.</p>
+            <div class="image-placeholder">사진: 실버랩 어르신들의 활기차고 건강한 일상 생활 사진 배치 구역</div>
+        </div>
+
+        <div class="story-card">
+            <h3>3. 나는 어디서 일하게 되는걸까?, 나를 함부로 대하지는 않겟지?</h3>
+            <p>질문지 및 면접을 통하여 근무희망지 내에서 업장을 추천해 드립니다.</p>
+            <div class="example-box">
+                <span class="example-tag">매칭 사례 예시</span>
+                <p style="margin: 0; font-weight: bold;">000 베테랑 > 경기도 성남시 분당구 를 희망 >> 이후, OOO 가게에서 현재 0개월간 근무 중!</p>
+            </div>
+            <p style="margin: 20px 0; text-align: center; font-weight: bold; color: #1A202C;">어디서 일하고 싶으신가요? 어떤 일이 하고 싶어요? 같이 고민해봐요!</p>
+            <p>또한, 실버랩은 '가게 평점 시스템'을 통해 당신을 함부로 대하는 사장님을 엄격히 퇴출합니다. 당신의 오랜 인생 경험과 근면함을 존중하는 매장만을 엄선하여 매칭합니다.</p>
+            <div class="example-box">
+                <span class="example-tag">실제 베테랑 인터뷰 소감</span>
+                <p style="margin: 0; font-style: italic;">"실버랩 덕분에 좋은 사장님과 함께 일하고 있어요!"</p>
+            </div>
+            
+            <h3 style="margin-top:30px;">4. 실버랩과 함께!</h3>
+            <p>남는 시간을 실버랩 팀원들과 함께 보내봐요! 이제는 외롭다고 느끼지 않으시면 좋겠습니다. 실버랩이, 팀원들이, 함께 하겠습니다.</p>
+            <div class="image-placeholder">사진: 실버랩 팀원 단체 등산, 단체 식사 활동 사진 배치 구역</div>
+            
+            <div class="survey-start-area">
+                <h3>5. 질문지</h3>
+                <p style="font-size: 16px; color: #4A5568; margin-top: 5px;">이제 질문지 작성을 시작해 볼까요? 5분 내외로 답변할 수 있는 질문지 입니다.<br>여러분의 이야기를 들려주세요. 실버랩과 함께하는 첫 번째 발걸음 입니다.</p>
+                <button type="button" class="start-btn" onclick="startSurveyFlow()">질문지 작성하기</button>
+            </div>
+        </div>
+    </div>
+    <!-- 5번 항목: 대화형 질문지 창 인터페이스 시작 -->
+    <div class="container" style="padding-top: 0;">
+        <div id="surveyWindow" class="survey-window">
+            <div id="surveyProgress" class="survey-progress-text">1 / 12</div>
+            
+            <div id="healthBanner" class="health-info-banner" style="display: none;">
+                지금부터는 건강관련 질문입니다.<br>답변하신 정보를 바탕으로 최적의 일자리를 매칭드리겠습니다.
+            </div>
+            
+            <div id="nearlyDoneBanner" class="notice-banner" style="display: none;">거의 다 왔습니다</div>
+
+            <form id="interactiveSurveyForm" onsubmit="submitInteractiveSurvey(event)">
+                <!-- 질문 1 -->
+                <div class="step-box active" id="step1">
+                    <h4>1. 오늘 이 일자리 신청은 누가 도와주고 계시나요?</h4>
+                    <div class="radio-group">
+                        <label><input type="radio" name="q1" value="어르신 본인 직접" checked> 어르신 본인이 직접 스마트폰을 보고 있어요.</label>
+                        <label><input type="radio" name="q1" value="가족이 대리 작성"> 아들, 딸, 손주 등 가족이 대신 눌러주고 있어요.</label>
+                        <label><input type="radio" name="q1" value="주변 사람 도움"> 주변 사람의 도움을 받고 있어요.</label>
+                    </div>
+                </div>
+                
+                <!-- 질문 2 -->
+                <div class="step-box" id="step2">
+                    <h4>2. 성함이 어떻게 되시나요?</h4>
+                    <input type="text" id="q2" placeholder="성함을 입력해 주세요.">
+                </div>
+                
+                <!-- 질문 3 -->
+                <div class="step-box" id="step3">
+                    <h4>3. 생년월일을 입력해 주세요.</h4>
+                    <input type="text" id="q3" placeholder="예: 1960년 1월 1일">
+                </div>
+                
+                <!-- 질문 4 -->
+                <div class="step-box" id="step4">
+                    <h4>4. 휴대전화 번호를 적어주세요.</h4>
+                    <input type="text" id="q4" placeholder="예: 010-1234-5678">
+                </div>
+                
+                <!-- 질문 5 -->
+                <div class="step-box" id="step5">
+                    <h4>5. 근무를 희망하는 동네 이름을 적어주세요. (ex. 성남시 분당구)</h4>
+                    <input type="text" id="q5" placeholder="예: 성남시 분당구">
+                </div>
+                
+                <!-- 질문 6 -->
+                <div class="step-box" id="step6">
+                    <h4>6. 아파트나 지하철 계단을 이용할 때, 쉬지 않고 3층 높이까지 걸어서 올라가실 수 있습니까?</h4>
+                    <div class="radio-group">
+                        <label><input type="radio" name="q6" value="숨차지 않고 잘 올라감" checked> 네, 숨차지 않고 잘 올라갑니다.</label>
+                        <label><input type="radio" name="q6" value="조금 쑤시지만 올라감"> 무릎이나 허리가 조금 쑤시지만 올라갑니다.</label>
+                        <label><input type="radio" name="q6" value="계단 이용 힘듦"> 관절이 아파서 계단 이용이 힘듭니다.</label>
+                    </div>
+                </div>
+                
+                <!-- 질문 7 -->
+                <div class="step-box" id="step7">
+                    <h4>7. 가볍게 1시간 걸을 수 있습니까?</h4>
+                    <div class="radio-group">
+                        <label><input type="radio" name="q7" value="네" checked> 네</label>
+                        <label><input type="radio" name="q7" value="아니요"> 아니요</label>
+                    </div>
+                </div>
+                
+                <!-- 질문 8 -->
+                <div class="step-box" id="step8">
+                    <h4>8. 현장에서 조심해야 할 지병이 있으십니까?</h4>
+                    <div class="radio-group">
+                        <label><input type="radio" name="q8" value="아주 건강함" checked> 아주 건강합니다.</label>
+                        <label><input type="radio" name="q8" value="지병 있으나 근무 가능"> 네, 하지만 일 하는데 문제 없습니다.</label>
+                        <label><input type="radio" name="q8" value="통증/치료 중"> 주기적으로 통증이 오거나 병원 치료 중입니다.</label>
+                    </div>
+                </div>
+                
+                <!-- 질문 9 -->
+                <div class="step-box" id="step9">
+                    <h4>9. 시끄러운 식당이나 마트 안에서도 사장님의 지시 사항이나 손님의 주문 소리를 잘 들으실 수 있습니까?</h4>
+                    <div class="radio-group">
+                        <label><input type="radio" name="q9" value="귀 밝음 잘 들림" checked> 네, 귀가 밝아서 잘 들립니다.</label>
+                        <label><input type="radio" name="q9" value="소통 문제 없음"> 가끔 안 들릴 때가 있지만 소통에 문제없습니다.</label>
+                        <label><input type="radio" name="q9" value="큰 소리 대화 필요"> 귀가 조금 어두워 큰 소리로 말씀해 주셔야 합니다.</label>
+                    </div>
+                </div>
+                
+                <!-- 질문 10 -->
+                <div class="step-box" id="step10">
+                    <h4>10. 평소 스마트폰으로 자녀분들과 카카오톡 메시지를 주고 받으실 때 어려움을 겪습니까?</h4>
+                    <div class="radio-group">
+                        <label><input type="radio" name="q10" value="어려움 없음" checked> 아니요, 문제 없습니다.</label>
+                        <label><input type="radio" name="q10" value="조금 어려움"> 네, 조금 어렵습니다.</label>
+                    </div>
+                </div>
+                
+                <!-- 질문 11 -->
+                <div class="step-box" id="step11">
+                    <h4>11. 실버랩은 시니어분들의 수요와 사장님들의 수요를 고려하여, 하루에 2~3시간씩 일하는 초단기 일자리를 주로 연결해 드립니다.</h4>
+                    <div class="radio-group">
+                        <label><input type="radio" name="q11" value="초단기 이해함" checked> 네, 이해했습니다.</label>
+                        <label><input type="radio" name="q11" value="더 길게 근로 희망"> 되도록이면 더 길게 일하고 싶습니다.</label>
+                    </div>
+                </div>
+                
+                <!-- 질문 12 -->
+                <div class="step-box" id="step12">
+                    <h4>12. 올해 (2026) 정부에서 제공하는 노인 일자리 사업에 참여하신 적이 있습니까?</h4>
+                    <div class="radio-group">
+                        <label><input type="radio" name="q12" value="정부일자리 참여 없음" checked> 없습니다. (잘 모르겠습니다.)</label>
+                        <label><input type="radio" name="q12" value="정부일자리 참여 있음"> 있습니다.</label>
+                    </div>
+                </div>
+
+                <div class="action-bar">
+                    <button type="button" id="prevBtn" class="action-btn prev-btn" onclick="goToPrevStep()" style="display: none;">이전</button>
+                    <button type="button" id="nextBtn" class="action-btn next-btn" onclick="goToNextStep()">다음</button>
+                </div>
+            </form>
+        </div>
+        <!-- 최종 완료 동적 안내 박스 -->
+        <div id="successBox" class="success-box">
+            <h3>질문지 작성이 완료되었습니다.</h3>
+            <p>실버랩에서 24시간 이내에 전화 연락드리겠습니다.</p>
+            <p><span id="userNameTarget" style="font-weight: bold; color: #D69E2E;"></span>님의 지원 감사드립니다. 기대에 부응하도록 최선을 다하겠습니다.</p>
+            <p style="margin-top: 25px; font-weight: bold; color: #718096;">-실버랩 올림-</p>
+        </div>
+    </div> <!-- .container 마감 -->
+
+    <!-- 푸터 영역 -->
+    <footer>
+        <p>© 2026 SILVER LAB. All rights reserved.</p>
+    </footer>
+
+    <!-- 동적 대화형 알고리즘 제어 스크립트 모듈 -->
+    <script>
+        let currentStep = 1;
+        const totalSteps = 12;
+
+        function startSurveyFlow() {
+            document.getElementById('surveyWindow').style.display = 'block';
+            document.getElementById('surveyWindow').scrollIntoView({ behavior: 'smooth' });
+            updateSurveyUI();
+        }
+
+        function updateSurveyUI() {
+            for (let i = 1; i <= totalSteps; i++) {
+                document.getElementById('step' + i).classList.remove('active');
+            }
+            document.getElementById('step' + currentStep).classList.add('active');
+            document.getElementById('surveyProgress').innerText = currentStep + ' / ' + totalSteps;
+
+            document.getElementById('prevBtn').style.display = currentStep === 1 ? 'none' : 'block';
+            document.getElementById('nextBtn').innerText = currentStep === totalSteps ? '질문지 제출하기' : '다음';
+
+            document.getElementById('healthBanner').style.display = (currentStep >= 6 && currentStep <= 8) ? 'block' : 'none';
+            document.getElementById('nearlyDoneBanner').style.display = (currentStep >= 11 && currentStep <= 12) ? 'block' : 'none';
+        }
+
+        function goToNextStep() {
+            if (currentStep === 2) {
+                const q2Val = document.getElementById('q2').value.trim();
+                if (!q2Val) { alert('성함을 입력해 주세요.'); return; }
+            }
+            if (currentStep === 3) {
+                const q3Val = document.getElementById('q3').value.trim();
+                if (!q3Val) { alert('생년월일을 입력해 주세요.'); return; }
+            }
+            if (currentStep === 4) {
+                const q4Val = document.getElementById('q4').value.trim();
+                if (!q4Val) { alert('휴대전화 번호를 입력해 주세요.'); return; }
+            }
+            if (currentStep === 5) {
+                const q5Val = document.getElementById('q5').value.trim();
+                if (!q5Val) { alert('근무 희망 동네를 입력해 주세요.'); return; }
+            }
+
+            if (currentStep === totalSteps) {
+                document.getElementById('interactiveSurveyForm').requestSubmit();
+                return;
+            }
+            currentStep++;
+            updateSurveyUI();
+        }
+
+        function goToPrevStep() {
+            if (currentStep > 1) {
+                currentStep--;
+                updateSurveyUI();
+            }
+        }
+
+        // 백엔드 API 연동 데이터 물리 저장 비동기 엔진 처리 (우리만 보기 보안 구현)
+        function submitInteractiveSurvey(event) {
+            event.preventDefault();
+            const v1 = document.querySelector('input[name="q1"]:checked').value;
+            const v2 = document.getElementById('q2').value;
+            const v3 = document.getElementById('q3').value;
+            const v4 = document.getElementById('q4').value;
+            const v5 = document.getElementById('q5').value;
+            const v6 = document.querySelector('input[name="q6"]:checked').value;
+            const v7 = document.querySelector('input[name="q7"]:checked').value;
+            const v8 = document.querySelector('input[name="q8"]:checked').value;
+            const v9 = document.querySelector('input[name="q9"]:checked').value;
+            const v10 = document.querySelector('input[name="q10"]:checked').value;
+            const v11 = document.querySelector('input[name="q11"]:checked').value;
+            const v12 = document.querySelector('input[name="q12"]:checked').value;
+
+            const payload = { q1: v1, q2: v2, q3: v3, q4: v4, q5: v5, q6: v6, q7: v7, q8: v8, q9: v9, q10: v10, q11: v11, q12: v12 };
+
+            // fetch 통신 기능을 활용해 어르신들의 개인 정보를 실시간 db 파일로 은밀히 격리 저장
+            fetch('/api/senior', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    document.getElementById('userNameTarget').innerText = v2;
+                    document.getElementById('surveyWindow').style.display = 'none';
+                    document.getElementById('successBox').style.display = 'block';
+                    
+                    alert("질문지 작성이 완료되었습니다.\n실버랩에서 24시간 이내에 전화 연락드리겠습니다.\n" + v2 + "님의 지원 감사드립니다. 기대에 부응하도록 최선을 다하겠습니다.\n\n-실버랩 올림-");
+                    
+                    currentStep = 1;
+                    document.getElementById('interactiveSurveyForm').reset();
+                    document.getElementById('successBox').scrollIntoView({ behavior: 'smooth' });
+                } else {
+                    alert('저장 중 오류가 발생했습니다. 다시 시도해 주세요.');
+                }
+            })
+            .catch(err => {
+                alert('서버와 통신할 수 없습니다. 터미널의 서버 가동 상태를 확인해 주세요.');
+                console.error(err);
+            });
+        }
+    </script>
+</body>
+</html>
