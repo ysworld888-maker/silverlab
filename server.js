@@ -7,6 +7,11 @@ const PORT = process.env.PORT || 3000;
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
 
+// [최종 추가] 메인 주소 접속 시 대문 index.html 강제 연결 마스터 라우팅
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'index.html'));
+});
+
 // 데이터베이스 로드 및 영구 저장 파일 연결
 const db = new sqlite3.Database('./silverlab.db', (err) => {
     if (err) return console.error(err.message);
