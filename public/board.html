@@ -35,7 +35,7 @@
 
             if (!id) { alert('보안 인증 세션 만료. 로그인을 먼저 완수해 주세요.'); location.href = '/login.html'; return; }
 
-            // [사장님 로그인 시 타인 공고 원천 격리 차단 락 이행 완료]
+            // [사장님 로그인 시 타인 공고 원천 격리 차단 락 가동]
             if (role === 'employer') {
                 document.getElementById('bTitle').innerText = "보안 격리 보호 구역";
                 document.getElementById('bSub').style.display = 'none';

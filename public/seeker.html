@@ -30,73 +30,61 @@
         <div id="atBanner" class="banner">💡 거의 다 왔습니다</div>
 
         <form id="sForm" onsubmit="return false;">
-            <!-- 1단계 -->
             <div class="card active" data-step="1">
                 <div class="q-t">1. 오늘 이 일자리 신청은 누가 도와주고 계시나요?</div>
                 <label class="lbl"><input type="radio" name="q1" value="어르신 본인이 직접 스마트폰을 보고 있어요."> 어르신 본인이 직접 스마트폰을 보고 있어요.</label>
                 <label class="lbl"><input type="radio" name="q1" value="아들, 딸, 손주 등 가족이 대신 눌러주고 있어요."> 아들, 딸, 손주 등 가족이 대신 눌러주고 있어요.</label>
                 <label class="lbl"><input type="radio" name="q1" value="주변 사람의 도움을 받고 있어요."> 주변 사람의 도움을 받고 있어요.</label>
             </div>
-            <!-- 2단계 -->
             <div class="card" data-step="2">
                 <div class="q-t">2. 성함이 어떻게 되시나요?</div>
                 <input type="text" id="i2" class="input-t" placeholder="실명을 입력해 주세요">
             </div>
-            <!-- 3단계 -->
             <div class="card" data-step="3">
                 <div class="q-t">3. 생년월일을 입력해 주세요.</div>
                 <input type="text" id="i3" class="input-t" placeholder="예: 19580415">
             </div>
-            <!-- 4단계 -->
             <div class="card" data-step="4">
                 <div class="q-t">4. 휴대전화 번호를 적어주세요.</div>
                 <input type="tel" id="i4" class="input-t" placeholder="예: 01012345678">
             </div>
-            <!-- 5단계 -->
             <div class="card" data-step="5">
                 <div class="q-t">5. 근무를 희망하는 동네 이름을 적어주세요.</div>
                 <input type="text" id="i5" class="input-t" placeholder="예: 성남시 분당구 야탑동">
             </div>
-            <!-- 6단계 -->
             <div class="card" data-step="6">
                 <div class="q-t">6. 아파트나 지하철 계단을 이용할 때, 쉬지 않고 3층 높이까지 걸어서 올라가실 수 있습니까?<span style="display:block; font-size:12px; font-weight:600; color:#4e5968; margin-top:5px;">※ 지금부터는 건강 관련 질문입니다. 답변하신 정보를 바탕으로 최적의 일자리를 매칭드리겠습니다.</span></div>
                 <label class="lbl"><input type="radio" name="q6" value="네, 숨차지 않고 잘 올라갑니다."> 네, 숨차지 않고 잘 올라갑니다.</label>
                 <label class="lbl"><input type="radio" name="q6" value="무릎이나 허리가 조금 쑤시지만 올라갑니다."> 무릎이나 허리가 조금 쑤시지만 올라갑니다.</label>
                 <label class="lbl"><input type="radio" name="q6" value="관절이 아파서 계단 이용이 힘듭니다."> 관절이 아파서 계단 이용이 힘듭니다.</label>
             </div>
-            <!-- 7단계 -->
             <div class="card" data-step="7">
                 <div class="q-t">7. 가볍게 1시간 걸을 수 있습니까?</div>
                 <label class="lbl"><input type="radio" name="q7" value="네"> 네</label>
                 <label class="lbl"><input type="radio" name="q7" value="아니요"> 아니요</label>
             </div>
-            <!-- 8단계 -->
             <div class="card" data-step="8">
                 <div class="q-t">8. 현장에서 조심해야 할 지병이 있으십니까?</div>
                 <label class="lbl"><input type="radio" name="q8" value="아주 건강합니다."> 아주 건강합니다.</label>
                 <label class="lbl"><input type="radio" name="q8" value="네, 하지만 일 하는 데 문제 없습니다."> 네, 하지만 일 하는 데 문제 없습니다.</label>
                 <label class="lbl"><input type="radio" name="q8" value="주기적으로 통증이 오거나 병원 치료 중입니다."> 주기적으로 통증이 오거나 병원 치료 중입니다.</label>
             </div>
-            <!-- 9단계 -->
             <div class="card" data-step="9">
                 <div class="q-t">9. 시끄러운 식당이나 마트 안에서도 사장님의 지시 사항이나 손님의 주문 소리를 잘 들으실 수 있습니까?</div>
                 <label class="lbl"><input type="radio" name="q9" value="네, 귀가 밝아서 잘 들립니다."> 네, 귀가 밝아서 잘 들립니다.</label>
                 <label class="lbl"><input type="radio" name="q9" value="가끔 안 들릴 때가 있지만 소통에 문제없습니다."> 가끔 안 들릴 때가 있지만 소통에 문제없습니다.</label>
                 <label class="lbl"><input type="radio" name="q9" value="귀가 조금 어두워 큰 소리로 말씀해 주셔야 합니다."> 귀가 조금 어두워 큰 소리로 말씀해 주셔야 합니다.</label>
             </div>
-            <!-- 10단계 -->
             <div class="card" data-step="10">
                 <div class="q-t">10. 평소 스마트폰으로 자녀분들과 카카오톡 메시지를 주고 받으실 때 어려움을 겪습니까?</div>
                 <label class="lbl"><input type="radio" name="q10" value="아니요, 문제 없습니다."> 아니요, 문제 없습니다.</label>
                 <label class="lbl"><input type="radio" name="q10" value="네, 조금 어렵습니다."> 네, 조금 어렵습니다.</label>
             </div>
-            <!-- 11단계 -->
             <div class="card" data-step="11">
                 <div class="q-t">11. 실버랩은 하루에 2~3시간씩 일하는 초단기 일자리를 주로 연결해 드립니다.</div>
                 <label class="lbl"><input type="radio" name="q11" value="네, 이해했습니다."> 네, 이해했습니다.</label>
                 <label class="lbl"><input type="radio" name="q11" value="되도록이면 더 길게 일하고 싶습니다."> 되도록이면 더 길게 일하고 싶습니다.</label>
             </div>
-            <!-- 12단계 -->
             <div class="card" data-step="12">
                 <div class="q-t">12. 올해 (2026) 정부에서 제공하는 노인 일자리 사업에 참여하신 적이 있습니까?</div>
                 <label class="lbl"><input type="radio" name="q12" value="없습니다. (잘 모르겠습니다.)"> 없습니다. (잘 모르겠습니다.)</label>

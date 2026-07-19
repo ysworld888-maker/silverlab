@@ -23,7 +23,6 @@
         <button class="btn" onclick="location.href='/board.html'">매칭 게시판 실시간 모니터링 ➔</button>
     </header>
 
-    <!-- 섹션 1: 가입 명단 및 4대 체력 스펙 실시간 입력 수정 관제판 -->
     <div class="card">
         <h3>1. 회원 가입 승인 및 4대 체력 측정 스펙 실시간 직접 입력 제어판</h3>
         <table>
@@ -32,7 +31,6 @@
         </table>
     </div>
 
-    <!-- 섹션 2: 사장님 구인공고 실시간 검토 승인제 차단 통제판 -->
     <div class="card">
         <h3>2. 사장님 구인공고 실시간 검토 심사 통제판 (승인 단추 즉시 board.html 공식 기재)</h3>
         <table>
@@ -44,7 +42,6 @@
         </table>
     </div>
 
-    <!-- 섹션 3: 지원하기 클릭 즉시 동적 전달 매칭 로그 관제판 -->
     <div class="card">
         <h3>3. 시니어 [지원하기] 클릭 즉시 실시간 전산 전달 연동 매칭 로그 피드</h3>
         <table>
@@ -55,7 +52,6 @@
 
     <script>
         function loadAdmin() {
-            // 회원 목록 파싱 및 입력 상자 바인딩
             fetch('/api/admin/users').then(res => res.json()).then(data => {
                 const body = document.getElementById('userBody'); body.innerHTML = '';
                 data.users.forEach(u => {
@@ -74,7 +70,6 @@
                 });
             });
 
-            // 시니어 지원하기 클릭 즉시 동적 전달 매칭 로그 파싱
             fetch('/api/admin/match-logs').then(res => res.json()).then(data => {
                 const body = document.getElementById('logBody'); body.innerHTML = '';
                 if(!data.logs || data.logs.length === 0) { body.innerHTML = `<tr><td colspan="6" style="text-align:center; color:#8b95a1; padding:20px 0;">실시간 구인·구직 원서 접수 대기 중...</td></tr>`; return; }
@@ -86,7 +81,6 @@
             });
         }
 
-        // 입력창 데이터 즉시 가로채서 수파베이스 영구 DB 실시간 업데이트 보존 단추 함수
         function saveSpec(username) {
             let g = "미인증", gp = "-", f = "-", c = "-";
             if(document.getElementById('g_' + username)) {
@@ -97,16 +91,15 @@
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ target_username: username, status: 'approved', fitness_grade: g, fitness_grip: gp, fitness_flex: f, fitness_cardio: c })
-            }).then(() => { alert('클라우드 전산망 연동 대성공!\n\n회원 스펙 정보가 수파베이스 영구 DB에 실시간 업데이트 및 완전 봉인되었습니다.'); loadAdmin(); });
+            }).then(() => { alert('실시간 물리 DB 스펙 저장 완수!'); loadAdmin(); });
         }
 
-        // 사장님 등록 공고 심사 승인제 작동 단추 함수
         function approveJob(id) {
             fetch('/api/admin/approve-job', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ job_id: id, action_status: 'approved' })
-            }).then(() => { alert('행정 승인 마감 완료!\n\n해당 매장 공고의 락이 해제되었으며 시니어 전용 매칭 게시판(board.html)에 실시간 개통 기재되었습니다.'); loadAdmin(); });
+            }).then(() => { alert('공고 최종 승인 완료! board.html 즉시 기재 개통'); loadAdmin(); });
         }
         loadAdmin();
     </script>
