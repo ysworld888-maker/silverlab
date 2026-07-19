@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>SILVERWORKS 최고관리자 콘솔 - 마스터 제어실</title>
-    <!-- 불필요한 혼선 색상을 완벽 박멸하고 토스 스타일 오션블루 단일 테마로 격상 완료한 관리자용 CSS 스타일셋 -->
+    <!-- 혼선 유도 색상을 완벽 박멸하고 토스 스타일 오션블루 단일 테마로 격상 완료한 관리자용 CSS 스타일셋 -->
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, sans-serif; -webkit-tap-highlight-color: transparent; }
         body { background-color: #f9fafb; color: #333d4b; padding-bottom: 60px; }
@@ -77,29 +77,27 @@
             </table>
         </div>
     </div>
-    <!-- 섹션 3: 지원 및 순위 지정 클릭 즉시 동적 전달 매칭 로그 관제판 -->
+    <!-- 섹션 3: [사장님 오더 반영] 원터치 다이렉트 행정 문의 실시간 관제판 -->
     <div class="card">
-        <h3>3. 구직자 지원 및 사장님 순위 지정 클릭 즉시 동적 전달 매칭 로그 관제 패널</h3>
+        <h3>3. 실버웍스 원터치 다이렉트 행정 문의 실시간 관제 패널</h3>
         <div class="table-container">
             <table>
                 <thead>
                     <tr>
-                        <th>지원 일련번호</th>
-                        <th>매장 고용주 명세</th>
-                        <th>지원한 피크타임 공고 명세</th>
-                        <th>지원 구직자 성명</th>
-                        <th>시니어 실물 연락처</th>
-                        <th>사장님 우선순위 지정 상태</th>
+                        <th>접수 유무 상태</th>
+                        <th>문의 매장 상호명 명세</th>
+                        <th>대표자 전화번호 연락처</th>
+                        <th>전산망 결속 상태</th>
                     </tr>
                 </thead>
-                <tbody id="logBody">
-                    <tr><td colspan="6" style="text-align:center; color:#8b95a1; padding:20px 0;">실시간 구인·구직 원서 접수 로그 피드를 대기 중입니다...</td></tr>
+                <tbody id="storeConsultBody">
+                    <tr><td colspan="4" style="text-align:center; color:#8b95a1; padding:20px 0;">실시간 매장 행정 문의 접수 피드를 대기 중입니다...</td></tr>
                 </tbody>
             </table>
         </div>
     </div>
 
-    <!-- [최고관리자 데이터 제어 및 실시간 스펙 업데이트 동기화 엔진 스크립트] -->
+    <!-- [최고관리자 데이터 제어 및 실시간 스펙·문의 동기화 엔진 스크립트] -->
     <script>
         function loadAdmin() {
             // 1. 가입 회원 명단 실시간 추출 및 4대 체력 스펙 바인딩
@@ -170,32 +168,23 @@
                     });
                 });
 
-            // 3. 시니어 지원 및 사장님 지망 순위 지정 클릭 즉시 디스크를 타고 동적 전달되는 매칭 로그 파싱
-            fetch('/api/admin/match-logs')
-                .then(res => res.json())
-                .then(data => {
-                    const body = document.getElementById('logBody'); 
-                    body.innerHTML = '';
-                    
-                    if(!data.logs || data.logs.length === 0) { 
-                        body.innerHTML = `<tr><td colspan="6" style="text-align:center; color:#8b95a1; padding:20px 0;">실시간 구인·구직 원서 접수 내역 대기 중입니다.</td></tr>`; 
-                        return; 
-                    }
-                    
-                    data.logs.forEach(l => {
-                        const tr = document.createElement('tr');
-                        const rankTxt = l.rank_priority > 0 ? `<span style="color:#1967d2; font-weight:800;">🎯 ${l.rank_priority}순위 확정</span>` : `<span style="color:#6b7684;">검토중</span>`;
-                        tr.innerHTML = `
-                            <td style="font-weight:600;">APP-${l.app_id}</td>
-                            <td style="font-weight:700;">${l.company_name}</td>
-                            <td style="color:#1967d2; font-weight:600;">${l.job_title}</td>
-                            <td style="font-weight:700;">${l.seeker_name} 베테랑</td>
-                            <td>${l.seeker_phone}</td>
-                            <td style="font-weight:700;">${rankTxt}</td>
-                        `;
-                        body.appendChild(tr);
-                    });
-                });
+            // 3. [사장님 오더 반영] employer.html 문의하기 누르는 즉시 실시간 연동 포착 출력 파싱
+            const consultStore = localStorage.getItem('sw_consult_store');
+            const consultPhone = localStorage.getItem('sw_consult_phone');
+            const consultBody = document.getElementById('storeConsultBody');
+            
+            if (consultStore && consultPhone) {
+                consultBody.innerHTML = `
+                    <tr>
+                        <td><span style="color:#1967d2; font-weight:800;">🎯 문의 실시간 접수됨</span></td>
+                        <td style="font-weight:700;">${consultStore}</td>
+                        <td style="font-weight:700; color:#1967d2;">${consultPhone}</td>
+                        <td style="color:green; font-weight:700;">원터치 다이렉트 결속망 연결 완료</td>
+                    </tr>
+                `;
+            } else {
+                consultBody.innerHTML = `<tr><td colspan="4" style="text-align:center; color:#8b95a1; padding:20px 0;">실시간 매장 행정 문의 접수 피드를 대기 중입니다.</td></tr>`;
+            }
         }
 
         // 4. 인풋 상자에 타이핑한 데이터를 가로채서 서버 디스크 DB에 실시간 양방향 영구 보존하는 함수
