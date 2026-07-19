@@ -1,6 +1,6 @@
 // ==========================================================================
 // SILVERWORKS (실버웍스) - 상용 디스크 하드 마운트 무결점 백엔드 제어 시스템
-// [특이사항] 3단계 수칙 / 이모티콘 전량 박멸 / 오션블루 단일 테마 결속 완결
+// [특이사항] 3단계 분할 규칙 수칙 엄수 / 이모티콘 전량 박멸 / 오션블루 테마 통합
 // ==========================================================================
 
 const express = require('express');
@@ -18,7 +18,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 // Render 서버의 휴면 시 초기화 결함을 영구 방어하기 위한 마운트 디스크 경로 바인딩
 const DATA_DIR = fs.existsSync('/data') ? '/data' : __dirname;
-const dbPath = path.join(DATA_DIR, 'silverworks_core_master.db');
+const dbPath = path.join(DATA_DIR, 'silverworks_final_core.db');
 const db = new sqlite3.Database(dbPath);
 
 const hashPw = (pw) => crypto.createHash('sha256').update(pw).digest('hex');
@@ -121,12 +121,12 @@ app.get('/api/profile/me', (req, res) => {
 app.post('/api/senior/qa', (req, res) => {
     const { username, answers } = req.body;
     db.run(`INSERT OR REPLACE INTO senior_qa (username, q1, q2, q3, q4, q5, q6, q7, q8, q9, q10, q11, q12) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-        [username, answers[0], answers[1], answers[2], answers[3], answers[4], answers[5], answers[6], answers[7], answers[8], answers[9], answers[10], answers[11]], () => res.json({ success: true }));
+        [username, answers, answers, answers, answers, answers, answers, answers, answers, answers, answers, answers, answers], () => res.json({ success: true }));
 });
 
 app.post('/api/jobs/apply', (req, res) => {
     db.run(`INSERT INTO applications (job_id, seeker_id) VALUES (?, ?)`, [req.body.job_id, req.body.seeker_id], () => res.json({ success: true }));
 });
 
-app.listen(PORT, () => console.log(`SILVERWORKS 마스터 백엔드 구동 완료 포트: ${PORT}`));
+app.listen(PORT, () => console.log(`SILVERWORKS 마스터 서버 구동 완료 포트: ${PORT}`));
 module.exports = app;
