@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>실버웍스 (SILVERWORKS) - 품질 보증형 매장 피크타임 최적화 플랫폼</title>
-    <!-- 토스 특유의 광활한 여백 미학과 화이트 타이포그래피 전용 상용 CSS 스타일셋 -->
+    <!-- 토스 특유의 광활한 여백 미학과 상용 세션 기반 아바타 전용 CSS 스타일셋 -->
     <style>
         * {
             box-sizing: border-box;
@@ -45,6 +45,7 @@
         /* 링크 단절을 완벽 파쇄하는 유기적 프리패스 네비게이션 메뉴 링크 그룹 */
         .nav-menu-group {
             display: flex;
+            align-items: center;
             gap: 8px;
         }
         .nav-link-btn {
@@ -65,6 +66,26 @@
         .nav-link-btn.active {
             background-color: #e8f3ff;
             color: #1967d2;
+        }
+        /* 사장님이 요구하신 우측 상단 토스 규격의 원 모양 프로필 아바타 인터페이스 */
+        .user-profile-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background-color: #1967d2;
+            color: #ffffff;
+            font-size: 14px;
+            font-weight: 700;
+            display: none; /* 초기값 숨김, 로그인 세션 감지 시 동적 활성화 */
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            border: 2px solid #e8f3ff;
+            box-shadow: 0 2px 6px rgba(25, 103, 210, 0.2);
+            transition: transform 0.2s;
+        }
+        .user-profile-avatar:hover {
+            transform: scale(1.08);
         }
         /* 화이트 타이포그래피 히어로 배너 구역 스타일 */
         .hero-section {
@@ -99,7 +120,6 @@
             max-width: 600px;
             margin: 0 auto;
         }
-        /* 카드형 핵심 연동 대시보드 구조 */
         .card-section {
             padding: 20px 20px 60px 20px;
             max-width: 900px;
@@ -184,10 +204,9 @@
 </head>
 <body>
 
-    <!-- [상단 헤더] 사장님 원본 사진 이미지 100% 완벽 일치 파란색 문양 장착 -->
+    <!-- 상단 헤더 바 메뉴 연동 -->
     <header>
         <div class="logo-container" onclick="location.href='/'">
-            <!-- 고유 곡선 궤적과 내부 두께를 정확하게 1대1 싱크로 코딩화한 마스터 SVG 패스 -->
             <svg width="28" height="26" viewBox="0 0 100 90" fill="none" xmlns="http://w3.org">
                 <path d="M12.5 54C13.5 53 19.5 54.5 28.5 48.5C38.5 42 47 28 56.5 19.5C65.5 11 76.5 6.5 85.5 12.5C95.5 18.5 90 32 81 37C69.5 41.5 61 33 53 41.5C43 51 28.5 63 17 61C10 59.5 6.5 53 12.5 54Z" stroke="#1967d2" stroke-width="7.5" stroke-linecap="round" stroke-linejoin="round"/>
                 <path d="M51.5 59C58.5 67 71 68 80.5 60.5C90 53 92.5 39.5 85.5 32" stroke="#1967d2" stroke-width="7.5" stroke-linecap="round" stroke-linejoin="round"/>
@@ -200,13 +219,15 @@
             <button class="nav-link-btn" onclick="location.href='/login.html?type=seeker'">시니어 등록</button>
             <button class="nav-link-btn" onclick="location.href='/login.html?type=employer'">사장님 혁신</button>
             <button class="nav-link-btn" onclick="location.href='/board.html'">매칭 게시판</button>
+            <!-- 사장님이 요구하신 대문 통합 버튼 인터페이스 결속 조립 -->
+            <button id="navAuthBtn" class="nav-link-btn" style="background-color: #1967d2; color: #ffffff;" onclick="location.href='/login.html'">로그인 / 가입</button>
+            <div id="userAvatar" class="user-profile-avatar" onclick="location.href='/profile.html'">MY</div>
         </div>
     </header>
 
-    <!-- [히어로 중앙] 전달해주신 사진 문양 100% 복제형 대형 로고 안착 구역 -->
     <section class="hero-section">
         <div class="hero-logo-center">
-            <svg width="105" height="95" viewBox="0 0 100 90" fill="none" xmlns="http://w3.org">
+            <svg width="75" height="75" viewBox="0 0 100 90" fill="none" xmlns="http://w3.org">
                 <path d="M12.5 54C13.5 53 19.5 54.5 28.5 48.5C38.5 42 47 28 56.5 19.5C65.5 11 76.5 6.5 85.5 12.5C95.5 18.5 90 32 81 37C69.5 41.5 61 33 53 41.5C43 51 28.5 63 17 61C10 59.5 6.5 53 12.5 54Z" stroke="#1967d2" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/>
                 <path d="M51.5 59C58.5 67 71 68 80.5 60.5C90 53 92.5 39.5 85.5 32" stroke="#1967d2" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/>
             </svg>
@@ -214,7 +235,6 @@
         <h1 class="hero-title">매장 피크타임,<br><span>품질 보증형</span> 최적화 매칭</h1>
         <p class="hero-sub">주휴수당·퇴직금 폭탄과 무단 노쇼의 공포를 기술로 해결합니다. 실버웍스는 사장님의 수동 열람권을 폐지하고 검증된 시니어 베테랑을 선착순 자동 매칭하는 스마트 직업정보제공 인프라입니다.</p>
     </section>
-
     <section class="card-section">
         <div class="info-card" onclick="location.href='/login.html?type=employer'" style="cursor:pointer;">
             <span class="card-badge">구인 사장님 메뉴 진입 ➔</span>
@@ -228,6 +248,7 @@
             <p class="card-desc">오프라인 국민체력 100 검증 등급과 12가지 정밀 질문지 데이터가 통합 탑재된 실버웍스 전용 공식 이력서 서식이 자동 가공 및 보존되는 안전 구역입니다.</p>
         </div>
     </section>
+
     <section class="policy-section">
         <div class="policy-container">
             <h3 class="policy-header">실버웍스 인터넷 직업정보제공 서비스 이용안내</h3>
@@ -250,5 +271,23 @@
         </div>
     </footer>
 
+    <!-- 실시간 상용 세션 추적 및 원형 아바타 UI 스위칭 스크립트 -->
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const currentLoggerId = localStorage.getItem('sw_username');
+            const authBtn = document.getElementById('navAuthBtn');
+            const userAvatar = document.getElementById('userAvatar');
+
+            // 로그인 상태(인증 토큰 세션) 존재 여부를 실시간 조건 분기 감지
+            if (currentLoggerId) {
+                authBtn.style.display = 'none'; // 로그인 버튼 소멸
+                userAvatar.style.display = 'flex'; // 둥근 원형 프로필 아바타 활성화
+                userAvatar.innerText = currentLoggerId.substring(0, 2).toUpperCase(); // 아이디 앞 2글자 아바타 표기
+            } else {
+                authBtn.style.display = 'block';
+                userAvatar.style.display = 'none';
+            }
+        });
+    </script>
 </body>
 </html>
