@@ -318,8 +318,14 @@
             fetch('/api/jobs/create', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
+                // [교정 완결] 기존 288~289라인 구역을 아래 코드로 완전히 교체하여 문법 락을 해제합니다.
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
-                    employer_id: currentLoggerId,
+                    job_id: jobId,
+                    seeker_id: currentLoggerId
+                })
+
                     title: title,
                     company: company,
                     work_date: date,
