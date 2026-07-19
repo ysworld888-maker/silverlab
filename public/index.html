@@ -4,13 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>실버웍스 (SILVERWORKS) - 품질 보증형 매장 피크타임 최적화 플랫폼</title>
-    <!-- 토스 스타일의 정갈하고 수려한 폰트 및 청량한 오션블루 테마 셋업 -->
     <style>
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
             -webkit-tap-highlight-color: transparent;
         }
         body {
@@ -18,239 +17,237 @@
             color: #333d4b;
             padding-bottom: 60px;
         }
-        /* 토스 고유의 넓은 여백과 레이아웃 */
+        /* 토스 고유의 상단 네비게이션 메뉴 헤더 바 */
         header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 16px 20px;
+            padding: 18px 20px;
             background-color: #ffffff;
             border-bottom: 1px solid #f2f4f6;
             position: sticky;
             top: 0;
             z-index: 100;
         }
-        /* [브랜딩] 애플/토스 스타일의 텍스트 프리 파도 심볼 로고 (이모티콘 전면 배제) */
         .logo-container {
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 10px;
             cursor: pointer;
         }
         .logo-text {
-            font-size: 19px;
+            font-size: 20px;
             font-weight: 800;
             color: #1967d2;
             letter-spacing: -0.5px;
         }
-        /* 토스 블루 모던 버튼 규격 */
-        .btn-primary {
-            background-color: #1967d2;
-            color: #ffffff;
-            padding: 10px 16px;
-            border-radius: 8px;
+        /* 링크 단절을 파쇄하는 유기적 이동 경로 메뉴 링크 그룹 */
+        .nav-menu-group {
+            display: flex;
+            gap: 8px;
+        }
+        .nav-link-btn {
+            background: none;
+            border: none;
+            color: #4e5968;
             font-size: 14px;
             font-weight: 600;
-            border: none;
             cursor: pointer;
-            transition: background-color 0.2s;
+            padding: 8px 16px;
+            border-radius: 8px;
+            transition: background-color 0.2s, color 0.2s;
         }
-        .btn-primary:hover {
-            background-color: #1152b3;
+        .nav-link-btn:hover {
+            background-color: #f2f4f6;
+            color: #1967d2;
         }
-        /* 모바일 최적화 히어로 구역 및 사장님 첨부 가동 전경 이미지 매핑 */
+        .nav-link-btn.active {
+            background-color: #e8f3ff;
+            color: #1967d2;
+        }
+        /* 토스 스타일의 광활하고 세련된 화이트 타이포그래피 히어로 배너 구역 */
         .hero-section {
-            padding: 40px 20px;
-            text-align: left;
-            background-color: #ffffff;
+            padding: 80px 24px 60px 24px;
+            text-align: center;
+            background: radial-gradient(circle at top, #f4f9ff 0%, #ffffff 70%);
+        }
+        .hero-logo-center {
+            margin-bottom: 24px;
+            display: inline-block;
+            animation: floatWave 3s ease-in-out infinite;
+        }
+        @keyframes floatWave {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-6px); }
         }
         .hero-title {
-            font-size: 28px;
-            font-weight: 700;
+            font-size: 34px;
+            font-weight: 800;
             line-height: 1.4;
+            letter-spacing: -1.2px;
             color: #1b1c1e;
-            letter-spacing: -1px;
-            margin-bottom: 16px;
+            margin-bottom: 20px;
         }
         .hero-title span {
             color: #1967d2;
         }
         .hero-sub {
-            font-size: 15px;
-            line-height: 1.6;
+            font-size: 16px;
+            line-height: 1.7;
             color: #4e5968;
-            margin-bottom: 24px;
+            max-width: 600px;
+            margin: 0 auto;
         }
-        /* [비주얼] 카페 현장 가동 고해상도 전경 이미지 배치 락 */
-        .hero-image-box {
-            width: 100%;
-            border-radius: 16px;
-            overflow: hidden;
-            margin-bottom: 32px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-        }
-        .hero-image-box img {
-            width: 100%;
-            height: auto;
-            display: block;
-            object-fit: cover;
-        }
-        /* 카드형 핵심 안내 섹션 디자인 */
+        /* 카드형 핵심 연동 대시보드 구조 */
         .card-section {
-            padding: 0 20px 40px 20px;
+            padding: 20px 20px 60px 20px;
+            max-width: 900px;
+            margin: 0 auto;
         }
         .info-card {
             background-color: #f9fafb;
-            border-radius: 16px;
-            padding: 24px;
-            margin-bottom: 16px;
+            border-radius: 20px;
+            padding: 28px;
+            margin-bottom: 20px;
             border: 1px solid #f2f4f6;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .info-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(0,0,0,0.04);
         }
         .card-badge {
             display: inline-block;
             background-color: #e8f3ff;
             color: #1967d2;
-            padding: 4px 8px;
-            border-radius: 4px;
+            padding: 6px 10px;
+            border-radius: 6px;
             font-size: 12px;
-            font-weight: 600;
-            margin-bottom: 12px;
+            font-weight: 700;
+            margin-bottom: 14px;
         }
         .card-title {
-            font-size: 18px;
+            font-size: 19px;
             font-weight: 700;
+            margin-bottom: 10px;
             color: #333d4b;
-            margin-bottom: 8px;
         }
         .card-desc {
             font-size: 14px;
             line-height: 1.6;
             color: #4e5968;
         }
-        /* 고용노동부 성남지청 심사용 인터넷 직업정보제공사업 이용안내문 구역 */
         .policy-section {
             background-color: #ffffff;
-            padding: 32px 20px;
+            padding: 40px 20px;
             border-top: 1px solid #f2f4f6;
         }
         .policy-container {
             border: 1px solid #e5e8eb;
-            border-radius: 12px;
-            padding: 20px;
+            border-radius: 16px;
+            padding: 24px;
             background-color: #f9fafb;
+            max-width: 900px;
+            margin: 0 auto;
         }
         .policy-header {
             font-size: 15px;
             font-weight: 700;
+            margin-bottom: 14px;
             color: #333d4b;
-            margin-bottom: 12px;
-            letter-spacing: -0.3px;
         }
         .policy-text {
             font-size: 13px;
             line-height: 1.6;
             color: #4e5968;
         }
-        .policy-text p {
-            margin-bottom: 8px;
-        }
-        .policy-text p:last-child {
-            margin-bottom: 0;
-        }
-
-        /* 공공 인프라급 신뢰도 구축을 위한 신뢰성 푸터(Footer) 디자인 */
         footer {
             background-color: #f2f4f6;
             color: #6b7684;
-            padding: 32px 20px;
+            padding: 40px 20px;
             font-size: 12px;
             line-height: 1.8;
             border-top: 1px solid #e5e8eb;
         }
+        .footer-container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
         .footer-title {
             font-size: 13px;
             font-weight: 700;
+            margin-bottom: 10px;
             color: #4e5968;
-            margin-bottom: 8px;
-        }
-        .footer-info-item {
-            margin-bottom: 2px;
-        }
-        .footer-copyright {
-            margin-top: 16px;
-            color: #8b95a1;
-            font-size: 11px;
         }
     </style>
 </head>
 <body>
 
-    <!-- 상단 고정 헤더 배너 구역 -->
+    <!-- [유기적 메뉴 연동 헤더 바] 로고와 전방위 이동 루트 링크 일체형 매핑 -->
     <header>
         <div class="logo-container" onclick="location.href='/'">
-            <!-- [브랜딩] 애플/토스 스타일의 세련된 실버웍스 오션 블루 파도 심볼 SVG 그래픽 -->
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://w3.org">
-                <path d="M2.5 15.5C4.5 13.5 6.5 13.5 8.5 15.5C10.5 17.5 12.5 17.5 14.5 15.5C16.5 13.5 18.5 13.5 20.5 15.5" stroke="#1967d2" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
-                <path d="M3.5 9.5C5.5 7.5 7.5 7.5 9.5 9.5C11.5 11.5 13.5 11.5 15.5 9.5C17.5 7.5 19.5 7.5 21.5 9.5" stroke="#1967d2" stroke-width="2" stroke-opacity="0.4" stroke-linecap="round" stroke-linejoin="round"/>
+            <!-- 사장님이 전달해주신 청량한 실버웍스 오션 블루 파도 공식 심볼 탑재 -->
+            <svg width="24" height="24" viewBox="0 0 100 100" fill="none" xmlns="http://w3.org">
+                <path d="M15 55C25 32 43 23 68 28C84 31.5 88.5 44 79.5 51C68 58 57 47.5 48 60C39 72.5 25.5 76 12 68.5C0.75 64 0.75 62 15 55Z" stroke="#1967d2" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/>
             </svg>
             <span class="logo-text">SILVERWORKS</span>
         </div>
-        <button class="btn-primary" onclick="location.href='/board.html'">게시판 진입</button>
+        
+        <!-- 링크 단절을 원천 박멸하는 유기적 프리패스 네비게이션 메뉴 그룹 -->
+        <div class="nav-menu-group">
+            <button class="nav-link-btn active" onclick="location.href='/'">홈</button>
+            <button class="nav-link-btn" onclick="location.href='/seeker.html'">시니어 등록</button>
+            <button class="nav-link-btn" onclick="location.href='/employer.html'">사장님 혁신</button>
+            <button class="nav-link-btn" onclick="location.href='/board.html'">매칭 게시판</button>
+        </div>
     </header>
 
-    <!-- 모바일 최적화 히어로 비주얼 배너 구역 -->
+    <!-- 별론 사진 전산 삭제 완료 ➔ 파도 마크 중심의 압도적 화이트 히어로 셋업 -->
     <section class="hero-section">
+        <div class="hero-logo-center">
+            <svg width="70" height="70" viewBox="0 0 100 100" fill="none" xmlns="http://w3.org">
+                <path d="M15 55C25 32 43 23 68 28C84 31.5 88.5 44 79.5 51C68 58 57 47.5 48 60C39 72.5 25.5 76 12 68.5C0.75 64 0.75 62 15 55Z" stroke="#1967d2" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+        </div>
         <h1 class="hero-title">매장 피크타임,<br><span>품질 보증형</span> 최적화 매칭</h1>
-        <p class="hero-sub">주휴수당·퇴직금 폭탄과 무단 노 노쇼에 힘드셨나요?<br>실버웍스는 사장님의 불필요한 열람권을 삭제하고, 오프라인 검증을 통과한 시니어 베테랑을 선착순 완전 자동 매칭하는 스마트 직업정보 매개 인프라입니다.</p>
-        
-        <!-- [비주얼 이식] 사장님 첨부용 카페 현장 가동 전경 이미지 출력 영역 -->
-        <div class="hero-image-box">
-            <img src="main-hero.jpg" alt="실버웍스 매장 매칭 근로 가동 전경">
-        </div>
+        <p class="hero-sub">주휴수당·퇴직금 폭탄과 무단 노쇼의 공포를 기술로 해결합니다. 실버웍스는 사장님의 수동 열람권을 폐지하고 검증된 시니어 베테랑을 선착순 자동 매칭하는 스마트 직업정보제공 인프라입니다.</p>
     </section>
 
-    <!-- 토스 모던 스타일 비즈니스 메커니즘 카드 색션 구역 -->
+    <!-- 유기적 경로 직관 터치 네비게이션 카드 색션 -->
     <section class="card-section">
-        <div class="info-card">
-            <span class="card-badge">구인 사장님</span>
-            <h2 class="card-title">필요한 시간만 합법적 고용</h2>
-            <p class="card-desc">하루 3시간 피크타임, 원하는 직무와 인원만 지정하여 등록하면 인프라가 작동합니다. 고용노동부 최저임금 기준을 원천 동기화하여 완벽한 법적 무결성을 보장합니다.</p>
+        <div class="info-card" onclick="location.href='/employer.html'" style="cursor:pointer;">
+            <span class="card-badge">구인 사장님 메뉴 진입 ➔</span>
+            <h2 class="card-title">필요한 시간만 합법적 고용 솔루션</h2>
+            <p class="card-desc">하루 3시간 피크타임, 원하는 직무와 인원만 지정하여 등록하면 인프라가 가동됩니다. 고용노동부 최저임금 필터를 원천 동기화하여 완벽한 행정 무결성을 보장합니다.</p>
         </div>
 
-        <div class="info-card">
-            <span class="card-badge">시니어 베테랑</span>
-            <h2 class="card-title">베테랑 전용 표준 이력서 자율 구직</h2>
-            <p class="card-desc">오프라인 국민체력 100 검증 등급과 12가지 정밀 질문지 데이터가 탑재된 이력서가 자동 가공됩니다. 앱에서 공고를 자율 열람 후 선착순 지원하는 구조입니다.</p>
-        </div>
-
-        <div class="info-card">
-            <span class="card-badge">핀테크 정산</span>
-            <h2 class="card-title">당일 퇴근 인증 및 월말 후불 일괄 청구</h2>
-            <p class="card-desc">근로자 퇴근 인증 시 프리랜서 3.3% 원천세가 자동 공제된 포인트가 동적 지급됩니다. 매장은 월말에 수수료율(회원 5% / 비회원 10%)이 가산된 일괄 후불 청구서에 따라 사업용 계좌로 정산합니다.</p>
+        <div class="info-card" onclick="location.href='/seeker.html'" style="cursor:pointer;">
+            <span class="card-badge">시니어 베테랑 메뉴 진입 ➔</span>
+            <h2 class="card-title">베테랑 전용 표준 이력서 자율 등록</h2>
+            <p class="card-desc">오프라인 국민체력 100 검증 등급과 12가지 정밀 질문지 데이터가 통합 탑재된 실버웍스 전용 공식 이력서 서식이 자동 가공 및 보존되는 안전 구역입니다.</p>
         </div>
     </section>
 
-    <!-- 고용노동부 성남지청인터넷 직업정보제공사업 정식 행정 심사 서식 구역 -->
     <section class="policy-section">
         <div class="policy-container">
             <h3 class="policy-header">실버웍스 인터넷 직업정보제공 서비스 이용안내</h3>
             <div class="policy-text">
-                <p>1. 본 플랫폼은 직업안정법 제23조에 의거하여 구인·구직 정보의 효율적 연계를 목적으로 가동되는 정식 인터넷 직업정보제공 서비스 인프라입니다.</p>
-                <p>2. 구인자는 직업정보제공 전산망에 구인 일시, 직무, 인원 등의 내용을 성실히 기재하여야 하며, 입력된 급여 단가가 당해 연도 고용노동부 고시 최저임금에 미달하거나 유흥·유해 업종 코드로 판별될 경우 공고 기재 및 저장이 원천 차단됩니다.</p>
-                <p>3. 실버웍스는 구인자와 구직자 상호 간의 정보를 기술적으로 매개하는 IT 시스템만을 제공하며, 근로기준법상 고용 관계 성립에 따른 각종 인사·산재 책임은 정보 이용의 주체인 해당 사업장 매장 고용주(구인자)에게 전적으로 귀속됩니다.</p>
+                <p style="margin-bottom:8px;">1. 본 플랫폼은 직업안정법 제23조에 의거하여 구인·구직 정보의 연계를 목적으로 가동되는 정식 인터넷 직업정보제공 서비스 인프라입니다.</p>
+                <p style="margin-bottom:8px;">2. 구인자가 입력한 급여 단가가 당해 연도 고용노동부 고시 최저임금에 미달하거나 유해 업종 코드로 판별될 경우 공고 기재 및 저장이 원천 차단됩니다.</p>
+                <p>3. 실버웍스는 구인자와 구직자 상호 간의 정보를 기술적으로 매개하는 IT 시스템만을 제공하며, 근로기준법상 인사·산재 책임은 해당 사업장 매장 고용주(구인자)에게 전적으로 귀속됩니다.</p>
             </div>
         </div>
     </section>
 
-    <!-- 공공 인프라 지위 하단 푸터(Footer) 정보 고정 레이아웃 구역 -->
     <footer>
-        <h4 class="footer-title">실버웍스 (SILVERWORKS)</h4>
-        <div class="footer-info-item">대표자 연락처: 010-7464-3657 / 010-9187-9074</div>
-        <div class="footer-info-item">거점 주소: 경기도 성남시 중원구 광명로 79, 4층 (성남동 2257)</div>
-        <div class="footer-info-item">사업 지위: [인터넷 직업정보제공사업 신고 법인]</div>
-        <div class="footer-info-item">정식 주업종 코드: [724000: 데이터베이스 및 온라인 정보 제공업]</div>
-        <div class="footer-info-item">정식 부업종 코드: [749000: 그 외 기타 전문, 과학 및 기술 서비스업]</div>
-        <div class="footer-copyright">Copyright © 2026 SILVERWORKS. All rights reserved.</div>
+        <div class="footer-container">
+            <h4 class="footer-title">실버웍스 (SILVERWORKS)</h4>
+            <div class="footer-info-item">대표자 연락처: 010-7464-3657 / 010-9187-9074</div>
+            <div class="footer-info-item">거점 주소: 경기도 성남시 중원구 광명로 79, 4층 (성남동 2257)</div>
+            <div class="footer-info-item">사업 지위: [인터넷 직업정보제공사업 신고 법인]</div>
+            <div class="footer-info-item">정식 주업종 코드: [724000: 데이터베이스 및 온라인 정보 제공업]</div>
+            <div class="footer-copyright">Copyright © 2026 SILVERWORKS. All rights reserved.</div>
+        </div>
     </footer>
 
 </body>

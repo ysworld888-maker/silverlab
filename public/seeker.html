@@ -10,7 +10,7 @@
             box-sizing: border-box;
             margin: 0;
             padding: 0;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
             -webkit-tap-highlight-color: transparent;
         }
         body {
@@ -18,6 +18,7 @@
             color: #333d4b;
             padding-bottom: 40px;
         }
+        /* 토스 고유의 상단 네비게이션 메뉴 헤더 바 */
         header {
             display: flex;
             justify-content: space-between;
@@ -32,25 +33,43 @@
         .logo-container {
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 10px;
             cursor: pointer;
         }
         .logo-text {
-            font-size: 19px;
+            font-size: 20px;
             font-weight: 800;
             color: #1967d2;
             letter-spacing: -0.5px;
         }
-        .btn-back {
+        /* 링크 단절을 완벽하게 파쇄하는 유기적 이동 경로 메뉴 링크 그룹 */
+        .nav-menu-group {
+            display: flex;
+            gap: 8px;
+        }
+        .nav-link-btn {
             background: none;
             border: none;
             color: #4e5968;
             font-size: 14px;
             font-weight: 600;
             cursor: pointer;
+            padding: 8px 16px;
+            border-radius: 8px;
+            transition: background-color 0.2s, color 0.2s;
+        }
+        .nav-link-btn:hover {
+            background-color: #f2f4f6;
+            color: #1967d2;
+        }
+        .nav-link-btn.active {
+            background-color: #e8f3ff;
+            color: #1967d2;
         }
         .container {
-            padding: 32px 20px;
+            padding: 40px 20px;
+            max-width: 700px;
+            margin: 0 auto;
         }
         .page-title {
             font-size: 26px;
@@ -107,7 +126,6 @@
             border-color: #1967d2;
             background-color: #f8f9fa;
         }
-        /* 토스 블루 모바일 풀사이즈 버튼 규격 */
         .btn-submit-full {
             width: 100%;
             background-color: #1967d2;
@@ -124,7 +142,6 @@
         .btn-submit-full:hover {
             background-color: #1152b3;
         }
-        /* 하단 고정 푸터(Footer) 스타일 정의 */
         footer {
             background-color: #f2f4f6;
             color: #6b7684;
@@ -140,119 +157,96 @@
             color: #4e5968;
             margin-bottom: 8px;
         }
-        .footer-info-item {
-            margin-bottom: 2px;
-        }
-        .footer-copyright {
-            margin-top: 16px;
-            color: #8b95a1;
-            font-size: 11px;
-        }
     </style>
 </head>
 <body>
 
-    <!-- 상단 헤더 영역 -->
+    <!-- [유기적 메뉴 연동 헤더 바] 어느 페이지에서든 프리패스 연동 락 -->
     <header>
         <div class="logo-container" onclick="location.href='/'">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://w3.org">
-                <path d="M2.5 15.5C4.5 13.5 6.5 13.5 8.5 15.5C10.5 17.5 12.5 17.5 14.5 15.5C16.5 13.5 18.5 13.5 20.5 15.5" stroke="#1967d2" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
-                <path d="M3.5 9.5C5.5 7.5 7.5 7.5 9.5 9.5C11.5 11.5 13.5 11.5 15.5 9.5C17.5 7.5 19.5 7.5 21.5 9.5" stroke="#1967d2" stroke-width="2" stroke-opacity="0.4" stroke-linecap="round" stroke-linejoin="round"/>
+            <svg width="24" height="24" viewBox="0 0 100 100" fill="none" xmlns="http://w3.org">
+                <path d="M15 55C25 32 43 23 68 28C84 31.5 88.5 44 79.5 51C68 58 57 47.5 48 60C39 72.5 25.5 76 12 68.5C0.75 64 0.75 62 15 55Z" stroke="#1967d2" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/>
             </svg>
             <span class="logo-text">SILVERWORKS</span>
         </div>
-        <button class="btn-back" onclick="location.href='/'">돌아가기</button>
+        
+        <div class="nav-menu-group">
+            <button class="nav-link-btn" onclick="location.href='/'">홈</button>
+            <button class="nav-link-btn active" onclick="location.href='/seeker.html'">시니어 등록</button>
+            <button class="nav-link-btn" onclick="location.href='/employer.html'">사장님 혁신</button>
+            <button class="nav-link-btn" onclick="location.href='/board.html'">매칭 게시판</button>
+        </div>
     </header>
 
-    <!-- 메인 컨테이너 구역 -->
     <div class="container">
         <h1 class="page-title">시니어 베테랑<br><span>표준 이력서</span> 정보 등록</h1>
         <p class="page-sub">매장 사장님들에게 전달될 실버웍스 전용 공식 이력서 양식입니다. 12가지 정밀 면접 문항에 성실히 답변을 기재해 주시면, 국민체력 100 검증 등급과 결합되어 완전 자동화 매칭 전산망에 등록됩니다.</p>
 
-        <!-- 대화형 12가지 질문지 입력 폼 섹션 -->
         <div class="qa-form-box">
             <div class="input-group">
                 <label class="question-label">1. 과거에 주로 하셨던 일(주요 경력)이나 가장 자신 있는 직무 분야는 무엇인가요?</label>
                 <input type="text" class="text-input" id="q1" placeholder="예: 한식당 주방 5년 조리 근무, 대형마트 물류 진열 등">
             </div>
-
             <div class="input-group">
                 <label class="question-label">2. 하루에 3시간 내외의 단기 피크타임 집중 근로가 신체적으로 무리 없이 가능하신가요?</label>
                 <input type="text" class="text-input" id="q2" placeholder="예: 무리 없이 가능합니다. 오래 서 있는 일도 문제없습니다.">
             </div>
-
             <div class="input-group">
                 <label class="question-label">3. 스마트폰 앱이나 알림톡 지시사항을 보고 출퇴근 및 근무 내용을 확인하는 데 지장이 없으신가요?</label>
                 <input type="text" class="text-input" id="q3" placeholder="예: 문자나 카카오톡 확인 및 기본 앱 조작이 원활하게 가능합니다.">
             </div>
-
             <div class="input-group">
                 <label class="question-label">4. 외식업 및 리테일 매장 근무에 필수적인 '보건증'을 현재 보유 중이시거나 발급 예정이신가요?</label>
                 <input type="text" class="text-input" id="q4" placeholder="예: 유효한 보건증을 보유하고 있습니다 / 이번 주 내 발급 예정입니다.">
             </div>
-
             <div class="input-group">
                 <label class="question-label">5. 평소에 성실하시고 무단 결근이나 노쇼(No-Show) 없이 시간 약속을 철저히 지키시는 편인가요?</label>
                 <input type="text" class="text-input" id="q5" placeholder="예: 평생 무단결근 경력이 없습니다. 약속 시간 20분 전 항상 도착합니다.">
             </div>
-
             <div class="input-group">
                 <label class="question-label">6. 매장 내 젊은 동료들이나 손님들과 원만하고 친절하게 대화하며 협업하실 소통 능력을 갖추셨나요?</label>
                 <input type="text" class="text-input" id="q6" placeholder="예: 성격이 밝아 누구와도 잘 어울리며 친절한 서비스 태도를 갖추고 있습니다.">
             </div>
-
             <div class="input-group">
                 <label class="question-label">7. 현재 허리, 무릎, 손목 등 매장 업무를 수행하는 데 방해가 되는 지병이나 신체적 통증이 있으신가요?</label>
                 <input type="text" class="text-input" id="q7" placeholder="예: 지병이 전혀 없으며 관절과 체력이 매우 건강한 상태입니다.">
             </div>
-
             <div class="input-group">
                 <label class="question-label">8. 일주일 중 출근이 가장 원활하게 가능하신 요일과 희망하시는 시간대는 언제인가요?</label>
                 <input type="text" class="text-input" id="q8" placeholder="예: 평일 월~금 모두 가능하며, 점심 피크타임(11시~14시)을 선호합니다.">
             </div>
-
             <div class="input-group">
                 <label class="question-label">9. 돌발적인 매장 혼잡 상황(손님 몰림 등)이 발생했을 때 당황하지 않고 지시에 따라 유연하게 대처하실 수 있나요?</label>
                 <input type="text" class="text-input" id="q9" placeholder="예: 주방 베테랑 경력이 있어 바쁜 시간대 흐름을 잘 파악하고 대처합니다.">
             </div>
-
             <div class="input-group">
                 <label class="question-label">10. 매장 고용주(구인자)의 현장 정당한 지시나 위생 및 청결 수칙을 존중하고 철저히 따르실 용의가 있으신가요?</label>
                 <input type="text" class="text-input" id="q10" placeholder="예: 매장 자체의 매뉴얼과 사장님의 지시를 전적으로 존중하고 준수합니다.">
             </div>
-
             <div class="input-group">
                 <label class="question-label">11. 거주하시는 지역(동 이름)은 어디이시며, 출근 시 대중교통이나 도보로 얼마나 걸리는 거리까지 이동이 가능하신가요?</label>
                 <input type="text" class="text-input" id="q11" placeholder="예: 성남시 중원구 성남동 거주, 지하철/버스로 30분 거리까지 가능">
             </div>
-
             <div class="input-group">
                 <label class="question-label">12. 마지막으로 실버웍스 매칭 플랫폼을 통해 성실히 일하고자 하시는 베테랑으로서의 각오를 한 줄로 적어주세요.</label>
                 <input type="text" class="text-input" id="q12" placeholder="예: 오랜 현장 노하우와 최고의 성실함으로 매장에 기여하겠습니다.">
             </div>
         </div>
-
-        <!-- 최종 등록 단추 -->
         <button class="btn-submit-full" id="submitBtn">실버웍스 표준 이력서 등록하기</button>
     </div>
 
-    <!-- 하단 푸터 영역 -->
     <footer>
         <h4 class="footer-title">실버웍스 (SILVERWORKS)</h4>
         <div class="footer-info-item">대표자 연락처: 010-7464-3657 / 010-9187-9074</div>
         <div class="footer-info-item">거점 주소: 경기도 성남시 중원구 광명로 79, 4층 (성남동 2257)</div>
         <div class="footer-info-item">사업 지위: [인터넷 직업정보제공사업 신고 법인]</div>
         <div class="footer-info-item">정식 주업종 코드: [724000: 데이터베이스 및 온라인 정보 제공업]</div>
-        <div class="footer-info-item">정식 부업종 코드: [749000: 그 외 기타 전문, 과학 및 기술 서비스업]</div>
         <div class="footer-copyright">Copyright © 2026 SILVERWORKS. All rights reserved.</div>
     </footer>
 
-    <!-- 백엔드 서버단 실시간 데이터 전송 연동 자바스크립트 -->
     <script>
         document.getElementById('submitBtn').addEventListener('click', function() {
-            // 현재 로그인된 임시 시니어 아이디 감지 (실제 연동 전 테스트용 마스터 키 지정)
             const currentLogger = localStorage.getItem('sw_username') || 'senior_test_user';
-            
             const answers = [];
             for (let i = 1; i <= 12; i++) {
                 const val = document.getElementById('q' + i).value.trim();
@@ -264,7 +258,6 @@
                 answers.push(val);
             }
 
-            // [보안 기술] XSS 및 데이터 인젝션을 격파하는 상용 REST API 통신 결속
             fetch('/api/senior/qa', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -285,6 +278,5 @@
             });
         });
     </script>
-
 </body>
 </html>

@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>실버웍스 사장님 - 피크타임 인건비 절감 및 매장 상담 신청 시스템</title>
+    <title>실버웍스 사장님 - 피크타임 인건비 혁신 및 매장 상담 신청 시스템</title>
     <!-- 토스 블루 아이덴티티 및 모바일 최적화 깔끔한 여백 테마 CSS 셋업 -->
     <style>
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
             -webkit-tap-highlight-color: transparent;
         }
         body {
@@ -18,11 +18,12 @@
             color: #333d4b;
             padding-bottom: 40px;
         }
+        /* 토스 고유의 상단 네비게이션 메뉴 헤더 바 */
         header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 16px 20px;
+            padding: 18px 20px;
             background-color: #ffffff;
             border-bottom: 1px solid #f2f4f6;
             position: sticky;
@@ -32,25 +33,43 @@
         .logo-container {
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 10px;
             cursor: pointer;
         }
         .logo-text {
-            font-size: 19px;
+            font-size: 20px;
             font-weight: 800;
             color: #1967d2;
             letter-spacing: -0.5px;
         }
-        .btn-back {
+        /* 링크 단절을 완벽하게 파쇄하는 유기적 이동 경로 메뉴 링크 그룹 */
+        .nav-menu-group {
+            display: flex;
+            gap: 8px;
+        }
+        .nav-link-btn {
             background: none;
             border: none;
             color: #4e5968;
             font-size: 14px;
             font-weight: 600;
             cursor: pointer;
+            padding: 8px 16px;
+            border-radius: 8px;
+            transition: background-color 0.2s, color 0.2s;
+        }
+        .nav-link-btn:hover {
+            background-color: #f2f4f6;
+            color: #1967d2;
+        }
+        .nav-link-btn.active {
+            background-color: #e8f3ff;
+            color: #1967d2;
         }
         .container {
-            padding: 32px 20px;
+            padding: 40px 20px;
+            max-width: 700px;
+            margin: 0 auto;
         }
         .page-title {
             font-size: 26px;
@@ -133,7 +152,7 @@
             border-radius: 16px;
             border: 1px solid #e5e8eb;
             padding: 24px;
-            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.02);
+            box-shadow: 0 4px 166px rgba(0, 0, 0, 0.02);
         }
         .form-title {
             font-size: 18px;
@@ -187,8 +206,6 @@
         .btn-submit-full:hover {
             background-color: #1152b3;
         }
-
-        /* 하단 고정 푸터(Footer) 스타일 정의 */
         footer {
             background-color: #f2f4f6;
             color: #6b7684;
@@ -204,36 +221,31 @@
             color: #4e5968;
             margin-bottom: 8px;
         }
-        .footer-info-item {
-            margin-bottom: 2px;
-        }
-        .footer-copyright {
-            margin-top: 16px;
-            color: #8b95a1;
-            font-size: 11px;
-        }
     </style>
 </head>
 <body>
 
-    <!-- 상단 헤더 영역 -->
+    <!-- [유기적 메뉴 연동 헤더 바] 로고와 전방위 이동 루트 링크 일체형 매핑 -->
     <header>
         <div class="logo-container" onclick="location.href='/'">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://w3.org">
-                <path d="M2.5 15.5C4.5 13.5 6.5 13.5 8.5 15.5C10.5 17.5 12.5 17.5 14.5 15.5C16.5 13.5 18.5 13.5 20.5 15.5" stroke="#1967d2" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
-                <path d="M3.5 9.5C5.5 7.5 7.5 7.5 9.5 9.5C11.5 11.5 13.5 11.5 15.5 9.5C17.5 7.5 19.5 7.5 21.5 9.5" stroke="#1967d2" stroke-width="2" stroke-opacity="0.4" stroke-linecap="round" stroke-linejoin="round"/>
+            <svg width="24" height="24" viewBox="0 0 100 100" fill="none" xmlns="http://w3.org">
+                <path d="M15 55C25 32 43 23 68 28C84 31.5 88.5 44 79.5 51C68 58 57 47.5 48 60C39 72.5 25.5 76 12 68.5C0.75 64 0.75 62 15 55Z" stroke="#1967d2" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/>
             </svg>
             <span class="logo-text">SILVERWORKS</span>
         </div>
-        <button class="btn-back" onclick="location.href='/'">돌아가기</button>
+        
+        <div class="nav-menu-group">
+            <button class="nav-link-btn" onclick="location.href='/'">홈</button>
+            <button class="nav-link-btn" onclick="location.href='/seeker.html'">시니어 등록</button>
+            <button class="nav-link-btn active" onclick="location.href='/employer.html'">사장님 혁신</button>
+            <button class="nav-link-btn" onclick="location.href='/board.html'">매칭 게시판</button>
+        </div>
     </header>
 
-    <!-- 메인 컨테이너 구역 -->
     <div class="container">
         <h1 class="page-title">구인 사장님<br><span>피크타임</span> 인건비 혁신</h1>
         <p class="page-sub">주휴수당·퇴직금 요건을 완벽히 비껴가는 초단기 합법적 인프라입니다. 인건비 지출이 아닌 [플랫폼 시스템 이용 및 매장 관리 용역비] 계정으로 처리되어 부가세 100% 포함 전자세금계산서가 깨끗하게 발행됩니다.</p>
 
-        <!-- 1. 극찬해주신 인건비 절감 시뮬레이터 카드 영역 -->
         <div class="calculator-box">
             <h2 class="calc-title">우리 매장 예상 인건비 절감 계산기</h2>
             
@@ -244,7 +256,6 @@
                     <option value="general">일반 비회원 (수수료 10% 표준 적용)</option>
                 </select>
             </div>
-
             <div class="calc-input-group">
                 <label class="calc-label">매칭 희망 시간 (하루 피크타임 기준)</label>
                 <select class="calc-select" id="workHours">
@@ -253,7 +264,6 @@
                     <option value="5">하루 5시간</option>
                 </select>
             </div>
-
             <div class="calc-input-group">
                 <label class="calc-label">한 달 고용 예정 일수 (일 기준)</label>
                 <input type="number" class="calc-input" id="workDays" value="20" placeholder="예: 20">
@@ -265,7 +275,6 @@
             </div>
         </div>
 
-        <!-- 2. 매장 상담 신청 문의하기 서식 구역 -->
         <div class="consult-form-box">
             <h2 class="form-title">실버웍스 도입 및 매장 상담 신청</h2>
             <p class="form-desc">문의 정보를 남겨주시면 담당자가 즉시 수동 유선 전화를 연결하여 상담을 진행합니다. 상담 직후 성남동 사무실 주소, 오시는 길, 사업용 계좌번호 안내 문자가 전산 자동 발송됩니다.</p>
@@ -274,30 +283,25 @@
                 <label class="form-label">매장명 또는 고용주 성함</label>
                 <input type="text" class="form-input" id="ownerName" placeholder="예: 실버웍스 카페 성남점 / 홍길동 사장님">
             </div>
-
             <div class="form-input-group">
                 <label class="form-label">상담 전화번호 (휴대폰 번호)</label>
                 <input type="tel" class="form-input" id="ownerPhone" placeholder="예: 010-1234-5678">
             </div>
-
-            <button class="btn-submit-full" id="consultBtn">매장 상담 신청하기</button>
         </div>
+        <button class="btn-submit-full" id="consultBtn">매장 상담 신청하기</button>
     </div>
 
-    <!-- 하단 푸터 영역 -->
     <footer>
         <h4 class="footer-title">실버웍스 (SILVERWORKS)</h4>
         <div class="footer-info-item">대표자 연락처: 010-7464-3657 / 010-9187-9074</div>
         <div class="footer-info-item">거점 주소: 경기도 성남시 중원구 광명로 79, 4층 (성남동 2257)</div>
         <div class="footer-info-item">사업 지위: [인터넷 직업정보제공사업 신고 법인]</div>
         <div class="footer-info-item">정식 주업종 코드: [724000: 데이터베이스 및 온라인 정보 제공업]</div>
-        <div class="footer-info-item">정식 부업종 코드: [749000: 그 외 기타 전문, 과학 및 기술 서비스업]</div>
         <div class="footer-copyright">Copyright © 2026 SILVERWORKS. All rights reserved.</div>
     </footer>
 
     <!-- 시뮬레이터 구동 및 백엔드 전송 실시간 자바스크립트 엔진 -->
     <script>
-        // 인건비 절감 시뮬레이터 자동 연산 로직 (2026 최저임금 10,030원 연동)
         const MIN_WAGE = 10030;
 
         function runSimulation() {
@@ -306,21 +310,18 @@
             const days = parseInt(document.getElementById('workDays').value) || 0;
 
             const baseWageTotal = MIN_WAGE * hours * days;
-            const feeRate = (membership === 'premium') ? 1.05 : 1.10; // 회원 5% / 비회원 10% 가산 공식 적용
+            const feeRate = (membership === 'premium') ? 1.05 : 1.10; 
             const totalBill = Math.floor(baseWageTotal * feeRate);
 
             document.getElementById('calcResult').innerText = totalBill.toLocaleString() + " 원";
         }
 
-        // 입력창 이벤트 리스너 결속
-        document.getElementById('membershipType').addEventListener('change', runSimulation);
-        document.getElementById('workHours').addEventListener('change', runSimulation);
-        document.getElementById('workDays').addEventListener('input', runSimulation);
+            document.getElementById('membershipType').addEventListener('change', runSimulation);
+            document.getElementById('workHours').addEventListener('change', runSimulation);
+            document.getElementById('workDays').addEventListener('input', runSimulation);
         
-        // 초기 구동 시 최초 1회 자동 연산 가동
         runSimulation();
 
-        // 매장 상담 신청 문의하기 버튼 클릭 전산 라우터 결속
         document.getElementById('consultBtn').addEventListener('click', function() {
             const name = document.getElementById('ownerName').value.trim();
             const phone = document.getElementById('ownerPhone').value.trim();
@@ -330,7 +331,6 @@
                 return;
             }
 
-            // [보안 지위] 임시 상담 데이터베이스 전송 트랜잭션 결속
             fetch('/api/auth/register', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -354,6 +354,5 @@
             });
         });
     </script>
-
 </body>
 </html>
