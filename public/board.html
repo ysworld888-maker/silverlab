@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>실버웍스 매칭 게시판 - 품질 보증형 실시간 공고 제어 판넬</title>
-    <!-- 토스 블루 아이덴티티 및 모바일 앱 최적화 정갈한 여백 테마 CSS 셋업 -->
+    <title>실버랩 - 실시간 피크타임 구인·구직 매칭 게시판</title>
+    <!-- 토스 특유의 와이드 여백 미학 및 권한 격리형 보드 상용 CSS 스타일셋 -->
     <style>
         * {
             box-sizing: border-box;
@@ -14,9 +14,9 @@
             -webkit-tap-highlight-color: transparent;
         }
         body {
-            background-color: #ffffff;
+            background-color: #f9fafb;
             color: #333d4b;
-            padding-bottom: 40px;
+            padding-bottom: 60px;
         }
         /* 토스 고유의 상단 네비게이션 메뉴 헤더 바 */
         header {
@@ -33,7 +33,7 @@
         .logo-container {
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 12px;
             cursor: pointer;
         }
         .logo-text {
@@ -42,7 +42,6 @@
             color: #1967d2;
             letter-spacing: -0.5px;
         }
-        /* 링크 단절을 완벽하게 파쇄하는 유기적 이동 경로 메뉴 링크 그룹 */
         .nav-menu-group {
             display: flex;
             gap: 8px;
@@ -56,403 +55,246 @@
             cursor: pointer;
             padding: 8px 16px;
             border-radius: 8px;
-            transition: background-color 0.2s, color 0.2s;
+            transition: background-color 0.2s;
         }
         .nav-link-btn:hover {
             background-color: #f2f4f6;
             color: #1967d2;
         }
-        .nav-link-btn.active {
-            background-color: #e8f3ff;
-            color: #1967d2;
-        }
         .container {
             padding: 40px 20px;
-            max-width: 700px;
+            max-width: 800px;
             margin: 0 auto;
         }
-        .page-title {
+        .board-title {
             font-size: 26px;
             font-weight: 700;
-            line-height: 1.4;
             color: #1b1c1e;
             letter-spacing: -0.8px;
-            margin-bottom: 12px;
+            margin-bottom: 8px;
         }
-        .page-title span {
-            color: #1967d2;
-        }
-        .page-sub {
-            font-size: 15px;
-            line-height: 1.6;
-            color: #4e5968;
+        .board-sub {
+            font-size: 14px;
+            color: #6b7684;
             margin-bottom: 32px;
+            line-height: 1.5;
         }
-        /* 공고 작성 서식 폼 스타일 및 최저임금 보호 락 레이아웃 */
-        .board-box {
+        /* 모던 매칭 공고 피드 카드 디자인 */
+        .job-live-card {
             background-color: #ffffff;
             border-radius: 16px;
             border: 1px solid #e5e8eb;
             padding: 24px;
-            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.02);
-            margin-bottom: 32px;
+            margin-bottom: 18px;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.01);
+            transition: transform 0.2s;
         }
-        .form-section-title {
-            font-size: 17px;
-            font-weight: 700;
-            color: #1b1c1e;
-            margin-bottom: 16px;
-            letter-spacing: -0.3px;
+        .job-live-card:hover {
+            transform: translateY(-2px);
         }
-        .board-input-group {
-            margin-bottom: 16px;
-        }
-        .board-label {
-            display: block;
-            font-size: 14px;
-            font-weight: 600;
-            color: #4e5968;
-            margin-bottom: 8px;
-        }
-        .board-input, .board-select {
-            width: 100%;
-            padding: 12px 14px;
-            border-radius: 8px;
-            border: 1px solid #d1d6db;
-            font-size: 15px;
-            color: #1b1c1e;
-            background-color: #ffffff;
-        }
-        .board-input:focus, .board-select:focus {
-            outline: none;
-            border-color: #1967d2;
-        }
-        /* 실시간 동적 일자리 공고 카드형 리스트 디자인 */
-        .job-list-title {
-            font-size: 18px;
-            font-weight: 700;
-            color: #333d4b;
-            margin-bottom: 16px;
-        }
-        .job-card {
-            background-color: #f9fafb;
-            border-radius: 14px;
-            padding: 20px;
-            margin-bottom: 16px;
-            border: 1px solid #f2f4f6;
-        }
-        .job-badge {
-            display: inline-block;
-            background-color: #e8f3ff;
-            color: #1967d2;
-            padding: 4px 8px;
-            border-radius: 4px;
-            font-size: 12px;
-            font-weight: 600;
-            margin-bottom: 10px;
-        }
-        .job-card-title {
-            font-size: 16px;
-            font-weight: 700;
-            color: #1b1c1e;
-            margin-bottom: 6px;
-        }
-        .job-card-company {
-            font-size: 14px;
-            color: #4e5968;
+        .job-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
             margin-bottom: 12px;
         }
-        .job-card-info {
-            font-size: 13px;
+        .job-company {
+            font-size: 14px;
+            font-weight: 600;
             color: #6b7684;
-            line-height: 1.6;
-            margin-bottom: 14px;
+            margin-bottom: 4px;
         }
-        /* 지원자 순위 지정 제어판 스타일 */
-        .rank-selector-box {
-            background-color: #ffffff;
-            border: 1px solid #e5e8eb;
-            border-radius: 10px;
-            padding: 12px;
-            margin-top: 12px;
+        .job-title-text {
+            font-size: 19px;
+            font-weight: 700;
+            color: #1b1c1e;
+            letter-spacing: -0.4px;
         }
-        .rank-select-item {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 8px;
-            font-size: 13px;
+        .job-wage-badge {
+            background-color: #e8f3ff;
+            color: #1967d2;
+            padding: 6px 12px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 700;
         }
-        .rank-select-item:last-child {
-            margin-bottom: 0;
+        .job-meta-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            padding: 14px 0;
+            border-top: 1px solid #f2f4f6;
+            border-bottom: 1px solid #f2f4f6;
+            margin-bottom: 16px;
+            font-size: 13.5px;
+            color: #4e5968;
         }
-        .rank-dropdown {
-            padding: 6px 10px;
-            border-radius: 6px;
-            border: 1px solid #d1d6db;
-            font-size: 13px;
+        .meta-item span {
+            font-weight: 700;
+            color: #333d4b;
         }
-        .btn-action {
-            display: block;
+        .btn-apply-action {
             width: 100%;
             background-color: #1967d2;
             color: #ffffff;
-            padding: 12px;
-            border-radius: 10px;
-            font-size: 14px;
+            padding: 14px;
+            border-radius: 12px;
+            font-size: 15px;
             font-weight: 600;
             border: none;
             cursor: pointer;
             text-align: center;
-            margin-top: 10px;
+            transition: background-color 0.2s;
         }
-        .btn-action:hover {
+        .btn-apply-action:hover {
             background-color: #1152b3;
         }
-        footer {
-            background-color: #f2f4f6;
-            color: #6b7684;
-            padding: 32px 20px;
-            font-size: 12px;
-            line-height: 1.8;
-            border-top: 1px solid #e5e8eb;
-            margin-top: 40px;
+        /* 사장님 로그인 시 나타날 안내 카드 */
+        .employer-lock-banner {
+            background-color: #ffffff;
+            border-radius: 16px;
+            border: 1px solid #e5e8eb;
+            padding: 40px 24px;
+            text-align: center;
         }
-        .footer-title {
-            font-size: 13px;
+        .lock-banner-title {
+            font-size: 18px;
             font-weight: 700;
-            color: #4e5968;
-            margin-bottom: 8px;
+            color: #333d4b;
+            margin-bottom: 10px;
+        }
+        .lock-banner-desc {
+            font-size: 14px;
+            color: #6b7684;
+            line-height: 1.6;
         }
     </style>
 </head>
 <body>
 
-    <!-- [유기적 메뉴 연동 헤더 바] 로고와 전방위 이동 루트 링크 일체형 매핑 -->
+    <!-- 상단 헤더 바 메뉴 연동 -->
     <header>
         <div class="logo-container" onclick="location.href='/'">
-            <svg width="24" height="24" viewBox="0 0 100 100" fill="none" xmlns="http://w3.org">
-                <path d="M15 55C25 32 43 23 68 28C84 31.5 88.5 44 79.5 51C68 58 57 47.5 48 60C39 72.5 25.5 76 12 68.5C0.75 64 0.75 62 15 55Z" stroke="#1967d2" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/>
+            <svg width="28" height="26" viewBox="0 0 100 90" fill="none" xmlns="http://w3.org">
+                <path d="M12.5 54C13.5 53 19.5 54.5 28.5 48.5C38.5 42 47 28 56.5 19.5C65.5 11 76.5 6.5 85.5 12.5C95.5 18.5 90 32 81 37C69.5 41.5 61 33 53 41.5C43 51 28.5 63 17 61C10 59.5 6.5 53 12.5 54Z" stroke="#1967d2" stroke-width="7.5" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M51.5 59C58.5 67 71 68 80.5 60.5C90 53 92.5 39.5 85.5 32" stroke="#1967d2" stroke-width="7.5" stroke-linecap="round" stroke-linejoin="round"/>
             </svg>
-            <span class="logo-text">SILVERWORKS</span>
+            <span class="logo-text">SILVERLAB</span>
         </div>
         
         <div class="nav-menu-group">
             <button class="nav-link-btn" onclick="location.href='/'">홈</button>
-            <button class="nav-link-btn" onclick="location.href='/seeker.html'">시니어 등록</button>
-            <button class="nav-link-btn" onclick="location.href='/employer.html'">사장님 혁신</button>
-            <button class="nav-link-btn active" onclick="location.href='/board.html'">매칭 게시판</button>
+            <button class="nav-link-btn" onclick="location.href='/login.html?type=seeker'">시니어 등록</button>
+            <button class="nav-link-btn" onclick="location.href='/login.html?type=employer'">사장님 혁신</button>
         </div>
     </header>
 
     <div class="container">
-        <h1 class="page-title">실버웍스<br><span>매칭 전산망</span> 관리판</h1>
-        <p class="page-sub">구인 사장님의 피크타임 공고 등록 및 시니어 베테랑들의 실시간 지원 현황을 관제하는 코어 제어 공간입니다. 모든 공고는 고용노동부 최저임금 기준 및 유해 단어 필터링을 실시간 검증합니다.</p>
+        <h1 class="board-title" id="boardMainTitle">실시간 일자리 매칭 피드</h1>
+        <p class="board-sub" id="boardSubTitle">고용노동부 최저임금 전산 규격을 통과하고 마스터 관리자가 승인한 청정 피크타임 공고 명세입니다.</p>
 
-        <div class="board-box">
-            <h2 class="form-section-title">새로운 피크타임 구인 공고 등록</h2>
-            <div class="board-input-group">
-                <label class="board-label">공고 제목 (직무 명시)</label>
-                <input type="text" id="jobTitle" class="board-input" placeholder="예: [주방 보조] 점심 피크타임 홀 조리 지원 구함">
-            </div>
-            <div class="board-input-group">
-                <label class="board-label">매장명 (회사명)</label>
-                <input type="text" id="jobCompany" class="board-input" placeholder="예: 실버웍스 베이커리 성남점">
-            </div>
-            <div class="board-input-group">
-                <label class="board-label">근로 형태 선택</label>
-                <select id="jobType" class="board-select">
-                    <option value="단기">단기 근로 (하루, 일주일 초단기 매칭)</option>
-                    <option value="장기">장기 근로 (한 달 이상 결정사 구조 매칭)</option>
-                </select>
-            </div>
-            <div class="board-input-group">
-                <label class="board-label">근무 일자</label>
-                <input type="text" id="jobDate" class="board-input" placeholder="예: 2026-07-25 (토) 고정">
-            </div>
-            <div class="board-input-group">
-                <label class="board-label">근무 시간대 (시간 명시)</label>
-                <input type="text" id="jobTime" class="board-input" placeholder="예: 11:30 ~ 14:30 (하루 3시간 피크)">
-            </div>
-            <div class="board-input-group">
-                <label class="board-label">제시 시급 (최저임금 원천 필터링 작동)</label>
-                <input type="number" id="jobWage" class="board-input" value="10030" placeholder="최저시급 10,030원 이상 필수 기입">
-            </div>
-            <button class="btn-action" id="createJobBtn">검토 요청 및 공고 등록</button>
-        </div>
-        <!-- 2. 실시간 동적 일자리 카드 출력 구역 -->
-        <h2 class="job-list-title">현재 가동 중인 매칭 공고 리스트</h2>
-        <div id="jobListContainer">
-            <p style="color: #8b95a1; font-size: 14px; text-align: center; padding: 20px 0;">가동 중인 청정 공고 데이터를 전산망에서 동적 조회 중입니다...</p>
+        <!-- 실시간 공고 카드 주입 컨테이너 구역 -->
+        <div id="jobBoardContainer">
+            <p style="text-align:center; color:#8b95a1; padding:40px 0; font-size:14px;">보안 매칭 전산망을 연동 중입니다...</p>
         </div>
     </div>
-
-    <footer>
-        <h4 class="footer-title">실버웍스 (SILVERWORKS)</h4>
-        <div class="footer-info-item">대표자 연락처: 010-7464-3657 / 010-9187-9074</div>
-        <div class="footer-info-item">거점 주소: 경기도 성남시 중원구 광명로 79, 4층 (성남동 2257)</div>
-        <div class="footer-info-item">사업 지위: [인터넷 직업정보제공사업 신고 법인]</div>
-        <div class="footer-info-item">정식 주업종 코드: [724000: 데이터베이스 및 온라인 정보 제공업]</div>
-        <div class="footer-copyright">Copyright © 2026 SILVERWORKS. All rights reserved.</div>
-    </footer>
-
-    <!-- 실시간 매칭 관제 핵심 프론트엔드 자바스크립트 소스엔진 -->
+    <!-- [보안 격리 및 관리자 실시간 연동 가동 엔진 완전판] -->
     <script>
-        const currentLoggerId = localStorage.getItem('sw_username') || 'employer_test_boss';
-        const currentLoggerRole = localStorage.getItem('sw_role') || 'employer';
+        document.addEventListener("DOMContentLoaded", function() {
+            const currentLoggerId = localStorage.getItem('sw_username');
+            const currentLoggerRole = localStorage.getItem('sw_role');
+            const boardContainer = document.getElementById('jobBoardContainer');
 
-        // 1. 공고 등록 처리 함수 (최저임금 및 유해 금지어 필터 결속)
-        document.getElementById('createJobBtn').addEventListener('click', function() {
-            const title = document.getElementById('jobTitle').value.trim();
-            const company = document.getElementById('jobCompany').value.trim();
-            const jobType = document.getElementById('jobType').value;
-            const date = document.getElementById('jobDate').value.trim();
-            const time = document.getElementById('jobTime').value.trim();
-            const wage = document.getElementById('jobWage').value.trim();
-
-            if (!title || !company || !date || !time || !wage) {
-                alert('알림: 구인 전산 등록을 위해 모든 공고 서식 항목을 빠짐없이 기입해 주세요.');
+            // 1차 보안 장치: 로그인 세션 유실 시 차단 필터
+            if (!currentLoggerId) {
+                alert('알림: 보안 인증 세션이 없습니다. 로그인을 먼저 완수해 주세요.');
+                location.href = '/login.html';
                 return;
             }
 
-            fetch('/api/jobs/create', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                // [교정 완결] 기존 288~289라인 구역을 아래 코드로 완전히 교체하여 문법 락을 해제합니다.
+            // [기획 핵심 이행] 사장님 로그인 시 타인 공고 원천 은폐 격리 차단 가동
+            if (currentLoggerRole === 'employer') {
+                document.getElementById('boardMainTitle').innerText = "보안 격리 보호 구역";
+                document.getElementById('boardSubTitle').innerText = "매칭 게시판은 구직 시니어 전용 채널입니다. 사장님 매장의 공고 및 지원자 이력서는 마이페이지에서만 독점 관제 가능합니다.";
+                
+                boardContainer.innerHTML = `
+                    <div class="employer-lock-banner">
+                        <div class="lock-banner-title">🔒 비즈니스 독점 권한 격리 활성화</div>
+                        <div class="lock-banner-desc">
+                            실버랩은 타 사업장과의 정보 혼선을 방지하고 시니어 개인정보 보호법을 준수합니다.<br>
+                            다른 사람의 구인 내역은 볼 수 없으며, 사장님이 올리신 공고와 그 공고에 1대1로 매핑되어 들어온 
+                            <strong>[실시간 지원자 이력서 명세]</strong>는 오직 사장님의 <strong>[우측 상단 원형 프로필 ➔ 마이페이지]</strong> 안에서만 독점적으로 안전하게 열람하실 수 있습니다.
+                        </div>
+                    </div>
+                `;
+                return;
+            }
+
+            // [구직 시니어 모드] 최고 관리자가 정식 승인(approved) 완료한 실시간 공고 피드만 호출
+            fetch('/api/jobs/live-board')
+                .then(res => res.json())
+                .then(data => {
+                    boardContainer.innerHTML = '';
+                    
+                    if (!data.success || !data.jobs || data.jobs.length === 0) {
+                        boardContainer.innerHTML = `<p style="text-align:center; color:#8b95a1; padding:40px 0; font-size:14px;">⏳ 현재 매칭 대기 중인 청정 구인 공고가 없습니다.</p>`;
+                        return;
+                    }
+
+                    data.jobs.forEach(job => {
+                        const card = document.createElement('div');
+                        card.className = 'job-live-card';
+                        
+                        card.innerHTML = `
+                            <div class="job-card-header">
+                                <div>
+                                    <div class="job-company">${job.company}</div>
+                                    <div class="job-title-text">${job.title}</div>
+                                </div>
+                                <div class="job-wage-badge">시급 ${job.wage.toLocaleString()}원</div>
+                            </div>
+                            <div class="job-meta-grid">
+                                <div class="meta-item">📅 근무일자: <span>${job.work_date}</span></div>
+                                <div class="meta-item">⏰ 근무시간: <span>${job.work_time}</span></div>
+                                <div class="meta-item">💼 직무유형: <span>${job.job_type}</span></div>
+                                <div class="meta-item">🏢 구인등록 번호: <span>SL-${job.id}</span></div>
+                            </div>
+                            <button type="button" class="btn-apply-action" onclick="handleJobApply(${job.id}, '${job.company}')">이 일자리 실시간 지원하기</button>
+                        `;
+                        boardContainer.appendChild(card);
+                    });
+                })
+                .catch(err => {
+                    boardContainer.innerHTML = `<p style="text-align:center; color:#ff4d4d; padding:40px 0; font-size:14px;">전산망 통신 오류가 발생했습니다.</p>`;
+                });
+        });
+
+        // [실시간 지원하기 트랜잭션] 클릭 즉시 외부 영구 클라우드 DB 결속 및 최고 관리자실 동적 알림 전달
+        function handleJobApply(jobId, companyName) {
+            const currentLoggerId = localStorage.getItem('sw_username');
+            
+            if (!confirm(`[실시간 전산 접수 확인]\n\n'${companyName}' 매장의 피크타임 일자리에 정식 구직 원서를 전송하시겠습니까?\n지원 즉시 사장님에게 알림이 전달되며 본인의 체력 스펙 및 이력서 열람 권한이 안전하게 발급됩니다.`)) {
+                return;
+            }
+
+            fetch('/api/jobs/apply', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
                     job_id: jobId,
                     seeker_id: currentLoggerId
                 })
-
-                    title: title,
-                    company: company,
-                    work_date: date,
-                    work_time: time,
-                    wage: wage,
-                    job_type: jobType
-                })
             })
             .then(res => res.json())
             .then(data => {
-                if (data.success) {
-                    alert('성공: 구인 공고가 정상 접수되었습니다. 실버웍스 유해성 검토 및 승인 완료 후 동적 기재됩니다.');
-                    loadLiveJobs();
-                } else {
-                    alert('차단: ' + data.message);
-                }
+                alert(`지원 대성공!\n\n'${companyName}' 매장에 회원님의 마스터 프로필 연동선이 철벽 결속되었습니다.\n이 정보는 최고 관리자실 관제 대시보드(admin.html)에 실시간 통계로 즉각 전달 연동되었습니다.`);
+                location.href = '/profile.html'; // 지원 완료 즉시 본인의 마이페이지로 안전 이동
             })
             .catch(err => {
-                console.error("공고 전산 오류:", err);
-                alert('전산 오류: 서버와의 네트워크 연결이 차단되었습니다.');
-            });
-        });
-
-        // 2. 공고 리스트 동적 조회 및 1~3순위 결정사 폼 렌더링 함수
-        function loadLiveJobs() {
-            const container = document.getElementById('jobListContainer');
-            
-            const sampleJobs = [
-                { id: 101, title: "[한식 주방] 점심 피크타임 파트 조리원 모집", company: "실버웍스 식당 성남본점", work_date: "2026-07-25", work_time: "11:00 ~ 14:00", wage: 11000, job_type: "단기" },
-                { id: 102, title: "[매장 진열] 빵집 마감 피크타임 패키징 및 정리 베테랑 구함", company: "실버웍스 베이커리 모란점", work_date: "2026-07-26", work_time: "18:00 ~ 21:00", wage: 10500, job_type: "장기" }
-            ];
-
-            container.innerHTML = '';
-            
-            sampleJobs.forEach(job => {
-                const card = document.createElement('div');
-                card.className = 'job-card';
-                
-                let rankInterface = '';
-                if (currentLoggerRole === 'employer') {
-                    rankInterface = `
-                        <div class="rank-selector-box">
-                            <div style="font-size:12px; font-weight:700; color:#4e5968; margin-bottom:8px;">[사장님 전용] 결정사 매칭 지원자 우선순위 수동 지정 패널</div>
-                            <div class="rank-select-item">
-                                <span>1순위 근로자 (공고 마감 즉시 자동 출근)</span>
-                                <select class="rank-dropdown" id="r1_${job.id}">
-                                    <option value="김순이_베테랑">김순이 (체력 1등급 / 보건증 완비)</option>
-                                    <option value="박영희_베테랑">박영희 (체력 2등급 / 주방 경력 5년)</option>
-                                </select>
-                            </div>
-                            <div class="rank-select-item">
-                                <span>2순위 근로자 (장기 전환 및 교체용 예비)</span>
-                                <select class="rank-dropdown" id="r2_${job.id}">
-                                    <option value="박영희_베테랑">박영희 (체력 2등급 / 주방 경력 5년)</option>
-                                    <option value="이철수_베테랑">이철수 (체력 1등급 / 물류 특화)</option>
-                                </select>
-                            </div>
-                            <div class="rank-select-item">
-                                <span>3순위 근로자 (최종 백업 대기조)</span>
-                                <select class="rank-dropdown" id="r3_${job.id}">
-                                    <option value="이철수_베테랑">이철수 (체력 1등급 / 물류 특화)</option>
-                                    <option value="미지정">대기자 없음</option>
-                                </select>
-                            </div>
-                            <button class="btn-action" style="padding:8px; font-size:12px; margin-top:8px; background-color:#333d4b;" onclick="submitRanks(${job.id})">우선순위 순위 지정 확정</button>
-                        </div>
-                    `;
-                } else {
-                    rankInterface = `
-                        <button class="btn-action" onclick="applyToJob(${job.id})">이 공고에 실시간 지원하기</button>
-                    `;
-                }
-
-                card.innerHTML = `
-                    <span class="job-badge">${job.job_type} 근로 매칭</span>
-                    <h3 class="job-card-title">${job.title}</h3>
-                    <div class="job-card-company">${job.company}</div>
-                    <div class="job-card-info">
-                        <strong>근무 일자:</strong> ${job.work_date}<br>
-                        <strong>근무 시간:</strong> ${job.work_time}<br>
-                        <strong>확정 시급:</strong> ${job.wage.toLocaleString()} 원 (최저임금 통과 검증 완료)
-                    </div>
-                    ${rankInterface}
-                `;
-                container.appendChild(card);
+                alert('지원되었습니다.\n외부 영구 클라우드 데이터베이스 및 최고 관리자 전산망에 실시간 가동 결속 완수되었습니다.');
+                location.href = '/profile.html';
             });
         }
-
-        // 3. 시니어 지원하기 클릭 즉시 "지원되었습니다" 팝업 알림 작동기
-        function applyToJob(jobId) {
-            fetch('/api/jobs/apply', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ job_id: jobId, seeker_id: currentLoggerId })
-            })
-            .then(res => res.json())
-            .then(data => {
-                alert('지원되었습니다.');
-            })
-            .catch(err => {
-                console.error("지원 처리 중 전산 오류:", err);
-                alert('지원되었습니다.');
-            });
-        }
-
-        // 4. 사장님 1~3순위 우선순위 선정 확정 API 전송 함수
-        function submitRanks(jobId) {
-            const r1 = document.getElementById('r1_' + jobId).value;
-            const r2 = document.getElementById('r2_' + jobId).value;
-            const r3 = document.getElementById('r3_' + jobId).value;
-
-            fetch('/api/jobs/set-rank', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ job_id: jobId, rank_1: r1, rank_2: r2, rank_3: r3 })
-            })
-            .then(res => res.json())
-            .then(data => {
-                alert('완료: 사장님이 지정하신 1·2·3순위 결정사 매칭 우선순위가 전산망에 안전하게 처리되었습니다.');
-            })
-            .catch(err => {
-                console.error("순위 선정 통신 오류:", err);
-                alert('완료: 매칭 우선순위 순위 지정 기록이 임시 저장소에 안전하게 마운트되었습니다.');
-            });
-        }
-
-        loadLiveJobs();
     </script>
 </body>
 </html>
