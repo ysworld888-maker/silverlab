@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>SILVERWORKS - 관리자 페이지</title>
-    <!-- 혼선 유도 색상을 완벽 박멸하고 토스 스타일 오션블루 단일 테마로 격상 완료한 관리자용 CSS 스타일셋 -->
+    <title>SILVERWORKS 최고관리자 콘솔 - 마스터 제어실</title>
+    <!-- 불필요한 혼선 색상을 완벽 박멸하고 토스 스타일 오션블루 단일 테마로 격상 완료한 관리자용 CSS 스타일셋 -->
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, sans-serif; -webkit-tap-highlight-color: transparent; }
         body { background-color: #f9fafb; color: #333d4b; padding-bottom: 60px; }
@@ -21,12 +21,11 @@
         /* 오션 블루 오피셜 상용 버튼 디자인 시스템 규격 일괄 통일 */
         .btn { background: #1967d2; color: white; border: none; padding: 8px 14px; border-radius: 6px; cursor: pointer; font-size: 13px; font-weight: 600; transition: opacity 0.2s; }
         .btn:hover { opacity: 0.9; }
-        .btn.btn-approve-j { background: #1967d2; }
     </style>
 </head>
 <body>
     <header>
-        <div class="logo" onclick="location.href='/'">SILVERWORKS 관리자 페이지</div>
+        <div class="logo" onclick="location.href='/'">SILVERWORKS 최고관제센터</div>
         <button type="button" class="btn" onclick="location.href='/board.html'">매칭 게시판 모니터링 ➔</button>
     </header>
 
@@ -72,23 +71,15 @@
                         <th>최종 행정 심사 승인</th>
                     </tr>
                 </thead>
-                <tbody>
-                    <tr>
-                        <td>SL-1</td>
-                        <td>boss_cafe</td>
-                        <td style="font-weight:700;">실버웍스 카페 성남점</td>
-                        <td style="color:#4e5968;">[카페 바리스타] 주말 오픈 피크타임 조기 지원 구함</td>
-                        <td>2026-07-25</td>
-                        <td style="font-weight:700; color:#1967d2;">11,500원</td>
-                        <td><button type="button" class="btn btn-approve-j" onclick="approveJob(1)">공고 심사 승인 완료</button></td>
-                    </tr>
+                <tbody id="jobAdminBody">
+                    <tr><td colspan="7" style="text-align:center; color:#8b95a1; padding:20px 0;">등록된 구인공고 전산 내역을 파싱 중입니다...</td></tr>
                 </tbody>
             </table>
         </div>
     </div>
-    <!-- 섹션 3: 지원하기 클릭 즉시 동적 전달 매칭 로그 관제판 -->
+    <!-- 섹션 3: 지원 및 순위 지정 클릭 즉시 동적 전달 매칭 로그 관제판 -->
     <div class="card">
-        <h3>3. 구직자 지원하기 클릭 즉시 동적 전달 매칭 로그 관제 패널</h3>
+        <h3>3. 구직자 지원 및 사장님 순위 지정 클릭 즉시 동적 전달 매칭 로그 관제 패널</h3>
         <div class="table-container">
             <table>
                 <thead>
@@ -98,7 +89,7 @@
                         <th>지원한 피크타임 공고 명세</th>
                         <th>지원 구직자 성명</th>
                         <th>시니어 실물 연락처</th>
-                        <th>전산망 결속 상태</th>
+                        <th>사장님 우선순위 지정 상태</th>
                     </tr>
                 </thead>
                 <tbody id="logBody">
@@ -127,7 +118,6 @@
                         const tr = document.createElement('tr');
                         let inputs = `<td>-</td><td>-</td><td>-</td><td>-</td>`;
                         
-                        // 구직 시니어 등급 회원일 경우에만 4대 체력 측정 수치를 직접 기입할 수 있는 인풋 박스를 표출합니다.
                         if(u.role === 'seeker') {
                             inputs = `
                                 <td><input type="text" class="fitness-input" id="g_${u.username}" value="${u.fitness_grade || '미인증'}" placeholder="등급"></td>
@@ -150,7 +140,37 @@
                     });
                 });
 
-            // 2. 시니어 지원하기 클릭 즉시 서버 디스크를 타고 동적 전달되는 매칭 로그 파싱
+            // 2. 사장님이 등록 요청한 모든 원본 구인공고 목록 추출 파싱
+            fetch('/api/admin/jobs-all')
+                .then(res => res.json())
+                .then(data => {
+                    const body = document.getElementById('jobAdminBody');
+                    body.innerHTML = '';
+                    
+                    if(!data.jobs || data.jobs.length === 0) {
+                        body.innerHTML = `<tr><td colspan="7" style="text-align:center; padding:20px 0; color:#8b95a1;">현재 심사 대기 중인 공고 명세가 존재하지 않습니다.</td></tr>`;
+                        return;
+                    }
+
+                    data.jobs.forEach(j => {
+                        const tr = document.createElement('tr');
+                        const isApproved = j.status === 'approved';
+                        tr.innerHTML = `
+                            <td>SL-${j.id}</td>
+                            <td style="color:#6b7684;">${j.employer_id}</td>
+                            <td style="font-weight:700;">${j.company}</td>
+                            <td style="color:#4e5968;">${j.title}</td>
+                            <td>${j.work_date}</td>
+                            <td style="font-weight:700; color:#1967d2;">${j.wage.toLocaleString()}원</td>
+                            <td>
+                                ${isApproved ? `<span style="font-weight:700; color:#4e5968;">✓ 개통 기재중</span>` : `<button type="button" class="btn" onclick="approveJob(${j.id})">공고 심사 승인</button>`}
+                            </td>
+                        `;
+                        body.appendChild(tr);
+                    });
+                });
+
+            // 3. 시니어 지원 및 사장님 지망 순위 지정 클릭 즉시 디스크를 타고 동적 전달되는 매칭 로그 파싱
             fetch('/api/admin/match-logs')
                 .then(res => res.json())
                 .then(data => {
@@ -164,20 +184,21 @@
                     
                     data.logs.forEach(l => {
                         const tr = document.createElement('tr');
+                        const rankTxt = l.rank_priority > 0 ? `<span style="color:#1967d2; font-weight:800;">🎯 ${l.rank_priority}순위 확정</span>` : `<span style="color:#6b7684;">검토중</span>`;
                         tr.innerHTML = `
                             <td style="font-weight:600;">APP-${l.app_id}</td>
                             <td style="font-weight:700;">${l.company_name}</td>
                             <td style="color:#1967d2; font-weight:600;">${l.job_title}</td>
                             <td style="font-weight:700;">${l.seeker_name} 베테랑</td>
                             <td>${l.seeker_phone}</td>
-                            <td style="color:green; font-weight:700;">실시간 직결 전달 완료</td>
+                            <td style="font-weight:700;">${rankTxt}</td>
                         `;
                         body.appendChild(tr);
                     });
                 });
         }
 
-        // 3. 인풋 상자에 타이핑한 데이터를 가로채서 서버 디스크 DB에 실시간 양방향 영구 보존하는 함수
+        // 4. 인풋 상자에 타이핑한 데이터를 가로채서 서버 디스크 DB에 실시간 양방향 영구 보존하는 함수
         function saveSpec(username) {
             let g = "미인증", gp = "-", f = "-", c = "-";
             if(document.getElementById('g_' + username)) {
@@ -197,7 +218,7 @@
             });
         }
 
-        // 4. 사장님이 등록 신청한 구인공고 최종 검토 심사 승인 및 board.html 실시간 개통 기재 처리 함수
+        // 5. 사장님이 등록 신청한 구인공고 최종 검토 심사 승인 및 board.html 실시간 개통 기재 처리 함수
         function approveJob(id) {
             fetch('/api/admin/approve-job', {
                 method: 'POST',

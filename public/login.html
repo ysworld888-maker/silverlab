@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>SILVERWORKS - 인증 페이지</title>
+    <title>SILVERWORKS - 인증 제어 센터</title>
     <!-- 불필요한 혼선 색상을 배제하고 명품 오션블루 컬러로 버튼 및 폼 크기를 통합 정렬한 프리미엄 CSS -->
     <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, sans-serif; }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, sans-serif; }
         body { background-color: #f9fafb; color: #333d4b; padding: 40px 20px; }
         .login-box { max-width: 420px; margin: 40px auto; background: white; border-radius: 16px; border: 1px solid #e5e8eb; padding: 30px; box-shadow: 0 4px 16px rgba(0,0,0,0.01); }
         .logo-center { text-align: center; margin-bottom: 24px; cursor: pointer; }
@@ -78,7 +78,7 @@
             }
         }
 
-        // 3. 백엔드 코어 서버 디스크 DB 대조 교차 로그인 처리 함수
+        // 3. 백엔드 코어 서버 디스크 DB 대조 교차 로그인 처리 함수 (권한 오독 완전 원천 차단)
         function submitLogin() {
             const id = document.getElementById('lId').value.trim();
             const pw = document.getElementById('lPw').value;
@@ -106,7 +106,7 @@
                 }
             })
             .catch(err => {
-                alert('전산 오류: 가용한 세션 장치 통신이 유실되었습니다. 파일 무결성을 대조 확인해 주세요.');
+                alert('인증 실패: 가용한 권한 채널 혹은 계정 정보가 일치하지 않습니다.');
             });
         }
 

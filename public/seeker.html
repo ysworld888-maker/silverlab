@@ -101,7 +101,7 @@
             </div>
         </form>
     </div>
-    <!-- [12단계 진행률 배너 연동 및 실명 헌정 감사 팝업 통신 가동 엔진 스크립트] -->
+    <!-- [시니어 12단계 순차 슬라이더 제어 및 무결점 물리 DB 패키징 동기화 엔진 스크립트] -->
     <script>
         let cS = 1; 
         const tS = 12;
@@ -110,7 +110,7 @@
         function goS(dir) {
             // 유효성 체크: 빈 칸으로 다음을 누르는 행위를 원천 방쇄합니다.
             if (dir === 1 && !valS()) { 
-                alert('안내: 문항의 답변을 입력하거나 항목을 선택하셔야 다음 단계로 진행하실 수 있습니다.'); 
+                alert('안내: 현재 문항의 답변을 기입하시거나 항목을 선택하셔야 다음 단계로 진행하실 수 있습니다.'); 
                 return; 
             }
             
@@ -138,7 +138,7 @@
             document.getElementById('bP').style.visibility = (cS === 1) ? 'hidden' : 'visible';
             document.getElementById('bN').innerText = (cS === tS) ? "이력서 최종 제출 완료" : "다음";
             
-            window.scrollTo(0, 0);
+            window.scrollTo(0,0);
         }
 
         // 2. 단계별 누락 원천 차단 무결 검증 함수
@@ -148,7 +148,7 @@
             if(cS === 4) return document.getElementById('i4').value.trim() !== ""; 
             if(cS === 5) return document.getElementById('i5').value.trim() !== "";
             
-            const names = { 1: "q1", 6: "q6", 7: "q7", 8: "q8", 9: "q9", 10: "q10", 11: "q11", 12: "q12" };
+            const names = {1:"q1", 6:"q6", 7:"q7", 8:"q8", 9:"q9", 10:"q10", 11:"q11", 12:"q12"};
             return names[cS] ? document.querySelector(`input[name="${names[cS]}"]:checked`) !== null : true;
         }
 
@@ -181,7 +181,7 @@
             .then(() => {
                 // 사장님이 특별 지시하신 전용 실명 감사 메시지 알림 팝업창 가동 완수
                 alert(`질문지 작성이 완료되었습니다.\n\n실버웍스에서 24시간 이내에 전화 연락드리겠습니다.\n${nVal}님의 지원 감사드립니다. 기대에 부응하도록 최선을 다하겠습니다.\n\n-실버웍스 올림-`);
-                location.href = '/profile.html';
+                location.href = '/profile.html'; // 제출 즉시 본인의 마이페이지로 안전 이동 처리
             })
             .catch(err => {
                 alert('전산 오류: 디스크 DB 적재 트랜잭션이 지연되었습니다.');

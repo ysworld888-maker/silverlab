@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>실버웍스 구인구직 게시판</title>
+    <title>실버웍스 매칭 게시판</title>
     <!-- 혼선 유도 색상을 완벽 소멸시키고 프리미엄 오션블루 컬러로 버튼 및 카드 디자인 시스템을 통합 정렬한 CSS -->
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; -webkit-tap-highlight-color: transparent; }
@@ -36,13 +36,12 @@
     </header>
 
     <div class="container">
-        <h2 class="board-title" id="bTitle">실시간 일자리 확인 피드</h2>
+        <h2 class="board-title" id="bTitle">실시간 일자리 매칭 피드</h2>
         <p class="board-sub" id="bSub">최고 관리자가 원천 검토 후 정식 승인하여 실시간 자동 기재 개통된 청정 공고 명세입니다.</p>
         
         <!-- 실시간 공고 카드 동적 적재 콘솔 컨테이너 구역 -->
         <div id="boardContainer"></div>
-    </div>
-    <!-- [사장님 타인공고 원천 격리 차단 및 시니어 실시간 원서 접수 가동 엔진 스크립트] -->
+    </div>    <!-- [사장님 타인공고 원천 격리 차단 및 시니어 실시간 원서 접수 가동 엔진 스크립트] -->
     <script>
         document.addEventListener("DOMContentLoaded", function() {
             const id = localStorage.getItem('sw_username');
@@ -56,14 +55,14 @@
                 return; 
             }
 
-            // 2. [기획 마스터 요건 완벽 가동] 구인 사장님 로그인 시 타인 공고 원천 은폐 격리 차단 락 가동
+            // 2. 구인 사장님 로그인 시 타인 공고 원천 은폐 격리 차단 락 가동
             if (role === 'employer') {
-                document.getElementById('bTitle').innerText = "정보 보호 구역";
+                document.getElementById('bTitle').innerText = "보안 격리 보호 구역";
                 document.getElementById('bSub').style.display = 'none';
                 
                 container.innerHTML = `
                     <div class="employer-lock-banner">
-                        <div class="lock-banner-title">비즈니스 독점 권한 격리 활성화</div>
+                        <div class="lock-banner-title">🔒 비즈니스 독점 권한 격리 활성화</div>
                         <div class="lock-banner-desc">
                             실버웍스는 정보 혼선 방지 및 시니어 개인정보 보호법을 철저히 준수합니다.<br>
                             이에 따라 타 사업장의 구인 현황이나 구직 명세는 전산 차단되어 열람할 수 없으며,<br>
@@ -82,7 +81,7 @@
                     container.innerHTML = '';
                     
                     if (!data.jobs || data.jobs.length === 0) { 
-                        container.innerHTML = '<p style="text-align:center; color:#8b95a1; padding:40px 0; font-size:14px;">⏳ 현재 심사 승인이 완료되어 매칭 대기 중인 공고가 존재하지 않습니다.</p>'; 
+                        container.innerHTML = '<p style="text-align:center; color:#8b95a1; padding:40px 0; font-size:14px;">현재 심사 승인이 완료되어 매칭 대기 중인 공고가 존재하지 않습니다.</p>'; 
                         return; 
                     }
                     
@@ -113,7 +112,7 @@
                 });
         });
 
-        // 4. [지원하기 클릭 즉시 관리자 대시보드 로그 실시간 동적 전달 함수]
+        // 4. 지원하기 클릭 즉시 관리자 대시보드 로그 실시간 동적 전달 함수
         function applyJob(jobId, comp) {
             const id = localStorage.getItem('sw_username');
             if (!confirm(`[실시간 전산 접수 확인]\n\n'${comp}' 매장의 피크타임 일자리에 정식 구직 원서를 전송하시겠습니까?\n지원 즉시 사장님에게 알림이 전달되며 본인의 체력 스펙 및 이력서 열람 권한이 안전하게 발급됩니다.`)) {
@@ -127,9 +126,8 @@
             })
             .then(res => res.json())
             .then(data => {
-                // 백엔드 코어 API 라인을 타고 물리 DB 적재 및 최고관리자실 관제 대시보드(admin.html) 즉시 기재 전송 완수
-                alert(`지원 대성공!\n\n'${comp}' 매장에 회원님의 프로필 연동되었습니다.\n이 정보는 최고 관리자실 관제 대시보드(admin.html)에 실시간 통계로 즉각 전달 연동되었습니다.`);
-                location.href = '/profile.html'; // 지원 완수 즉시 본인의 마이페이지로 안전 자동 이동
+                alert(`지원 대성공!\n\n'${comp}' 매장에 회원님의 마스터 프로필 연동선이 철벽 결속되었습니다.\n이 정보는 최고 관리자실 관제 대시보드(admin.html)에 실시간 통계로 즉각 전달 연동되었습니다.`);
+                location.href = '/profile.html';
             })
             .catch(err => {
                 alert('지원되었습니다.\n물리 데이터베이스 저장소 및 최고 관리자 전산망에 실시간 가동 결속 완수되었습니다.');
@@ -139,3 +137,4 @@
     </script>
 </body>
 </html>
+
