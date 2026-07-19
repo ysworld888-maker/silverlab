@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>실버웍스 최고관리자 - 마스터 비즈니스 인프라 통제 대시보드</title>
+    <title>실버랩 최고관리자 - 마스터 비즈니스 인프라 통제 대시보드</title>
     <!-- 토스 스타일의 정갈함과 넓은 여백, 신뢰도 높은 그레이/블루 톤 셋업 -->
     <style>
         * {
@@ -168,12 +168,19 @@
             opacity: 0.9;
         }
         .fitness-input {
-            width: 60px;
-            padding: 4px 6px;
-            border-radius: 4px;
+            width: 75px;
+            padding: 6px 8px;
+            border-radius: 6px;
             border: 1px solid #d1d6db;
             font-size: 12px;
             text-align: center;
+            font-weight: 600;
+            color: #1b1c1e;
+        }
+        .fitness-input:focus {
+            outline: none;
+            border-color: #1967d2;
+            background-color: #e8f3ff;
         }
         .alert-withdraw-box {
             background-color: #ffeeee;
@@ -193,12 +200,11 @@
     <!-- [상단 헤더] 사장님 원본 사진 이미지 100% 완벽 일치 파란색 문양 실물 로고 바인딩 -->
     <header>
         <div class="logo-container" onclick="location.href='/'">
-            <!-- 픽셀 오차 제로 마스터 복제형 SVG 패스 -->
             <svg width="28" height="26" viewBox="0 0 100 90" fill="none" xmlns="http://w3.org">
                 <path d="M12.5 54C13.5 53 19.5 54.5 28.5 48.5C38.5 42 47 28 56.5 19.5C65.5 11 76.5 6.5 85.5 12.5C95.5 18.5 90 32 81 37C69.5 41.5 61 33 53 41.5C43 51 28.5 63 17 61C10 59.5 6.5 53 12.5 54Z" stroke="#1967d2" stroke-width="7.5" stroke-linecap="round" stroke-linejoin="round"/>
                 <path d="M51.5 59C58.5 67 71 68 80.5 60.5C90 53 92.5 39.5 85.5 32" stroke="#1967d2" stroke-width="7.5" stroke-linecap="round" stroke-linejoin="round"/>
             </svg>
-            <span class="logo-text">SILVERWORKS <span>마스터 콘솔</span></span>
+            <span class="logo-text">SILVERLAB <span>마스터 콘솔</span></span>
         </div>
         
         <div class="nav-menu-group">
@@ -211,12 +217,12 @@
 
     <div class="container">
         <h1 class="admin-title">인프라 통합 관제 시스템</h1>
-        <p class="admin-sub">가입 회원들의 신원 검증, 오프라인 국민체력 100 정밀 측정 지표 관리, 시니어 실시간 수동 정산 알림 통제 및 구인 매장들의 월말 일괄 후불 청구서 자동 산식 명세를 모니터링하는 마스터 제어실입니다.</p>
+        <p class="admin-sub">가입 회원들의 신원 검증, 오프라인 국민체력 100 정밀 측정 지표 실시간 입력 제어, 시니어 수동 정산 관제 및 구인 매장들의 월말 일괄 후불 청구서 자동 산식을 모니터링하는 최고 통제실입니다.</p>
 
         <div id="withdrawAlertContainer"></div>
 
         <div class="admin-card">
-            <div class="card-header-title">구인 사장님 / 구직 시니어 통합 검증 및 스펙 수정 제어판 (가짜 데이터 전산 삭제 완결)</div>
+            <div class="card-header-title">구인 사장님 / 구직 시니어 통합 검증 및 스펙 수정 제어판 (클라우드 DB 실시간 양방향 연동)</div>
             <div class="table-responsive">
                 <table class="admin-table">
                     <thead>
@@ -226,16 +232,16 @@
                             <th>연락처</th>
                             <th>회원 권한 등급</th>
                             <th>승인 상태</th>
-                            <th>체력 등급</th>
-                            <th>악력 (kg)</th>
-                            <th>유연성 (cm)</th>
-                            <th>심폐지구력</th>
-                            <th>인프라 원천 제어</th>
+                            <th>체력 등급 입력</th>
+                            <th>악력 입력 (kg)</th>
+                            <th>유연성 입력 (cm)</th>
+                            <th>심폐지구력 입력</th>
+                            <th>인프라 원천 제어 및 스펙 수정</th>
                         </tr>
                     </thead>
                     <tbody id="userTableBody">
                         <tr>
-                            <td colspan="10" style="text-align:center; color:#8b95a1; padding:30px 0;">통합 회원 가입 명세 데이터를 조회 중입니다...</td>
+                            <td colspan="10" style="text-align:center; color:#8b95a1; padding:30px 0;">통합 회원 가입 명세 데이터를 클라우드 전산망에서 조회 중입니다...</td>
                         </tr>
                     </tbody>
                 </table>
@@ -265,25 +271,23 @@
             </div>
         </div>
     </div>
-    <!-- [실물 DB 연동 고도화 엔진] SQLite3 통합 통신 스크립트 -->
+    <!-- [실물 클라우드 DB 스펙 수정 업데이트 엔진 완벽 탑재] -->
     <script>
-        // 1. [완벽 교정] 가짜 데이터 및 무반응 파라미터 파쇄 ➔ 실물 전산망 DB 연동 dynamic 로드
+        // 1. 실제 Supabase 내부 DB 회원 통계 및 입력된 정밀 스펙 실시간 호출 구동
         function loadLiveUserManagement() {
             const tbody = document.getElementById('userTableBody');
             
-            // 신규 개설된 통합 관리자 전용 전체 회원 반환 라우터 직결
             fetch('/api/admin/users') 
                 .then(res => res.json())
                 .then(data => {
-                    tbody.innerHTML = '';
-                    
                     if (!data.success || !data.users || data.users.length === 0) {
                         tbody.innerHTML = `<tr><td colspan="10" style="text-align:center; color:#8b95a1; padding:30px 0;">현재 가입 신청된 데이터베이스 내역이 존재하지 않습니다.</td></tr>`;
                         return;
                     }
 
                     const liveUsers = data.users;
-
+                    tbody.innerHTML = '';
+                    
                     liveUsers.forEach(user => {
                         const tr = document.createElement('tr');
                         const statusBadge = user.status === 'approved' 
@@ -292,25 +296,26 @@
                         
                         const roleText = user.role === 'employer' ? "구인 사장님 (employer)" : "구직 시니어 (seeker)";
 
+                        // 사장님이 직접 클릭하여 타이핑 및 실시간 수정·업데이트할 수 있는 마스터 인풋 상자 연동
                         let fitnessInputs = `<td>-</td><td>-</td><td>-</td><td>-</td>`;
                         if (user.role === 'seeker') {
                             fitnessInputs = `
-                                <td><input type="text" class="fitness-input" id="g_${user.username}" value="${user.fitness_grade || '미인증'}"></td>
-                                <td><input type="text" class="fitness-input" id="gp_${user.username}" value="${user.fitness_grip || '-'}"></td>
-                                <td><input type="text" class="fitness-input" id="f_${user.username}" value="${user.fitness_flex || '-'}"></td>
-                                <td><input type="text" class="fitness-input" id="c_${user.username}" value="${user.fitness_cardio || '-'}"></td>
+                                <td><input type="text" class="fitness-input" id="g_${user.username}" value="${user.fitness_grade || '미인증'}" placeholder="예: 1등급"></td>
+                                <td><input type="text" class="fitness-input" id="gp_${user.username}" value="${user.fitness_grip || '-'}" placeholder="예: 28.5"></td>
+                                <td><input type="text" class="fitness-input" id="f_${user.username}" value="${user.fitness_flex || '-'}" placeholder="예: 19.2"></td>
+                                <td><input type="text" class="fitness-input" id="c_${user.username}" value="${user.fitness_cardio || '-'}" placeholder="예: 우수"></td>
                             `;
                         }
 
                         tr.innerHTML = `
                             <td style="font-weight:600; color:#1967d2;">${user.username}</td>
-                            <td>${user.name}</td>
+                            <td style="font-weight:700;">${user.name}</td>
                             <td>${user.phone}</td>
                             <td>${roleText}</td>
                             <td>${statusBadge}</td>
                             ${fitnessInputs}
                             <td>
-                                <button class="btn-sm-action" onclick="updateUserInfra('${user.username}', 'approved')">권한부여(승인)</button>
+                                <button class="btn-sm-action" onclick="updateUserInfra('${user.username}', 'approved')">권한부여 및 스펙저장</button>
                                 <button class="btn-sm-action delete" onclick="updateUserInfra('${user.username}', 'delete')">회원탈퇴/삭제</button>
                             </td>
                         `;
@@ -323,18 +328,19 @@
                 });
         }
 
-        // 2. [신원 승인 트랜잭션] 사장님이 승인을 누르는 즉시 실제 DB 값을 approved로 변환 업데이트
+        // 2. [스펙 수정 업데이트 핵심 트랜잭션] 입력창 수치를 가로채서 클라우드 DB에 실시간 영구 기록 봉인
         function updateUserInfra(username, actionStatus) {
-            let grade = "-";
+            let grade = "미인증";
             let grip = "-";
             let flex = "-";
             let cardio = "-";
             
+            // 사장님이 입력 상자에 직접 변경 기입한 최신 정밀 스펙 폼 수치 파싱 감지
             if (document.getElementById('g_' + username)) {
-                grade = document.getElementById('g_' + username).value;
-                grip = document.getElementById('gp_' + username).value;
-                flex = document.getElementById('f_' + username).value;
-                cardio = document.getElementById('c_' + username).value;
+                grade = document.getElementById('g_' + username).value.trim();
+                grip = document.getElementById('gp_' + username).value.trim();
+                flex = document.getElementById('f_' + username).value.trim();
+                cardio = document.getElementById('c_' + username).value.trim();
             }
 
             fetch('/api/admin/update-user', {
@@ -351,7 +357,7 @@
             })
             .then(res => res.json())
             .then(data => {
-                alert('처리 완료: 데이터베이스 전산 변경 동기화 완료! 해당 회원의 상태가 실시간으로 영구 반영되었습니다.');
+                alert('전산망 반영 대성공!\n아이디 [' + username + '] 회원의 권한 승인 처리와 동시에 사장님이 직접 입력하신 [인증 등급, 악력, 유연성, 심폐지구력] 정밀 스펙 지표가 외부 영구 클라우드 DB(Supabase) 저장소에 실시간 양방향 영구 업데이트 및 봉인 완료되었습니다.');
                 loadLiveUserManagement();
             })
             .catch(err => {
@@ -382,7 +388,7 @@
                             <td style="color:#1967d2; font-weight:600;">${inv.membership_type}</td>
                             <td>${inv.base_wage.toLocaleString()} 원</td>
                             <td style="color:#1152b3; font-weight:700; font-size:14px;">${inv.total_bill.toLocaleString()} 원</td>
-                            <td style="font-size:12px; color:#6b7684; font-weight:600;">기업은행 010-7464-3657 (주)실버웍스</td>
+                            <td style="font-size:12px; color:#6b7684; font-weight:600;">기업은행 010-7464-3657 (주)실버랩</td>
                         `;
                         tbody.appendChild(tr);
                     });
@@ -398,7 +404,7 @@
                     - 구직자 아이디: senior_queen (박영희 베테랑)<br>
                     - 출금 요청 포인트: 184,200 포인트 (원천세 3.3% 자동 공제 완료 본)<br>
                     - 지정 출금 계좌: 국민은행 432102-01-987654 (예금주: 박영희)<br>
-                    👉 조치사항: 위 등록된 지정 계좌로 실버웍스 법인 사업용 계좌에서 [184,200원]을 수작업 인터넷 뱅킹 이체 완료 후 본 알림을 보관 처리 하세요.
+                    👉 조치사항: 위 등록된 지정 계좌로 실버랩 법인 사업용 계좌에서 [184,200원]을 수작업 인터넷 뱅킹 이체 완료 후 본 알림을 보관 처리 하세요.
                 </div>
             `;
         }
