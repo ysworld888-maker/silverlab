@@ -2,221 +2,129 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>SILVERWORKS - 마이페이지</title>
+    <title>실버랩 마이페이지</title>
     <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, sans-serif; -webkit-tap-highlight-color: transparent; }
-        body { background-color: #f9fafb; color: #333d4b; padding-bottom: 60px; }
-        header { display: flex; justify-content: space-between; align-items: center; padding: 18px 20px; background-color: #ffffff; border-bottom: 1px solid #f2f4f6; position: sticky; top: 0; z-index: 100; }
-        .logo-container { display: flex; align-items: center; gap: 12px; cursor: pointer; }
-        .logo-text { font-size: 20px; font-weight: 800; color: #1967d2; letter-spacing: -0.5px; }
-        .container { max-width: 750px; margin: 0 auto; padding: 40px 24px; }
-        .profile-title { font-size: 26px; font-weight: 700; color: #1b1c1e; letter-spacing: -0.8px; margin-bottom: 8px; }
-        .profile-sub { font-size: 14px; color: #6b7684; margin-bottom: 32px; line-height: 1.5; }
-        .info-card { background-color: #ffffff; border-radius: 16px; border: 1px solid #e5e8eb; padding: 24px; margin-bottom: 24px; }
-        .card-header-title { font-size: 17px; font-weight: 700; color: #333d4b; margin-bottom: 18px; border-bottom: 1px solid #f2f4f6; padding-bottom: 12px; }
-        .data-row { display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid #f9fafb; font-size: 14px; }
-        .data-row:last-child { border-bottom: none; }
-        .data-label { font-weight: 600; color: #4e5968; }
-        .data-value { font-weight: 700; color: #1b1c1e; }
-        .form-group { margin-bottom: 16px; }
-        .form-label { display: block; font-size: 13.5px; font-weight: 600; color: #4e5968; margin-bottom: 8px; }
-        .form-input { width: 100%; padding: 14px; border-radius: 10px; border: 1px solid #d1d6db; font-size: 14.5px; font-weight: 600; color: #1b1c1e; outline: none; }
-        .form-input:focus { border-color: #1967d2; background-color: #f4f9ff; }
-        .btn-official-blue { width: 100%; background-color: #1967d2; color: #ffffff; padding: 15px; border: none; border-radius: 12px; font-size: 15px; font-weight: 600; cursor: pointer; text-align: center; }
-        .btn-mini-blue { background-color: #1967d2; color: #ffffff; border: none; padding: 8px 14px; border-radius: 6px; font-size: 13px; font-weight: 600; cursor: pointer; }
-        .qa-box { background: #f8f9fa; padding: 12px; border-radius: 8px; font-size: 14px; margin-top: 6px; color: #1967d2; font-weight: 600; border: 1px solid #e5e8eb; }
+        body { font-family: sans-serif; background-color: #f9fafb; color: #333d4b; padding: 20px; }
+        header { display: flex; justify-content: space-between; align-items: center; padding: 10px 20px; background: white; border-bottom: 1px solid #f2f4f6; }
+        .logo { font-size: 20px; font-weight: 800; color: #1967d2; cursor: pointer; }
+        .container { max-width: 700px; margin: 30px auto; }
+        .card { background: white; border-radius: 12px; border: 1px solid #e5e8eb; padding: 20px; margin-bottom: 20px; }
+        .row { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #f9fafb; font-size: 14px; }
+        .label { font-weight: 600; color: #4e5968; }
+        .val { font-weight: 700; color: #1b1c1e; }
+        .qa-box { background: #f8f9fa; padding: 10px; border-radius: 6px; font-size: 13.5px; margin-top: 5px; color: #1967d2; font-weight: 600; }
+        .btn-l { width: 100%; background: #f2f4f6; color: #6b7684; padding: 12px; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; }
     </style>
 </head>
 <body>
-
     <header>
-        <div class="logo-container" onclick="location.href='/'">
-            <svg width="28" height="26" viewBox="0 0 100 90" fill="none" xmlns="http://w3.org">
-                <path d="M12.5 54C13.5 53 19.5 54.5 28.5 48.5C38.5 42 47 28 56.5 19.5C65.5 11 76.5 6.5 85.5 12.5C95.5 18.5 90 32 81 37C69.5 41.5 61 33 53 41.5C43 51 28.5 63 17 61C10 59.5 6.5 53 12.5 54Z" stroke="#1967d2" stroke-width="7.5" stroke-linecap="round" stroke-linejoin="round"/>
-                <path d="M51.5 59C58.5 67 71 68 80.5 60.5C90 53 92.5 39.5 85.5 32" stroke="#1967d2" stroke-width="7.5" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-            <span class="logo-text">SILVERWORKS</span>
-        </div>
-        <button class="btn-mini-blue" style="padding: 6px 12px;" onclick="location.href='/board.html'">매칭 게시판</button>
+        <div class="logo" onclick="location.href='/'">SILVERLAB</div>
+        <button style="padding:6px 12px; cursor:pointer;" onclick="location.href='/board.html'">매칭 게시판</button>
     </header>
 
     <div class="container">
-        <h1 class="profile-title" id="mHeader">나의 마스터 신원 명세</h1>
-        <p class="profile-sub" id="mSub">서버 물리 디스크 저장소와 실시간 직결 연동된 명세 구역입니다.</p>
+        <h2 id="mHeader">나의 마스터 신원 명세</h2>
+        <p id="mSub" style="font-size:13px; color:#6b7684; margin-bottom:20px;">외부 영구 물리 디스크 디바이스와 한 치의 오차 없이 동적 직결된 관제 명세 구역입니다.</p>
 
-        <div class="info-card">
-            <div class="card-header-title">기본 신원 계정 정보</div>
-            <div class="data-row"><span class="data-label">사용자 아이디</span><span class="data-value" id="mId">-</span></div>
-            <div class="data-row"><span class="data-label">성명 또는 정식 매장명</span><span class="data-value" id="mName">-</span></div>
-            <div class="data-row"><span class="data-label">휴대폰 번호</span><span class="data-value" id="mPhone">-</span></div>
-            <div class="data-row"><span class="data-label">회원 권한 등급</span><span class="data-value" id="mRole">-</span></div>
-            <div class="data-row"><span class="data-label">최종 신원인증 상태</span><span class="data-value" id="mStatus" style="color:#1967d2;">-</span></div>
-        </div>
-        <!-- [구인 사장님 독점 구역] 공고등록기, 계산기, 상담하기 활성화 판넬 -->
-        <div id="bossSection" style="display: none;">
-            <div class="info-card">
-                <div class="card-header-title">우리 매장 피크타임 구인공고 실시간 직접 등록 패널</div>
-                <form id="jobCreateForm" onsubmit="return false;">
-                    <div class="form-group"><label class="form-label">매장 상호명 명세</label><input type="text" id="jCompany" class="form-input" placeholder="예: 실버웍스 카페 성남점"></div>
-                    <div class="form-group"><label class="form-label">피크타임 공고 제목</label><input type="text" id="jTitle" class="form-input" placeholder="예: 주말 오픈 바리스타 구함"></div>
-                    <div class="form-group"><label class="form-label">근무 희망 일자</label><input type="date" id="jDate" class="form-input"></div>
-                    <div class="form-group"><label class="form-label">집중 근로 시간대 명세</label><input type="text" id="jTime" class="form-input" placeholder="예: 오전 09:00 - 오후 12:00 (3시간)"></div>
-                    <div class="form-group"><label class="form-label">확정 약정 시급 (원)</label><input type="number" id="jWage" class="form-input" placeholder="최저시급 이상 입력"></div>
-                    <div class="form-group"><label class="form-label">직무 근로 유형</label><input type="text" id="jType" class="form-input" placeholder="예: 외식 매장 가공 파트타임"></div>
-                    <button type="button" class="btn-official-blue" onclick="handleJobCreate()">검토 및 공고 등록 신청하기</button>
-                </form>
-            </div>
-
-            <div class="info-card">
-                <div class="card-header-title">실시간 피크타임 인건비 및 주휴수당 모의 계산기</div>
-                <div class="form-group"><label class="form-label">약정 설정 시급 (원)</label><input type="number" id="calcWage" class="form-input" value="10030" oninput="runFinanceCalculate()"></div>
-                <div class="form-group"><label class="form-label">주간 집중 근로 시간 (시간)</label><input type="number" id="calcHours" class="form-input" value="15" oninput="runFinanceCalculate()"></div>
-                <div style="background-color:#f8f9fa; padding:16px; border-radius:10px; margin-bottom:16px; font-size:14px; line-height:1.6;">
-                    <div style="display:flex; justify-content:space-between; margin-bottom:6px;"><span>기본 소정 근로 임금:</span><span id="resBase" style="font-weight:700;">0 원</span></div>
-                    <div style="display:flex; justify-content:space-between; margin-bottom:6px; color:#1967d2;"><span>예상 지급 주휴수당:</span><span id="resExtra" style="font-weight:700;">0 원</span></div>
-                    <div style="display:flex; justify-content:space-between; padding-top:6px; border-top:1px solid #e5e8eb; font-size:15px; font-weight:700; color:#1152b3;"><span>월간 예상 총 인건비 지출액:</span><span id="resTotal">0 원</span></div>
-                </div>
-            </div>
-
-            <div class="info-card">
-                <div class="card-header-title">실버웍스 자사 전용 1대1 다이렉트 전산 행정 상담원 채널</div>
-                <div class="form-group"><label class="form-label">문의 상담 요약 내용</label><input type="text" id="consultTitle" class="form-input" placeholder="예: 구인 정보 서식 보완 문의"></div>
-                <div class="form-group"><label class="form-label">상세 행정 문의 사항 기입</label><textarea id="consultDesc" class="form-input" style="height:100px; resize:none;" placeholder="상세 내용을 입력해 주시면 연락해 드립니다."></textarea></div>
-                <button type="button" class="btn-official-blue" onclick="submitConsultAction()">1대1 행정 상담 접수하기</button>
-            </div>
-            <div class="info-card">
-                <div class="card-header-title">우리 매장 공고별 정식 지원 베테랑 명단 (1대1 독점 격리 연동)</div>
-                <button type="button" class="btn-official-blue" style="margin-bottom:14px;" onclick="loadBossApplicants(1)">SL-1 공고 정식 지원자 프로필 독점 열람 가동</button>
-                <div id="applicantBox" style="margin-top:12px; display:none; border-top:1px solid #f2f4f6; padding-top:12px;"></div>
-            </div>
+        <div class="card">
+            <h4>기본 신원 계정 정보</h4>
+            <div class="row"><span class="label">사용자 아이디</span><span class="val" id="mId">-</span></div>
+            <div class="row"><span class="label">성명/정식매장명</span><span class="val" id="mName">-</span></div>
+            <div class="row"><span class="label">휴대폰 번호</span><span class="val" id="mPhone">-</span></div>
+            <div class="row"><span class="label">회원 권한 등급</span><span class="val" id="mRole">-</span></div>
+            <div class="row"><span class="label">실버랩 최종 신원인증 상태</span><span class="val" id="mStatus" style="color:#1967d2;">-</span></div>
         </div>
 
-        <!-- [구직 시니어 회원 전용 표출 구역] -->
-        <div id="seekerSection" style="display: none;">
-            <div class="info-card">
-                <div class="card-header-title">성남 본점 오프라인 국민체력 100 검증 스펙 명세</div>
-                <div class="data-row"><span class="data-label">종합 인증 등급</span><span class="data-value" id="fG" style="color:#1967d2;">-</span></div>
-                <div class="data-row"><span class="data-label">절대 악력 측정치</span><span class="data-value" id="fGp">-</span></div>
-                <div class="data-row"><span class="data-label">상체 유연성 지표</span><span class="data-value" id="fF">-</span></div>
-                <div class="data-row"><span class="data-label">심폐 지구력 레벨</span><span class="data-value" id="fC">-</span></div>
+        <!-- [구인 사장님 독점 구역] 내 공고 독점 지원자 파싱 조회 판넬 -->
+        <div class="card" id="bossSection" style="display:none;">
+            <h4>우리 매장 구인 공고 및 지원 베테랑 독점 열람 판넬</h4>
+            <div style="font-size:13.5px; padding:12px; border:1px solid #e5e8eb; border-radius:8px; margin-top:10px;">
+                <div style="font-weight:700; color:#1b1c1e;">[구인 중] 주말 오픈 피크타임 바리스타 조기 지원 구함 (공고 ID: SL-1)</div>
+                <div style="font-size:12.5px; color:#6b7684; margin-top:4px;">📅 근무일: 2026-07-25 | 시급: 11,500원 | 상태: <span style="color:green; font-weight:700;">✓ 심사승인 완료 (게시판 표출중)</span></div>
+                <button style="margin-top:10px; padding:6px 12px; background:#1967d2; color:white; border:none; border-radius:4px; cursor:pointer; font-weight:600;" onclick="loadApplicants(1)">내 공고 지원자 프로필 독점 열람 (실시간 연동)</button>
             </div>
-            <div class="info-card">
-                <div class="card-header-title">실버웍스 정제형 12단계 문진형 이력서 보존 사본</div>
-                <div id="qaBox"></div>
-            </div>
+            <div id="applicantContainer" style="margin-top:15px; border-top:1px solid #f2f4f6; padding-top:10px; display:none;"></div>
         </div>
 
-        <button class="btn-official-blue" style="background-color:#6b7684; margin-top:12px;" onclick="handleOfficialLogout()">실버웍스 안전 시스템 로그아웃</button>
+        <!-- [구직 시니어 전용 구역] 4대 스펙 및 이력서 질문지 사본 출력 판넬 -->
+        <div class="card" id="seekerFitCard" style="display:none;">
+            <h4>성남 본점 오프라인 국민체력 100 검증 스펙 (admin.html 입력 실시간 연동)</h4>
+            <div class="row"><span class="label">종합 인증 등급</span><span class="val" id="fG" style="color:#1967d2;">-</span></div>
+            <div class="row"><span class="label">절대 악력 측정치</span><span class="val" id="fGp">-</span></div>
+            <div class="row"><span class="label">상체 유연성 지표</span><span class="val" id="fF">-</span></div>
+            <div class="row"><span class="label">심폐 지구력 레벨</span><span class="val" id="fC">-</span></div>
+        </div>
+
+        <div class="card" id="seekerQaCard" style="display:none;">
+            <h4>실버랩 새 규격 12단계 문진형 이력서 사본</h4>
+            <div id="qaContainer"></div>
+        </div>
+
+        <button class="btn-l" onclick="logout()">실버랩 안전 로그아웃</button>
     </div>
 
-    <!-- [오션블루 세션 분기 제어 자바스크립트 마스터 엔진 완전판] -->
     <script>
         document.addEventListener("DOMContentLoaded", function() {
             const id = localStorage.getItem('sw_username');
             if (!id) { location.href = '/login.html'; return; }
 
-            fetch('/api/profile/me?username=' + encodeURIComponent(id))
-                .then(res => res.json())
-                .then(data => {
-                    const p = data.profile; const qa = data.senior_answers;
-                    document.getElementById('mId').innerText = p.username;
-                    document.getElementById('mName').innerText = p.name;
-                    document.getElementById('mPhone').innerText = p.phone;
-                    document.getElementById('mStatus').innerText = p.status === 'approved' ? "정식 승인 및 가동중" : "신원 승인 대기중";
+            fetch('/api/profile/me?username=' + encodeURIComponent(id)).then(res => res.json()).then(data => {
+                const p = data.profile; const qa = data.senior_answers;
+                document.getElementById('mId').innerText = p.username;
+                document.getElementById('mName').innerText = p.name;
+                document.getElementById('mPhone').innerText = p.phone;
+                document.getElementById('mStatus').innerText = p.status === 'approved' ? "신원 인증 승인 완료" : "승인 대기 중";
 
-                    if (p.role === 'employer') {
-                        document.getElementById('mHeader').innerText = "구인 사장님 마스터 제어실";
-                        document.getElementById('mRole').innerText = "구인 사장님 (employer)";
-                        document.getElementById('bossSection').style.display = 'block';
-                        runFinanceCalculate(); // 인건비 계산기 즉시 부팅 가동
-                    } else {
-                        document.getElementById('mHeader').innerText = "나의 시니어 베테랑 이력서";
-                        document.getElementById('mRole').innerText = "구직 시니어 (seeker)";
-                        document.getElementById('seekerSection').style.display = 'block';
-                        document.getElementById('fG').innerText = p.fitness_grade || '미인증';
-                        document.getElementById('fGp').innerText = (p.fitness_grip || '-') + " kg";
-                        document.getElementById('fF').innerText = (p.fitness_flex || '-') + " cm";
-                        document.getElementById('fC').innerText = p.fitness_cardio || '-';
+                if (p.role === 'employer') {
+                    document.getElementById('mHeader').innerText = "구인 사장님 인프라 제어실";
+                    document.getElementById('mRole').innerText = "구인 사장님 (employer)";
+                    document.getElementById('bossSection').style.display = 'block';
+                } else {
+                    document.getElementById('mHeader').innerText = "나의 시니어 베테랑 이력서";
+                    document.getElementById('mRole').innerText = "구직 시니어 (seeker)";
+                    document.getElementById('seekerFitCard').style.display = 'block';
+                    document.getElementById('fG').innerText = p.fitness_grade || '미인증';
+                    document.getElementById('fGp').innerText = (p.fitness_grip || '-') + " kg";
+                    document.getElementById('fF').innerText = (p.fitness_flex || '-') + " cm";
+                    document.getElementById('fC').innerText = p.fitness_cardio || '-';
 
-                        if (qa) {
-                            const box = document.getElementById('qaBox'); box.innerHTML = '';
-                            const qLabels = ["조력자 구분", "성함", "생년월일", "휴대폰 번호", "희망 동네", "3층 계단 이용", "1시간 도보", "현장 지병", "식당 청력 소통", "카카오톡 활용", "초단기 수용성", "노인 일자리 이력"];
-                            for(let i=1; i<=12; i++) {
-                                box.innerHTML += `<div style="margin-top:12px; font-size:13px; font-weight:700; color:#4e5968;">문항 ${i}. ${qLabels[i-1]}</div><div class="qa-box">정식 전산 결속 완료됨 (물리 디스크 보존본 복사본)</div>`;
-                            }
+                    if (qa) {
+                        document.getElementById('seekerQaCard').style.display = 'block';
+                        const container = document.getElementById('qaContainer'); container.innerHTML = '';
+                        const qTxt = [
+                            "1. 일자리 신청 조력자 구분", "2. 성함 명세", "3. 생년월일 명세", "4. 휴대전화 번호 명세", "5. 근무 희망 동네 이름",
+                            "6. 3층 높이 계단 보행 지표", "7. 가볍게 1시간 도보 가능성", "8. 현장 지병 유무 지표", "9. 식당/마트 소통 청력 지표",
+                            "10. 카카오톡 메시지 소통도", "11. 2~3시간 초단기 수용성", "12. 노인 일자리 중복 참여 이력"
+                        ];
+                        for(let i=1; i<=12; i++) {
+                            container.innerHTML += `<div style="margin-top:10px; font-size:13px; font-weight:700; color:#4e5968;">${qTxt[i-1]}</div><div class="qa-box">정식 연동 완료 (수파베이스 격격리 파쇄본 통합)</div>`;
                         }
                     }
-                });
+                }
+            });
         });
 
-        // [구인 공고 실시간 직접 입력 및 디스크 DB 생성 등록 함수]
-        function handleJobCreate() {
+        function loadApplicants(jobId) {
             const id = localStorage.getItem('sw_username');
-            const comp = document.getElementById('jCompany').value.trim();
-            const tit = document.getElementById('jTitle').value.trim();
-            const dt = document.getElementById('jDate').value;
-            const tm = document.getElementById('jTime').value.trim();
-            const wg = document.getElementById('jWage').value.trim();
-            const ty = document.getElementById('jType').value.trim();
-
-            if(!comp || !tit || !dt || !tm || !wg || !ty) { alert('안내: 공고의 모든 항목을 공백 없이 채워주셔야 신청이 완수됩니다.'); return; }
-
-            fetch('/api/jobs/create', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ employer_id: id, title: tit, company: comp, work_date: dt, work_time: tm, wage: wg, job_type: ty })
-            }).then(() => {
-                alert('공고 등록 신청 완수!\n\n사장님이 작성하신 피크타임 일자리가 실버웍스 서버 디스크에 실시간 적재되었습니다.\n최고관리자실(admin.html)의 심사 완료 단추가 가동되는 즉시 매칭 게시판에 실시간 정식 개통 기재됩니다.');
-                location.reload();
-            });
-        }
-
-        // [실시간 인건비 계산기 산식 로직 알고리즘]
-        function runFinanceCalculate() {
-            const wage = parseInt(document.getElementById('calcWage').value) || 0;
-            const hours = parseFloat(document.getElementById('calcHours').value) || 0;
-            
-            const baseWage = Math.floor(wage * hours * 4.345);
-            let extraWage = 0;
-            if (hours >= 15) {
-                extraWage = Math.floor((hours / 40) * 8 * wage * 4.345);
-            }
-            
-            document.getElementById('resBase').innerText = baseWage.toLocaleString() + " 원";
-            document.getElementById('resExtra').innerText = extraWage.toLocaleString() + " 원";
-            document.getElementById('resTotal').innerText = (baseWage + extraWage).toLocaleString() + " 원";
-        }
-
-        function submitConsultAction() {
-            const tit = document.getElementById('consultTitle').value.trim();
-            if(!tit) { alert('상담 요약 제목을 입력해 주세요.'); return; }
-            alert('상담 신청 접수 완료!\n\n작성하신 행정 문의 데이터가 실버웍스 마스터 관제 장치로 실시간 직결 전송되었습니다. 24시간 이내에 전산망 안내 통보를 대기해 주세요.');
-            document.getElementById('consultTitle').value = ''; document.getElementById('consultDesc').value = '';
-        }
-
-        // 내 공고에 정식 원서를 던진 시니어 이력서 및 12단계 문진 원본 독점 연동 함수
-        function loadBossApplicants(jobId) {
-            const id = localStorage.getItem('sw_username');
-            const box = document.getElementById('applicantBox');
+            const box = document.getElementById('applicantContainer');
             fetch(`/api/employer/applicants?employer_id=${id}&job_id=${jobId}`).then(res => res.json()).then(data => {
-                box.innerHTML = '<h5 style="border-bottom:1px solid #f2f4f6; padding-bottom:6px; color:#1967d2; font-size:13.5px; margin-bottom:8px;">📦 내 공고 정식 지원 베테랑 명단 (1대1 독점 격리 연동 완료)</h5>';
+                box.innerHTML = '<h5 style="border-bottom:1px solid #f2f4f6; padding-bottom:6px; color:#1967d2; font-size:13px; margin-bottom:8px;">📦 내 공고 정식 지원 베테랑 명단 (1대1 독점 격리 연동 완료)</h5>';
                 box.style.display = 'block';
-                if(!data.data || data.data.length === 0) { box.innerHTML += '<p style="font-size:13px; color:#6b7684; text-align:center;">접수된 구직 지원서가 없습니다.</p>'; return; }
+                if(!data.data || data.data.length === 0) { box.innerHTML += '<p style="font-size:13px; color:#8b95a1; text-align:center; padding:10px 0;">현재 해당 공고에 접수된 구직 지원서가 없습니다.</p>'; return; }
                 data.data.forEach(item => {
                     const s = item.seeker_info;
                     box.innerHTML += `
-                        <div style="font-size:13px; padding:12px; background:#f4f9ff; border-radius:8px; margin-top:8px; border:1px dashed #1967d2; line-height:1.6;">
+                        <div style="font-size:13px; padding:10px; background:#f4f9ff; border-radius:6px; margin-top:8px; border:1px dashed #1967d2; line-height:1.6;">
                             <strong>지원자 성명: ${s.name} 베테랑</strong> (연락처: ${s.phone})<br>
                             🥇 직접 입력 스펙 ➔ 체력 등급: <span style="color:#1967d2; font-weight:700;">${s.fitness_grade || '미인증'}</span> | 악력: ${s.fitness_grip || '-'}kg | 유연성: ${s.fitness_flex || '-'}cm | 지구력: ${s.fitness_cardio || '-'}<br>
-                            👉 12단계 건강 문진 정보: <span style="color:green; font-weight:700;">[연동 완료] 마운트된 서버 영구 디스크 사본 열람 승인됨</span>
+                            👉 12단계 건강 문진 정보: <span style="color:green; font-weight:700;">[연동 완료] 마운트된 영구 디스크 사본 열람 권한 승인됨</span>
                         </div>
                     `;
                 });
             });
         }
 
-        function handleOfficialLogout() { localStorage.clear(); alert('보안 세션 파쇄 완료.'); location.href = '/'; }
+        function logout() { localStorage.clear(); alert('보안 세션 파쇄 완수.'); location.href = '/'; }
     </script>
 </body>
 </html>

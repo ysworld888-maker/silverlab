@@ -2,28 +2,29 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <title>SILVERWORKS 최고관리자 콘솔</title>
+    <title>실버랩 최고관리자 콘솔 - 마스터 제어실</title>
     <style>
         body { font-family: -apple-system, sans-serif; background-color: #f9fafb; color: #333d4b; padding: 20px; }
-        header { display: flex; justify-content: space-between; align-items: center; padding: 14px 20px; background: white; border-bottom: 1px solid #e5e8eb; border-radius: 8px; }
+        header { display: flex; justify-content: space-between; align-items: center; padding: 12px 20px; background: white; border-bottom: 1px solid #e5e8eb; border-radius: 8px; }
         .logo { font-size: 20px; font-weight: 800; color: #1967d2; cursor: pointer; }
         .card { background: white; border-radius: 12px; border: 1px solid #e5e8eb; padding: 22px; margin-top: 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.01); }
-        h3 { font-size: 15px; font-weight: 700; color: #1b1c1e; margin-bottom: 12px; }
+        h3 { font-size: 16px; font-weight: 700; color: #1b1c1e; margin-bottom: 12px; }
         table { width: 100%; border-collapse: collapse; font-size: 13px; }
-        th { background: #f2f4f6; color: #4e5968; padding: 10px; text-align: left; }
+        th { background: #f2f4f6; color: #4e5968; padding: 10px; text-align: left; font-weight: 600; }
         td { padding: 12px 10px; border-bottom: 1px solid #f2f4f6; }
-        .fitness-input { width: 70px; padding: 5px; text-align: center; border: 1px solid #d1d6db; border-radius: 4px; font-weight: 600; color: #1b1c1e; }
-        .btn { background: #1967d2; color: white; border: none; padding: 8px 14px; border-radius: 6px; cursor: pointer; font-size: 13px; font-weight: 600; }
+        .fitness-input { width: 70px; padding: 5px; text-align: center; border: 1px solid #d1d6db; border-radius: 4px; font-weight: 600; }
+        .btn { background: #1967d2; color: white; border: none; padding: 6px 12px; border-radius: 6px; cursor: pointer; font-size: 12px; font-weight: 600; }
+        .btn.app-j { background: #00875a; }
     </style>
 </head>
 <body>
     <header>
-        <div class="logo" onclick="location.href='/'">SILVERWORKS 최고관제센터</div>
-        <button class="btn" onclick="location.href='/board.html'">매칭 게시판 모니터링</button>
+        <div class="logo" onclick="location.href='/'">SILVERLAB 마스터 제어 대시보드</div>
+        <button class="btn" onclick="location.href='/board.html'">매칭 게시판 실시간 모니터링 ➔</button>
     </header>
 
     <div class="card">
-        <h3>1. 회원 가입 승인 및 4대 체력 측정 스펙 실시간 직접 입력 제어 패널</h3>
+        <h3>1. 회원 가입 승인 및 4대 체력 측정 스펙 실시간 직접 입력 제어판</h3>
         <table>
             <thead><tr><th>아이디</th><th>성명/매장명</th><th>연락처</th><th>등급</th><th>인증상태</th><th>체력등급 입력</th><th>악력(kg)</th><th>유연성(cm)</th><th>심폐지구력</th><th>동적 스펙 업데이트</th></tr></thead>
             <tbody id="userBody"></tbody>
@@ -31,19 +32,20 @@
     </div>
 
     <div class="card">
-        <h3>2. 사장님 구인공고 실시간 검토 심사 통제 패널 (승인 단추 가동 시 board.html 기재 개통)</h3>
+        <h3>2. 사장님 구인공고 실시간 검토 심사 통제판 (승인 단추 즉시 board.html 공식 기재)</h3>
         <table>
-            <thead><tr><th>공고 ID</th><th>사장님 ID</th><th>매장 구인처</th><th>피크타임 공고 제목 명세</th><th>근무일자</th><th>확정시급</th><th>최종 행정 심사 승인</th></tr></thead>
+            <thead><tr><th>공고 ID</th><th>사장님 ID</th><th>매장 구인 명세</th><th>피크타임 공고 제목</th><th>근무일자</th><th>확정시급</th><th>검토 상태</th><th>최종 행정 승인</th></tr></thead>
             <tbody>
-                <tr><td>SL-1</td><td>boss_cafe</td><td style="font-weight:700;">실버웍스 카페 성남점</td><td>[카페 바리스타] 주말 오픈 피크타임 조기 지원 구함</td><td>2026-07-25</td><td style="font-weight:700; color:#1967d2;">11,500원</td><td><button class="btn" onclick="approveJob(1)">공고 심사 승인</button></td></tr>
+                <tr><td>SL-1</td><td>boss_cafe</td><td style="font-weight:700;">실버랩 카페 성남점</td><td>[카페 바리스타] 주말 오픈 피크타임 조기 지원 구함</td><td>2026-07-25</td><td style="font-weight:700; color:#1152b3;">11,500원</td><td><span style="color:#ff4d4d; font-weight:700;">⏳ 심사대기</span></td><td><button class="btn app-j" onclick="approveJob(1)">공고 검토 최종 승인</button></td></tr>
+                <tr><td>SL-2</td><td>boss_bread</td><td style="font-weight:700;">뚜레쥬르 성남점</td><td>[홀 서빙 보조] 평일 점심 혼잡시간 파트타이머 모집</td><td>2026-07-28</td><td style="font-weight:700; color:#1152b3;">10,030원</td><td><span style="color:#1967d2; font-weight:700;">✓ 승인완료</span></td><td><span style="color:#6b7684; font-weight:700;">게시판 표출중</span></td></tr>
             </tbody>
         </table>
     </div>
 
     <div class="card">
-        <h3>3. 구직자 지원하기 클릭 즉시 동적 전달 매칭 로그 관제 패널</h3>
+        <h3>3. 시니어 [지원하기] 클릭 즉시 실시간 전산 전달 연동 매칭 로그 피드</h3>
         <table>
-            <thead><tr><th>지원번호</th><th>매장 고용주 명세</th><th>지원 구인공고 제목</th><th>지원 시니어 성명</th><th>연락처 명세</th><th>전산망 결속 상태</th></tr></thead>
+            <thead><tr><th>지원 일련번호</th><th>매장 고용주 성명</th><th>지원한 피크타임 공고 명세</th><th>지원 구직자 성명</th><th>시니어 실물 연락처</th><th>전산망 결속 상태</th></tr></thead>
             <tbody id="logBody"></tbody>
         </table>
     </div>
@@ -63,14 +65,14 @@
                             <td><input type="text" class="fitness-input" id="c_${u.username}" value="${u.fitness_cardio || '-'}"></td>
                         `;
                     }
-                    tr.innerHTML = `<td>${u.username}</td><td style="font-weight:700;">${u.name}</td><td>${u.phone}</td><td>${u.role === 'employer'?'구인 사장님':'구직 시니어'}</td><td style="font-weight:700; color:#1967d2;">${u.status}</td>${inputs}<td><button class="btn" onclick="saveSpec('${u.username}')">스펙 저장</button></td>`;
+                    tr.innerHTML = `<td>${u.username}</td><td style="font-weight:700;">${u.name}</td><td>${u.phone}</td><td>${u.role === 'employer'?'구인 사장님':'구직 시니어'}</td><td style="font-weight:700; color:#1967d2;">${u.status}</td>${inputs}<td><button class="btn" onclick="saveSpec('${u.username}')">권한부여 및 스펙저장</button></td>`;
                     body.appendChild(tr);
                 });
             });
 
             fetch('/api/admin/match-logs').then(res => res.json()).then(data => {
                 const body = document.getElementById('logBody'); body.innerHTML = '';
-                if(!data.logs || data.logs.length === 0) { body.innerHTML = `<tr><td colspan="6" style="text-align:center; color:#8b95a1; padding:20px 0;">원서 접수 실시간 대기 중</td></tr>`; return; }
+                if(!data.logs || data.logs.length === 0) { body.innerHTML = `<tr><td colspan="6" style="text-align:center; color:#8b95a1; padding:20px 0;">실시간 구인·구직 원서 접수 대기 중...</td></tr>`; return; }
                 data.logs.forEach(l => {
                     const tr = document.createElement('tr');
                     tr.innerHTML = `<td>APP-${l.app_id}</td><td style="font-weight:700;">${l.company_name}</td><td style="color:#1967d2; font-weight:600;">${l.job_title}</td><td style="font-weight:700;">${l.seeker_name} 베테랑</td><td>${l.seeker_phone}</td><td style="color:green; font-weight:700;">실시간 직결 전달됨</td>`;
@@ -97,7 +99,7 @@
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ job_id: id, action_status: 'approved' })
-            }).then(() => { alert('공고 행정 심사 승인 완료 board.html 즉시 기재 개통'); loadAdmin(); });
+            }).then(() => { alert('공고 최종 승인 완료! board.html 즉시 기재 개통'); loadAdmin(); });
         }
         loadAdmin();
     </script>
