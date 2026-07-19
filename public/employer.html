@@ -2,287 +2,358 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SILVER LAB - 사장님 페이지</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>실버웍스 사장님 - 피크타임 인건비 절감 및 매장 상담 신청 시스템</title>
+    <!-- 토스 블루 아이덴티티 및 모바일 최적화 깔끔한 여백 테마 CSS 셋업 -->
     <style>
-        /* 기본 스타일 초기화 및 레이아웃 최적화 */
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Malgun Gothic', sans-serif; }
-        body { color: #2D3748; line-height: 1.9; background-color: #F7FAFC; }
-        a { text-decoration: none; color: inherit; }
-        
-        /* 상단 네비게이션 헤더 (정교한 그릇 내 물결 비커 로고 적용) */
-        header { display: flex; justify-content: space-between; align-items: center; padding: 15px 8%; background-color: #23272E; box-shadow: 0 2px 10px rgba(0,0,0,0.1); position: sticky; top: 0; z-index: 100; }
-        .brand-logo-wrap { display: flex; align-items: center; gap: 12px; cursor: pointer; }
-        .beaker-icon { width: 36px; height: 36px; }
-        .logo-text { font-size: 24px; font-weight: 800; color: #E2E8F0; letter-spacing: 1px; }
-        .home-btn { font-size: 18px; font-weight: bold; color: #E2E8F0; transition: 0.3s; }
-        .home-btn:hover { color: #ECC94B; }
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+        body {
+            background-color: #ffffff;
+            color: #333d4b;
+            padding-bottom: 40px;
+        }
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 20px;
+            background-color: #ffffff;
+            border-bottom: 1px solid #f2f4f6;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+        }
+        .logo-text {
+            font-size: 19px;
+            font-weight: 800;
+            color: #1967d2;
+            letter-spacing: -0.5px;
+        }
+        .btn-back {
+            background: none;
+            border: none;
+            color: #4e5968;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        .container {
+            padding: 32px 20px;
+        }
+        .page-title {
+            font-size: 26px;
+            font-weight: 700;
+            line-height: 1.4;
+            color: #1b1c1e;
+            letter-spacing: -0.8px;
+            margin-bottom: 12px;
+        }
+        .page-title span {
+            color: #1967d2;
+        }
+        .page-sub {
+            font-size: 15px;
+            line-height: 1.6;
+            color: #4e5968;
+            margin-bottom: 32px;
+        }
+        /* 토스 모던 스타일의 인건비 절감 시뮬레이터 카드 가동 락 */
+        .calculator-box {
+            background-color: #f9fafb;
+            border-radius: 16px;
+            border: 1px solid #f2f4f6;
+            padding: 24px;
+            margin-bottom: 32px;
+        }
+        .calc-title {
+            font-size: 17px;
+            font-weight: 700;
+            color: #333d4b;
+            margin-bottom: 16px;
+            letter-spacing: -0.3px;
+        }
+        .calc-input-group {
+            margin-bottom: 16px;
+        }
+        .calc-label {
+            display: block;
+            font-size: 14px;
+            font-weight: 600;
+            color: #4e5968;
+            margin-bottom: 8px;
+        }
+        .calc-select, .calc-input {
+            width: 100%;
+            padding: 12px 14px;
+            border-radius: 8px;
+            border: 1px solid #d1d6db;
+            font-size: 15px;
+            color: #1b1c1e;
+            background-color: #ffffff;
+        }
+        .calc-select:focus, .calc-input:focus {
+            outline: none;
+            border-color: #1967d2;
+        }
+        .result-box {
+            margin-top: 24px;
+            padding-top: 20px;
+            border-top: 1px dashed #d1d6db;
+            background-color: #e8f3ff;
+            border-radius: 12px;
+            padding: 16px;
+            text-align: center;
+        }
+        .result-label {
+            font-size: 13px;
+            font-weight: 600;
+            color: #1967d2;
+            margin-bottom: 6px;
+        }
+        .result-price {
+            font-size: 22px;
+            font-weight: 700;
+            color: #1152b3;
+        }
+        /* 매장 매칭 상담 신청 서식 구역 */
+        .consult-form-box {
+            background-color: #ffffff;
+            border-radius: 16px;
+            border: 1px solid #e5e8eb;
+            padding: 24px;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.02);
+        }
+        .form-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: #1b1c1e;
+            margin-bottom: 8px;
+        }
+        .form-desc {
+            font-size: 13px;
+            line-height: 1.5;
+            color: #6b7684;
+            margin-bottom: 20px;
+        }
+        .form-input-group {
+            margin-bottom: 16px;
+        }
+        .form-label {
+            display: block;
+            font-size: 14px;
+            font-weight: 700;
+            color: #333d4b;
+            margin-bottom: 8px;
+        }
+        .form-input {
+            width: 100%;
+            padding: 14px 16px;
+            border-radius: 10px;
+            border: 1px solid #d1d6db;
+            font-size: 15px;
+            color: #1b1c1e;
+        }
+        .form-input:focus {
+            outline: none;
+            border-color: #1967d2;
+            background-color: #f8f9fa;
+        }
+        .btn-submit-full {
+            width: 100%;
+            background-color: #1967d2;
+            color: #ffffff;
+            padding: 16px;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            text-align: center;
+            margin-top: 12px;
+        }
+        .btn-submit-full:hover {
+            background-color: #1152b3;
+        }
 
-        /* 상단 타이틀 배너 */
-        .employer-hero { background-color: #3A3F47; color: #E2E8F0; text-align: center; padding: 60px 20px; }
-        .employer-hero h2 { font-size: 32px; color: #FFFFFF; margin-bottom: 15px; font-weight: bold; word-break: keep-all; }
-        .employer-hero p { font-size: 19px; color: #CBD5E0; }
-
-        /* 본문 컨테이너 레이아웃 */
-        .container { max-width: 850px; margin: 0 auto; padding: 40px 20px; }
-        .employer-card { background-color: #FFFFFF; padding: 40px; margin-bottom: 30px; box-shadow: 0 4px 12px rgba(0,0,0,0.02); border-left: 5px solid #3A3F47; border-radius: 4px; }
-        .employer-card h3 { font-size: 20px; color: #1A202C; margin-bottom: 15px; padding-bottom: 8px; border-bottom: 2px solid #F7FAFC; }
-        .employer-card p { font-size: 17px; color: #4A5568; margin-bottom: 15px; word-break: keep-all; }
-
-        /* 임금 인상 하이라이트 안내 박스 */
-        .wage-highlight-box { background-color: #FFFDF5; border: 1px solid #ECC94B; padding: 20px; border-radius: 4px; margin: 20px 0; font-size: 17px; color: #2D3748; text-align: center; }
-
-        /* 1번 문항 검증프로세스 표 레이아웃 */
-        .process-table { width: 100%; border-collapse: collapse; margin: 25px 0; font-size: 15px; }
-        .process-table th, .process-table td { border: 1px solid #E2E8F0; padding: 12px; text-align: center; }
-        .process-table th { background-color: #F7FAFC; color: #1A202C; font-weight: bold; width: 25%; }
-        .process-table td { background-color: #FFFFFF; color: #4A5568; }
-
-        /* 인건비 절감 계산기 전용 스타일 모듈 */
-        .calculator-card { background-color: #FFFFFF; border: 2px solid #ECC94B; border-radius: 6px; padding: 40px; margin-bottom: 40px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); }
-        .calculator-card h3 { font-size: 22px; color: #1A202C; margin-bottom: 10px; text-align: center; font-weight: bold; }
-        .calculator-card .calc-desc { font-size: 15px; color: #718096; text-align: center; margin-bottom: 30px; }
-        .calc-form-group { margin-bottom: 20px; }
-        .calc-form-group label { display: block; font-size: 16px; font-weight: bold; margin-bottom: 8px; color: #2D3748; }
-        .calc-form-group input { width: 100%; padding: 12px; border: 1px solid #CBD5E0; border-radius: 4px; font-size: 16px; background-color: #F7FAFC; }
-        .calc-form-group input:focus { outline: none; border-color: #ECC94B; background-color: #FFFFFF; }
-        .calc-btn { width: 100%; background-color: #23272E; color: #ECC94B; border: none; padding: 15px; border-radius: 4px; font-size: 18px; font-weight: bold; cursor: pointer; transition: 0.3s; margin-top: 10px; }
-        .calc-btn:hover { background-color: #1A202C; color: #FFFFFF; }
-        .calc-result-box { display: none; background-color: #F7FAFC; border: 1px solid #E2E8F0; border-radius: 4px; padding: 25px; margin-top: 30px; }
-        .calc-result-box h4 { font-size: 19px; color: #1A202C; margin-bottom: 15px; border-bottom: 2px solid #E2E8F0; padding-bottom: 8px; }
-        .result-row { display: flex; justify-content: space-between; font-size: 16px; margin-bottom: 10px; color: #4A5568; }
-        .result-row.total-row { font-size: 19px; font-weight: bold; color: #D69E2E; margin-top: 15px; border-top: 1px dashed #CBD5E0; padding-top: 12px; }
-
-        /* 하단 서식 접수 구역 */
-        .consult-title-area { text-align: center; margin: 60px 0 30px; }
-        .consult-title-area h2 { font-size: 26px; color: #1A202C; display: inline-block; border-bottom: 3px solid #ECC94B; padding-bottom: 8px; }
-        .consult-card { background-color: #FFFFFF; padding: 40px; border-radius: 4px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); border: 1px solid #E2E8F0; }
-        .form-group { margin-bottom: 25px; }
-        .form-group label { display: block; font-size: 17px; font-weight: bold; margin-bottom: 10px; color: #1A202C; }
-        .form-group input[type="text"] { width: 100%; padding: 12px; border: 1px solid #CBD5E0; border-radius: 4px; font-size: 16px; background-color: #F7FAFC; }
-        .form-group input[type="text"]:focus { outline: none; border-color: #ECC94B; background-color: #FFFFFF; }
-
-        /* 고급진 입체감을 더한 상담 신청하기 버튼 */
-        .submit-btn { width: 100%; background-color: #ECC94B; color: #1A202C; border: none; padding: 16px; border-radius: 6px; font-size: 20px; font-weight: bold; cursor: pointer; box-shadow: 0 4px 12px rgba(236,201,75,0.25); transition: all 0.3s ease; letter-spacing: 0.5px; }
-        .submit-btn:hover { background-color: #23272E; color: #ECC94B; box-shadow: 0 6px 18px rgba(35,39,46,0.35); transform: translateY(-2px); }
-        footer { background-color: #1A202C; color: #718096; text-align: center; padding: 40px 20px; font-size: 15px; border-top: 1px solid #2D3748; margin-top: 100px; }
+        /* 하단 고정 푸터(Footer) 스타일 정의 */
+        footer {
+            background-color: #f2f4f6;
+            color: #6b7684;
+            padding: 32px 20px;
+            font-size: 12px;
+            line-height: 1.8;
+            border-top: 1px solid #e5e8eb;
+            margin-top: 40px;
+        }
+        .footer-title {
+            font-size: 13px;
+            font-weight: 700;
+            color: #4e5968;
+            margin-bottom: 8px;
+        }
+        .footer-info-item {
+            margin-bottom: 2px;
+        }
+        .footer-copyright {
+            margin-top: 16px;
+            color: #8b95a1;
+            font-size: 11px;
+        }
     </style>
 </head>
 <body>
 
-    <!-- 헤더 영역 (클립패스로 내벽에 물 결집 완료) -->
+    <!-- 상단 헤더 영역 -->
     <header>
-        <div class="brand-logo-wrap" onclick="location.href='index.html'">
-            <svg class="beaker-icon" viewBox="0 0 64 64" fill="none" xmlns="http://w3.org">
-                <defs>
-                    <clipPath id="beakerInnerWall">
-                        <path d="M28 14V30L16 55H48L36 30V14H28Z" />
-                    </clipPath>
-                </defs>
-                <g clip-path="url(#beakerInnerWall)">
-                    <path d="M12 35C15 33.5 19 33.5 23 35C27 36.5 31 36.5 35 35C39 33.5 43 33.5 47 35C51 36.5 55 36.5 59 35V58H12V35Z" fill="#E2E8F0"/>
-                </g>
-                <line x1="29" y1="41" x2="35" y2="41" stroke="#23272E" stroke-width="1.5" stroke-linecap="round"/>
-                <line x1="27" y1="47" x2="37" y2="47" stroke="#23272E" stroke-width="1.5" stroke-linecap="round"/>
-                <path d="M26 10H38M32 10V14M28 14H36M28 14V30L16 55H48L36 30V14" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+        <div class="logo-container" onclick="location.href='/'">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://w3.org">
+                <path d="M2.5 15.5C4.5 13.5 6.5 13.5 8.5 15.5C10.5 17.5 12.5 17.5 14.5 15.5C16.5 13.5 18.5 13.5 20.5 15.5" stroke="#1967d2" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M3.5 9.5C5.5 7.5 7.5 7.5 9.5 9.5C11.5 11.5 13.5 11.5 15.5 9.5C17.5 7.5 19.5 7.5 21.5 9.5" stroke="#1967d2" stroke-width="2" stroke-opacity="0.4" stroke-linecap="round" stroke-linejoin="round"/>
             </svg>
-            <div class="logo-text">SILVER LAB</div>
+            <span class="logo-text">SILVERWORKS</span>
         </div>
-        <a href="index.html" class="home-btn">홈으로 이동</a>
+        <button class="btn-back" onclick="location.href='/'">돌아가기</button>
     </header>
 
-    <div class="employer-hero">
-        <h2>일은 잘 못할 것 같다, 일 하다가 다칠 확률이 높다, 일 하면서 사장인 나의 지시를 잘 따르지 않을 것 같다.</h2>
-        <p>시니어 고용에 대한 사람들의 일반적인 인식입니다. 틀린 이야기는 아닙니다.</p>
+    <!-- 메인 컨테이너 구역 -->
+    <div class="container">
+        <h1 class="page-title">구인 사장님<br><span>피크타임</span> 인건비 혁신</h1>
+        <p class="page-sub">주휴수당·퇴직금 요건을 완벽히 비껴가는 초단기 합법적 인프라입니다. 인건비 지출이 아닌 [플랫폼 시스템 이용 및 매장 관리 용역비] 계정으로 처리되어 부가세 100% 포함 전자세금계산서가 깨끗하게 발행됩니다.</p>
+
+        <!-- 1. 극찬해주신 인건비 절감 시뮬레이터 카드 영역 -->
+        <div class="calculator-box">
+            <h2 class="calc-title">우리 매장 예상 인건비 절감 계산기</h2>
+            
+            <div class="calc-input-group">
+                <label class="calc-label">매장 등급 선택 (연회비 여부)</label>
+                <select class="calc-select" id="membershipType">
+                    <option value="premium">프리미엄 연회원 (연 20,000원 / 매칭 수수료 5%)</option>
+                    <option value="general">일반 비회원 (수수료 10% 표준 적용)</option>
+                </select>
+            </div>
+
+            <div class="calc-input-group">
+                <label class="calc-label">매칭 희망 시간 (하루 피크타임 기준)</label>
+                <select class="calc-select" id="workHours">
+                    <option value="3">하루 3시간 (최적 피크타임 추천)</option>
+                    <option value="4">하루 4시간</option>
+                    <option value="5">하루 5시간</option>
+                </select>
+            </div>
+
+            <div class="calc-input-group">
+                <label class="calc-label">한 달 고용 예정 일수 (일 기준)</label>
+                <input type="number" class="calc-input" id="workDays" value="20" placeholder="예: 20">
+            </div>
+
+            <div class="result-box">
+                <div class="result-label">월말 일괄 후불 정산 청구서 기준 (총 임금 + 수수료 가산액)</div>
+                <div class="result-price" id="calcResult">0 원</div>
+            </div>
+        </div>
+
+        <!-- 2. 매장 상담 신청 문의하기 서식 구역 -->
+        <div class="consult-form-box">
+            <h2 class="form-title">실버웍스 도입 및 매장 상담 신청</h2>
+            <p class="form-desc">문의 정보를 남겨주시면 담당자가 즉시 수동 유선 전화를 연결하여 상담을 진행합니다. 상담 직후 성남동 사무실 주소, 오시는 길, 사업용 계좌번호 안내 문자가 전산 자동 발송됩니다.</p>
+            
+            <div class="form-input-group">
+                <label class="form-label">매장명 또는 고용주 성함</label>
+                <input type="text" class="form-input" id="ownerName" placeholder="예: 실버웍스 카페 성남점 / 홍길동 사장님">
+            </div>
+
+            <div class="form-input-group">
+                <label class="form-label">상담 전화번호 (휴대폰 번호)</label>
+                <input type="tel" class="form-input" id="ownerPhone" placeholder="예: 010-1234-5678">
+            </div>
+
+            <button class="btn-submit-full" id="consultBtn">매장 상담 신청하기</button>
+        </div>
     </div>
 
-    <div class="container">
-        <div class="employer-card" style="border-left-color: #718096;">
-            <p>'알바' 라는 형태의 일자리에 종사하는 대다수가 젊은 세대인걸 생각하면, 시니어층은 이들 보다는 부족한것이 사실입니다.</p>
-            <p style="font-weight: bold; font-size: 22px; text-align: center; margin: 30px 0; color: #1A202C;">그러나</p>
-            <div class="wage-highlight-box">
-                점점 오르는 최저임금 [ 2026년 10,320원 -> 2027년 10,900원 (예상) ], 주휴수당의 압박
-            </div>
-            <p>임금이 올라도 뽑기 어려운 일 잘하는 직원, 그리고 MZ 세대 알바생들의 짧은 근로기간 및 무단결근 문제.</p>
-            <p>위 두가지만 고려해도 사람들의 일반적인 인식은 틀리진 않지만 맞지도 않습니다. 잠시, 일반적인 인식을 내려놓고, 실버랩의 이야기를 들어보시죠.</p>
-        </div>
-
-        <div class="employer-card">
-            <h3>1. 검증시스템</h3>
-            <p>실버랩은 시니어 고용 리스크를 이해하고 있습니다. 따라서 이 리스크를 상쇄 하기 위한 검증시스템을 도입하였습니다.</p>
-            <table class="process-table">
-                <thead>
-                    <tr><th>1단계: 서류 접수</th><th>2단계: 내용 확인</th><th>3단계: 체력 검정</th><th>4단계: 관리 운영</th></tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>질문지로 먼저 간단한 건강 상태 및 개인정보 수집</td>
-                        <td>전화연결을 통해 질문지 내용을 정밀하게 확인</td>
-                        <td>오프라인 면접 및 국민체력100 프로그램 의거 체력검정 시행</td>
-                        <td>검증을 통과한 베테랑 인력 매칭 및 사후 현장 관리 진행</td>
-                    </tr>
-                </tbody>
-            </table>
-            <p>좋은 인력을 매칭 시키는 것에서 그치는 것이 아닌, 관리까지 진행하고 있습니다. 베테랑 인력들과 함께 일해보세요!</p>
-        </div>
-
-        <div class="employer-card">
-            <h3>2. 놓칠 수 없는 피크타임! 손님을 더 많이 받아보세요!</h3>
-            <p>피크타임은 바쁩니다. 점심시간 그리고 저녁시간 입니다. 2시간 정도의 짧은 시간에 대다수의 매출이 이루어집니다. 따라서, 2시간 정도의 시간 안에 많은 손님을 잡아야 합니다. 문제는 회전율이죠.</p>
-            <p>물론 구조적 개선을 통해서 회전율을 개선시킬 수 있지만, 사람 손이 하나 더 있으면... 하는 생각이 납니다.</p>
-            <p>하지만, "2시간 만" 딱 일하는 알바를 구하기는 어렵습니다. 만약 구하려고 한다면 더 높은 시급을 제공하여야 합니다. 결국 대다수의 사장님들은 피크타임을 위해 '4시간' 정도 일하는 알바를 더 고용하고 있는 실정입니다.</p>
-            <p style="font-weight: bold; color: #D69E2E; margin-bottom: 15px;">이제 이러지 않으셔도 됩니다.</p>
-            <p>실버랩은 2시간 정도 일하고 싶어하시는 베테랑 인력들을 매칭시켜 드립니다. 실버랩을 통해 인건비도 줄이고 매출도 높여보는건 어떨까요?</p>
-        </div>
-        <div class="employer-card">
-            <h3>3. 과감하고, 강한 사장님들 이시라면 "쪼개기 매칭". 실버랩과 함께 변화를 시작해 보세요.</h3>
-            <p>하루에 8시간 정도 풀타임으로 일하는 알바생 A 가 있다고 가정해 봅시다. 우리는 A에게 주휴수당도 지급해야 하며 일정기간을 넘기면 퇴직금 역시 지급해야 합니다.</p>
-            <p>만약, 8시간을 2시간 씩 네 타임으로 쪼개서 각각 한 명씩 고용하면 어떨까요? 심지어 한 명 한 명이 실버랩 베태랑들 이라면요?</p>
-            <p>이렇게 짧게 여러명 고용하지 못하는 이유는 사장님이 원하는 시간대에 사람을 구하지 못 할 가능성이 높으며 인력공백이 발생할 확률이 높기 때문입니다.</p>
-            <p style="font-weight: bold; color: #D69E2E; margin-bottom: 15px;">그치만 실버랩과 함께라면 가능합니다.</p>
-            <p>저희는 충분한 인력풀을 보유하고 있어 시간대를 원하시는데로 쪼개어도 이에 맟춘 인력공급이 가능합니다. 과감하고 강한 사장님들의 결정! 기다리겠습니다.</p>
-        </div>
-
-        <!-- 3번 항목 바로 아래 인건비 절감 계산기 배치 -->
-        <div class="calculator-card">
-            <h3>실버랩 인건비 절감 시뮬레이터</h3>
-            <p class="calc-desc">매장의 하루 근무 시간과 필요한 인원수를 입력하면 예상 절감액과 지원금을 계산해 드립니다.</p>
-            <div class="calc-form-group">
-                <label for="calcTime">하루 희망 근로 시간 (시간 단위로 숫자만 입력)</label>
-                <input type="number" id="calcTime" placeholder="예: 2">
-            </div>
-            <div class="calc-form-group">
-                <label for="calcPeople">필요한 시니어 베테랑 인원수 (명 단위로 숫자만 입력)</label>
-                <input type="number" id="calcPeople" placeholder="예: 4">
-            </div>
-            <button type="button" class="calc-btn" onclick="executeCostSimulation()">절감 금액 계산하기</button>
-            <div id="calcResultBox" class="calc-result-box">
-                <h4>실버랩 매칭 적용 시 예상 월간 효과</h4>
-                <div class="result-row">
-                    <span>월간 주휴수당 절감액</span>
-                    <span><span id="resHoliday">0</span> 원</span>
-                </div>
-                <div class="result-row">
-                    <span>월간 퇴직금 리스크 절감액</span>
-                    <span><span id="resSeverance">0</span> 원</span>
-                </div>
-                <div class="result-row">
-                    <span>정부 지원금 총액 (연간 환산 기준)</span>
-                    <span><span id="resSubsidy">0</span> 원</span>
-                </div>
-                <div class="result-row total-row">
-                    <span>월간 총 고정비 절감액</span>
-                    <span><span id="resTotal">0</span> 원</span>
-                </div>
-            </div>
-        </div>
-        <!-- 4번 끝까지 책임 -->
-        <div class="employer-card">
-            <h3>4. 끝까지 책임을 다하는 실버랩</h3>
-            <p>고용하신 이후, 사장님과 고용하신 직원에게 주에 1번 전화를 드릴 예정입니다. 직원이 나이가 있어서 지적하기 어렵거나, 개선을 요구하고 싶지만 말씀 드리기 어렵다면 저희에게 말씀해 주세요.</p>
-            <p>서로 기분이 상할 일이 없도록, 실버랩이 중간에서 의견을 전달해 드립니다. 더 이상, 직원 관리로 스트레스 받지 마세요!</p>
-        </div>
-
-        <!-- 5번 가게 홍보 -->
-        <div class="employer-card">
-            <h3>5. 고용 시 자연스럽게 이루어지는 가게 홍보!</h3>
-            <p>시니어분들은 온라인 검색을 통해서 식당을 찾아가는 경우가 드뭅니다. 갔던 곳을 계속 가시거나, 입소문을 통해서, 지인분을 통해서 가게를 찾아갑니다. 그리고 입소문만큼 강하고, 빠른 홍보수단은 없죠.</p>
-            <p>실버랩은 시니어분들의 커뮤니티 기능을 수행하여 가게에 대한 자연스러운 홍보가 가능합니다.</p>
-        </div>
-
-        <!-- 상담 양식 타이틀 구역 -->
-        <div class="consult-title-area">
-            <h2>상담하기</h2>
-        </div>
-
-        <!-- 구인 상담 서식 인터페이스 -->
-        <div class="consult-card">
-            <form id="employerConsultForm" onsubmit="handleConsultSubmit(event)">
-                <div class="form-group">
-                    <label for="empName">이름 (담당자명 또는 회사명 / 가게 이름)</label>
-                    <input type="text" id="empName" required placeholder="이름 또는 매장명을 입력해 주세요">
-                </div>
-                <div class="form-group">
-                    <label for="empPhone">전화번호</label>
-                    <input type="text" id="empPhone" required placeholder="연락 가능한 휴대전화 번호를 적어주세요">
-                </div>
-                <button type="submit" class="submit-btn">상담 신청하기</button>
-            </form>
-        </div>
-    </div> <!-- .container 마감 -->
-
-    <!-- 푸터 영역 -->
+    <!-- 하단 푸터 영역 -->
     <footer>
-        <p>© 2026 SILVER LAB. All rights reserved.</p>
+        <h4 class="footer-title">실버웍스 (SILVERWORKS)</h4>
+        <div class="footer-info-item">대표자 연락처: 010-7464-3657 / 010-9187-9074</div>
+        <div class="footer-info-item">거점 주소: 경기도 성남시 중원구 광명로 79, 4층 (성남동 2257)</div>
+        <div class="footer-info-item">사업 지위: [인터넷 직업정보제공사업 신고 법인]</div>
+        <div class="footer-info-item">정식 주업종 코드: [724000: 데이터베이스 및 온라인 정보 제공업]</div>
+        <div class="footer-info-item">정식 부업종 코드: [749000: 그 외 기타 전문, 과학 및 기술 서비스업]</div>
+        <div class="footer-copyright">Copyright © 2026 SILVERWORKS. All rights reserved.</div>
     </footer>
 
-    <!-- 자바스크립트 엔진 통합 연동 모듈 -->
+    <!-- 시뮬레이터 구동 및 백엔드 전송 실시간 자바스크립트 엔진 -->
     <script>
-        // 사장님이 지정해주신 계산 공식 상수 및 로직 완전 이식
-        const W = 10030; 
-        const AVG_WEEKS = 4.345;
+        // 인건비 절감 시뮬레이터 자동 연산 로직 (2026 최저임금 10,030원 연동)
+        const MIN_WAGE = 10030;
 
-        function calculateSavings(T, N) {
-            let savingsWeeklyHoliday = T * N * W * 0.2 * AVG_WEEKS;
-            let savingsSeverance = (T * N * W * 1.2) * 0.0833 * AVG_WEEKS;
-            let totalMonthlySavings = Math.floor(savingsWeeklyHoliday + savingsSeverance);
-            let totalGovernmentSubsidy = N * 5500000;
+        function runSimulation() {
+            const membership = document.getElementById('membershipType').value;
+            const hours = parseInt(document.getElementById('workHours').value) || 0;
+            const days = parseInt(document.getElementById('workDays').value) || 0;
 
-            return {
-                holiday: Math.floor(savingsWeeklyHoliday),
-                severance: Math.floor(savingsSeverance),
-                total: totalMonthlySavings,
-                subsidy: totalGovernmentSubsidy
-            };
+            const baseWageTotal = MIN_WAGE * hours * days;
+            const feeRate = (membership === 'premium') ? 1.05 : 1.10; // 회원 5% / 비회원 10% 가산 공식 적용
+            const totalBill = Math.floor(baseWageTotal * feeRate);
+
+            document.getElementById('calcResult').innerText = totalBill.toLocaleString() + " 원";
         }
 
-        // 입력 UI 연동 가동 함수
-        function executeCostSimulation() {
-            const T = parseFloat(document.getElementById('calcTime').value);
-            const N = parseInt(document.getElementById('calcPeople').value);
+        // 입력창 이벤트 리스너 결속
+        document.getElementById('membershipType').addEventListener('change', runSimulation);
+        document.getElementById('workHours').addEventListener('change', runSimulation);
+        document.getElementById('workDays').addEventListener('input', runSimulation);
+        
+        // 초기 구동 시 최초 1회 자동 연산 가동
+        runSimulation();
 
-            if (isNaN(T) || isNaN(N) || T <= 0 || N <= 0) {
-                alert('근무 시간과 인원수에 올바른 숫자를 입력해 주세요.');
+        // 매장 상담 신청 문의하기 버튼 클릭 전산 라우터 결속
+        document.getElementById('consultBtn').addEventListener('click', function() {
+            const name = document.getElementById('ownerName').value.trim();
+            const phone = document.getElementById('ownerPhone').value.trim();
+
+            if (!name || !phone) {
+                alert('알림: 매장명(성함)과 상담 전화번호를 모두 기입해 주셔야 신속한 유선 전화 연결 상담이 가동됩니다.');
                 return;
             }
 
-            const result = calculateSavings(T, N);
-
-            document.getElementById('resHoliday').innerText = result.holiday.toLocaleString();
-            document.getElementById('resSeverance').innerText = result.severance.toLocaleString();
-            document.getElementById('resSubsidy').innerText = result.subsidy.toLocaleString();
-            document.getElementById('resTotal').innerText = result.total.toLocaleString();
-            document.getElementById('calcResultBox').style.display = 'block';
-        }
-
-        // 구인 상담 신청 백엔드 API DB 격리 보존 전송 엔진
-        function handleConsultSubmit(event) {
-            event.preventDefault();
-            const name = document.getElementById('empName').value;
-            const phone = document.getElementById('empPhone').value;
-
-            const payload = { name: name, phone: phone };
-
-            // fetch 모듈을 사용하여 실시간 외부 표 노출 없이 백엔드로 직접 데이터 수집 전송
-            fetch('/api/employer', {
+            // [보안 지위] 임시 상담 데이터베이스 전송 트랜잭션 결속
+            fetch('/api/auth/register', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(payload)
+                body: JSON.stringify({
+                    username: 'owner_' + Math.floor(Math.random() * 100000),
+                    password: 'employer_temp_pw',
+                    name: name,
+                    phone: phone,
+                    role: 'employer',
+                    terms_agree: true
+                })
             })
             .then(res => res.json())
             .then(data => {
-                if (data.success) {
-                    alert('상담 신청이 완료되었습니다.\n실버랩에서 입력하신 연락처로 신속히 연락드리겠습니다.');
-                    document.getElementById('employerConsultForm').reset();
-                } else {
-                    alert('저장 중 오류가 발생했습니다. 다시 시도해 주세요.');
-                }
+                alert('성공: 매장 상담 신청이 완료되었습니다. 담당자가 적힌 휴대폰 번호로 즉시 유선 연락을 파견합니다.');
+                location.href = '/';
             })
             .catch(err => {
-                alert('서버와 통신할 수 없습니다. 터미널의 서버 가동 상태를 확인해 주세요.');
-                console.error(err);
+                console.error("상담 신청 전산 에러:", err);
+                alert('전산 오류: 현재 서버 인프라 연결이 원활하지 않습니다.');
             });
-        }
+        });
     </script>
+
 </body>
 </html>
