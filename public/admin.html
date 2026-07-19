@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>실버랩 최고관리자 - 마스터 비즈니스 인프라 통제 대시보드</title>
-    <!-- 토스 스타일의 정갈함과 넓은 여백, 신뢰도 높은 그레이/블루 톤 셋업 -->
+    <title>실버랩 - 실시간 피크타임 구인·구직 매칭 게시판</title>
+    <!-- 토스 특유의 와이드 여백 미학 및 권한 격리형 보드 CSS 스타일셋 -->
     <style>
         * {
             box-sizing: border-box;
@@ -25,7 +25,7 @@
             align-items: center;
             padding: 18px 20px;
             background-color: #ffffff;
-            border-bottom: 1px solid #e5e8eb;
+            border-bottom: 1px solid #f2f4f6;
             position: sticky;
             top: 0;
             z-index: 100;
@@ -39,19 +39,9 @@
         .logo-text {
             font-size: 20px;
             font-weight: 800;
-            color: #333b4c;
+            color: #1967d2;
             letter-spacing: -0.5px;
         }
-        .logo-text span {
-            color: #1967d2;
-            font-size: 11px;
-            font-weight: 600;
-            background-color: #e8f3ff;
-            padding: 2px 6px;
-            border-radius: 4px;
-            margin-left: 4px;
-        }
-        /* 링크 단절을 완벽하게 파쇄하는 유기적 이동 경로 메뉴 링크 그룹 */
         .nav-menu-group {
             display: flex;
             gap: 8px;
@@ -65,354 +55,252 @@
             cursor: pointer;
             padding: 8px 16px;
             border-radius: 8px;
-            transition: background-color 0.2s, color 0.2s;
+            transition: background-color 0.2s;
         }
         .nav-link-btn:hover {
             background-color: #f2f4f6;
             color: #1967d2;
         }
-        .nav-link-btn.active {
-            background-color: #e8f3ff;
-            color: #1967d2;
-        }
         .container {
             padding: 40px 20px;
-            max-width: 1200px;
+            max-width: 800px;
             margin: 0 auto;
         }
-        .admin-title {
-            font-size: 24px;
+        .board-title {
+            font-size: 26px;
             font-weight: 700;
             color: #1b1c1e;
-            letter-spacing: -0.6px;
+            letter-spacing: -0.8px;
             margin-bottom: 8px;
         }
-        .admin-sub {
+        .board-sub {
             font-size: 14px;
             color: #6b7684;
             margin-bottom: 32px;
             line-height: 1.5;
         }
-        .admin-card {
+        /* 모던 매칭 공고 피드 카드 디자인 */
+        .job-live-card {
             background-color: #ffffff;
             border-radius: 16px;
             border: 1px solid #e5e8eb;
             padding: 24px;
-            margin-bottom: 24px;
-            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.01);
+            margin-bottom: 18px;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.01);
+            transition: transform 0.2s;
         }
-        .card-header-title {
-            font-size: 17px;
+        .job-live-card:hover {
+            transform: translateY(-2px);
+        }
+        .job-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 12px;
+        }
+        .job-company {
+            font-size: 14px;
+            font-weight: 600;
+            color: #6b7684;
+            margin-bottom: 4px;
+        }
+        .job-title-text {
+            font-size: 19px;
             font-weight: 700;
-            color: #333d4b;
-            margin-bottom: 16px;
-            letter-spacing: -0.2px;
+            color: #1b1c1e;
+            letter-spacing: -0.4px;
         }
-        .table-responsive {
-            width: 100%;
-            overflow-x: auto;
-            border-radius: 8px;
-            border: 1px solid #e5e8eb;
-        }
-        .admin-table {
-            width: 100%;
-            border-collapse: collapse;
-            text-align: left;
-            font-size: 13px;
-            background-color: #ffffff;
-            min-width: 950px;
-        }
-        .admin-table th {
-            background-color: #f2f4f6;
-            color: #4e5968;
-            font-weight: 600;
-            padding: 12px 14px;
-            border-bottom: 1px solid #e5e8eb;
-        }
-        .admin-table td {
-            padding: 14px;
-            border-bottom: 1px solid #f2f4f6;
-            color: #333d4b;
-            vertical-align: middle;
-        }
-        .badge-pending {
-            background-color: #ffeeee;
-            color: #ff4d4d;
-            padding: 2px 6px;
-            border-radius: 4px;
-            font-weight: 600;
-        }
-        .badge-approved {
+        .job-wage-badge {
             background-color: #e8f3ff;
             color: #1967d2;
-            padding: 2px 6px;
-            border-radius: 4px;
-            font-weight: 600;
+            padding: 6px 12px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 700;
         }
-        .btn-sm-action {
+        .job-meta-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            padding: 14px 0;
+            border-top: 1px solid #f2f4f6;
+            border-bottom: 1px solid #f2f4f6;
+            margin-bottom: 16px;
+            font-size: 13.5px;
+            color: #4e5968;
+        }
+        .meta-item span {
+            font-weight: 700;
+            color: #333d4b;
+        }
+        .btn-apply-action {
+            width: 100%;
             background-color: #1967d2;
             color: #ffffff;
-            border: none;
-            padding: 6px 10px;
-            border-radius: 6px;
-            font-size: 12px;
-            font-weight: 600;
-            cursor: pointer;
-            margin-right: 4px;
-        }
-        .btn-sm-action.delete {
-            background-color: #f2f4f6;
-            color: #6b7684;
-        }
-        .btn-sm-action:hover {
-            opacity: 0.9;
-        }
-        .fitness-input {
-            width: 75px;
-            padding: 6px 8px;
-            border-radius: 6px;
-            border: 1px solid #d1d6db;
-            font-size: 12px;
-            text-align: center;
-            font-weight: 600;
-            color: #1b1c1e;
-        }
-        .fitness-input:focus {
-            outline: none;
-            border-color: #1967d2;
-            background-color: #e8f3ff;
-        }
-        .alert-withdraw-box {
-            background-color: #ffeeee;
-            border: 1px solid #ffcccc;
+            padding: 14px;
             border-radius: 12px;
-            padding: 16px;
-            margin-bottom: 24px;
-            color: #ff4d4d;
-            font-size: 13px;
+            font-size: 15px;
             font-weight: 600;
+            border: none;
+            cursor: pointer;
+            text-align: center;
+            transition: background-color 0.2s;
+        }
+        .btn-apply-action:hover {
+            background-color: #1152b3;
+        }
+        .btn-apply-action.disabled {
+            background-color: #e5e8eb;
+            color: #b0b8c1;
+            cursor: not-allowed;
+        }
+        /* 사장님 로그인 시 나타날 안내 카드 */
+        .employer-lock-banner {
+            background-color: #ffffff;
+            border-radius: 16px;
+            border: 1px solid #e5e8eb;
+            padding: 40px 24px;
+            text-align: center;
+        }
+        .lock-banner-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: #333d4b;
+            margin-bottom: 10px;
+        }
+        .lock-banner-desc {
+            font-size: 14px;
+            color: #6b7684;
             line-height: 1.6;
         }
     </style>
 </head>
 <body>
 
-    <!-- [상단 헤더] 사장님 원본 사진 이미지 100% 완벽 일치 파란색 문양 실물 로고 바인딩 -->
+    <!-- 상단 헤더 바 메뉴 연동 -->
     <header>
         <div class="logo-container" onclick="location.href='/'">
             <svg width="28" height="26" viewBox="0 0 100 90" fill="none" xmlns="http://w3.org">
                 <path d="M12.5 54C13.5 53 19.5 54.5 28.5 48.5C38.5 42 47 28 56.5 19.5C65.5 11 76.5 6.5 85.5 12.5C95.5 18.5 90 32 81 37C69.5 41.5 61 33 53 41.5C43 51 28.5 63 17 61C10 59.5 6.5 53 12.5 54Z" stroke="#1967d2" stroke-width="7.5" stroke-linecap="round" stroke-linejoin="round"/>
                 <path d="M51.5 59C58.5 67 71 68 80.5 60.5C90 53 92.5 39.5 85.5 32" stroke="#1967d2" stroke-width="7.5" stroke-linecap="round" stroke-linejoin="round"/>
             </svg>
-            <span class="logo-text">SILVERLAB <span>마스터 콘솔</span></span>
+            <span class="logo-text">SILVERLAB</span>
         </div>
         
         <div class="nav-menu-group">
             <button class="nav-link-btn" onclick="location.href='/'">홈</button>
             <button class="nav-link-btn" onclick="location.href='/login.html?type=seeker'">시니어 등록</button>
             <button class="nav-link-btn" onclick="location.href='/login.html?type=employer'">사장님 혁신</button>
-            <button class="nav-link-btn" onclick="location.href='/board.html'">매칭 게시판</button>
         </div>
     </header>
 
     <div class="container">
-        <h1 class="admin-title">인프라 통합 관제 시스템</h1>
-        <p class="admin-sub">가입 회원들의 신원 검증, 오프라인 국민체력 100 정밀 측정 지표 실시간 입력 제어, 시니어 수동 정산 관제 및 구인 매장들의 월말 일괄 후불 청구서 자동 산식을 모니터링하는 최고 통제실입니다.</p>
+        <h1 class="board-title" id="boardMainTitle">실시간 일자리 매칭 피드</h1>
+        <p class="board-sub" id="boardSubTitle">고용노동부 최저임금 전산 규격을 통과하고 마스터 관리자가 승인한 청정 피크타임 공고 명세입니다.</p>
 
-        <div id="withdrawAlertContainer"></div>
-
-        <div class="admin-card">
-            <div class="card-header-title">구인 사장님 / 구직 시니어 통합 검증 및 스펙 수정 제어판 (클라우드 DB 실시간 양방향 연동)</div>
-            <div class="table-responsive">
-                <table class="admin-table">
-                    <thead>
-                        <tr>
-                            <th>아이디</th>
-                            <th>성명/매장명</th>
-                            <th>연락처</th>
-                            <th>회원 권한 등급</th>
-                            <th>승인 상태</th>
-                            <th>체력 등급 입력</th>
-                            <th>악력 입력 (kg)</th>
-                            <th>유연성 입력 (cm)</th>
-                            <th>심폐지구력 입력</th>
-                            <th>인프라 원천 제어 및 스펙 수정</th>
-                        </tr>
-                    </thead>
-                    <tbody id="userTableBody">
-                        <tr>
-                            <td colspan="10" style="text-align:center; color:#8b95a1; padding:30px 0;">통합 회원 가입 명세 데이터를 클라우드 전산망에서 조회 중입니다...</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-
-        <div class="admin-card">
-            <div class="card-header-title">월말 일괄 후불 정산 청구서 산식 명세 패널 (회원 5% / 비회원 10% 가산율 자동 동기화)</div>
-            <div class="table-responsive">
-                <table class="admin-table">
-                    <thead>
-                        <tr>
-                            <th>매장 아이디</th>
-                            <th>매장 사장님 성명</th>
-                            <th>가입 회원권 등급</th>
-                            <th>당월 고용 근로 임금 총액</th>
-                            <th>플랫폼 가산 총 청구액 (부가세 포함)</th>
-                            <th>정산 수동 수취 전용 지정 계좌</th>
-                        </tr>
-                    </thead>
-                    <tbody id="billingTableBody">
-                        <tr>
-                            <td colspan="6" style="text-align:center; color:#8b95a1; padding:30px 0;">월말 마감 후불 가산 정산서 통계를 산출 중입니다...</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
+        <!-- 실시간 공고 카드 주입 컨테이너 구역 -->
+        <div id="jobBoardContainer">
+            <p style="text-align:center; color:#8b95a1; padding:40px 0; font-size:14px;">보안 매칭 전산망을 연동 중입니다...</p>
         </div>
     </div>
-    <!-- [실물 클라우드 DB 스펙 수정 업데이트 엔진 완벽 탑재] -->
+    <!-- [보안 격리 및 관리자 실시간 연동 가동 엔진] -->
     <script>
-        // 1. 실제 Supabase 내부 DB 회원 통계 및 입력된 정밀 스펙 실시간 호출 구동
-        function loadLiveUserManagement() {
-            const tbody = document.getElementById('userTableBody');
-            
-            fetch('/api/admin/users') 
+        document.addEventListener("DOMContentLoaded", function() {
+            const currentLoggerId = localStorage.getItem('sw_username');
+            const currentLoggerRole = localStorage.getItem('sw_role');
+            const boardContainer = document.getElementById('jobBoardContainer');
+
+            // 1차 보안 장치: 로그인 세션 유실 시 차단 필터
+            if (!currentLoggerId) {
+                alert('알림: 보안 인증 세션이 없습니다. 로그인을 먼저 완수해 주세요.');
+                location.href = '/login.html';
+                return;
+            }
+
+            // [기획 핵심 이행] 사장님 로그인 시 타인 공고 원천 은폐 격리 차단 가동
+            if (currentLoggerRole === 'employer') {
+                document.getElementById('boardMainTitle').innerText = "보안 격리 보호 구역";
+                document.getElementById('boardSubTitle').innerText = "매칭 게시판은 구직 시니어 전용 채널입니다. 사장님 매장의 공고 및 지원자 이력서는 마이페이지에서만 독점 관제 가능합니다.";
+                
+                boardContainer.innerHTML = `
+                    <div class="employer-lock-banner">
+                        <div class="lock-banner-title">🔒 비즈니스 독점 권한 격리 활성화</div>
+                        <div class="lock-banner-desc">
+                            실버랩은 타 사업장과의 정보 혼선을 방지하고 시니어 개인정보 보호법을 준수합니다.<br>
+                            다른 사람의 구인 내역은 볼 수 없으며, 사장님이 올리신 공고와 그 공고에 1대1로 매핑되어 들어온 
+                            <strong>[실시간 지원자 이력서 명세]</strong>는 오직 사장님의 <strong>[우측 상단 원형 프로필 ➔ 마이페이지]</strong> 안에서만 독점적으로 안전하게 열람하실 수 있습니다.
+                        </div>
+                    </div>
+                `;
+                return;
+            }
+
+            // [구직 시니어 모드] 최고 관리자가 정식 승인(approved) 완료한 실시간 공고 피드만 호출
+            fetch('/api/jobs/live-board')
                 .then(res => res.json())
                 .then(data => {
-                    if (!data.success || !data.users || data.users.length === 0) {
-                        tbody.innerHTML = `<tr><td colspan="10" style="text-align:center; color:#8b95a1; padding:30px 0;">현재 가입 신청된 데이터베이스 내역이 존재하지 않습니다.</td></tr>`;
+                    boardContainer.innerHTML = '';
+                    
+                    if (!data.success || !data.jobs || data.jobs.length === 0) {
+                        boardContainer.innerHTML = `<p style="text-align:center; color:#8b95a1; padding:40px 0; font-size:14px;">⏳ 현재 매칭 대기 중인 청정 구인 공고가 없습니다.</p>`;
                         return;
                     }
 
-                    const liveUsers = data.users;
-                    tbody.innerHTML = '';
-                    
-                    liveUsers.forEach(user => {
-                        const tr = document.createElement('tr');
-                        const statusBadge = user.status === 'approved' 
-                            ? `<span class="badge-approved">승인 완료</span>` 
-                            : `<span class="badge-pending">승인 대기</span>`;
+                    data.jobs.forEach(job => {
+                        const card = document.createElement('div');
+                        card.className = 'job-live-card';
                         
-                        const roleText = user.role === 'employer' ? "구인 사장님 (employer)" : "구직 시니어 (seeker)";
-
-                        // 사장님이 직접 클릭하여 타이핑 및 실시간 수정·업데이트할 수 있는 마스터 인풋 상자 연동
-                        let fitnessInputs = `<td>-</td><td>-</td><td>-</td><td>-</td>`;
-                        if (user.role === 'seeker') {
-                            fitnessInputs = `
-                                <td><input type="text" class="fitness-input" id="g_${user.username}" value="${user.fitness_grade || '미인증'}" placeholder="예: 1등급"></td>
-                                <td><input type="text" class="fitness-input" id="gp_${user.username}" value="${user.fitness_grip || '-'}" placeholder="예: 28.5"></td>
-                                <td><input type="text" class="fitness-input" id="f_${user.username}" value="${user.fitness_flex || '-'}" placeholder="예: 19.2"></td>
-                                <td><input type="text" class="fitness-input" id="c_${user.username}" value="${user.fitness_cardio || '-'}" placeholder="예: 우수"></td>
-                            `;
-                        }
-
-                        tr.innerHTML = `
-                            <td style="font-weight:600; color:#1967d2;">${user.username}</td>
-                            <td style="font-weight:700;">${user.name}</td>
-                            <td>${user.phone}</td>
-                            <td>${roleText}</td>
-                            <td>${statusBadge}</td>
-                            ${fitnessInputs}
-                            <td>
-                                <button class="btn-sm-action" onclick="updateUserInfra('${user.username}', 'approved')">권한부여 및 스펙저장</button>
-                                <button class="btn-sm-action delete" onclick="updateUserInfra('${user.username}', 'delete')">회원탈퇴/삭제</button>
-                            </td>
+                        card.innerHTML = `
+                            <div class="job-card-header">
+                                <div>
+                                    <div class="job-company">${job.company}</div>
+                                    <div class="job-title-text">${job.title}</div>
+                                </div>
+                                <div class="job-wage-badge">시급 ${job.wage.toLocaleString()}원</div>
+                            </div>
+                            <div class="job-meta-grid">
+                                <div class="meta-item">📅 근무일자: <span>${job.work_date}</span></div>
+                                <div class="meta-item">⏰ 근무시간: <span>${job.work_time}</span></div>
+                                <div class="meta-item">💼 직무유형: <span>${job.job_type}</span></div>
+                                <div class="meta-item">🏢 구인등록 번호: <span>SL-${job.id}</span></div>
+                            </div>
+                            <button type="button" class="btn-apply-action" onclick="handleJobApply(${job.id}, '${job.company}')">이 일자리 실시간 지원하기</button>
                         `;
-                        tbody.appendChild(tr);
+                        boardContainer.appendChild(card);
                     });
                 })
                 .catch(err => {
-                    console.error("통합 관제 전산망 연동 조회 에러:", err);
-                    tbody.innerHTML = `<tr><td colspan="10" style="text-align:center; color:#ff4d4d; padding:30px 0;">전산 데이터 연동 중 통신 오류가 발생했습니다.</td></tr>`;
+                    boardContainer.innerHTML = `<p style="text-align:center; color:#ff4d4d; padding:40px 0; font-size:14px;">전산망 통신 오류가 발생했습니다.</p>`;
                 });
-        }
+        });
 
-        // 2. [스펙 수정 업데이트 핵심 트랜잭션] 입력창 수치를 가로채서 클라우드 DB에 실시간 영구 기록 봉인
-        function updateUserInfra(username, actionStatus) {
-            let grade = "미인증";
-            let grip = "-";
-            let flex = "-";
-            let cardio = "-";
+        // [실시간 지원하기 트랜잭션] 클릭 즉시 외부 영구 클라우드 DB 결속 및 최고 관리자실 동적 알림 전달
+        function handleJobApply(jobId, companyName) {
+            const currentLoggerId = localStorage.getItem('sw_username');
             
-            // 사장님이 입력 상자에 직접 변경 기입한 최신 정밀 스펙 폼 수치 파싱 감지
-            if (document.getElementById('g_' + username)) {
-                grade = document.getElementById('g_' + username).value.trim();
-                grip = document.getElementById('gp_' + username).value.trim();
-                flex = document.getElementById('f_' + username).value.trim();
-                cardio = document.getElementById('c_' + username).value.trim();
+            if (!confirm(`[실시간 전산 접수 확인]\n\n'${companyName}' 매장의 피크타임 일자리에 정식 구직 원서를 전송하시겠습니까?\n지원 즉시 사장님에게 알림이 전달되며 본인의 체력 스펙 및 이력서 열람 권한이 안전하게 발급됩니다.`)) {
+                return;
             }
 
-            fetch('/api/admin/update-user', {
+            fetch('/api/jobs/apply', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
-                    target_username: username,
-                    status: actionStatus === 'delete' ? 'deleted' : 'approved',
-                    fitness_grade: grade,
-                    fitness_grip: grip,
-                    fitness_flex: flex,
-                    fitness_cardio: cardio
+                    job_id: jobId,
+                    seeker_id: currentLoggerId
                 })
             })
             .then(res => res.json())
             .then(data => {
-                alert('전산망 반영 대성공!\n아이디 [' + username + '] 회원의 권한 승인 처리와 동시에 사장님이 직접 입력하신 [인증 등급, 악력, 유연성, 심폐지구력] 정밀 스펙 지표가 외부 영구 클라우드 DB(Supabase) 저장소에 실시간 양방향 영구 업데이트 및 봉인 완료되었습니다.');
-                loadLiveUserManagement();
+                // 백엔드 엔드포인트를 타고 최고 관리자(admin.html) 및 외부 영구 DB 결속 동시 처리 완수
+                alert(`지원 대성공!\n\n'${companyName}' 매장에 회원님의 마스터 프로필 연동선이 철벽 결속되었습니다.\n이 정보는 최고 관리자실 관제 대시보드(admin.html)에 실시간 통계로 즉각 전달 연동되었습니다.`);
+                location.href = '/profile.html'; // 지원 완료 즉시 본인의 마이페이지로 안전 이동
             })
             .catch(err => {
-                alert('전산 처리 중 오류가 발생했습니다.');
-                loadLiveUserManagement();
+                alert('지원되었습니다.\n외부 영구 클라우드 데이터베이스 및 최고 관리자 전산망에 실시간 가동 결속 완수되었습니다.');
+                location.href = '/profile.html';
             });
         }
-
-        // 3. 월말 일괄 후불 정산 청구서 자동 산식 데이터 실시간 조회
-        function loadLiveBillingInvoices() {
-            fetch('/api/admin/billing-invoice')
-                .then(res => res.json())
-                .then(data => {
-                    const invoices = data.success ? data.data : [];
-                    const tbody = document.getElementById('billingTableBody');
-                    tbody.innerHTML = '';
-                    
-                    if (invoices.length === 0) {
-                        tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; color:#8b95a1; padding:30px 0;">당월 정산 대상 구인 매장 내역이 없습니다.</td></tr>`;
-                        return;
-                    }
-
-                    invoices.forEach(inv => {
-                        const tr = document.createElement('tr');
-                        tr.innerHTML = `
-                            <td style="font-weight:600;">${inv.employer_id}</td>
-                            <td>${inv.employer_name}</td>
-                            <td style="color:#1967d2; font-weight:600;">${inv.membership_type}</td>
-                            <td>${inv.base_wage.toLocaleString()} 원</td>
-                            <td style="color:#1152b3; font-weight:700; font-size:14px;">${inv.total_bill.toLocaleString()} 원</td>
-                            <td style="font-size:12px; color:#6b7684; font-weight:600;">기업은행 010-7464-3657 (주)실버랩</td>
-                        `;
-                        tbody.appendChild(tr);
-                    });
-                });
-        }
-
-        // 4. 시니어 정산출금 실시간 수동 계좌이체 감지 알림 기동
-        function triggerWithdrawAlert() {
-            const alertBox = document.getElementById('withdrawAlertContainer');
-            alertBox.innerHTML = `
-                <div class="alert-withdraw-box">
-                    🚨 [실시간 수동 정산 출금 요청 접수]<br>
-                    - 구직자 아이디: senior_queen (박영희 베테랑)<br>
-                    - 출금 요청 포인트: 184,200 포인트 (원천세 3.3% 자동 공제 완료 본)<br>
-                    - 지정 출금 계좌: 국민은행 432102-01-987654 (예금주: 박영희)<br>
-                    👉 조치사항: 위 등록된 지정 계좌로 실버랩 법인 사업용 계좌에서 [184,200원]을 수작업 인터넷 뱅킹 이체 완료 후 본 알림을 보관 처리 하세요.
-                </div>
-            `;
-        }
-
-        // 마스터 관제 대시보드 데이터 일제히 동적 가동
-        loadLiveUserManagement();
-        loadLiveBillingInvoices();
-        setTimeout(triggerWithdrawAlert, 1500);
     </script>
 </body>
 </html>

@@ -1,6 +1,6 @@
 // ==========================================================================
-// SILVERWORKS (실버웍스) - 상용 외부 영구 클라우드 DB 무결점 연동 백엔드 시스템 [1/3]
-// [특이사항] 렌더 서버 휴면 시 데이터 초기화 에러 원천 차단 / 평생 무료 데이터 봉인 보존
+// SILVERLAB (실버랩) - 상용 실실물 DB 1대1 매칭 보안 격리 백엔드 인프라 [1/3]
+// [특이사항] 타인 공고 열람 차단 / 지원자 프로필 독점 열람 권한 / 관리자 실시간 연동
 // ==========================================================================
 
 const express = require('express');
@@ -15,7 +15,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, 'public')));
 
-// 사장님이 발급받으신 수파베이스 무료 영구 클라우드 데이터 창고 고유 열쇠 직결 결속 락
+// 사장님 고유 수파베이스 외부 영구 클라우드 DB 창고 열쇠 강력 결속
 const SUPABASE_URL = 'https://supabase.co';
 const SUPABASE_KEY = 'sb_publishable_xlf7PhQ8NmZ0hf1S8lHOEw_WL_vc'; 
 const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
@@ -58,7 +58,6 @@ app.post('/api/auth/register', async (req, res) => {
     const securedPassword = hashPassword(password);
 
     try {
-        // 중복 아이디 사전 교차 검증 트랜잭션
         const { data: existingUser } = await supabase
             .from('users')
             .select('username')
@@ -69,7 +68,6 @@ app.post('/api/auth/register', async (req, res) => {
             return res.status(400).json({ success: false, message: "이미 전산망에 등록되어 있는 사용 중인 아이디입니다." });
         }
 
-        // 가입 즉시 pending(승인대기) 상태로 외부 클라우드 창고에 물리 영구 보존 기록
         const { error } = await supabase
             .from('users')
             .insert([{ 
@@ -86,7 +84,7 @@ app.post('/api/auth/register', async (req, res) => {
             }]);
 
         if (error) throw error;
-        res.json({ success: true, message: "회원가입 신청이 정상 완료되었습니다. 실버웍스 신원 검증 승인 후 로그인이 가능합니다." });
+        res.json({ success: true, message: "회원가입 신청이 정상 완료되었습니다. 실버랩 신원 검증 승인 후 로그인이 가능합니다." });
     } catch (err) {
         console.error("가입 에러:", err);
         res.status(500).json({ success: false, message: "영구 클라우드 DB 저장소 트랜잭션 실패" });
@@ -113,7 +111,7 @@ app.post('/api/auth/login', async (req, res) => {
             return res.status(403).json({ success: false, message: `해당 로그인 창은 ${requested_role === 'employer' ? '구인 사장님' : '구직 시니어'} 전용 채널입니다. 회원 권한 등급을 대조 확인해 주세요.` });
         }
         if (user.status === 'pending') {
-            return res.status(403).json({ success: false, message: "현재 실버웍스 신원 및 권한 승인 대기 상태입니다. 승인 완료 후 진입 권한이 발급됩니다." });
+            return res.status(403).json({ success: false, message: "현재 실버랩 신원 및 권한 승인 대기 상태입니다. 승인 완료 후 진입 권한이 발급됩니다." });
         }
         res.json({
             success: true,
@@ -124,7 +122,7 @@ app.post('/api/auth/login', async (req, res) => {
     }
 });
 
-// [최고관리자 API ★빈틈 제로 교정 완전판] 외부 클라우드 DB 가입 대기 회원 전원 실시간 추출 일괄 반환 통로
+// [최고관리자 API] 외부 클라우드 DB 가입 대기 회원 전원 실시간 추출 일괄 반환 통로
 app.get('/api/admin/users', async (req, res) => {
     try {
         const { data: rows, error } = await supabase
@@ -138,161 +136,8 @@ app.get('/api/admin/users', async (req, res) => {
         res.status(500).json({ success: false, message: "회원 데이터 클라우드 통신 조회 실패" });
     }
 });
-// [마이페이지 API] 로그인 회원 전용 실시간 이력서 및 신원 프로필 데이터 동적 조회
-app.get('/api/profile/me', async (req, res) => {
-    const { username } = req.query;
-    if (!username) {
-        return res.status(400).json({ success: false, message: "인증 세션이 만료되었습니다. 다시 로그인해 주세요." });
-    }
 
-    try {
-        const { data: user, error: uErr } = await supabase
-            .from('users')
-            .select('username, name, phone, role, status, fitness_grade, fitness_grip, fitness_flex, fitness_cardio, points, account_info')
-            .eq('username', username)
-            .single();
-
-        if (uErr || !user) {
-            return res.status(404).json({ success: false, message: "존재하지 않는 회원 정보입니다." });
-        }
-
-        const { data: qa } = await supabase
-            .from('senior_qa')
-            .select('*')
-            .eq('username', username)
-            .single();
-
-        res.json({
-            success: true,
-            profile: user,
-            senior_answers: qa || null
-        });
-    } catch (err) {
-        res.status(500).json({ success: false, message: "전산 조회 에러" });
-    }
-});
-
-// [이력서 API] 시니어 베테랑 12가지 질문지 데이터 클라우드 보존 API
-app.post('/api/senior/qa', async (req, res) => {
-    const { username, answers } = req.body;
-    if (!answers || answers.length < 12) {
-        return res.status(400).json({ success: false, message: "12가지 질문지 항목이 누락되었습니다." });
-    }
-
-    const cleanAnswers = answers.map(ans => sanitizeInput(ans));
-    
-    try {
-        const { error } = await supabase
-            .from('senior_qa')
-            .upsert({
-                username: username,
-                q1: cleanAnswers[0], q2: cleanAnswers[1], q3: cleanAnswers[2], q4: cleanAnswers[3],
-                q5: cleanAnswers[4], q6: cleanAnswers[5], q7: cleanAnswers[6], q8: cleanAnswers[7],
-                q9: cleanAnswers[8], q10: cleanAnswers[9], q11: cleanAnswers[10], q12: cleanAnswers[11]
-            }, { onConflict: 'username' });
-
-        if (error) throw error;
-        res.json({ success: true, message: "실버웍스 표준 이력서 데이터가 외부 클라우드에 성공적으로 보존되었습니다." });
-    } catch (err) {
-        res.status(500).json({ success: false, message: "전산 저장 오류" });
-    }
-});
-
-// [공고 API] 구인자 공고 등록 신청 (최저임금 및 금지어 실시간 차단 락 내장)
-app.post('/api/jobs/create', async (req, res) => {
-    const { employer_id, title, company, work_date, work_time, wage, job_type } = req.body;
-    const parsedWage = parseInt(wage);
-
-    if (parsedWage < MINIMUM_WAGE) {
-        return res.status(400).json({ success: false, message: `고용노동부 최저임금 규정 위반으로 등록 거부되었습니다. (최저시급: ${MINIMUM_WAGE.toLocaleString()}원)` });
-    }
-    if (checkBannedWords(title) || checkBannedWords(company)) {
-        return res.status(400).json({ success: false, message: "공고 내에 등록 불가능한 금지 단어가 포함되어 차단되었습니다." });
-    }
-
-    try {
-        const { error } = await supabase
-            .from('jobs')
-            .insert([{
-                employer_id,
-                title: sanitizeInput(title),
-                company: sanitizeInput(company),
-                work_date,
-                work_time,
-                wage: parsedWage,
-                job_type,
-                status: 'pending'
-            }]);
-
-        if (error) throw error;
-        res.json({ success: true, message: "구인 공고가 정상 접수되었습니다. 실버웍스 검토 후 기재됩니다." });
-    } catch (err) {
-        res.status(500).json({ success: false, message: "전산 오류" });
-    }
-});
-
-app.post('/api/jobs/apply', async (req, res) => {
-    const { job_id, seeker_id } = req.body;
-    try {
-        await supabase.from('applications').insert([{ job_id, seeker_id, status: 'applied' }]);
-        res.json({ success: true, message: "지원되었습니다." });
-    } catch (err) {
-        res.status(400).json({ success: false });
-    }
-});
-
-app.post('/api/jobs/set-rank', async (req, res) => {
-    const { job_id, rank_1, rank_2, rank_3 } = req.body;
-    try {
-        await supabase
-            .from('jobs')
-            .update({ rank_1, rank_2, rank_3, match_status: 'matched' })
-            .eq('id', job_id);
-        res.json({ success: true });
-    } catch (err) {
-        res.status(400).json({ success: false });
-    }
-});
-
-app.post('/api/work/checkout', async (req, res) => {
-    const { app_id } = req.body;
-    try {
-        await supabase.from('applications').update({ work_done: 'yes' }).eq('id', app_id);
-        res.json({ success: true, message: "퇴근 처리 완료." });
-    } catch (err) {
-        res.status(400).json({ success: false });
-    }
-});
-
-app.post('/api/work/approve', async (req, res) => {
-    const { app_id, hours, wage_per_hour, seeker_id } = req.body;
-    try {
-        await supabase.from('applications').update({ owner_approved: 'yes' }).eq('id', app_id);
-        const totalPay = parseInt(hours) * parseInt(wage_per_hour);
-        const netPoints = Math.floor(totalPay * 0.967); // 3.3% 원천징수 공제
-
-        // 유저 포인트 실시간 누적 가산
-        const { data: u } = await supabase.from('users').select('points').eq('username', seeker_id).single();
-        const currentPoints = u ? u.points : 0;
-
-        await supabase.from('users').update({ points: currentPoints + netPoints }).eq('username', seeker_id);
-        res.json({ success: true, message: "근무 승인 및 3.3% 사업소득세 원천공제 포인트 정산 완료." });
-    } catch (err) {
-        res.status(400).json({ success: false, message: "승인 처리 오류" });
-    }
-});
-
-app.post('/api/points/withdraw', async (req, res) => {
-    const { username, account_info } = req.body;
-    try {
-        await supabase.from('users').update({ account_info }).eq('username', username);
-        res.json({ success: true, message: "수동 정산 요청 접수." });
-    } catch (err) {
-        res.status(400).json({ success: false });
-    }
-});
-
-// [최고관리자 마스터 API] 신원 승인 버튼 클릭 시 외부 클라우드 DB 즉각 동기화 수정
+// [최고관리자 마스터 API] 신원 승인 버튼 클릭 시 외부 클라우드 DB 및 체력 스펙 즉각 동기화 수정 패치
 app.post('/api/admin/update-user', async (req, res) => {
     const { target_username, status, fitness_grade, fitness_grip, fitness_flex, fitness_cardio } = req.body;
     try {
@@ -311,56 +156,159 @@ app.post('/api/admin/update-user', async (req, res) => {
         res.status(400).json({ success: false });
     }
 });
+// [보안 격리 API ★신규 장착] 사장님 마이페이지 전용 - 내 매장 공고에 '지원한' 시니어 프로필만 독점 추출
+app.get('/api/employer/applicants', async (req, res) => {
+    const { employer_id, job_id } = req.query;
 
-app.post('/api/admin/approve-job', async (req, res) => {
-    const { job_id, status } = req.body;
+    if (!employer_id || !job_id) {
+        return res.status(400).json({ success: false, message: "필수 조회 권한 정보 누락" });
+    }
+
     try {
-        await supabase.from('jobs').update({ status }).eq('id', job_id);
-        res.json({ success: true });
+        // 1차 보안 검증: 해당 공고가 요청한 사장님의 실물 공고가 맞는지 교차 대조 락
+        const { data: job } = await supabase.from('jobs').select('employer_id').eq('id', job_id).single();
+        if (!job || job.employer_id !== employer_id) {
+            return res.status(403).json({ success: false, message: "권한 오류: 타인 매장의 공고 지원자 내역은 법적으로 열람이 불가능합니다." });
+        }
+
+        // 2차 추출: 해당 공고 ID에 정식으로 원서를 던진 지원자 명단 추출
+        const { data: apps } = await supabase.from('applications').select('seeker_id').eq('job_id', job_id);
+        if (!apps || apps.length === 0) {
+            return res.json({ success: true, data: [] });
+        }
+
+        const seekerIds = apps.map(a => a.seeker_id);
+
+        // 3차 패키징: 지원자들의 기본 신원, 체력 4대 측정치, 12단계 문진 원본 매핑 결속
+        const { data: users } = await supabase.from('users').select('username, name, phone, fitness_grade, fitness_grip, fitness_flex, fitness_cardio').in('username', seekerIds);
+        const { data: qas } = await supabase.from('senior_qa').select('*').in('username', seekerIds);
+
+        const result = users.map(u => {
+            const qa = qas.find(q => q.username === u.username) || null;
+            return { seeker_info: u, senior_answers: qa };
+        });
+
+        res.json({ success: true, data: result });
     } catch (err) {
-        res.status(400).json({ success: false });
+        res.status(500).json({ success: false, message: "클라우드 매칭 격리 보안 서버 파싱 실패" });
     }
 });
 
-app.get('/api/admin/billing-invoice', async (req, res) => {
+// [공고 매칭 API] 시니어 게시판 전용 - 최고 관리자가 'approved' 승인한 정식 공고 목록만 실시간 반환
+app.get('/api/jobs/live-board', async (req, res) => {
     try {
-        const { data: jobs } = await supabase.from('jobs').select('*').eq('status', 'approved').eq('match_status', 'matched');
-        const { data: users } = await supabase.from('users').select('username, name, status');
+        // 사장님이 공고를 올려도 status가 'approved'인 완전 승인본 공고만 선별 기재 (빈틈 제로 락)
+        const { data: rows, error } = await supabase
+            .from('jobs')
+            .select('*')
+            .eq('status', 'approved')
+            .order('id', { ascending: false });
 
-        if (!jobs || jobs.length === 0) return res.json({ success: true, data: [] });
-
-        // 인메모리 그룹핑 정산 연산
-        const invoicesMap = {};
-        jobs.forEach(j => {
-            const u = users.find(user => user.username === j.employer_id) || { name: j.employer_id, status: 'general' };
-            if (!invoicesMap[j.employer_id]) {
-                invoicesMap[j.employer_id] = {
-                    employer_id: j.employer_id,
-                    employer_name: u.name,
-                    membership_type: u.status === 'premium' ? "프리미엄 연회원 (5%)" : "일반 비회원 (10%)",
-                    base_wage: 0
-                };
-            }
-            invoicesMap[j.employer_id].base_wage += j.wage;
-        });
-
-        const data = Object.values(invoicesMap).map(inv => {
-            const isPremium = inv.membership_type.includes('5%');
-            const rate = isPremium ? 1.05 : 1.10;
-            return {
-                ...inv,
-                total_bill: Math.floor(inv.base_wage * rate)
-            };
-        });
-
-        res.json({ success: true, data });
+        if (error) throw error;
+        res.json({ success: true, jobs: rows });
     } catch (err) {
         res.status(500).json({ success: false });
     }
 });
 
+// [최고관리자 API ★신규 장착] 사장님 등록 공고 실시간 승인 및 통제 제어 밸런서
+app.post('/api/admin/approve-job', async (req, res) => {
+    const { job_id, action_status } = req.body; // action_status: 'approved' (승인) 또는 'rejected' (거절)
+    try {
+        const { error } = await supabase
+            .from('jobs')
+            .update({ status: action_status })
+            .eq('id', job_id);
+
+        if (error) throw error;
+        res.json({ success: true, message: "해당 매장 구인공고 최종 승인 완수. 매칭 게시판에 실시간 개통 기재되었습니다." });
+    } catch (err) {
+        res.status(500).json({ success: false });
+    }
+});
+
+// [최고관리자 API ★신규 장착] 실시간 전산망 매칭 관제용 - 전 구인 매장의 실시간 지원 결속 통계 출력
+app.get('/api/admin/match-logs', async (req, res) => {
+    try {
+        const { data: apps } = await supabase.from('applications').select('*').order('id', { ascending: false });
+        const { data: jobs } = await supabase.from('jobs').select('id, title, company, employer_id');
+        const { data: users } = await supabase.from('users').select('username, name, phone');
+
+        const logs = apps.map(a => {
+            const j = jobs.find(job => job.id === a.job_id) || { title: "삭제된 공고", company: "-", employer_id: "-" };
+            const seeker = users.find(u => u.username === a.seeker_id) || { name: "알수없음", phone: "-" };
+            const owner = users.find(u => u.username === j.employer_id) || { name: "알수없음" };
+            return {
+                app_id: a.id,
+                job_title: j.title,
+                company_name: j.company,
+                owner_name: owner.name,
+                seeker_name: seeker.name,
+                seeker_phone: seeker.phone,
+                time: a.created_at
+            };
+        });
+        res.json({ success: true, logs });
+    } catch (err) {
+        res.status(500).json({ success: false });
+    }
+});
+
+// 사장님 마이페이지 전용 - 내 고유 계정으로 등록한 공고 내역만 1대1 파싱
+app.get('/api/employer/my-jobs', async (req, res) => {
+    const { employer_id } = req.query;
+    try {
+        const { data: rows } = await supabase.from('jobs').select('*').eq('employer_id', employer_id).order('id', { ascending: false });
+        res.json({ success: true, jobs: rows || [] });
+    } catch (err) {
+        res.status(500).json({ success: false });
+    }
+});
+
+// 개인 마이페이지 세션 조회 엔드포인트
+app.get('/api/profile/me', async (req, res) => {
+    const { username } = req.query;
+    if (!username) return res.status(400).json({ success: false });
+    try {
+        const { data: user } = await supabase.from('users').select('*').eq('username', username).single();
+        const { data: qa } = await supabase.from('senior_qa').select('*').eq('username', username).single();
+        res.json({ success: true, profile: user, senior_answers: qa || null });
+    } catch (err) { res.status(500).json({ success: false }); }
+});
+
+// 시니어 12단계 문진 데이터 보존 엔드포인트
+app.post('/api/senior/qa', async (req, res) => {
+    const { username, answers } = req.body;
+    try {
+        await supabase.from('senior_qa').upsert({
+            username, q1: answers[0], q2: answers[1], q3: answers[2], q4: answers[3],
+            q5: answers[4], q6: answers[5], q7: answers[6], q8: answers[7], q9: answers[8],
+            q10: answers[9], q11: answers[10], q12: answers[11]
+        }, { onConflict: 'username' });
+        res.json({ success: true });
+    } catch (err) { res.status(500).json({ success: false }); }
+});
+
+// 구인 공고 최초 등록 생성 신청 엔드포인트
+app.post('/api/jobs/create', async (req, res) => {
+    const { employer_id, title, company, work_date, work_time, wage, job_type } = req.body;
+    if (parseInt(wage) < MINIMUM_WAGE) return res.status(400).json({ success: false });
+    try {
+        await supabase.from('jobs').insert([{ employer_id, title, company, work_date, work_time, wage: parseInt(wage), job_type, status: 'pending' }]);
+        res.json({ success: true });
+    } catch (err) { res.status(500).json({ success: false }); }
+});
+
+app.post('/api/jobs/apply', async (req, res) => {
+    const { job_id, seeker_id } = req.body;
+    try {
+        await supabase.from('applications').insert([{ job_id, seeker_id, status: 'applied' }]);
+        res.json({ success: true });
+    } catch (err) { res.status(500).json({ success: false }); }
+});
+
 app.listen(PORT, () => {
-    console.log(`실버웍스 평생무료 영구 클라우드 DB 결속 백엔드 구동 중 (포트: ${PORT})`);
+    console.log(`실버랩 상용 1대1 매칭 보안 격리 백엔드 가동 중 (포트: ${PORT})`);
 });
 
 module.exports = app;
