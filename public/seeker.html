@@ -2,7 +2,7 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <title>실버랩 - 문진형 이력서 등록 센터</title>
+    <title>실버웍스 - 문진형 이력서 등록 센터</title>
     <style>
         body { font-family: sans-serif; background-color: #ffffff; color: #333d4b; padding: 20px; }
         header { display: flex; justify-content: space-between; align-items: center; padding: 10px 20px; background: white; border-bottom: 1px solid #f2f4f6; }
@@ -21,13 +21,13 @@
 </head>
 <body>
     <header>
-        <div style="font-size:20px; font-weight:800; color:#1967d2; cursor:pointer;" onclick="location.href='/'">SILVERLAB</div>
+        <div style="font-size:20px; font-weight:800; color:#1967d2; cursor:pointer;" onclick="location.href='/'">SILVERWORKS</div>
         <button style="padding:6px 12px; cursor:pointer;" onclick="location.href='/board.html'">매칭 게시판</button>
     </header>
 
     <div class="box">
         <div id="pBar" class="p-bar">1 / 12</div>
-        <div id="atBanner" class="banner">💡 거의 다 왔습니다</div>
+        <div id="atBanner" class="banner">거의 다 왔습니다</div>
 
         <form id="sForm" onsubmit="return false;">
             <div class="card active" data-step="1">
@@ -81,7 +81,7 @@
                 <label class="lbl"><input type="radio" name="q10" value="네, 조금 어렵습니다."> 네, 조금 어렵습니다.</label>
             </div>
             <div class="card" data-step="11">
-                <div class="q-t">11. 실버랩은 하루에 2~3시간씩 일하는 초단기 일자리를 주로 연결해 드립니다.</div>
+                <div class="q-t">11. 실버웍스는 하루에 2~3시간씩 일하는 초단기 일자리를 주로 연결해 드립니다.</div>
                 <label class="lbl"><input type="radio" name="q11" value="네, 이해했습니다."> 네, 이해했습니다.</label>
                 <label class="lbl"><input type="radio" name="q11" value="되도록이면 더 길게 일하고 싶습니다."> 되도록이면 더 길게 일하고 싶습니다.</label>
             </div>
@@ -130,7 +130,7 @@
                 document.querySelector('input[name="q10"]:checked').value, document.querySelector('input[name="q11"]:checked').value, document.querySelector('input[name="q12"]:checked').value
             ];
             fetch('/api/senior/qa', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ username: uId, answers: arr }) }).then(() => {
-                alert(`질문지 작성이 완료되었습니다.\n\n실버랩에서 24시간 이내에 전화 연락드리겠습니다.\n${nVal}님의 지원 감사드립니다. 기대에 부응하도록 최선을 다하겠습니다.\n\n-실버랩 올림-`);
+                alert(`질문지 작성이 완료되었습니다.\n\n실버웍스에서 24시간 이내에 전화 연락드리겠습니다.\n${nVal}님의 지원 감사드립니다. 기대에 부응하도록 최선을 다하겠습니다.\n\n-실버랩 올림-`);
                 location.href = '/profile.html';
             });
         }
