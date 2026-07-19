@@ -39,7 +39,7 @@
         .logo-text {
             font-size: 20px;
             font-weight: 800;
-            color: #333d4b;
+            color: #333b4c;
             letter-spacing: -0.5px;
         }
         .logo-text span {
@@ -190,10 +190,10 @@
 </head>
 <body>
 
-    <!-- [상단 헤더] 사장님 원본 이미지 100% 완벽 일치 파란색 문양 장착 -->
+    <!-- [상단 헤더] 사장님 원본 사진 이미지 100% 완벽 일치 파란색 문양 실물 로고 바인딩 -->
     <header>
         <div class="logo-container" onclick="location.href='/'">
-            <!-- 픽셀 오차 제로 규격 마스터 SVG 패스 연동 -->
+            <!-- 픽셀 오차 제로 마스터 복제형 SVG 패스 -->
             <svg width="28" height="26" viewBox="0 0 100 90" fill="none" xmlns="http://w3.org">
                 <path d="M12.5 54C13.5 53 19.5 54.5 28.5 48.5C38.5 42 47 28 56.5 19.5C65.5 11 76.5 6.5 85.5 12.5C95.5 18.5 90 32 81 37C69.5 41.5 61 33 53 41.5C43 51 28.5 63 17 61C10 59.5 6.5 53 12.5 54Z" stroke="#1967d2" stroke-width="7.5" stroke-linecap="round" stroke-linejoin="round"/>
                 <path d="M51.5 59C58.5 67 71 68 80.5 60.5C90 53 92.5 39.5 85.5 32" stroke="#1967d2" stroke-width="7.5" stroke-linecap="round" stroke-linejoin="round"/>
@@ -216,7 +216,7 @@
         <div id="withdrawAlertContainer"></div>
 
         <div class="admin-card">
-            <div class="card-header-title">구인 사장님 / 구직 시니어 통합 검증 및 스펙 수정 제어판 (전산 연동 교정 패치)</div>
+            <div class="card-header-title">구인 사장님 / 구직 시니어 통합 검증 및 스펙 수정 제어판 (가짜 데이터 전산 삭제 완결)</div>
             <div class="table-responsive">
                 <table class="admin-table">
                     <thead>
@@ -265,43 +265,25 @@
             </div>
         </div>
     </div>
-    <!-- [실물 DB 연동 고도화 엔진 ★에러 박멸] SQLite3 통합 통신 스크립트 -->
+    <!-- [실물 DB 연동 고도화 엔진] SQLite3 통합 통신 스크립트 -->
     <script>
         // 1. [완벽 교정] 가짜 데이터 및 무반응 파라미터 파쇄 ➔ 실물 전산망 DB 연동 dynamic 로드
         function loadLiveUserManagement() {
             const tbody = document.getElementById('userTableBody');
             
-            // 오류 유발 파라미터를 완전히 폐기하고, 전체 가입자 명단을 긁어오는 백엔드 마스터 라우터 연동
-            fetch('/api/profile/me?username=all') 
+            // 신규 개설된 통합 관리자 전용 전체 회원 반환 라우터 직결
+            fetch('/api/admin/users') 
                 .then(res => res.json())
                 .then(data => {
-                    // 서버 실물 DB 연동이 성공하면 그 명단을 그대로 출력하고, 로컬 테스트 샌드박스를 완벽 보장
-                    let liveUsers = data.success ? data.users : [];
-                    
-                    if (!liveUsers || liveUsers.length === 0) {
-                        // 실시간 가입 데이터 교차 결속 확인용 모의 백업 패키지 마운트
-                        liveUsers = [
-                            { username: "senior_king", name: "김순이 베테랑", phone: "010-4455-6677", role: "seeker", status: "pending", fitness_grade: "미인증", fitness_grip: "-", fitness_flex: "-", fitness_cardio: "-" },
-                            { username: "senior_queen", name: "박영희 베테랑", phone: "010-8899-0011", role: "seeker", status: "approved", fitness_grade: "1등급", fitness_grip: "28.5", fitness_flex: "19.2", fitness_cardio: "우수" },
-                            { username: "boss_cafe", name: "실버웍스 카페 성남점", phone: "010-7464-3657", role: "employer", status: "approved", fitness_grade: "-", fitness_grip: "-", fitness_flex: "-", fitness_cardio: "-" }
-                        ];
-                    }
-
-                    // [정보 이동 에러 원천 차단] 가입창에서 생성하여 브라우저 메모리에 마운트된 신규 회원 계정을 실시간 강제 대조 삽입
-                    const localRegId = localStorage.getItem('sw_username');
-                    const localRegRole = localStorage.getItem('sw_role');
-                    if (localRegId && !liveUsers.some(u => u.username === localRegId)) {
-                        liveUsers.push({
-                            username: localRegId,
-                            name: localRegRole === 'employer' ? "구인 신규 사장님 (승인대기)" : "구직 신규 베테랑 (승인대기)",
-                            phone: "010-XXXX-XXXX",
-                            role: localRegRole,
-                            status: "pending",
-                            fitness_grade: "미인증", fitness_grip: "-", fitness_flex: "-", fitness_cardio: "-"
-                        });
-                    }
-
                     tbody.innerHTML = '';
+                    
+                    if (!data.success || !data.users || data.users.length === 0) {
+                        tbody.innerHTML = `<tr><td colspan="10" style="text-align:center; color:#8b95a1; padding:30px 0;">현재 가입 신청된 데이터베이스 내역이 존재하지 않습니다.</td></tr>`;
+                        return;
+                    }
+
+                    const liveUsers = data.users;
+
                     liveUsers.forEach(user => {
                         const tr = document.createElement('tr');
                         const statusBadge = user.status === 'approved' 
@@ -313,10 +295,10 @@
                         let fitnessInputs = `<td>-</td><td>-</td><td>-</td><td>-</td>`;
                         if (user.role === 'seeker') {
                             fitnessInputs = `
-                                <td><input type="text" class="fitness-input" id="g_${user.username}" value="${user.fitness_grade}"></td>
-                                <td><input type="text" class="fitness-input" id="gp_${user.username}" value="${user.fitness_grip}"></td>
-                                <td><input type="text" class="fitness-input" id="f_${user.username}" value="${user.fitness_flex}"></td>
-                                <td><input type="text" class="fitness-input" id="c_${user.username}" value="${user.fitness_cardio}"></td>
+                                <td><input type="text" class="fitness-input" id="g_${user.username}" value="${user.fitness_grade || '미인증'}"></td>
+                                <td><input type="text" class="fitness-input" id="gp_${user.username}" value="${user.fitness_grip || '-'}"></td>
+                                <td><input type="text" class="fitness-input" id="f_${user.username}" value="${user.fitness_flex || '-'}"></td>
+                                <td><input type="text" class="fitness-input" id="c_${user.username}" value="${user.fitness_cardio || '-'}"></td>
                             `;
                         }
 
@@ -337,12 +319,17 @@
                 })
                 .catch(err => {
                     console.error("통합 관제 전산망 연동 조회 에러:", err);
+                    tbody.innerHTML = `<tr><td colspan="10" style="text-align:center; color:#ff4d4d; padding:30px 0;">전산 데이터 연동 중 통신 오류가 발생했습니다.</td></tr>`;
                 });
         }
 
         // 2. [신원 승인 트랜잭션] 사장님이 승인을 누르는 즉시 실제 DB 값을 approved로 변환 업데이트
         function updateUserInfra(username, actionStatus) {
-            let grade = "-", grip = "-", flex = "-", cardio = "-";
+            let grade = "-";
+            let grip = "-";
+            let flex = "-";
+            let cardio = "-";
+            
             if (document.getElementById('g_' + username)) {
                 grade = document.getElementById('g_' + username).value;
                 grip = document.getElementById('gp_' + username).value;
@@ -364,11 +351,11 @@
             })
             .then(res => res.json())
             .then(data => {
-                alert('승인 성공: 전산 연동 동기화 확인! 해당 가입 계정의 신원 권한 승인 및 오프라인 국민체력 스펙 데이터가 데이터베이스 저장소에 실시간 영구 기록 마운트 완료되었습니다.');
+                alert('처리 완료: 데이터베이스 전산 변경 동기화 완료! 해당 회원의 상태가 실시간으로 영구 반영되었습니다.');
                 loadLiveUserManagement();
             })
             .catch(err => {
-                alert('승인 성공: 마스터 데이터베이스 기록 장치에 안전하게 마운트되었습니다.');
+                alert('전산 처리 중 오류가 발생했습니다.');
                 loadLiveUserManagement();
             });
         }
@@ -378,13 +365,15 @@
             fetch('/api/admin/billing-invoice')
                 .then(res => res.json())
                 .then(data => {
-                    const invoices = data.success ? data.data : [
-                        { employer_id: "boss_cafe", employer_name: "실버웍스 카페 성남점", membership_type: "프리미엄 연회원 (5% 수수료 우대)", base_wage: 601800, total_bill: 631890 },
-                        { employer_id: "boss_bread", employer_name: "뚜레쥬르 성남동점 사장님", membership_type: "일반 비회원 (10% 표준 수수료)", base_wage: 1203600, total_bill: 1323960 }
-                    ];
-
+                    const invoices = data.success ? data.data : [];
                     const tbody = document.getElementById('billingTableBody');
                     tbody.innerHTML = '';
+                    
+                    if (invoices.length === 0) {
+                        tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; color:#8b95a1; padding:30px 0;">당월 정산 대상 구인 매장 내역이 없습니다.</td></tr>`;
+                        return;
+                    }
+
                     invoices.forEach(inv => {
                         const tr = document.createElement('tr');
                         tr.innerHTML = `

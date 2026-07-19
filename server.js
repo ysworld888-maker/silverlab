@@ -1,6 +1,6 @@
 // ==========================================================================
-// SILVERWORKS (실버웍스) - 상용 통합 회원제 및 프로필 연동 백엔드 엔진 [1/3]
-// [보안 지위] 복잡한 본인인증 전산 생략 / 아이디·비밀번호 즉시 가입 및 권한 승인제
+// SILVERWORKS (실버웍스) - 상용 실물 DB 실시간 연동 백엔드 시스템 [1/3]
+// [특이사항] 임시 모의 데이터 전량 박멸, 가입 명단 즉시 동적 렌더링 결속 완료
 // ==========================================================================
 
 const express = require('express');
@@ -10,7 +10,7 @@ const crypto = require('crypto');
 const sqlite3 = require('sqlite3').verbose();
 
 const app = express();
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 10000; // 렌더 기본 포트 10000 최적화 바인딩
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -107,7 +107,6 @@ app.post('/api/auth/register', (req, res) => {
         return res.status(400).json({ success: false, message: "필수 가입 서식 정보가 누락되었습니다." });
     }
 
-    // 보안 필터: 유흥 및 성매매 단어 기입 차단 경고 시스템
     if (checkBannedWords(username) || checkBannedWords(name)) {
         return res.status(400).json({ success: false, message: "등록 불가능한 단어가 포함되어 가입이 전산 거부되었습니다. 위반 시 관할 경찰서 수사 고발 조치됩니다." });
     }
@@ -117,7 +116,6 @@ app.post('/api/auth/register', (req, res) => {
     const cleanPhone = sanitizeInput(phone);
     const securedPassword = hashPassword(password);
 
-    // 가입 즉시 pending(승인대기) 상태로 DB 기록 ➔ 관리자가 admin.html에서 권한부여(승인) 처리함
     const query = `INSERT INTO users (username, password, name, phone, role, status) VALUES (?, ?, ?, ?, ?, 'pending')`;
     db.run(query, [cleanUsername, securedPassword, cleanName, cleanPhone, role], function(err) {
         if (err) {
@@ -136,7 +134,6 @@ app.post('/api/auth/login', (req, res) => {
         if (err || !user) {
             return res.status(400).json({ success: false, message: "아이디 또는 비밀번호 전산 불일치 오류입니다." });
         }
-        // 기획 요건 보장: 사장님용 진입과 시니어용 진입 창의 역할을 엄격히 분리 대조 검증
         if (user.role !== requested_role) {
             return res.status(403).json({ success: false, message: `해당 로그인 창은 ${requested_role === 'employer' ? '구인 사장님' : '구직 시니어'} 전용 채널입니다. 회원 권한 등급을 대조 확인해 주세요.` });
         }
@@ -149,20 +146,27 @@ app.post('/api/auth/login', (req, res) => {
         });
     });
 });
-// [회원제 API ★신규 가동] 로그인 회원 전용 실시간 이력서 및 신원 프로필 데이터 동적 조회
+
+// [최고관리자 API ★빈틈 제로 교정 완전판] 실시간 가입 대기 회원 전원 dynamic 리스트 일괄 반환 통로
+app.get('/api/admin/users', (req, res) => {
+    const query = `SELECT username, name, phone, role, status, fitness_grade, fitness_grip, fitness_flex, fitness_cardio FROM users ORDER BY id DESC`;
+    db.all(query, [], (err, rows) => {
+        if (err) {
+            return res.status(500).json({ success: false, message: "회원 데이터 통신 조회 실패" });
+        }
+        res.json({ success: true, users: rows });
+    });
+});
+// 로그인 회원 전용 실시간 이력서 및 신원 프로필 데이터 동적 조회
 app.get('/api/profile/me', (req, res) => {
     const { username } = req.query;
-    
     if (!username) {
         return res.status(400).json({ success: false, message: "인증 세션이 만료되었습니다. 다시 로그인해 주세요." });
     }
-
-    // 데이터베이스 교차 조회 ➔ 회원 기본정보와 12가지 질문지 답변 원본 결합 패키징
     db.get(`SELECT username, name, phone, role, status, fitness_grade, fitness_grip, fitness_flex, fitness_cardio, points, account_info FROM users WHERE username = ?`, [username], (err, user) => {
         if (err || !user) {
             return res.status(404).json({ success: false, message: "존재하지 않는 회원 정보입니다." });
         }
-        
         db.get(`SELECT * FROM senior_qa WHERE username = ?`, [username], (err, qa) => {
             res.json({
                 success: true,
