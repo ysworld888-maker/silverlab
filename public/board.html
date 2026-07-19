@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>실버웍스 매칭 게시판</title>
+    <title>실버웍스 구인구직 게시판</title>
     <!-- 혼선 유도 색상을 완벽 소멸시키고 프리미엄 오션블루 컬러로 버튼 및 카드 디자인 시스템을 통합 정렬한 CSS -->
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; -webkit-tap-highlight-color: transparent; }
@@ -36,7 +36,7 @@
     </header>
 
     <div class="container">
-        <h2 class="board-title" id="bTitle">실시간 일자리 매칭 피드</h2>
+        <h2 class="board-title" id="bTitle">실시간 일자리 확인 피드</h2>
         <p class="board-sub" id="bSub">최고 관리자가 원천 검토 후 정식 승인하여 실시간 자동 기재 개통된 청정 공고 명세입니다.</p>
         
         <!-- 실시간 공고 카드 동적 적재 콘솔 컨테이너 구역 -->
@@ -58,12 +58,12 @@
 
             // 2. [기획 마스터 요건 완벽 가동] 구인 사장님 로그인 시 타인 공고 원천 은폐 격리 차단 락 가동
             if (role === 'employer') {
-                document.getElementById('bTitle').innerText = "보안 격리 보호 구역";
+                document.getElementById('bTitle').innerText = "정보 보호 구역";
                 document.getElementById('bSub').style.display = 'none';
                 
                 container.innerHTML = `
                     <div class="employer-lock-banner">
-                        <div class="lock-banner-title">🔒 비즈니스 독점 권한 격리 활성화</div>
+                        <div class="lock-banner-title">비즈니스 독점 권한 격리 활성화</div>
                         <div class="lock-banner-desc">
                             실버웍스는 정보 혼선 방지 및 시니어 개인정보 보호법을 철저히 준수합니다.<br>
                             이에 따라 타 사업장의 구인 현황이나 구직 명세는 전산 차단되어 열람할 수 없으며,<br>
@@ -99,9 +99,9 @@
                                 <div class="job-wage-badge">시급 ${j.wage.toLocaleString()}원</div>
                             </div>
                             <div class="job-meta-text">
-                                📅 근무일자: <span>${j.work_date}</span> | 
-                                ⏰ 집중근로시간: <span>${j.work_time}</span> | 
-                                💼 직무유형: <span>${j.job_type}</span>
+                                근무일자: <span>${j.work_date}</span> | 
+                                집중근로시간: <span>${j.work_time}</span> | 
+                                직무유형: <span>${j.job_type}</span>
                             </div>
                             <button type="button" class="btn-official-blue" onclick="applyJob(${j.id}, '${j.company}')">이 일자리 실시간 지원하기</button>
                         `;
@@ -128,7 +128,7 @@
             .then(res => res.json())
             .then(data => {
                 // 백엔드 코어 API 라인을 타고 물리 DB 적재 및 최고관리자실 관제 대시보드(admin.html) 즉시 기재 전송 완수
-                alert(`지원 대성공!\n\n'${comp}' 매장에 회원님의 마스터 프로필 연동선이 철벽 결속되었습니다.\n이 정보는 최고 관리자실 관제 대시보드(admin.html)에 실시간 통계로 즉각 전달 연동되었습니다.`);
+                alert(`지원 대성공!\n\n'${comp}' 매장에 회원님의 프로필 연동되었습니다.\n이 정보는 최고 관리자실 관제 대시보드(admin.html)에 실시간 통계로 즉각 전달 연동되었습니다.`);
                 location.href = '/profile.html'; // 지원 완수 즉시 본인의 마이페이지로 안전 자동 이동
             })
             .catch(err => {
