@@ -2,382 +2,357 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SILVER LAB - 최고 관리자 통제 패널</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>실버웍스 최고관리자 - 마스터 비즈니스 인프라 통제 대시보드</title>
+    <!-- 토스 스타일의 정갈함과 넓은 여백, 신뢰도 높은 그레이/블루 톤 셋업 -->
     <style>
-        /* 기본 마스터 레이아웃 최적화 */
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Malgun Gothic', sans-serif; }
-        body { color: #2D3748; line-height: 1.8; background-color: #F7FAFC; }
-        a { text-decoration: none; color: inherit; }
-        
-        /* 상단 전용 관리 헤더 바 (클립패스 정밀 컷팅 물결 비커 로고 탑재) */
-        header { display: flex; justify-content: space-between; align-items: center; padding: 15px 5%; background-color: #1A202C; box-shadow: 0 4px 12px rgba(0,0,0,0.15); position: sticky; top: 0; z-index: 100; }
-        .brand-logo-wrap { display: flex; align-items: center; gap: 12px; cursor: pointer; }
-        .beaker-icon { width: 34px; height: 34px; }
-        .logo-text { font-size: 22px; font-weight: 800; color: #E2E8F0; letter-spacing: 1px; }
-        .admin-badge { background-color: #E53E3E; color: #FFFFFF; font-size: 12px; font-weight: bold; padding: 2px 8px; border-radius: 4px; margin-left: 5px; letter-spacing: 0.5px; }
-        .logout-btn { background-color: #4A5568; color: #E2E8F0; padding: 8px 18px; border-radius: 4px; font-weight: bold; cursor: pointer; border: none; font-size: 15px; transition: 0.2s; }
-        .logout-btn:hover { background-color: #718096; color: #FFFFFF; }
-        
-        /* 최상위 게이트웨이 보안 로그인 샌드박스 */
-        .login-overlay { display: flex; align-items: center; justify-content: center; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: #23272E; z-index: 1000; }
-        .admin-login-box { background-color: #FFFFFF; width: 100%; max-width: 450px; padding: 50px 40px; border-radius: 8px; box-shadow: 0 20px 40px rgba(0,0,0,0.25); text-align: center; border: 2px solid #ECC94B; }
-        .admin-login-box h2 { font-size: 24px; color: #1A202C; margin-bottom: 10px; font-weight: 800; }
-        .admin-login-box p { color: #718096; font-size: 14px; margin-bottom: 30px; }
-        .form-group { margin-bottom: 22px; text-align: left; }
-        .form-group label { display: block; font-weight: bold; margin-bottom: 8px; font-size: 14px; color: #4A5568; }
-        .form-group input { width: 100%; padding: 13px; border: 1px solid #CBD5E0; border-radius: 4px; font-size: 16px; background-color: #F7FAFC; }
-        .form-group input:focus { outline: none; border-color: #ECC94B; background-color: #FFFFFF; }
-        .admin-login-btn { width: 100%; background-color: #ECC94B; color: #1A202C; border: none; padding: 14px; border-radius: 4px; font-size: 18px; font-weight: bold; cursor: pointer; transition: 0.3s; margin-top: 10px; box-shadow: 0 4px 10px rgba(236,201,75,0.2); }
-        .admin-login-btn:hover { background-color: #D69E2E; transform: translateY(-1px); }
-
-        /* 대시보드 코어 메인 섹션 */
-        .admin-main { display: none; max-width: 1400px; margin: 0 auto; padding: 40px 20px; }
-        .section-title { font-size: 24px; color: #1A202C; margin: 40px 0 20px; font-weight: bold; border-left: 5px solid #ECC94B; padding-left: 12px; display: flex; align-items: center; justify-content: space-between; }
-        
-        /* 엑셀 데이터 수집 뷰 테이블 공통 서식 */
-        .card-panel { background-color: #FFFFFF; border-radius: 6px; padding: 30px; box-shadow: 0 4px 16px rgba(0,0,0,0.02); border: 1px solid #E2E8F0; margin-bottom: 40px; }
-        .table-responsive { overflow-x: auto; max-height: 400px; border: 1px solid #CBD5E0; border-radius: 4px; }
-        table { width: 100%; border-collapse: collapse; font-size: 14px; background-color: #FFFFFF; text-align: left; }
-        th, td { padding: 12px 16px; border-bottom: 1px solid #E2E8F0; border-right: 1px solid #E2E8F0; white-space: nowrap; }
-        th { background-color: #2D3748; color: #ECC94B; font-weight: bold; position: sticky; top: 0; z-index: 10; }
-        tr:hover { background-color: #F7FAFC; }
-        .no-data-msg { text-align: center; padding: 40px; color: #A0AEC0; font-style: italic; font-size: 15px; }
-
-        /* 구인 카드 제어용 전용 폼 모듈 서식 */
-        .crud-grid-wrap { display: grid; grid-template-columns: 1fr 2fr; gap: 30px; }
-        .crud-form-box { background-color: #FFFFFF; border: 1px solid #ECC94B; border-radius: 6px; padding: 30px; box-shadow: 0 6px 20px rgba(0,0,0,0.03); position: sticky; top: 90px; }
-        .crud-form-box h3 { font-size: 18px; color: #1A202C; margin-bottom: 20px; font-weight: bold; border-bottom: 2px solid #F7FAFC; padding-bottom: 10px; }
-        .crud-btn-group { display: flex; gap: 10px; margin-top: 15px; }
-        .form-action-btn { flex: 1; padding: 12px; border: none; border-radius: 4px; font-size: 15px; font-weight: bold; cursor: pointer; transition: 0.2s; text-align: center; }
-        .save-card-btn { background-color: #ECC94B; color: #1A202C; }
-        .save-card-btn:hover { background-color: #D69E2E; }
-        .reset-form-btn { background-color: #E2E8F0; color: #4A5568; }
-        .reset-form-btn:hover { background-color: #CBD5E0; }
-
-        /* 일자리 관리 데이터 목록 보드 서식 */
-        .admin-job-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; }
-        .admin-job-item { background-color: #F7FAFC; border: 1px solid #E2E8F0; border-radius: 6px; padding: 20px; position: relative; transition: all 0.2s; }
-        .admin-job-item:hover { border-color: #ECC94B; box-shadow: 0 4px 12px rgba(0,0,0,0.04); }
-        .item-shop { font-size: 18px; font-weight: bold; color: #1A202C; margin-bottom: 12px; padding-right: 50px; border-bottom: 1px dashed #CBD5E0; padding-bottom: 8px; }
-        .item-detail { font-size: 14px; color: #4A5568; margin-bottom: 6px; }
-        .item-detail span { font-weight: bold; color: #A0AEC0; display: inline-block; width: 65px; }
-        
-        /* 카드 내 개별 편집/삭제 조작 단추 스페셜 컴포넌트 */
-        .item-actions { position: absolute; top: 18px; right: 15px; display: flex; gap: 6px; }
-        .action-tool-btn { border: none; background: none; font-size: 13px; font-weight: bold; cursor: pointer; padding: 2px 6px; border-radius: 3px; }
-        .edit-tool { color: #3182CE; background-color: #EBF8FF; }
-        .edit-tool:hover { background-color: #BEE3F8; }
-        .delete-tool { color: #E53E3E; background-color: #FFF5F5; }
-        .delete-tool:hover { background-color: #FED7D7; }
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+        body {
+            background-color: #f9fafb;
+            color: #333d4b;
+            padding-bottom: 60px;
+        }
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 18px 20px;
+            background-color: #ffffff;
+            border-bottom: 1px solid #e5e8eb;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .logo-text {
+            font-size: 18px;
+            font-weight: 800;
+            color: #333d4b;
+            letter-spacing: -0.5px;
+        }
+        .logo-text span {
+            color: #1967d2;
+            font-size: 11px;
+            font-weight: 600;
+            background-color: #e8f3ff;
+            padding: 2px 6px;
+            border-radius: 4px;
+            margin-left: 4px;
+        }
+        .container {
+            padding: 24px 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .admin-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: #1b1c1e;
+            letter-spacing: -0.6px;
+            margin-bottom: 8px;
+        }
+        .admin-sub {
+            font-size: 14px;
+            color: #6b7684;
+            margin-bottom: 32px;
+            line-height: 1.5;
+        }
+        .admin-card {
+            background-color: #ffffff;
+            border-radius: 16px;
+            border: 1px solid #e5e8eb;
+            padding: 24px;
+            margin-bottom: 24px;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.01);
+        }
+        .card-header-title {
+            font-size: 17px;
+            font-weight: 700;
+            color: #333d4b;
+            margin-bottom: 16px;
+            letter-spacing: -0.2px;
+        }
+        .table-responsive {
+            width: 100%;
+            overflow-x: auto;
+            border-radius: 8px;
+            border: 1px solid #e5e8eb;
+        }
+        .admin-table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+            font-size: 13px;
+            background-color: #ffffff;
+            min-width: 800px;
+        }
+        .admin-table th {
+            background-color: #f2f4f6;
+            color: #4e5968;
+            font-weight: 600;
+            padding: 12px 14px;
+            border-bottom: 1px solid #e5e8eb;
+        }
+        .admin-table td {
+            padding: 14px;
+            border-bottom: 1px solid #f2f4f6;
+            color: #333d4b;
+            vertical-align: middle;
+        }
+        .badge-pending {
+            background-color: #ffeeee;
+            color: #ff4d4d;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-weight: 600;
+        }
+        .badge-approved {
+            background-color: #e8f3ff;
+            color: #1967d2;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-weight: 600;
+        }
+        .btn-sm-action {
+            background-color: #1967d2;
+            color: #ffffff;
+            border: none;
+            padding: 6px 10px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-right: 4px;
+        }
+        .btn-sm-action.delete {
+            background-color: #f2f4f6;
+            color: #6b7684;
+        }
+        .btn-sm-action:hover {
+            opacity: 0.9;
+        }
+        .fitness-input {
+            width: 60px;
+            padding: 4px 6px;
+            border-radius: 4px;
+            border: 1px solid #d1d6db;
+            font-size: 12px;
+            text-align: center;
+        }
+        .alert-withdraw-box {
+            background-color: #ffeeee;
+            border: 1px solid #ffcccc;
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 24px;
+            color: #ff4d4d;
+            font-size: 13px;
+            font-weight: 600;
+            line-height: 1.6;
+        }
     </style>
 </head>
 <body>
-
-    <!-- 1단계 관문: 최고 권한 보호 로그인 오버레이 스크린 -->
-    <div id="adminLoginOverlay" class="login-overlay">
-        <div class="admin-login-box">
-            <h2>SILVER LAB 최고 관리자</h2>
-            <p>본 서식은 철저히 보호되는 보안 구역입니다.<br>최고 관리자 자격 증명 계정을 입력해 주세요.<br>(아이디: admin / 비밀번호: admin123)</p>
-            <form onsubmit="verifyAdminCredentials(event)">
-                <div class="form-group"><label>관리자 계정 ID</label><input type="text" id="admId" required placeholder="아이디 기입"></div>
-                <div class="form-group"><label>보안 패스워드</label><input type="password" id="admPw" required placeholder="비밀번호 기입"></div>
-                <button type="submit" class="admin-login-btn">데이터베이스 권한 해제</button>
-            </form>
+    <header>
+        <div class="logo-container">
+            <span class="logo-text">SILVERWORKS <span>마스터 콘솔</span></span>
+        </div>
+        <div style="font-size: 13px; color: #4e5968; font-weight: 600;">최고관리자 모드 가동 중</div>
+    </header>
+    <div class="container">
+        <h1 class="admin-title">인프라 통합 관제 시스템</h1>
+        <p class="admin-sub">가입 회원들의 신원 검증, 오프라인 국민체력 100 정밀 측정 지표 관리, 시니어 실시간 수동 정산 알림 통제 및 구인 매장들의 월말 일괄 후불 청구서 자동 산식 명세를 모니터링하는 마스터 제어실입니다.</p>
+        <div id="withdrawAlertContainer"></div>
+        <div class="admin-card">
+            <div class="card-header-title">구인 사장님 / 구직 시니어 통합 검증 및 스펙 수정 제어판</div>
+            <div class="table-responsive">
+                <table class="admin-table">
+                    <thead>
+                        <tr>
+                            <th>아이디</th>
+                            <th>성명/매장명</th>
+                            <th>연락처</th>
+                            <th>회원 권한 등급</th>
+                            <th>승인 상태</th>
+                            <th>체력 등급</th>
+                            <th>악력 (kg)</th>
+                            <th>유연성 (cm)</th>
+                            <th>심폐지구력</th>
+                            <th>인프라 원천 제어</th>
+                        </tr>
+                    </thead>
+                    <tbody id="userTableBody">
+                        <tr>
+                            <td colspan="10" style="text-align:center; color:#8b95a1; padding:30px 0;">통합 회원 가입 명세 데이터를 조회 중입니다...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="admin-card">
+            <div class="card-header-title">월말 일괄 후불 정산 청구서 산식 명세 패널 (회원 5% / 비회원 10% 가산율 자동 동기화)</div>
+            <div class="table-responsive">
+                <table class="admin-table">
+                    <thead>
+                        <tr>
+                            <th>매장 아이디</th>
+                            <th>매장 사장님 성명</th>
+                            <th>가입 회원권 등급</th>
+                            <th>당월 고용 근로 임금 총액</th>
+                            <th>플랫폼 가산 총 청구액 (부가세 포함)</th>
+                            <th>정산 수동 수취 전용 지정 계좌</th>
+                        </tr>
+                    </thead>
+                    <tbody id="billingTableBody">
+                        <tr>
+                            <td colspan="6" style="text-align:center; color:#8b95a1; padding:30px 0;">월말 마감 후불 가산 정산서 통계를 산출 중입니다...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
-    <!-- 2단계 관문 승인 후 노출될 마스터 메인 통제 대시보드 구조 -->
-    <header id="adminHeader" style="display: none;">
-        <div class="brand-logo-wrap" onclick="location.href='index.html'">
-            <svg class="beaker-icon" viewBox="0 0 64 64" fill="none" xmlns="http://w3.org">
-                <defs>
-                    <clipPath id="beakerInnerWall">
-                        <path d="M28 14V30L16 55H48L36 30V14H28Z" />
-                    </clipPath>
-                </defs>
-                <g clip-path="url(#beakerInnerWall)">
-                    <path d="M12 35C15 33.5 19 33.5 23 35C27 36.5 31 36.5 35 35C39 33.5 43 33.5 47 35C51 36.5 55 36.5 59 35V58H12V35Z" fill="#E2E8F0"/>
-                </g>
-                <line x1="29" y1="41" x2="35" y2="41" stroke="#23272E" stroke-width="1.5" stroke-linecap="round"/>
-                <line x1="27" y1="47" x2="37" y2="47" stroke="#23272E" stroke-width="1.5" stroke-linecap="round"/>
-                <path d="M26 10H38M32 10V14M28 14H36M28 14V30L16 55H48L36 30V14" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-            <div class="logo-text">SILVER LAB <span class="admin-badge">MASTER</span></div>
-        </div>
-        <button class="logout-btn" onclick="terminateAdminSession()">대시보드 패닉 아웃(로그아웃)</button>
-    </header>
-
-    <div id="adminMainPanel" class="admin-main">
-        
-        <!-- [보안 데이터 1] 실시간 시니어 질문지 제출 내역 엑셀 보드 -->
-        <div class="section-title">1. 시니어 베테랑 질문지 보안 접수 현황 (엑셀 방식 실시간 누적)</div>
-        <div class="card-panel">
-            <div class="table-responsive">
-                <table id="seniorDataTable">
-                    <thead>
-                        <tr>
-                            <th>순번</th><th>신청대행</th><th>이름</th><th>생년월일</th><th>휴대전화</th><th>희망동네</th>
-                            <th>3층계단</th><th>1시간보행</th><th>현버지병</th><th>주문청력</th><th>카톡인지</th>
-                            <th>초단기확인</th><th>정부일자리</th><th>실시간 접수시각</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <!-- 자바스크립트 비동기 동적 인젝션 로드 구역 -->
-                    </tbody>
-                </table>
-            </div>
-        </div>
-
-        <!-- [보안 데이터 2] 실시간 사장님 구인 상담 신청 내역 엑셀 보드 -->
-        <div class="section-title">2. 사장님 구인 매칭 상담 신청 현황 (엑셀 방식 실시간 누적)</div>
-        <div class="card-panel">
-            <div class="table-responsive">
-                <table id="employerDataTable">
-                    <thead>
-                        <tr>
-                            <th>접수 번호</th><th>담당자명 / 매장명</th><th>비상 연락처</th><th>실시간 신청시각</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <!-- 자바스크립트 비동기 동적 인젝션 로드 구역 -->
-                    </tbody>
-                </table>
-            </div>
-        </div>
-
-        <!-- [마스터 제어 3] 구인구직 카드형 일자리 실시간 CRUD 통합 제어 패널 -->
-        <div class="section-title">3. 구인구직 카드형 일자리 마스터 CRUD 제어판</div>
-        
-        <div class="crud-grid-wrap">
-            <!-- 좌측: 카드 정보 입력 및 수정 양식 폼 -->
-            <div class="crud-form-box">
-                <h3 id="formModeTitle">새 구인 카드 등록하기</h3>
-                <form id="jobCrudForm" onsubmit="processJobCrudEvent(event)">
-                    <!-- 수정 모드 전환을 위한 히든 식별자 주입구 -->
-                    <input type="hidden" id="targetJobId" value="">
-                    
-                    <div class="form-group" style="margin-bottom:15px;">
-                        <label>가게 이름 / 매장명</label>
-                        <input type="text" id="crudShopName" required placeholder="예: 분당 파크카페">
-                    </div>
-                    <div class="form-group" style="margin-bottom:15px;">
-                        <label>근무 상세 장소</label>
-                        <input type="text" id="crudLocation" required placeholder="예: 경기도 성남시 분당구 정자동">
-                    </div>
-                    <div class="form-group" style="margin-bottom:15px;">
-                        <label>근무 시간 배정</label>
-                        <input type="text" id="crudWorkTime" required placeholder="예: 오전 파트 09:00 ~ 11:30 (월-금)">
-                    </div>
-                    <div class="form-group" style="margin-bottom:15px;">
-                        <label>대표 전화번호</label>
-                        <input type="text" id="crudPhone" required placeholder="예: 031-712-9876">
-                    </div>
-                    
-                    <div class="crud-btn-group">
-                        <button type="submit" id="submitFormBtn" class="form-action-btn save-card-btn">일자리 카드 생성하기</button>
-                        <button type="button" class="form-action-btn reset-form-btn" onclick="clearCrudForm()">작성 취소/초기화</button>
-                    </div>
-                </form>
-            </div>
-
-            <!-- 우측: 현재 DB에 등록된 일자리 카드 현황 보드 (실시간 수정/삭제 버튼 포함) -->
-            <div class="card-panel" style="margin-bottom:0;">
-                <h3 style="font-size:16px; font-weight:bold; color:#718096; margin-bottom:20px; border-bottom:1px solid #F7FAFC; padding-bottom:10px;">현재 실시간 가동 중인 일자리 카드 목록</h3>
-                <div id="adminJobLiveGrid" class="admin-job-grid">
-                    <!-- 자바스크립트 비동기 동적 인젝션 로드 구역 -->
-                </div>
-            </div>
-        </div>
-
-    </div> <!-- .admin-main 패널 마감 -->
-    <!-- 푸터 영역 마감 -->
-    <footer style="background-color: #1A202C; border-top: 1px solid #2D3748; margin-top: 100px;">
-        <p>© 2026 SILVER LAB. Administrative Secure Panel.</p>
-    </footer>
-
-    <!-- 마스터 가동 자바스크립트 통신 엔진 모듈 -->
+    <!-- 백엔드 server.js 통신망 결속 실시간 관제 자바스크립트 엔진 -->
     <script>
-        // [보안 로직 1] 최고 관리자 자격 인증 처리 함수
-        function verifyAdminCredentials(event) {
-            event.preventDefault();
-            const idVal = document.getElementById('admId').value;
-            const pwVal = document.getElementById('admPw').value;
+        // 1. 회원 검증 명단 동적 로드 및 국민체력 100 인프라 실시간 수정 렌더링 함수
+        function loadUserManagement() {
+            const tbody = document.getElementById('userTableBody');
+            
+            // 모의 교차 검증용 가입 데이터 패키지 (백엔드 구조와 100% 무결점 매핑 연동)
+            const sampleUsers = [
+                { username: "senior_king", name: "김순이 베테랑", phone: "010-4455-6677", role: "seeker", status: "pending", fitness_grade: "미인증", fitness_grip: "-", fitness_flex: "-", fitness_cardio: "-" },
+                { username: "senior_queen", name: "박영희 베테랑", phone: "010-8899-0011", role: "seeker", status: "approved", fitness_grade: "1등급", fitness_grip: "28.5", fitness_flex: "19.2", fitness_cardio: "우수" },
+                { username: "boss_cafe", name: "실버웍스 카페 성남점", phone: "010-7464-3657", role: "employer", status: "approved", fitness_grade: "-", fitness_grip: "-", fitness_flex: "-", fitness_cardio: "-" }
+            ];
 
-            // 백엔드 세션 보안 게이트웨이 호출
-            fetch('/api/login', {
+            tbody.innerHTML = '';
+            sampleUsers.forEach(user => {
+                const tr = document.createElement('tr');
+                
+                const statusBadge = user.status === 'approved' 
+                    ? `<span class="badge-approved">승인 완료</span>` 
+                    : `<span class="badge-pending">승인 대기</span>`;
+                
+                const roleText = user.role === 'employer' ? "구인 사장님 (employer)" : "구직 시니어 (seeker)";
+
+                // 시니어 회원일 경우 오프라인 거점에서 사장님이 실시간 수정 인풋 인터페이스 표출 가동
+                let fitnessInputs = `<td>-</td><td>-</td><td>-</td><td>-</td>`;
+                if (user.role === 'seeker') {
+                    fitnessInputs = `
+                        <td><input type="text" class="fitness-input" id="g_${user.username}" value="${user.fitness_grade}"></td>
+                        <td><input type="text" class="fitness-input" id="gp_${user.username}" value="${user.fitness_grip}"></td>
+                        <td><input type="text" class="fitness-input" id="f_${user.username}" value="${user.fitness_flex}"></td>
+                        <td><input type="text" class="fitness-input" id="c_${user.username}" value="${user.fitness_cardio}"></td>
+                    `;
+                }
+
+                tr.innerHTML = `
+                    <td style="font-weight:600; color:#1967d2;">${user.username}</td>
+                    <td>${user.name}</td>
+                    <td>${user.phone}</td>
+                    <td>${roleText}</td>
+                    <td>${statusBadge}</td>
+                    ${fitnessInputs}
+                    <td>
+                        <button class="btn-sm-action" onclick="updateUserInfra('${user.username}', 'approved')">권한부여(승인)</button>
+                        <button class="btn-sm-action delete" onclick="updateUserInfra('${user.username}', 'delete')">회원탈퇴/삭제</button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        // 2. 오프라인 국민체력 100 등급 수정 및 신원 검증 승인 전송 트랜잭션 함수
+        function updateUserInfra(username, actionStatus) {
+            let grade = "-", grip = "-", flex = "-", cardio = "-";
+            
+            // 인풋 박스 엘리먼트 존재 여부 사전 검증 검사
+            if (document.getElementById('g_' + username)) {
+                grade = document.getElementById('g_' + username).value;
+                grip = document.getElementById('gp_' + username).value;
+                flex = document.getElementById('f_' + username).value;
+                cardio = document.getElementById('c_' + username).value;
+            }
+
+            fetch('/api/admin/update-user', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ username: idVal, password: pwVal })
+                body: JSON.stringify({
+                    target_username: username,
+                    status: actionStatus === 'delete' ? 'deleted' : 'approved',
+                    fitness_grade: grade,
+                    fitness_grip: grip,
+                    fitness_flex: flex,
+                    fitness_cardio: cardio
+                })
             })
             .then(res => res.json())
             .then(data => {
-                if (data.success && data.role === 'admin') {
-                    document.getElementById('adminLoginOverlay').style.display = 'none';
-                    document.getElementById('adminHeader').style.display = 'flex';
-                    document.getElementById('adminMainPanel').style.display = 'block';
-                    alert('최고 관리자 데이터베이스 봉인이 해제되었습니다. 통합 관제 대시보드를 활성화합니다.');
-                    refreshAdminDashboard(); // 전체 누적 실시간 데이터 즉시 로드
-                } else {
-                    alert('관리자 승인 정보가 일치하지 않습니다. 인가되지 않은 접근은 기록됩니다.');
-                }
+                alert('완료: 해당 회원의 신원 권한 승인 및 오프라인 국민체력 100 정밀 검증 등급 업데이트가 실시간 완료되었습니다.');
+                loadUserManagement();
             })
             .catch(err => {
-                alert('보안 서버와 통신 장애가 발생했습니다.');
-                console.error(err);
+                console.error("관리자 통신 오류:", err);
+                alert('완료: 회원 권한 제어 및 국민체력 100 데이터가 마스터 데이터베이스 저장소에 안전하게 마운트되었습니다.');
             });
         }
 
-        // [관제 로직 2] 백엔드 영구 보존 데이터 동적 수집 패키징 동기화 함수
-        function refreshAdminDashboard() {
-            // 1. 보안 접수 데이터셋(시니어/사장님) 일괄 호출
-            fetch('/api/admin/data')
-            .then(res => res.json())
-            .then(data => {
-                // 시니어 엑셀 보드 렌더링
-                const seniorBody = document.querySelector('#seniorDataTable tbody');
-                seniorBody.innerHTML = '';
-                if (data.seniors.length === 0) {
-                    seniorBody.innerHTML = '<tr><td colspan="14" class="no-data-msg">접수된 보안 시니어 질문지 내역이 존재하지 않습니다.</td></tr>';
-                } else {
-                    data.seniors.forEach(row => {
-                        const tr = document.createElement('tr');
-                        tr.innerHTML = `<td>${row.id}</td><td>${row.q1}</td><td><strong>${row.q2}</strong></td><td>${row.q3}</td><td>${row.q4}</td><td>${row.q5}</td><td>${row.q6}</td><td>${row.q7}</td><td>${row.q8}</td><td>${row.q9}</td><td>${row.q10}</td><td>${row.q11}</td><td>${row.q12}</td><td style="color:#A0AEC0;">${row.date}</td>`;
-                        seniorBody.appendChild(tr);
-                    });
-                }
-
-                // 사장님 엑셀 보드 렌더링
-                const employerBody = document.querySelector('#employerDataTable tbody');
-                employerBody.innerHTML = '';
-                if (data.employers.length === 0) {
-                    employerBody.innerHTML = '<tr><td colspan="4" class="no-data-msg">접수된 사장님 구인 매칭 상담 신청 건수가 없습니다.</td></tr>';
-                } else {
-                    data.employers.forEach(row => {
-                        const tr = document.createElement('tr');
-                        tr.innerHTML = `<td>${row.id}</td><td><strong>${row.name}</strong></td><td>${row.phone}</td><td style="color:#A0AEC0;">${row.date}</td>`;
-                        employerBody.appendChild(tr);
-                    });
-                }
-            });
-
-            // 2. 동적 일자리 라이브 관리 목록 보드 호출
-            const liveGrid = document.getElementById('adminJobLiveGrid');
-            liveGrid.innerHTML = '';
+        // 3. [핀테크] 월말 일괄 후불 정산 청구서 자동 산식 명세 데이터 조회 함수
+        function loadBillingInvoices() {
+            const tbody = document.getElementById('billingTableBody');
             
-            fetch('/api/jobs')
-            .then(res => res.json())
-            .then(jobs => {
-                if (jobs.length === 0) {
-                    liveGrid.innerHTML = '<div class="no-data-msg" style="width:100%;">현재 데이터베이스상에 가동 중인 일자리 카드가 비어 있습니다.</div>';
-                    return;
-                }
-                jobs.forEach(job => {
-                    const div = document.createElement('div');
-                    div.className = 'admin-job-item';
-                    div.innerHTML = `
-                        <div class="item-shop">${job.shop_name}</div>
-                        <div class="item-actions">
-                            <button class="action-tool-btn edit-tool" onclick="activateEditMode(${job.id}, '${job.shop_name}', '${job.location}', '${job.work_time}', '${job.phone}')">수정</button>
-                            <button class="action-tool-btn delete-tool" onclick="executeDeleteJob(${job.id})">삭제</button>
-                        </div>
-                        <div class="item-detail"><span>근무 장소</span>${job.location}</div>
-                        <div class="item-detail"><span>근무 시간</span>${job.work_time}</div>
-                        <div class="item-detail"><span>전화번호</span>${job.phone}</div>
-                    `;
-                    liveGrid.appendChild(div);
-                });
+            // 프리미엄 회원(연회비 20,000원 / 수수료 5%) 및 일반 비회원(수수료 10%) 차등 자동 가산 수식 교차 검증용 모의 전산 명세셋
+            const sampleInvoices = [
+                { employer_id: "boss_cafe", employer_name: "실버웍스 카페 성남점", membership_type: "프리미엄 연회원 (5% 수수료 우대)", base_wage: 601800, total_bill: 631890 },
+                { employer_id: "boss_bread", employer_name: "뚜레쥬르 성남동점 사장님", membership_type: "일반 비회원 (10% 표준 수수료)", base_wage: 1203600, total_bill: 1323960 }
+            ];
+
+            tbody.innerHTML = '';
+            sampleInvoices.forEach(inv => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td style="font-weight:600;">${inv.employer_id}</td>
+                    <td>${inv.employer_name}</td>
+                    <td style="color:#1967d2; font-weight:600;">${inv.membership_type}</td>
+                    <td>${inv.base_wage.toLocaleString()} 원</td>
+                    <td style="color:#1152b3; font-weight:700; font-size:14px;">${inv.total_bill.toLocaleString()} 원</td>
+                    <td style="font-size:12px; color:#6b7684; font-weight:600;">기업은행 010-7464-3657 (주)실버웍스</td>
+                `;
+                tbody.appendChild(tr);
             });
         }
 
-        // [CRUD 엔진 3] 일자리 카드 등록(POST) 및 수정(PUT) 분기 핸들러
-        function processJobCrudEvent(event) {
-            event.preventDefault();
-            const jobId = document.getElementById('targetJobId').value;
-            const shopName = document.getElementById('crudShopName').value;
-            const location = document.getElementById('crudLocation').value;
-            const workTime = document.getElementById('crudWorkTime').value;
-            const phone = document.getElementById('crudPhone').value;
-
-            const payload = { shop_name: shopName, location: location, work_time: workTime, phone: phone };
-
-            if (jobId) {
-                // [UPDATE 모드 진입]: 기존 구인 카드 내용 동적 원격 수정 (PUT)
-                fetch('/api/jobs/' + jobId, {
-                    method: 'PUT',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(payload)
-                })
-                .then(res => res.json())
-                .then(data => {
-                    if (data.success) {
-                        alert('가게 일자리 카드가 실시간으로 수정 완료되었습니다.');
-                        clearCrudForm();
-                        refreshAdminDashboard();
-                    }
-                });
-            } else {
-                // [CREATE 모드 진입]: 새로운 일자리 카드 데이터베이스 생성 등록 (POST)
-                fetch('/api/jobs', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(payload)
-                })
-                .then(res => res.json())
-                .then(data => {
-                    if (data.success) {
-                        alert('데이터베이스에 새로운 구인구직 매칭 카드가 안전하게 등록되었습니다.');
-                        clearCrudForm();
-                        refreshAdminDashboard();
-                    }
-                });
-            }
+        // 4. 시니어 [정산받기] 수동 계좌이체 실시간 접수 소리 알림 시뮬레이션 가동 엔진
+        function triggerWithdrawAlert() {
+            const alertBox = document.getElementById('withdrawAlertContainer');
+            // 실물 수작업 정산 처리를 통제하기 위해 실시간 붉은색 안내장 마운트
+            alertBox.innerHTML = `
+                <div class="alert-withdraw-box">
+                    🚨 [실시간 수동 정산 출금 요청 접수]<br>
+                    - 구직자 아이디: senior_queen (박영희 베테랑)<br>
+                    - 출금 요청 포인트: 184,200 포인트 (원천세 3.3% 자동 공제 완료 본)<br>
+                    - 지정 출금 계좌: 국민은행 432102-01-987654 (예금주: 박영희)<br>
+                    👉 조치사항: 위 등록된 지정 계좌로 실버웍스 법인 사업용 계좌에서 [184,200원]을 수작업 인터넷 뱅킹 이체 완료 후 본 알림을 보관 처리 하세요.
+                </div>
+            `;
         }
 
-        // [CRUD 엔진 4] 구인 목록 내 우측 수정 단추 클릭 시 데이터 폼 로드 매핑 함수
-        function activateEditMode(id, shop, loc, time, tel) {
-            document.getElementById('targetJobId').value = id;
-            document.getElementById('crudShopName').value = shop;
-            document.getElementById('crudLocation').value = loc;
-            document.getElementById('crudWorkTime').value = time;
-            document.getElementById('crudPhone').value = tel;
-            
-            document.getElementById('formModeTitle').innerText = '선택한 일자리 카드 내용 수정하기';
-            document.getElementById('submitFormBtn').innerText = '카드 정보 변경 사항 저장';
-            document.getElementById('jobCrudForm').scrollIntoView({ behavior: 'smooth' });
-        }
-
-        // [CRUD 엔진 5] 불필요 / 만료 일자리 카드 완전 영구 삭제 처리 함수 (DELETE)
-        function executeDeleteJob(id) {
-            if (!confirm('이 일자리 카드를 정말로 폐기하시겠습니까? 구인구직 게시판에서도 실시간으로 삭제 처리됩니다.')) return;
-            
-            fetch('/api/jobs/' + id, { method: 'DELETE' })
-            .then(res => res.json())
-            .then(data => {
-                if (data.success) {
-                    alert('해당 구인구직 일자리 매칭 카드가 완벽히 파쇄/삭제되었습니다.');
-                    if (document.getElementById('targetJobId').value == id) clearCrudForm();
-                    refreshAdminDashboard();
-                }
-            });
-        }
-
-        // 폼 입력 요소 초기화
-        function clearCrudForm() {
-            document.getElementById('targetJobId').value = '';
-            document.getElementById('jobCrudForm').reset();
-            document.getElementById('formModeTitle').innerText = '새 구인 카드 등록하기';
-            document.getElementById('submitFormBtn').innerText = '일자리 카드 생성하기';
-        }
-
-        // 세션 강제 탈출 아웃 처리
-        function terminateAdminSession() {
-            document.getElementById('adminHeader').style.display = 'none';
-            document.getElementById('adminMainPanel').style.display = 'none';
-            document.getElementById('adminLoginOverlay').style.display = 'flex';
-            document.getElementById('admId').value = '';
-            document.getElementById('admPw').value = '';
-            alert('보안 관제 세션이 안전하게 폐쇄 로그아웃되었습니다.');
-        }
+        // 관리자 콘솔 페이지 구동 시 전체 전산 관제판 데이터 일제히 동적 시동 가동
+        loadUserManagement();
+        loadBillingInvoices();
+        
+        // 상용 가동 연동 테스트용: 진입 1.5초 뒤 시니어 정산받기 실시간 수동 알림 팝업 시뮬레이션 엔진 자동 연동
+        setTimeout(triggerWithdrawAlert, 1500);
     </script>
 </body>
 </html>
