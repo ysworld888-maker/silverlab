@@ -2,9 +2,9 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <title>실버랩 매칭 게시판</title>
+    <title>실버웍스 매칭 게시판</title>
     <style>
-        body { font-family: sans-serif; background-color: #f9fafb; color: #333d4b; padding: 20px; }
+        body { font-family: -apple-system, sans-serif; background-color: #f9fafb; color: #333d4b; padding: 20px; }
         header { display: flex; justify-content: space-between; align-items: center; padding: 10px 20px; background: white; border-bottom: 1px solid #f2f4f6; }
         .logo { font-size: 20px; font-weight: 800; color: #1967d2; cursor: pointer; }
         .container { max-width: 600px; margin: 30px auto; }
@@ -17,7 +17,7 @@
 </head>
 <body>
     <header>
-        <div class="logo" onclick="location.href='/'">SILVERLAB</div>
+        <div class="logo" onclick="location.href='/'">SILVERWORKS</div>
         <button style="padding:6px 12px; cursor:pointer;" onclick="location.href='/profile.html'">마이페이지 이동</button>
     </header>
 
@@ -35,15 +35,15 @@
 
             if (!id) { alert('보안 인증 세션 만료. 로그인을 먼저 완수해 주세요.'); location.href = '/login.html'; return; }
 
-            // [사장님 로그인 시 타인 공고 원천 격리 차단 락 가동]
+            // 사장님 로그인 시 타 사업장 공고 전산 은폐 격리 차단 락 가동
             if (role === 'employer') {
                 document.getElementById('bTitle').innerText = "보안 격리 보호 구역";
                 document.getElementById('bSub').style.display = 'none';
                 container.innerHTML = `
                     <div class="lock-banner">
-                        <h4 style="color:#ff4d4d; margin-bottom:10px;">🔒 비즈니스 독점 권한 격리 활성화</h4>
+                        <h4 style="color:#1967d2; margin-bottom:10px;">비즈니스 독점 권한 격리 활성화</h4>
                         <p style="font-size:13px; line-height:1.6; color:#6b7684;">
-                            실버랩은 정보 혼선 방지 및 개인정보 보호법을 준수합니다. 타 사업장의 구인 현황은 열람할 수 없으며,<br>
+                            실버웍스는 정보 혼선 방지 및 개인정보 보호법을 준수합니다. 타 사업장의 구인 현황은 열람할 수 없으며,<br>
                             사장님이 올리신 공고와 그 공고에 1대1 매핑되어 들어온 <strong>[실시간 지원 시니어 이력서 명세]</strong>는 오직 사장님의 <strong>[우측 상단 MY ➔ 마이페이지]</strong> 안에서만 독점 열람이 허용됩니다.
                         </p>
                     </div>
@@ -54,7 +54,7 @@
             // 시니어 회원 전용 실시간 승인 공고 로드
             fetch('/api/jobs/live-board').then(res => res.json()).then(data => {
                 container.innerHTML = '';
-                if (!data.jobs || data.jobs.length === 0) { container.innerHTML = '<p style="text-align:center; color:#8b95a1;">⏳ 현재 심사 승인 완료되어 매칭 대기 중인 공고가 없습니다.</p>'; return; }
+                if (!data.jobs || data.jobs.length === 0) { container.innerHTML = '<p style="text-align:center; color:#8b95a1;">현재 심사 승인 완료되어 매칭 대기 중인 공고가 없습니다.</p>'; return; }
                 data.jobs.forEach(j => {
                     const div = document.createElement('div'); div.className = 'card';
                     div.innerHTML = `

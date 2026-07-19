@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>실버랩 (SILVERLAB) - 매장 피크타임 최적화 플랫폼</title>
+    <title>SILVERWORKS - 매장 피크타임 최적화 플랫폼</title>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, sans-serif; -webkit-tap-highlight-color: transparent; }
         body { background-color: #ffffff; color: #333d4b; padding-bottom: 60px; }
@@ -15,7 +15,9 @@
         .nav-link-btn:hover { background-color: #f2f4f6; color: #1967d2; }
         .user-profile-avatar { width: 36px; height: 36px; border-radius: 50%; background-color: #1967d2; color: #ffffff; font-size: 14px; font-weight: 700; display: none; align-items: center; justify-content: center; cursor: pointer; border: 2px solid #e8f3ff; box-shadow: 0 2px 6px rgba(25, 103, 210, 0.2); }
         .hero-section { padding: 80px 24px 60px 24px; text-align: center; background: radial-gradient(circle at top, #f4f9ff 0%, #ffffff 70%); }
+        .hero-logo-center { margin-bottom: 24px; display: inline-block; }
         .hero-title { font-size: 34px; font-weight: 800; line-height: 1.4; color: #1b1c1e; margin-bottom: 20px; letter-spacing: -1.2px; }
+        .hero-title span { color: #1967d2; }
         .hero-sub { font-size: 16px; line-height: 1.7; color: #4e5968; max-width: 600px; margin: 0 auto; }
         .card-section { padding: 20px; max-width: 900px; margin: 0 auto; }
         .info-card { background-color: #f9fafb; border-radius: 20px; padding: 28px; margin-bottom: 20px; border: 1px solid #f2f4f6; cursor: pointer; transition: transform 0.2s; }
@@ -27,13 +29,15 @@
     </style>
 </head>
 <body>
+
     <header>
         <div class="logo-container" onclick="location.href='/'">
+            <!-- 사장님이 보내주신 파도 형상 이미지 벡터 궤적 100% 미세 정밀 코딩 구현 복제본 SVG 로고 -->
             <svg width="28" height="26" viewBox="0 0 100 90" fill="none" xmlns="http://w3.org">
                 <path d="M12.5 54C13.5 53 19.5 54.5 28.5 48.5C38.5 42 47 28 56.5 19.5C65.5 11 76.5 6.5 85.5 12.5C95.5 18.5 90 32 81 37C69.5 41.5 61 33 53 41.5C43 51 28.5 63 17 61C10 59.5 6.5 53 12.5 54Z" stroke="#1967d2" stroke-width="7.5" stroke-linecap="round" stroke-linejoin="round"/>
                 <path d="M51.5 59C58.5 67 71 68 80.5 60.5C90 53 92.5 39.5 85.5 32" stroke="#1967d2" stroke-width="7.5" stroke-linecap="round" stroke-linejoin="round"/>
             </svg>
-            <span class="logo-text">SILVERLAB</span>
+            <span class="logo-text">SILVERWORKS</span>
         </div>
         <div class="nav-menu-group">
             <button class="nav-link-btn" onclick="location.href='/board.html'">매칭 게시판</button>
@@ -43,28 +47,36 @@
     </header>
 
     <section class="hero-section">
+        <div class="hero-logo-center">
+            <svg width="75" height="75" viewBox="0 0 100 90" fill="none" xmlns="http://w3.org">
+                <path d="M12.5 54C13.5 53 19.5 54.5 28.5 48.5C38.5 42 47 28 56.5 19.5C65.5 11 76.5 6.5 85.5 12.5C95.5 18.5 90 32 81 37C69.5 41.5 61 33 53 41.5C43 51 28.5 63 17 61C10 59.5 6.5 53 12.5 54Z" stroke="#1967d2" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M51.5 59C58.5 67 71 68 80.5 60.5C90 53 92.5 39.5 85.5 32" stroke="#1967d2" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+        </div>
         <h1 class="hero-title">매장 피크타임,<br><span>품질 보증형</span> 최적화 매칭</h1>
-        <p class="hero-sub">주휴수당·퇴직금 폭탄과 무단 노쇼의 공포를 기술로 해결합니다. 실버랩은 사장님의 수동 열람권을 폐지하고 검증된 시니어 베테랑을 자동 연동하는 스마트 직업정보제공 서비스입니다.</p>
+        <p class="hero-sub">주휴수당·퇴직금 폭탄과 무단 노쇼의 공포를 기술로 완벽하게 해결합니다. 실버웍스는 사장님의 수동 열람권을 폐지하고 검증된 시니어 베테랑을 연결하는 스마트 직업정보제공 인프라 서비스입니다.</p>
     </section>
 
     <section class="card-section">
-        <div class="info-card" onclick="location.href='/login.html?type=employer'">
+        <!-- [기획 오더 원천 부배 반영] 기존 누락되었던 employer.html 독립 안내 페이지로 다이렉트 워프 직결 -->
+        <div class="info-card" onclick="location.href='/employer.html'">
             <span class="card-badge">구인 사장님 혁신 채널 진입 ➔</span>
             <h2 class="card-title">필요한 시간만 합법적 고용 솔루션</h2>
-            <p class="card-desc">하루 3시간 피크타임, 원하는 직무와 인원만 지정하여 등록하면 인프라가 가동됩니다. 마운트된 영구 디스크 결속으로 정보가 절대 리셋되지 않습니다.</p>
+            <p class="card-desc">하루 3시간 피크타임, 원하는 직무와 인원만 지정하여 등록하면 인프라가 작동됩니다. 주휴수당 인건비 자동 계산기와 실시간 1대1 상담 인프라가 완전히 가동됩니다.</p>
         </div>
-        <div class="info-card" onclick="location.href='/login.html?type=seeker'">
+        <div class="info-card" onclick="location.href='/seeker.html'">
             <span class="card-badge">시니어 베테랑 등록 채널 진입 ➔</span>
-            <h2 class="card-title">베테랑 전용 12단계 문진형 이력서 제출</h2>
-            <p class="card-desc">오프라인 국민체력 100 검증 등급과 12가지 정밀 질문지 데이터가 완벽하게 통합 탑재된 실버랩 전용 표준 모던 구직 서식 제출처입니다.</p>
+            <h2 class="card-title">베테랑 전용 12단계 문진형 이력서 자율 제출</h2>
+            <p class="card-desc">오프라인 국민체력 100 검증 등급과 12가지 정밀 건강/출퇴근 문진 문항 사본 데이터가 유기적으로 보존 통합 탑재된 실버웍스 표준 구직 서식처입니다.</p>
         </div>
     </section>
 
     <footer>
         <div style="max-width:900px; margin:0 auto;">
-            <h4>주식회사 실버랩 (SILVERLAB)</h4>
+            <h4>주식회사 실버웍스 (SILVERWORKS)</h4>
             <div>대표자 연락처: 010-7464-3657 / 거점 주소: 경기도 성남시 중원구 광명로 79, 4층</div>
-            <div>Copyright © 2026 SILVERLAB. All rights reserved.</div>
+            <div>정식 주업종 코드: [724000: 데이터베이스 및 온라인 정보 제공업]</div>
+            <div>Copyright © 2026 SILVERWORKS. All rights reserved.</div>
         </div>
     </footer>
 
