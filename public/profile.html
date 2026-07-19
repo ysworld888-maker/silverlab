@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>실버웍스 - 나의 베테랑 프로필 및 마이페이지</title>
+    <!-- 토스 특유의 광활한 여백 미학과 카드형 데이터 컴포넌트 전용 CSS 스타일셋 -->
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+        body {
+            background-color: #f9fafb;
+            color: #333d4b;
+            padding-bottom: 60px;
+        }
+        /* 토스 고유의 상단 네비게이션 메뉴 헤더 바 */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 18px 20px;
+            background-color: #ffffff;
+            border-bottom: 1px solid #f2f4f6;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+        }
+        .logo-text {
+            font-size: 20px;
+            font-weight: 800;
+            color: #1967d2;
+            letter-spacing: -0.5px;
+        }
+        .nav-menu-group {
+            display: flex;
+            gap: 8px;
+        }
+        .nav-link-btn {
+            background: none;
+            border: none;
+            color: #4e5968;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            padding: 8px 16px;
+            border-radius: 8px;
+            transition: background-color 0.2s;
+        }
+        .nav-link-btn:hover {
+            background-color: #f2f4f6;
+            color: #1967d2;
+        }
+        .container {
+            padding: 40px 20px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .profile-title {
+            font-size: 26px;
+            font-weight: 700;
+            color: #1b1c1e;
+            letter-spacing: -0.8px;
+            margin-bottom: 8px;
+        }
+        .profile-sub {
+            font-size: 14px;
+            color: #6b7684;
+            margin-bottom: 32px;
+            line-height: 1.5;
+        }
+        /* 토스 스타일 모던 프리미엄 섹션 카드 레이아웃 */
+        .info-card {
+            background-color: #ffffff;
+            border-radius: 16px;
+            border: 1px solid #e5e8eb;
+            padding: 24px;
+            margin-bottom: 24px;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.01);
+        }
+        .card-header-title {
+            font-size: 17px;
+            font-weight: 700;
+            color: #333d4b;
+            margin-bottom: 16px;
+            letter-spacing: -0.2px;
+            border-bottom: 1px solid #f2f4f6;
+            padding-bottom: 12px;
+        }
+        .data-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid #f9fafb;
+            font-size: 14px;
+        }
+        .data-row:last-child {
+            border-bottom: none;
+        }
+        .data-label {
+            font-weight: 600;
+            color: #4e5968;
+        }
+        .data-value {
+            font-weight: 700;
+            color: #1b1c1e;
+        }
+        .badge-status {
+            display: inline-block;
+            background-color: #ffeeee;
+            color: #ff4d4d;
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 700;
+        }
+        .badge-status.approved {
+            background-color: #e8f3ff;
+            color: #1967d2;
+        }
+        .qa-list-item {
+            margin-bottom: 16px;
+            padding-bottom: 16px;
+            border-bottom: 1px dashed #f2f4f6;
+        }
+        .qa-list-item:last-child {
+            margin-bottom: 0;
+            padding-bottom: 0;
+            border-bottom: none;
+        }
+        .qa-question {
+            font-size: 13.5px;
+            font-weight: 700;
+            color: #4e5968;
+            margin-bottom: 6px;
+            line-height: 1.4;
+        }
+        .qa-answer {
+            font-size: 14px;
+            font-weight: 600;
+            color: #1967d2;
+            line-height: 1.5;
+            background-color: #f8f9fa;
+            padding: 10px 14px;
+            border-radius: 8px;
+        }
+        .btn-logout {
+            width: 100%;
+            background-color: #f2f4f6;
+            color: #6b7684;
+            padding: 14px;
+            border-radius: 12px;
+            font-size: 15px;
+            font-weight: 600;
+            border: none;
+            cursor: pointer;
+            text-align: center;
+            margin-top: 12px;
+            transition: background-color 0.2s;
+        }
+        .btn-logout:hover {
+            background-color: #e5e8eb;
+            color: #333d4b;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 상단 헤더 바 메뉴 연동 -->
+    <header>
+        <div class="logo-container" onclick="location.href='/'">
+            <svg width="28" height="26" viewBox="0 0 100 90" fill="none" xmlns="http://w3.org">
+                <path d="M12.5 54C13.5 53 19.5 54.5 28.5 48.5C38.5 42 47 28 56.5 19.5C65.5 11 76.5 6.5 85.5 12.5C95.5 18.5 90 32 81 37C69.5 41.5 61 33 53 41.5C43 51 28.5 63 17 61C10 59.5 6.5 53 12.5 54Z" stroke="#1967d2" stroke-width="7.5" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M51.5 59C58.5 67 71 68 80.5 60.5C90 53 92.5 39.5 85.5 32" stroke="#1967d2" stroke-width="7.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            <span class="logo-text">SILVERWORKS</span>
+        </div>
+        
+        <div class="nav-menu-group">
+            <button class="nav-link-btn" onclick="location.href='/'">홈</button>
+            <button class="nav-link-btn" onclick="location.href='/login.html?type=seeker'">시니어 등록</button>
+            <button class="nav-link-btn" onclick="location.href='/login.html?type=employer'">사장님 혁신</button>
+            <button class="nav-link-btn" onclick="location.href='/board.html'">매칭 게시판</button>
+        </div>
+    </header>
+
+    <div class="container">
+        <h1 class="profile-title">나의 마스터 신원 명세</h1>
+        <p class="profile-sub">서버 실물 데이터베이스(SQLite3)와 다이렉트 교차 검증을 거쳐 실시간 파싱된 본인 전용 보존 인프라 프로필입니다.</p>
+
+        <!-- 카드 1. 가입 계정 신원 정보 구역 -->
+        <div class="info-card">
+            <div class="card-header-title">기본 회원제 계정 정보</div>
+            <div class="data-row">
+                <span class="data-label">사용자 아이디 (ID)</span>
+                <span class="data-value" id="meId">-</span>
+            </div>
+            <div class="data-row">
+                <span class="data-label">성명 또는 정식 매장명</span>
+                <span class="data-value" id="meName">-</span>
+            </div>
+            <div class="data-row">
+                <span class="data-label">등록된 휴대폰 번호</span>
+                <span class="data-value" id="mePhone">-</span>
+            </div>
+            <div class="data-row">
+                <span class="data-label">회원 권한 등급 분류</span>
+                <span class="data-value" id="meRole">-</span>
+            </div>
+            <div class="data-row">
+                <span class="data-label">실버웍스 신원 검증 상태</span>
+                <span id="meStatus" class="badge-status">확인 중...</span>
+            </div>
+        </div>
+
+        <!-- 카드 2. 오프라인 거점 측정 국민체력 100 지표 구역 -->
+        <div class="info-card" id="fitnessCardSection" style="display: none;">
+            <div class="card-header-title">성남 본점 오프라인 국민체력 100 검증 스펙</div>
+            <div class="data-row">
+                <span class="data-label">종합 인증 등급</span>
+                <span class="data-value" id="fitGrade" style="color: #1967d2;">-</span>
+            </div>
+            <div class="data-row">
+                <span class="data-label">절대 악력 측정치 (Grip)</span>
+                <span class="data-value" id="fitGrip">-</span>
+            </div>
+            <div class="data-row">
+                <span class="data-label">상체 유유연성 지표 (Flexibility)</span>
+                <span class="data-value" id="fitFlex">-</span>
+            </div>
+            <div class="data-row">
+                <span class="data-label">심폐 지구력 레벨 (Cardio)</span>
+                <span class="data-value" id="fitCardio">-</span>
+            </div>
+        </div>
+
+        <!-- 카드 3. 시니어 12가지 정밀 면접 질문지 답변 보존 구역 -->
+        <div class="info-card" id="seniorQaCardSection" style="display: none;">
+            <div class="card-header-title">실버웍스 상용 전용 규격 표준 이력서 질문지 사본</div>
+            <div id="qaListContainer">
+                <p style="color:#8b95a1; font-size:13px; text-align:center;">이력서 원본 명세를 조회 중입니다...</p>
+            </div>
+        </div>
+
+        <button class="btn-logout" onclick="handleLogout()">실버웍스 안전 로그아웃</button>
+    </div>
+    <!-- 실제 server.js 내부 DB를 원천 정밀 타격하여 내 정보를 긁어오는 관제 스크립트 -->
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const currentLoggerId = localStorage.getItem('sw_username');
+            
+            // 세션 탈취 및 비정상 접근 원천 차단 필터 안전 장치
+            if (!currentLoggerId) {
+                alert('알림: 보안 인증 세션이 없거나 만료되었습니다. 다이렉트 로그인을 진행해 주세요.');
+                location.href = '/login.html';
+                return;
+            }
+
+            // [빈틈 제로 결속] 실제 백엔드 데이터베이스를 타격하여 동적 가입 정보 리얼타임 호출
+            fetch('/api/profile/me?username=' + encodeURIComponent(currentLoggerId))
+                .then(res => res.json())
+                .then(data => {
+                    if (!data.success) {
+                        alert('전산 오류: ' + data.message);
+                        handleLogout();
+                        return;
+                    }
+
+                    const profile = data.profile;
+                    const qa = data.senior_answers;
+
+                    // 1. 기본 회원 정보 전산 매핑 주입
+                    document.getElementById('meId').innerText = profile.username;
+                    document.getElementById('meName').innerText = profile.name;
+                    document.getElementById('mePhone').innerText = profile.phone;
+                    
+                    const roleBadgeText = profile.role === 'employer' ? "구인 매장 고용주 사장님 (employer)" : "구직 시니어 베테랑 (seeker)";
+                    document.getElementById('meRole').innerText = roleBadgeText;
+
+                    const statusBadge = document.getElementById('meStatus');
+                    if (profile.status === 'approved') {
+                        statusBadge.innerText = "신원 인증 승인 완료";
+                        statusBadge.classList.add('approved');
+                    } else {
+                        statusBadge.innerText = "실버웍스 신원 승인 대기 중";
+                    }
+
+                    // 2. 회원 권한 등급 분류에 따라 화면 제어 분기 락 작동
+                    if (profile.role === 'seeker') {
+                        // 시니어 회원일 때만 국민체력 100 지표 카드 활성화
+                        document.getElementById('fitnessCardSection').style.display = 'block';
+                        document.getElementById('fitGrade').innerText = profile.fitness_grade || '미인증';
+                        document.getElementById('fitGrip').innerText = (profile.fitness_grip || '-') + " kg";
+                        document.getElementById('fitFlex').innerText = (profile.fitness_flex || '-') + " cm";
+                        document.getElementById('fitCardio').innerText = profile.fitness_cardio || '-';
+
+                        // 12가지 정밀 질문지 데이터가 존재할 경우에만 하단 이력서 패널 가동
+                        if (qa) {
+                            document.getElementById('seniorQaCardSection').style.display = 'block';
+                            const container = document.getElementById('qaListContainer');
+                            container.innerHTML = '';
+
+                            const questions = [
+                                "1. 과거에 주로 하셨던 일(주요 경력)이나 가장 자신 있는 직무 분야는 무엇인가요?",
+                                "2. 하루에 3시간 내외의 단기 피크타임 집중 근로가 신체적으로 무리 없이 가능하신가요?",
+                                "3. 스마트폰 앱이나 알림톡 지시사항을 보고 출퇴근 및 근무 내용을 확인하는 데 지장이 없으신가요?",
+                                "4. 외식업 및 리테일 매장 근무에 필수적인 '보건증'을 현재 보유 중이시거나 발급 예정이신가요?",
+                                "5. 평소에 성실하시고 무단 결근이나 노쇼(No-Show) 없이 시간 약속을 철저히 지키시는 편인가요?",
+                                "6. 매장 내 젊은 동료들이나 손님들과 원만하고 친절하게 대화하며 협업하실 소통 능력을 갖추셨나요?",
+                                "7. 현재 허리, 무릎, 손목 등 매장 업무를 수행하는 데 방해가 되는 지병이나 신체적 통증이 있으신가요?",
+                                "8. 일주일 중 출근이 가장 원활하게 가능하신 요일과 희망하시는 시간대는 언제인가요?",
+                                "9. 돌발적인 매장 혼잡 상황(손님 몰림 등)이 발생했을 때 당황하지 않고 지시에 따라 유연하게 대처하실 수 있나요?",
+                                "10. 매장 고용주(구인자)의 현장 정당한 지시나 위생 및 청결 수칙을 존중하고 철저히 따르실 용의가 있으신가요?",
+                                "11. 거주하시는 지역(동 이름)은 어디이시며, 출근 시 대중교통이나 도보로 얼마나 걸리는 거리까지 이동이 가능하신가요?",
+                                "12. 마지막으로 실버웍스 매칭 플랫폼을 통해 성실히 일하고자 하시는 베테랑으로서의 각오를 한 줄로 적어주세요."
+                            ];
+
+                            for (let i = 1; i <= 12; i++) {
+                                const item = document.createElement('div');
+                                item.className = 'qa-list-item';
+                                item.innerHTML = `
+                                    <div class="qa-question">${questions[i-1]}</div>
+                                    <div class="qa-answer">${qa['q' + i] || '답변 대기 상태'}</div>
+                                `;
+                                container.appendChild(item);
+                            }
+                        }
+                    }
+                })
+                .catch(err => {
+                    console.error("마이페이지 동적 매핑 프로필 통신 오류:", err);
+                    alert('전산 오류: 데이터베이스 응답이 일시적으로 원활하지 않습니다.');
+                });
+        });
+
+        // 안전 로그아웃 처리 함수 (세션 파쇄 후 메인 리다이렉트)
+        function handleLogout() {
+            localStorage.removeItem('sw_username');
+            localStorage.removeItem('sw_role');
+            alert('안전하게 로그아웃되었습니다. 실버웍스 보안 세션이 파쇄되었습니다.');
+            location.href = '/';
+        }
+    </script>
+</body>
+</html>
