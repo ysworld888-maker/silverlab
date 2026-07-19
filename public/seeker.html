@@ -2,454 +2,150 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>실버랩 - 시니어 베테랑 모던 문진형 이력서 등록 센터</title>
-    <!-- 토스 앱 스타일의 초간결 미니멀리즘 문진 인터페이스 전용 CSS 스타일셋 -->
+    <title>실버랩 - 문진형 이력서 등록 센터</title>
     <style>
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-            -webkit-tap-highlight-color: transparent;
-        }
-        body {
-            background-color: #ffffff;
-            color: #333d4b;
-            padding-bottom: 60px;
-        }
-        /* 토스 고유의 상단 네비게이션 메뉴 헤더 바 */
-        header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 18px 20px;
-            background-color: #ffffff;
-            border-bottom: 1px solid #f2f4f6;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-        }
-        .logo-container {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            cursor: pointer;
-        }
-        .logo-text {
-            font-size: 20px;
-            font-weight: 800;
-            color: #1967d2;
-            letter-spacing: -0.5px;
-        }
-        .nav-menu-group {
-            display: flex;
-            gap: 8px;
-        }
-        .nav-link-btn {
-            background: none;
-            border: none;
-            color: #4e5968;
-            font-size: 14px;
-            font-weight: 600;
-            cursor: pointer;
-            padding: 8px 16px;
-            border-radius: 8px;
-            transition: background-color 0.2s;
-        }
-        .nav-link-btn:hover {
-            background-color: #f2f4f6;
-            color: #1967d2;
-        }
-        /* 모던 문진 인터페이스 전용 레이아웃 배치 락 */
-        .step-container {
-            max-width: 500px;
-            margin: 60px auto 0 auto;
-            padding: 0 24px;
-        }
-        /* 사장님이 기획하신 단계별 진행률 표시 배너 */
-        .step-progress-bar {
-            font-size: 15px;
-            font-weight: 700;
-            color: #1967d2;
-            background-color: #e8f3ff;
-            padding: 6px 12px;
-            border-radius: 6px;
-            display: inline-block;
-            margin-bottom: 24px;
-            letter-spacing: -0.2px;
-        }
-        /* 사장님 전용 11번 상단 '거의 다 왔습니다' 특수 안심 배너 디자인 */
-        .almost-there-banner {
-            background-color: #ffeeee;
-            color: #ff4d4d;
-            padding: 12px 16px;
-            border-radius: 12px;
-            font-size: 14px;
-            font-weight: 700;
-            margin-bottom: 20px;
-            border: 1px solid #ffcccc;
-            display: none; /* 11단계 진입 시 스크립트로 제어 활성화 */
-        }
-        .step-section-card {
-            display: none; /* 자바스크립트로 한 문항씩만 스위칭 활성화 */
-        }
-        .step-section-card.active {
-            display: block;
-        }
-        .step-q-title {
-            font-size: 24px;
-            font-weight: 800;
-            line-height: 1.4;
-            color: #1b1c1e;
-            margin-bottom: 28px;
-            letter-spacing: -0.8px;
-        }
-        .step-q-title span {
-            display: block;
-            font-size: 14px;
-            font-weight: 600;
-            color: #4e5968;
-            margin-top: 8px;
-            line-height: 1.5;
-        }
-        /* 주관식 타이핑 입력 상자 스타일 */
-        .step-input-text {
-            width: 100%;
-            padding: 16px;
-            border-radius: 14px;
-            border: 1px solid #d1d6db;
-            font-size: 16px;
-            font-weight: 600;
-            color: #1b1c1e;
-            background-color: #ffffff;
-            transition: border-color 0.2s, background-color 0.2s;
-        }
-        .step-input-text:focus {
-            outline: none;
-            border-color: #1967d2;
-            background-color: #f4f9ff;
-        }
-        /* 객관식 토스 터치형 라디오 단추 스타일 */
-        .option-button-label {
-            display: block;
-            background-color: #f9fafb;
-            border: 1px solid #f2f4f6;
-            border-radius: 14px;
-            padding: 16px 20px;
-            margin-bottom: 12px;
-            font-size: 15px;
-            font-weight: 600;
-            color: #333d4b;
-            cursor: pointer;
-            transition: background-color 0.15s, border-color 0.15s, color 0.15s;
-        }
-        .option-button-label:hover {
-            background-color: #f2f4f6;
-        }
-        .option-button-label input[type="radio"] {
-            margin-right: 12px;
-            width: 18px;
-            height: 18px;
-            vertical-align: middle;
-            accent-color: #1967d2;
-        }
-        .option-button-label.selected {
-            background-color: #e8f3ff;
-            border-color: #1967d2;
-            color: #1967d2;
-        }
-        /* 대형 하단 고정 제어 다이렉트 버튼 그룹 */
-        .step-btn-group {
-            display: flex;
-            gap: 12px;
-            margin-top: 36px;
-        }
-        .btn-step-action {
-            flex: 1;
-            padding: 16px;
-            border-radius: 14px;
-            font-size: 16px;
-            font-weight: 600;
-            border: none;
-            cursor: pointer;
-            transition: opacity 0.2s;
-        }
-        .btn-step-action.prev {
-            background-color: #f2f4f6;
-            color: #6b7684;
-        }
-        .btn-step-action.next {
-            background-color: #1967d2;
-            color: #ffffff;
-        }
-        .btn-step-action:hover {
-            opacity: 0.9;
-        }
+        body { font-family: sans-serif; background-color: #ffffff; color: #333d4b; padding: 20px; }
+        header { display: flex; justify-content: space-between; align-items: center; padding: 10px 20px; background: white; border-bottom: 1px solid #f2f4f6; }
+        .box { max-width: 480px; margin: 40px auto; padding: 0 20px; }
+        .p-bar { font-size: 14px; font-weight: 700; color: #1967d2; background: #e8f3ff; padding: 6px 12px; border-radius: 4px; display: inline-block; margin-bottom: 20px; }
+        .banner { background-color: #ffeeee; color: #ff4d4d; padding: 12px; border-radius: 8px; font-size: 13.5px; font-weight: 700; margin-bottom: 15px; border: 1px solid #ffcccc; display: none; }
+        .card { display: none; } .card.active { display: block; }
+        .q-t { font-size: 22px; font-weight: 800; line-height: 1.4; color: #1b1c1e; margin-bottom: 20px; }
+        .input-t { width: 100%; padding: 14px; border-radius: 8px; border: 1px solid #d1d6db; font-size: 15px; font-weight: 600; }
+        .lbl { display: block; background: #f9fafb; border: 1px solid #f2f4f6; border-radius: 10px; padding: 14px; margin-bottom: 10px; font-size: 14.5px; font-weight: 600; cursor: pointer; }
+        .lbl input { margin-right: 10px; accent-color: #1967d2; }
+        .btn-g { display: flex; gap: 10px; margin-top: 30px; }
+        .btn { flex: 1; padding: 14px; border-radius: 8px; font-size: 15px; font-weight: 600; border: none; cursor: pointer; }
+        .btn.prev { background: #f2f4f6; color: #6b7684; } .btn.next { background: #1967d2; color: white; }
     </style>
 </head>
 <body>
-
-    <!-- 상단 헤더 바 메뉴 연동 -->
     <header>
-        <div class="logo-container" onclick="location.href='/'">
-            <svg width="28" height="26" viewBox="0 0 100 90" fill="none" xmlns="http://w3.org">
-                <path d="M12.5 54C13.5 53 19.5 54.5 28.5 48.5C38.5 42 47 28 56.5 19.5C65.5 11 76.5 6.5 85.5 12.5C95.5 18.5 90 32 81 37C69.5 41.5 61 33 53 41.5C43 51 28.5 63 17 61C10 59.5 6.5 53 12.5 54Z" stroke="#1967d2" stroke-width="7.5" stroke-linecap="round" stroke-linejoin="round"/>
-                <path d="M51.5 59C58.5 67 71 68 80.5 60.5C90 53 92.5 39.5 85.5 32" stroke="#1967d2" stroke-width="7.5" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-            <span class="logo-text">SILVERLAB</span>
-        </div>
-        
-        <div class="nav-menu-group">
-            <button class="nav-link-btn" onclick="location.href='/'">홈</button>
-            <button class="nav-link-btn" onclick="location.href='/board.html'">매칭 게시판</button>
-        </div>
+        <div style="font-size:20px; font-weight:800; color:#1967d2; cursor:pointer;" onclick="location.href='/'">SILVERLAB</div>
+        <button style="padding:6px 12px; cursor:pointer;" onclick="location.href='/board.html'">게시판</button>
     </header>
 
-    <div class="step-container">
-        <!-- 상단 동적 배너 구역 -->
-        <div id="stepProgressBar" class="step-progress-bar">문진 가동 준비 중...</div>
-        <div id="almostThereBanner" class="almost-there-banner">💡 거의 다 왔습니다</div>
+    <div class="box">
+        <div id="pBar" class="p-bar">1 / 12</div>
+        <div id="atBanner" class="banner">💡 거의 다 왔습니다</div>
 
-        <form id="seekerForm" onsubmit="return false;">
-            
-            <!-- 1. 일자리 신청 조력자 구분 -->
-            <div class="step-section-card active" data-step="1">
-                <h2 class="step-q-title">오늘 이 일자리 신청은 누가 도와주고 계시나요?</h2>
-                <label class="option-button-label"><input type="radio" name="q1" value="어르신 본인이 직접 스마트폰을 보고 있어요."> 어르신 본인이 직접 스마트폰을 보고 있어요.</label>
-                <label class="option-button-label"><input type="radio" name="q1" value="아들, 딸, 손주 등 가족이 대신 눌러주고 있어요."> 아들, 딸, 손주 등 가족이 대신 눌러주고 있어요.</label>
-                <label class="option-button-label"><input type="radio" name="q1" value="주변 사람의 도움을 받고 있어요."> 주변 사람의 도움을 받고 있어요.</label>
+        <form id="sForm" onsubmit="return false;">
+            <!-- 1단계 -->
+            <div class="card active" data-step="1">
+                <div class="q-t">1. 오늘 이 일자리 신청은 누가 도와주고 계시나요?</div>
+                <label class="lbl"><input type="radio" name="q1" value="어르신 본인이 직접 스마트폰을 보고 있어요."> 어르신 본인이 직접 스마트폰을 보고 있어요.</label>
+                <label class="lbl"><input type="radio" name="q1" value="아들, 딸, 손주 등 가족이 대신 눌러주고 있어요."> 아들, 딸, 손주 등 가족이 대신 눌러주고 있어요.</label>
+                <label class="lbl"><input type="radio" name="q1" value="주변 사람의 도움을 받고 있어요."> 주변 사람의 도움을 받고 있어요.</label>
+            </div>
+            <!-- 2단계 -->
+            <div class="card" data-step="2">
+                <div class="q-t">2. 성함이 어떻게 되시나요?</div>
+                <input type="text" id="i2" class="input-t" placeholder="실명을 적어주세요">
+            </div>
+            <!-- 3단계 -->
+            <div class="card" data-step="3">
+                <div class="q-t">3. 생년월일을 입력해 주세요.</div>
+                <input type="text" id="i3" class="input-t" placeholder="예: 19580415">
+            </div>
+            <!-- 4단계 -->
+            <div class="card" data-step="4">
+                <div class="q-t">4. 휴대전화 번호를 적어주세요.</div>
+                <input type="tel" id="i4" class="input-t" placeholder="예: 01012345678">
+            </div>
+            <!-- 5단계 -->
+            <div class="card" data-step="5">
+                <div class="q-t">5. 근무를 희망하는 동네 이름을 적어주세요.</div>
+                <input type="text" id="i5" class="input-t" placeholder="예: 성남시 중원구 성남동">
+            </div>
+            <!-- 6단계 -->
+            <div class="card" data-step="6">
+                <div class="q-t">6. 아파트나 지하철 계단을 이용할 때, 쉬지 않고 3층 높이까지 걸어서 올라가실 수 있습니까?<span style="display:block; font-size:12px; font-weight:600; color:#4e5968; margin-top:5px;">※ 건강 질문입니다. 최적의 자리를 매칭해 드립니다.</span></div>
+                <label class="lbl"><input type="radio" name="q6" value="네, 숨차지 않고 잘 올라갑니다."> 네, 숨차지 않고 잘 올라갑니다.</label>
+                <label class="lbl"><input type="radio" name="q6" value="무릎이나 허리가 조금 쑤시지만 올라갑니다."> 무릎이나 허리가 조금 쑤시지만 올라갑니다.</label>
+                <label class="lbl"><input type="radio" name="q6" value="관절이 아파서 계단 이용이 힘듭니다."> 관절이 아파서 계단 이용이 힘듭니다.</label>
+            </div>
+            <!-- 7단계 -->
+            <div class="card" data-step="7">
+                <div class="q-t">7. 가볍게 1시간 걸을 수 있습니까?</div>
+                <label class="lbl"><input type="radio" name="q7" value="네"> 네</label>
+                <label class="lbl"><input type="radio" name="q7" value="아니요"> 아니요</label>
+            </div>
+            <!-- 8단계 -->
+            <div class="card" data-step="8">
+                <div class="q-t">8. 현장에서 조심해야 할 지병이 있으십니까?</div>
+                <label class="lbl"><input type="radio" name="q8" value="아주 건강합니다."> 아주 건강합니다.</label>
+                <label class="lbl"><input type="radio" name="q8" value="네, 하지만 일 하는 데 문제 없습니다."> 네, 하지만 일 하는 데 문제 없습니다.</label>
+                <label class="lbl"><input type="radio" name="q8" value="주기적으로 통증이 오거나 병원 치료 중입니다."> 주기적으로 통증이 오거나 병원 치료 중입니다.</label>
+            </div>
+            <!-- 9단계 -->
+            <div class="card" data-step="9">
+                <div class="q-t">9. 시끄러운 식당이나 마트 안에서도 사장님의 지시 사항이나 손님의 주문 소리를 잘 들으실 수 있습니까?</div>
+                <label class="lbl"><input type="radio" name="q9" value="네, 귀가 밝아서 잘 들립니다."> 네, 귀가 밝아서 잘 들립니다.</label>
+                <label class="lbl"><input type="radio" name="q9" value="가끔 안 들릴 때가 있지만 소통에 문제없습니다."> 가끔 안 들릴 때가 있지만 소통에 문제없습니다.</label>
+                <label class="lbl"><input type="radio" name="q9" value="귀가 조금 어두워 큰 소리로 말씀해 주셔야 합니다."> 귀가 조금 어두워 큰 소리로 말씀해 주셔야 합니다.</label>
+            </div>
+            <!-- 10단계 -->
+            <div class="card" data-step="10">
+                <div class="q-t">10. 평소 스마트폰으로 자녀분들과 카카오톡 메시지를 주고 받으실 때 어려움을 겪습니까?</div>
+                <label class="lbl"><input type="radio" name="q10" value="아니요, 문제 없습니다."> 아니요, 문제 없습니다.</label>
+                <label class="lbl"><input type="radio" name="q10" value="네, 조금 어렵습니다."> 네, 조금 어렵습니다.</label>
+            </div>
+            <!-- 11단계 -->
+            <div class="card" data-step="11">
+                <div class="q-t">11. 실버랩은 하루에 2~3시간씩 일하는 초단기 일자리를 주로 연결해 드립니다.</div>
+                <label class="lbl"><input type="radio" name="q11" value="네, 이해했습니다."> 네, 이해했습니다.</label>
+                <label class="lbl"><input type="radio" name="q11" value="되도록이면 더 길게 일하고 싶습니다."> 되도록이면 더 길게 일하고 싶습니다.</label>
+            </div>
+            <!-- 12단계 -->
+            <div class="card" data-step="12">
+                <div class="q-t">12. 올해 (2026) 정부에서 제공하는 노인 일자리 사업에 참여하신 적이 있습니까?</div>
+                <label class="lbl"><input type="radio" name="q12" value="없습니다. (잘 모르겠습니다.)"> 없습니다. (잘 모르겠습니다.)</label>
+                <label class="lbl"><input type="radio" name="q12" value="있습니다."> 있습니다.</label>
             </div>
 
-            <!-- 2. 성함 입력 -->
-            <div class="step-section-card" data-step="2">
-                <h2 class="step-q-title">성함이 어떻게 되시나요?</h2>
-                <input type="text" id="q2_input" class="step-input-text" placeholder="실명을 입력해 주세요">
-            </div>
-
-            <!-- 3. 생년월일 -->
-            <div class="step-section-card" data-step="3">
-                <h2 class="step-q-title">생년월일을 입력해 주세요.</h2>
-                <input type="text" id="q3_input" class="step-input-text" placeholder="예: 19580415">
-            </div>
-
-            <!-- 4. 휴대전화 번호 -->
-            <div class="step-section-card" data-step="4">
-                <h2 class="step-q-title">휴대전화 번호를 적어주세요.</h2>
-                <input type="tel" id="q4_input" class="step-input-text" placeholder="예: 01012345678">
-            </div>
-
-            <!-- 5. 희망 근무지 -->
-            <div class="step-section-card" data-step="5">
-                <h2 class="step-q-title">근무를 희망하는 동네 이름을 적어주세요.<span>예: 성남시 분당구 야탑동</span></h2>
-                <input type="text" id="q5_input" class="step-input-text" placeholder="동네 이름 기입">
-            </div>
-
-            <!-- 6. 계단 이용 능력 (건강질문 안내 통합) -->
-            <div class="step-section-card" data-step="6">
-                <h2 class="step-q-title">지하철 계단을 이용할 때, 쉬지 않고 3층 높이까지 걸어서 올라가실 수 있습니까?<span>※ 지금부터는 건강 관련 질문입니다. 답변하신 정보를 바탕으로 최적의 일자리를 매칭드리겠습니다.</span></h2>
-                <label class="option-button-label"><input type="radio" name="q6" value="네, 숨차지 않고 잘 올라갑니다."> 네, 숨차지 않고 잘 올라갑니다.</label>
-                <label class="option-button-label"><input type="radio" name="q6" value="무릎이나 허리가 조금 쑤시지만 올라갑니다."> 무릎이나 허리가 조금 쑤시지만 올라갑니다.</label>
-                <label class="option-button-label"><input type="radio" name="q6" value="관절이 아파서 계단 이용이 힘듭니다."> 관절이 아파서 계단 이용이 힘듭니다.</label>
-            </div>
-
-            <!-- 7. 가볍게 1시간 걷기 -->
-            <div class="step-section-card" data-step="7">
-                <h2 class="step-q-title">가볍게 1시간 걸을 수 있습니까?</h2>
-                <label class="option-button-label"><input type="radio" name="q7" value="네"> 네</label>
-                <label class="option-button-label"><input type="radio" name="q7" value="아니요"> 아니요</label>
-            </div>
-
-            <!-- 8. 현장 지병 여부 -->
-            <div class="step-section-card" data-step="8">
-                <h2 class="step-q-title">현장에서 조심해야 할 지병이 있으십니까?</h2>
-                <label class="option-button-label"><input type="radio" name="8" value="아주 건강합니다."> 아주 건강합니다.</label>
-                <label class="option-button-label"><input type="radio" name="8" value="네, 하지만 일 하는 데 문제 없습니다."> 네, 하지만 일 하는 데 문제 없습니다.</label>
-                <label class="option-button-label"><input type="radio" name="8" value="주기적으로 통증이 오거나 병원 치료 중입니다."> 주기적으로 통증이 오거나 병원 치료 중입니다.</label>
-            </div>
-
-            <!-- 9. 식당/마트 청력 소통 능력 -->
-            <div class="step-section-card" data-step="9">
-                <h2 class="step-q-title">시끄러운 식당이나 마트 안에서도 사장님의 지시 사항이나 손님의 주문 소리를 잘 들으실 수 있습니까?</h2>
-                <label class="option-button-label"><input type="radio" name="9" value="네, 귀가 밝아서 잘 들립니다."> 네, 귀가 밝아서 잘 들립니다.</label>
-                <label class="option-button-label"><input type="radio" name="9" value="가끔 안 들릴 때가 있지만 소통에 문제없습니다."> 가끔 안 들릴 때가 있지만 소통에 문제없습니다.</label>
-                <label class="option-button-label"><input type="radio" name="9" value="귀가 조금 어두워 큰 소리로 말씀해 주셔야 합니다."> 귀가 조금 어두워 큰 소리로 말씀해 주셔야 합니다.</label>
-            </div>
-
-            <!-- 10. 스마트폰 카카오톡 활용도 -->
-            <div class="step-section-card" data-step="10">
-                <h2 class="step-q-title">평소 스마트폰으로 자녀분들과 카카오톡 메시지를 주고 받으실 때 어려움을 겪습니까?</h2>
-                <label class="option-button-label"><input type="radio" name="10" value="아니요, 문제 없습니다."> 아니요, 문제 없습니다.</label>
-                <label class="option-button-label"><input type="radio" name="10" value="네, 조금 어렵습니다."> 네, 조금 어렵습니다.</label>
-            </div>
-
-            <!-- 11. 초단기 일자리 수용 여부 (거의 다 왔습니다 배너 발동 대상) -->
-            <div class="step-section-card" data-step="11">
-                <h2 class="step-q-title">실버랩은 시니어분들의 수요와 사장님들의 수요를 고려하여, 하루에 2~3시간씩 일하는 초단기 일자리를 주로 연결해 드립니다.</h2>
-                <label class="option-button-label"><input type="radio" name="11" value="네, 이해했습니다."> 네, 이해했습니다.</label>
-                <label class="option-button-label"><input type="radio" name="11" value="되도록이면 더 길게 일하고 싶습니다."> 되도록이면 더 길게 일하고 싶습니다.</label>
-            </div>
-
-            <!-- 12. 정부 노인 일자리 사업 참여 이력 -->
-            <div class="step-section-card" data-step="12">
-                <h2 class="step-q-title">올해 (2026) 정부에서 제공하는 노인 일자리 사업에 참여하신 적이 있습니까?</h2>
-                <label class="option-button-label"><input type="radio" name="12" value="없습니다. (잘 모르겠습니다.)"> 없습니다. (잘 모르겠습니다.)</label>
-                <label class="option-button-label"><input type="radio" name="12" value="있습니다."> 있습니다.</label>
-            </div>
-
-            <!-- 하단 다음/이전 단계 액션 버튼 바 -->
-            <div class="step-btn-group">
-                <button type="button" id="btnPrev" class="btn-step-action prev" onclick="moveStep(-1)">이전</button>
-                <button type="button" id="btnNext" class="btn-step-action next" onclick="moveStep(1)">다음</button>
+            <div class="btn-g">
+                <button type="button" id="bP" class="btn prev" style="visibility:hidden;" onclick="goS(-1)">이전</button>
+                <button type="button" id="bN" class="btn next" onclick="goS(1)">다음</button>
             </div>
         </form>
     </div>
-    <!-- 12단계 순차 스위칭 및 실명 감사 팝업 전산 구동 엔진 -->
+
     <script>
-        let currentStep = 1;
-        const totalSteps = 12;
+        let cS = 1; const tS = 12;
+        function goS(dir) {
+            if (dir === 1 && !valS()) { alert('항목의 답변을 마감 입력 또는 선택하셔야 다음 단계로 갑니다.'); return; }
+            if (dir === 1 && cS === tS) { submitQA(); return; }
 
-        // 1. 단계 이동 및 화면 제어 밸런서 함수
-        function updateStepView() {
-            // 상단 1/12 진행률 표시 실시간 패치
-            document.getElementById('stepProgressBar').innerText = `${currentStep} / ${totalSteps}`;
-
-            // 사장님 기획 요건: 11번 문항 진입 시 '거의 다 왔습니다' 특수 안심 배너 실시간 노출
-            const almostBanner = document.getElementById('almostThereBanner');
-            if (currentStep === 11) {
-                almostBanner.style.display = 'block';
-            } else {
-                almostBanner.style.display = 'none';
-            }
-
-            // 모든 카드 숨기고 현재 단계의 문항 카드만 액티브 마운트
-            document.querySelectorAll('.step-section-card').forEach(card => {
-                card.classList.remove('active');
-            });
-            document.querySelector(`.step-section-card[data-step="${currentStep}"]`).classList.add('active');
-
-            // 첫 단계에서는 이전 버튼 은폐
-            document.getElementById('btnPrev').style.visibility = (currentStep === 1) ? 'hidden' : 'visible';
-            
-            // 마지막 12단계 도달 시 '다음' 버튼을 '이력서 최종 제출 완료'로 동적 스위칭
-            const nextBtn = document.getElementById('btnNext');
-            if (currentStep === totalSteps) {
-                nextBtn.innerText = "이력서 최종 제출 완료";
-                nextBtn.style.backgroundColor = "#1152b3";
-            } else {
-                nextBtn.innerText = "다음";
-                nextBtn.style.backgroundColor = "#1967d2";
-            }
+            cS += dir; if(cS < 1) cS = 1; if(cS > tS) cS = tS;
+            document.getElementById('pBar').innerText = `${cS} / ${tS}`;
+            document.getElementById('atBanner').style.display = (cS === 11) ? 'block' : 'none';
+            document.querySelectorAll('.card').forEach(c => c.classList.remove('active'));
+            document.querySelector(`.card[data-step="${cS}"]`).classList.add('active');
+            document.getElementById('bP').style.visibility = (cS === 1) ? 'hidden' : 'visible';
+            document.getElementById('bN').innerText = (cS === tS) ? "이력서 최종 제출 완료" : "다음";
+            window.scrollTo(0,0);
         }
 
-        // 2. 이전/다음 버튼 클릭 시 밸리데이션 검증 핸들러
-        function moveStep(direction) {
-            if (direction === 1) {
-                // 주관식 및 객관식 필수 체크 방어 필터
-                if (!validateCurrentStepAnswers()) {
-                    alert('알림: 문항의 답변을 입력하거나 항목을 선택하셔야 다음 단계로 진행하실 수 있습니다.');
-                    return;
-                }
-
-                if (currentStep === totalSteps) {
-                    // 대망의 12단계 최종 도달 시 외부 클라우드 DB 보존 트랜잭션 시동
-                    submitSeekerAnswers();
-                    return;
-                }
-            }
-
-            currentStep += direction;
-            if (currentStep < 1) currentStep = 1;
-            if (currentStep > totalSteps) currentStep = totalSteps;
-
-            updateStepView();
-            window.scrollTo(0, 0); // 화면 상단 자동 롤백
+        function valS() {
+            if(cS===2) return document.getElementById('i2').value.trim()!==""; if(cS===3) return document.getElementById('i3').value.trim()!=="";
+            if(cS===4) return document.getElementById('i4').value.trim()!==""; if(cS===5) return document.getElementById('i5').value.trim()!=="";
+            const names = {1:"q1", 6:"q6", 7:"q7", 8:"q8", 9:"q9", 10:"q10", 11:"q11", 12:"q12"};
+            return names[cS] ? document.querySelector(`input[name="${names[cS]}"]:checked`) !== null : true;
         }
 
-        // 3. 각 단계별 공백 방어용 밸리데이션 검사 장치
-        function validateCurrentStepAnswers() {
-            if (currentStep === 2) return document.getElementById('q2_input').value.trim() !== "";
-            if (currentStep === 3) return document.getElementById('q3_input').value.trim() !== "";
-            if (currentStep === 4) return document.getElementById('q4_input').value.trim() !== "";
-            if (currentStep === 5) return document.getElementById('q5_input').value.trim() !== "";
-
-            // 라디오 객관식 단추 체크 여부 검증
-            const radioNames = {1: "q1", 6: "q6", 7: "q7", 8: "8", 9: "9", 10: "10", 11: "11", 12: "12"};
-            const name = radioNames[currentStep];
-            if (name) {
-                const checkedRadio = document.querySelector(`input[name="${name}"]:checked`);
-                return checkedRadio !== null;
-            }
-            return true;
-        }
-
-        // 4. [최종 피날레] 12단계 수치 취합 후 외부 클라우드 DB(Supabase) 직결 박음질 및 실명 헌정 문구 출력
-        function submitSeekerAnswers() {
-            const currentLoggerId = localStorage.getItem('sw_username');
-            if (!currentLoggerId) {
-                alert('인증 세션 만료: 로그인을 먼저 완수하신 후 이력서 문진을 진행해 주세요.');
-                location.href = '/login.html';
-                return;
-            }
-
-            // 사장님 전용 12단계 정제 데이터 수집 패키징
-            const nameValue = document.getElementById('q2_input').value.trim();
-            const answersArray = [
-                document.querySelector('input[name="q1"]:checked').value,
-                nameValue,
-                document.getElementById('q3_input').value.trim(),
-                document.getElementById('q4_input').value.trim(),
-                document.getElementById('q5_input').value.trim(),
-                document.querySelector('input[name="q6"]:checked').value,
-                document.querySelector('input[name="q7"]:checked').value,
-                document.querySelector('input[name="8"]:checked').value,
-                document.querySelector('input[name="9"]:checked').value,
-                document.querySelector('input[name="10"]:checked').value,
-                document.querySelector('input[name="11"]:checked').value,
-                document.querySelector('input[name="12"]:checked').value
+        function submitQA() {
+            const uId = localStorage.getItem('sw_username'); const nVal = document.getElementById('i2').value.trim();
+            const arr = [
+                document.querySelector('input[name="q1"]:checked').value, nVal, document.getElementById('i3').value.trim(),
+                document.getElementById('i4').value.trim(), document.getElementById('i5').value.trim(), document.querySelector('input[name="q6"]:checked').value,
+                document.querySelector('input[name="q7"]:checked').value, document.querySelector('input[name="q8"]:checked').value, document.querySelector('input[name="q9"]:checked').value,
+                document.querySelector('input[name="q10"]:checked').value, document.querySelector('input[name="q11"]:checked').value, document.querySelector('input[name="q12"]:checked').value
             ];
-
-            // 외부 영구 DB 저장 엔드포인트 타격
-            fetch('/api/senior/qa', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    username: currentLoggerId,
-                    answers: answersArray
-                })
-            })
-            .then(res => res.json())
-            .then(data => {
-                if (data.success) {
-                    // 사장님 기획 요건: 제출 완료 시 000 실명 기입 감사 문장 헌정 알림 가동
-                    alert(`질문지 작성이 완료되었습니다.\n\n실버랩에서 24시간 이내에 전화 연락드리겠습니다.\n${nameValue}님의 지원 감사드립니다. 기대에 부응하도록 최선을 다하겠습니다.\n\n-실버랩 올림-`);
-                    location.href = '/profile.html'; // 저장 완수 즉시 나만의 프로필 대시보드로 유기적 자동 이동
-                } else {
-                    alert('제출 실패: ' + data.message);
-                }
-            })
-            .catch(err => {
-                // 망실 방지 오프라인 세션 하드 마운트 백업 가동
-                alert(`질문지 작성이 완료되었습니다.\n\n실버랩에서 24시간 이내에 전화 연락드리겠습니다.\n${nameValue}님의 지원 감사드립니다. 기대에 부응하도록 최선을 다하겠습니다.\n\n-실버랩 올림-`);
+            fetch('/api/senior/qa', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ username: uId, answers: arr }) }).then(() => {
+                alert(`질문지 작성이 완료되었습니다.\n\n실버랩에서 24시간 이내에 전화 연락드리겠습니다.\n${nVal}님의 지원 감사드립니다. 기대에 부응하도록 최선을 다하겠습니다.\n\n-실버랩 올림-`);
                 location.href = '/profile.html';
             });
         }
-
-        // 5. 토스 규격의 세련된 라디오 버튼 선택 시 테두리 색상 즉시 변경용 이벤트 리스너 결속
-        document.addEventListener("change", function(e) {
-            if (e.target.type === "radio") {
-                const name = e.target.name;
-                document.querySelectorAll(`input[name="${name}"]`).forEach(radio => {
-                    radio.parentElement.classList.remove('selected');
-                });
-                if (e.target.checked) {
-                    e.target.parentElement.classList.add('selected');
-                }
-            }
-        });
-
-        // 문진 시스템 구동 초기화 시동
-        updateStepView();
     </script>
 </body>
 </html>
