@@ -92,16 +92,26 @@
                 <div id="applicantBox" style="margin-top:12px; display:none; border-top:1px solid #f2f4f6; padding-top:12px;"></div>
             </div>
         </div>
-        <!-- [구직 시니어 회원 전용 표출 구역] 사장님 지시 수칙: 문진 답변이 이력서 양식으로 실시간 자동 변환 저장 -->
+
+        <!-- [구직 시니어 회원 전용 표출 구역] -->
         <div id="seekerSection" style="display: none;">
-            <div class="info-card">
+            <!-- [인프라 통로 부활] 문진 서식 누락 상태인 신규 회원용 동적 알림 패널 박스 -->
+            <div class="info-card" id="seekerNoQaPanel" style="display: none; border: 2px solid #1967d2; background-color: #f4f9ff;">
+                <div class="card-header-title" style="color: #1967d2; border-bottom: 1px solid #e8f3ff;">⚠️ 아직 문진형 이력서가 등록되지 않았습니다</div>
+                <p style="font-size: 14px; line-height: 1.6; color: #4e5968; margin-bottom: 18px;">
+                    실버웍스 맞춤형 피크타임 일자리에 지원하시려면 반드시 12단계 모던 구직 문진표를 최초 1회 등록하셔야 합니다. 아래 단추를 누르시면 실시간 문진형 이력서 등록 센터로 즉시 이동합니다.
+                </p>
+                <button type="button" class="btn-official-blue" onclick="location.href='/seeker.html'">12단계 문진형 이력서 작성실 입장하기 ➔</button>
+            </div>
+
+            <div class="info-card" id="seekerFitCard">
                 <div class="card-header-title">성남 본점 오프라인 국민체력 100 검증 스펙 명세</div>
                 <div class="data-row"><span class="data-label">종합 인증 등급</span><span class="data-value" id="fG" style="color:#1967d2;">-</span></div>
                 <div class="data-row"><span class="data-label">절대 악력 측정치</span><span class="data-value" id="fGp">-</span></div>
                 <div class="data-row"><span class="data-label">상체 유연성 지표</span><span class="data-value" id="fF">-</span></div>
                 <div class="data-row"><span class="data-label">심폐 지구력 레벨</span><span class="data-value" id="fC">-</span></div>
             </div>
-            <div class="info-card">
+            <div class="info-card" id="seekerQaCard">
                 <div class="card-header-title">실버웍스 정제형 12단계 문진형 공식 이력서 보존 사본</div>
                 <div id="qaBox"></div>
             </div>
@@ -123,7 +133,6 @@
                 document.getElementById('mPhone').innerText = p.phone;
                 document.getElementById('mStatus').innerText = p.status === 'approved' ? "정식 승인 및 가동중" : "신원 승인 대기중";
                 
-                // 사장님 수칙 이행: 로그인 세션 등급에 따라 나타나는 UI 프로필 콘텐츠 전면 철저 격리 분리
                 if (p.role === 'employer') {
                     document.getElementById('mHeader').innerText = "구인 사장님 마스터 제어실";
                     document.getElementById('mRole').innerText = "구인 사장님 (employer)";
@@ -138,13 +147,23 @@
                     document.getElementById('fF').innerText = (p.fitness_flex || '-') + " cm";
                     document.getElementById('fC').innerText = p.fitness_cardio || '-';
                     
-                    // 사장님 수칙 이행: 시니어 질문지 응답 데이터를 프리미엄 공식 이력서 레이아웃 사본으로 마운트 변환
+                    // [핵심 교정 로직] 질문지 작성 기록 유무에 따른 상호 배타적 분기 활성화 제어
                     if (qa) {
+                        // 질문지 기록이 있다면 일반 카드 표출 및 이력서 변환 자동 적재
+                        document.getElementById('seekerNoQaPanel').style.display = 'none';
+                        document.getElementById('seekerFitCard').style.display = 'block';
+                        document.getElementById('seekerQaCard').style.display = 'block';
+
                         const box = document.getElementById('qaBox'); box.innerHTML = '';
                         const qLabels = ["조력자 구분 명세", "구직 베테랑 성함", "생년월일 명세", "휴대폰 번호 명세", "근무 희망 동네", "3층 계단 보행력 지표", "1시간 연속 도보 가능성", "현장 주의 지병 데이터", "식당/마트 청력 소통도", "카카오톡 메시지 활용도", "초단기 근로 수용성", "정부 노인일자리 중복참여 이력"];
                         for(let i=1; i<=12; i++) {
                             box.innerHTML += `<div style="margin-top:12px; font-size:13px; font-weight:700; color:#4e5968;">📄 이력서 항목 ${i}. ${qLabels[i-1]}</div><div class="qa-box">정식 전산 결속 완료됨 (물리 디스크 보존본 복사본)</div>`;
                         }
+                    } else {
+                        // 질문지 기록이 없다면 작성 유도 패널만 영리하게 팝업 표출하고 나머지는 은폐 숨김
+                        document.getElementById('seekerNoQaPanel').style.display = 'block';
+                        document.getElementById('seekerFitCard').style.display = 'none';
+                        document.getElementById('seekerQaCard').style.display = 'none';
                     }
                 }
             });
@@ -167,7 +186,6 @@
             alert('상담 신청 접수 완료!'); document.getElementById('consultTitle').value = ''; document.getElementById('consultDesc').value = '';
         }
 
-        // [기획 요건 대만족 완벽 이행] 내 매장에 지원한 시니어 명단을 파싱하고 실시간 1지망, 2지망, 3지망 단추 매핑 제어
         function loadBossApplicants(jobId) {
             const id = localStorage.getItem('sw_username'), box = document.getElementById('applicantBox');
             fetch(`/api/employer/applicants?employer_id=${id}&job_id=${jobId}`).then(res => res.json()).then(data => {
@@ -196,7 +214,6 @@
             });
         }
 
-        // [지망 순위 클릭 즉시 물리 DB 디스크 저장소에 실시간 기입 및 최고관리자창 알림 연동 함수]
         function assignPriority(jobId, seekerId, rankNum) {
             fetch('/api/employer/update-rank', {
                 method: 'POST',
