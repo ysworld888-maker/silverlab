@@ -31,7 +31,7 @@
         .btn-mini-blue:hover { opacity: 0.9; }
         .btn-rank { background-color: #ffffff; color: #4e5968; border: 1px solid #d1d6db; padding: 6px 12px; border-radius: 6px; font-size: 12px; font-weight: 600; cursor: pointer; transition: all 0.2s; margin-right: 6px; }
         .btn-rank.active-rank { background-color: #1967d2; color: #ffffff; border-color: #1967d2; }
-        .qa-box { background: #f8f9fa; padding: 12px; border-radius: 8px; font-size: 14px; margin-top: 6px; color: #1967d2; font-weight: 600; border: 1px solid #e5e8eb; }
+        .qa-box { background: #f8f9fa; padding: 14px; border-radius: 8px; font-size: 14px; margin-top: 6px; color: #1152b3; font-weight: 600; border: 1px solid #e5e8eb; line-height: 1.5; }
     </style>
 </head>
 <body>
@@ -95,7 +95,7 @@
 
         <!-- [구직 시니어 회원 전용 표출 구역] -->
         <div id="seekerSection" style="display: none;">
-            <!-- [인프라 통로 부활] 문진 서식 누락 상태인 신규 회원용 동적 알림 패널 박스 -->
+            <!-- 문진 서식 누락 상태인 신규 회원용 동적 알림 패널 박스 -->
             <div class="info-card" id="seekerNoQaPanel" style="display: none; border: 2px solid #1967d2; background-color: #f4f9ff;">
                 <div class="card-header-title" style="color: #1967d2; border-bottom: 1px solid #e8f3ff;">⚠️ 아직 문진형 이력서가 등록되지 않았습니다</div>
                 <p style="font-size: 14px; line-height: 1.6; color: #4e5968; margin-bottom: 18px;">
@@ -120,7 +120,7 @@
         <button class="btn-official-blue" style="background-color:#6b7684; margin-top:12px;" onclick="handleOfficialLogout()">실버웍스 안전 시스템 로그아웃</button>
     </div>
 
-    <!-- [오션블루 사장님/시니어 채널 엄격 구분 및 우선순위 지정 원천 동기화 엔진 스크립트] -->
+    <!-- [오션블루 사장님/시니어 채널 엄격 구분 및 실제 답변 데이터 실시간 출력 엔진 스크립트] -->
     <script>
         document.addEventListener("DOMContentLoaded", function() {
             const id = localStorage.getItem('sw_username');
@@ -147,20 +147,26 @@
                     document.getElementById('fF').innerText = (p.fitness_flex || '-') + " cm";
                     document.getElementById('fC').innerText = p.fitness_cardio || '-';
                     
-                    // [핵심 교정 로직] 질문지 작성 기록 유무에 따른 상호 배타적 분기 활성화 제어
+                    // [사장님 요건 완벽 실현] 고정 문구 대신 시니어가 실제 디스크 DB에 저장한 답변 원본 텍스트 매핑 파싱
                     if (qa) {
-                        // 질문지 기록이 있다면 일반 카드 표출 및 이력서 변환 자동 적재
                         document.getElementById('seekerNoQaPanel').style.display = 'none';
                         document.getElementById('seekerFitCard').style.display = 'block';
                         document.getElementById('seekerQaCard').style.display = 'block';
 
                         const box = document.getElementById('qaBox'); box.innerHTML = '';
                         const qLabels = ["조력자 구분 명세", "구직 베테랑 성함", "생년월일 명세", "휴대폰 번호 명세", "근무 희망 동네", "3층 계단 보행력 지표", "1시간 연속 도보 가능성", "현장 주의 지병 데이터", "식당/마트 청력 소통도", "카카오톡 메시지 활용도", "초단기 근로 수용성", "정부 노인일자리 중복참여 이력"];
+                        
+                        // 서버에서 넘어온 q1 ~ q12 실제 텍스트 문자열 데이터를 1대1 다이렉트로 각 명세 상자에 주입 출력합니다.
+                        const answersArray = [qa.q1, qa.q2, qa.q3, qa.q4, qa.q5, qa.q6, qa.q7, qa.q8, qa.q9, qa.q10, qa.q11, qa.q12];
+                        
                         for(let i=1; i<=12; i++) {
-                            box.innerHTML += `<div style="margin-top:12px; font-size:13px; font-weight:700; color:#4e5968;">📄 이력서 항목 ${i}. ${qLabels[i-1]}</div><div class="qa-box">정식 전산 결속 완료됨 (물리 디스크 보존본 복사본)</div>`;
+                            const realAnswer = answersArray[i-1] || "기입 내역 누락됨";
+                            box.innerHTML += `
+                                <div style="margin-top:14px; font-size:13px; font-weight:700; color:#4e5968;">📄 이력서 항목 ${i}. ${qLabels[i-1]}</div>
+                                <div class="qa-box" style="color: #1967d2; background-color: #f4f9ff;">${realAnswer}</div>
+                            `;
                         }
                     } else {
-                        // 질문지 기록이 없다면 작성 유도 패널만 영리하게 팝업 표출하고 나머지는 은폐 숨김
                         document.getElementById('seekerNoQaPanel').style.display = 'block';
                         document.getElementById('seekerFitCard').style.display = 'none';
                         document.getElementById('seekerQaCard').style.display = 'none';
