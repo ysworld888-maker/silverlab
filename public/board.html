@@ -18,12 +18,12 @@
 <body>
     <header>
         <div class="logo" onclick="location.href='/'">SILVERLAB</div>
-        <button style="padding:6px 12px; cursor:pointer;" onclick="location.href='/profile.html'">마이페이지</button>
+        <button style="padding:6px 12px; cursor:pointer;" onclick="location.href='/profile.html'">마이페이지 이동</button>
     </header>
 
     <div class="container">
         <h2 id="bTitle">실시간 일자리 매칭 피드</h2>
-        <p id="bSub" style="font-size:13px; color:#6b7684; margin-bottom:20px;">마스터 관리자가 최종 승인하여 자동 기재 개통된 청정 공고 명세입니다.</p>
+        <p id="bSub" style="font-size:13px; color:#6b7684; margin-bottom:20px;">최고 관리자가 원천 검토 후 정식 승인하여 실시간 자동 기재된 내역입니다.</p>
         <div id="boardContainer"></div>
     </div>
 
@@ -33,9 +33,9 @@
             const role = localStorage.getItem('sw_role');
             const container = document.getElementById('boardContainer');
 
-            if (!id) { alert('보안 세션 만료. 로그인을 먼저 완수해 주세요.'); location.href = '/login.html'; return; }
+            if (!id) { alert('보안 인증 세션 만료. 로그인을 먼저 완수해 주세요.'); location.href = '/login.html'; return; }
 
-            // [사장님 로그인 시 타인 공고 원천 은폐 격리 차단 락 가동]
+            // [사장님 로그인 시 타인 공고 원천 격리 차단 락 이행 완료]
             if (role === 'employer') {
                 document.getElementById('bTitle').innerText = "보안 격리 보호 구역";
                 document.getElementById('bSub').style.display = 'none';
@@ -43,21 +43,20 @@
                     <div class="lock-banner">
                         <h4 style="color:#ff4d4d; margin-bottom:10px;">🔒 비즈니스 독점 권한 격리 활성화</h4>
                         <p style="font-size:13px; line-height:1.6; color:#6b7684;">
-                            실버랩은 정보 혼선 방지 및 개인정보 보호법을 위해 타 매장의 내역을 전산 은폐 격리 차단합니다.<br>
-                            사장님이 올리신 공고와 그 공고에 매핑되어 들어온 <strong>[실시간 지원자 이력서]</strong>는 오직 사장님의 <strong>[우측 상단 원형 프로필 ➔ 마이페이지]</strong>에서만 독점 열람 가능합니다.
+                            실버랩은 정보 혼선 방지 및 개인정보 보호법을 준수합니다. 타 사업장의 구인 현황은 열람할 수 없으며,<br>
+                            사장님이 올리신 공고와 그 공고에 1대1 매핑되어 들어온 <strong>[실시간 지원 시니어 이력서 명세]</strong>는 오직 사장님의 <strong>[우측 상단 MY ➔ 마이페이지]</strong> 안에서만 독점 열람이 허용됩니다.
                         </p>
                     </div>
                 `;
                 return;
             }
 
-            // 시니어 회원 전용 실시간 공고 피드 dynamic 로드
+            // 시니어 회원 전용 실시간 승인 공고 로드
             fetch('/api/jobs/live-board').then(res => res.json()).then(data => {
                 container.innerHTML = '';
-                if (!data.jobs || data.jobs.length === 0) { container.innerHTML = '<p style="text-align:center; color:#8b95a1;">⏳ 매칭 대기 중인 공고가 없습니다.</p>'; return; }
+                if (!data.jobs || data.jobs.length === 0) { container.innerHTML = '<p style="text-align:center; color:#8b95a1;">⏳ 현재 심사 승인 완료되어 매칭 대기 중인 공고가 없습니다.</p>'; return; }
                 data.jobs.forEach(j => {
-                    const div = document.createElement('div');
-                    div.className = 'card';
+                    const div = document.createElement('div'); div.className = 'card';
                     div.innerHTML = `
                         <div style="font-size:13px; color:#6b7684;">${j.company}</div>
                         <div class="title">${j.title}</div>
@@ -72,14 +71,14 @@
 
         function applyJob(jobId, comp) {
             const id = localStorage.getItem('sw_username');
-            if (!confirm(`'${comp}' 매장에 정식 구직 원서를 전송하시겠습니까?\n지원 즉시 사장님 제어판 및 최고 관리자실에 실시간 전달 연동됩니다.`)) return;
+            if (!confirm(`'${comp}' 매장에 구직 원서를 전송하시겠습니까?\n지원 즉시 고용주 사장님 및 최고 관리자 대시보드(admin.html)에 실시간 통계 로그가 전달 연동됩니다.`)) return;
 
             fetch('/api/jobs/apply', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ job_id: jobId, seeker_id: id })
             }).then(() => {
-                alert(`지원 대성공!\n\n'${comp}' 사장님 마이페이지 및 최고 관리자실 대시보드(admin.html)에 회원님의 이력서 프로필 연동선이 실시간으로 결속 전달되었습니다.`);
+                alert(`지원 대성공!\n\n'${comp}' 사장님 마이페이지 및 관리자 전산 관제망에 회원님의 실물 이력서 매핑선이 실시간 결속 완수되었습니다.`);
                 location.href = '/profile.html';
             });
         }

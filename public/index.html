@@ -3,289 +3,81 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>실버웍스 (SILVERWORKS) - 품질 보증형 매장 피크타임 최적화 플랫폼</title>
-    <!-- 토스 특유의 광활한 여백 미학과 상용 세션 기반 아바타 전용 CSS 스타일셋 -->
+    <title>실버랩 (SILVERLAB) - 매장 피크타임 최적화 플랫폼</title>
     <style>
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-            -webkit-tap-highlight-color: transparent;
-        }
-        body {
-            background-color: #ffffff;
-            color: #333d4b;
-            padding-bottom: 60px;
-        }
-        /* 토스 고유의 상단 네비게이션 메뉴 헤더 바 */
-        header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 18px 20px;
-            background-color: #ffffff;
-            border-bottom: 1px solid #f2f4f6;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-        }
-        .logo-container {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            cursor: pointer;
-        }
-        .logo-text {
-            font-size: 20px;
-            font-weight: 800;
-            color: #1967d2;
-            letter-spacing: -0.5px;
-        }
-        /* 링크 단절을 완벽 파쇄하는 유기적 프리패스 네비게이션 메뉴 링크 그룹 */
-        .nav-menu-group {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        .nav-link-btn {
-            background: none;
-            border: none;
-            color: #4e5968;
-            font-size: 14px;
-            font-weight: 600;
-            cursor: pointer;
-            padding: 8px 16px;
-            border-radius: 8px;
-            transition: background-color 0.2s, color 0.2s;
-        }
-        .nav-link-btn:hover {
-            background-color: #f2f4f6;
-            color: #1967d2;
-        }
-        .nav-link-btn.active {
-            background-color: #e8f3ff;
-            color: #1967d2;
-        }
-        /* 사장님이 요구하신 우측 상단 토스 규격의 원 모양 프로필 아바타 인터페이스 */
-        .user-profile-avatar {
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
-            background-color: #1967d2;
-            color: #ffffff;
-            font-size: 14px;
-            font-weight: 700;
-            display: none; /* 초기값 숨김, 로그인 세션 감지 시 동적 활성화 */
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            border: 2px solid #e8f3ff;
-            box-shadow: 0 2px 6px rgba(25, 103, 210, 0.2);
-            transition: transform 0.2s;
-        }
-        .user-profile-avatar:hover {
-            transform: scale(1.08);
-        }
-        /* 화이트 타이포그래피 히어로 배너 구역 스타일 */
-        .hero-section {
-            padding: 80px 24px 60px 24px;
-            text-align: center;
-            background: radial-gradient(circle at top, #f4f9ff 0%, #ffffff 70%);
-        }
-        .hero-logo-center {
-            margin-bottom: 24px;
-            display: inline-block;
-            animation: floatWave 3s ease-in-out infinite;
-        }
-        @keyframes floatWave {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-6px); }
-        }
-        .hero-title {
-            font-size: 34px;
-            font-weight: 800;
-            line-height: 1.4;
-            letter-spacing: -1.2px;
-            color: #1b1c1e;
-            margin-bottom: 20px;
-        }
-        .hero-title span {
-            color: #1967d2;
-        }
-        .hero-sub {
-            font-size: 16px;
-            line-height: 1.7;
-            color: #4e5968;
-            max-width: 600px;
-            margin: 0 auto;
-        }
-        .card-section {
-            padding: 20px 20px 60px 20px;
-            max-width: 900px;
-            margin: 0 auto;
-        }
-        .info-card {
-            background-color: #f9fafb;
-            border-radius: 20px;
-            padding: 28px;
-            margin-bottom: 20px;
-            border: 1px solid #f2f4f6;
-            transition: transform 0.2s, box-shadow 0.2s;
-        }
-        .info-card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 24px rgba(0,0,0,0.04);
-        }
-        .card-badge {
-            display: inline-block;
-            background-color: #e8f3ff;
-            color: #1967d2;
-            padding: 6px 10px;
-            border-radius: 6px;
-            font-size: 12px;
-            font-weight: 700;
-            margin-bottom: 14px;
-        }
-        .card-title {
-            font-size: 19px;
-            font-weight: 700;
-            margin-bottom: 10px;
-            color: #333d4b;
-        }
-        .card-desc {
-            font-size: 14px;
-            line-height: 1.6;
-            color: #4e5968;
-        }
-        .policy-section {
-            background-color: #ffffff;
-            padding: 40px 20px;
-            border-top: 1px solid #f2f4f6;
-        }
-        .policy-container {
-            border: 1px solid #e5e8eb;
-            border-radius: 16px;
-            padding: 24px;
-            background-color: #f9fafb;
-            max-width: 900px;
-            margin: 0 auto;
-        }
-        .policy-header {
-            font-size: 15px;
-            font-weight: 700;
-            margin-bottom: 14px;
-            color: #333d4b;
-        }
-        .policy-text {
-            font-size: 13px;
-            line-height: 1.6;
-            color: #4e5968;
-        }
-        footer {
-            background-color: #f2f4f6;
-            color: #6b7684;
-            padding: 40px 20px;
-            font-size: 12px;
-            line-height: 1.8;
-            border-top: 1px solid #e5e8eb;
-        }
-        .footer-container {
-            max-width: 900px;
-            margin: 0 auto;
-        }
-        .footer-title {
-            font-size: 13px;
-            font-weight: 700;
-            margin-bottom: 10px;
-            color: #4e5968;
-        }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, sans-serif; -webkit-tap-highlight-color: transparent; }
+        body { background-color: #ffffff; color: #333d4b; padding-bottom: 60px; }
+        header { display: flex; justify-content: space-between; align-items: center; padding: 18px 20px; background-color: #ffffff; border-bottom: 1px solid #f2f4f6; position: sticky; top: 0; z-index: 100; }
+        .logo-container { display: flex; align-items: center; gap: 12px; cursor: pointer; }
+        .logo-text { font-size: 20px; font-weight: 800; color: #1967d2; letter-spacing: -0.5px; }
+        .nav-menu-group { display: flex; align-items: center; gap: 8px; }
+        .nav-link-btn { background: none; border: none; color: #4e5968; font-size: 14px; font-weight: 600; cursor: pointer; padding: 8px 16px; border-radius: 8px; transition: background-color 0.2s; }
+        .nav-link-btn:hover { background-color: #f2f4f6; color: #1967d2; }
+        .user-profile-avatar { width: 36px; height: 36px; border-radius: 50%; background-color: #1967d2; color: #ffffff; font-size: 14px; font-weight: 700; display: none; align-items: center; justify-content: center; cursor: pointer; border: 2px solid #e8f3ff; box-shadow: 0 2px 6px rgba(25, 103, 210, 0.2); }
+        .hero-section { padding: 80px 24px 60px 24px; text-align: center; background: radial-gradient(circle at top, #f4f9ff 0%, #ffffff 70%); }
+        .hero-title { font-size: 34px; font-weight: 800; line-height: 1.4; color: #1b1c1e; margin-bottom: 20px; letter-spacing: -1.2px; }
+        .hero-title span { color: #1967d2; }
+        .hero-sub { font-size: 16px; line-height: 1.7; color: #4e5968; max-width: 600px; margin: 0 auto; }
+        .card-section { padding: 20px; max-width: 900px; margin: 0 auto; }
+        .info-card { background-color: #f9fafb; border-radius: 20px; padding: 28px; margin-bottom: 20px; border: 1px solid #f2f4f6; cursor: pointer; transition: transform 0.2s; }
+        .info-card:hover { transform: translateY(-2px); }
+        .card-badge { display: inline-block; background-color: #e8f3ff; color: #1967d2; padding: 6px 10px; border-radius: 6px; font-size: 12px; font-weight: 700; margin-bottom: 14px; }
+        .card-title { font-size: 19px; font-weight: 700; margin-bottom: 10px; color: #333d4b; }
+        .card-desc { font-size: 14px; line-height: 1.6; color: #4e5968; }
+        footer { background-color: #f2f4f6; color: #6b7684; padding: 40px 20px; font-size: 12px; line-height: 1.8; border-top: 1px solid #e5e8eb; margin-top: 60px; }
     </style>
 </head>
 <body>
 
-    <!-- 상단 헤더 바 메뉴 연동 -->
     <header>
         <div class="logo-container" onclick="location.href='/'">
             <svg width="28" height="26" viewBox="0 0 100 90" fill="none" xmlns="http://w3.org">
                 <path d="M12.5 54C13.5 53 19.5 54.5 28.5 48.5C38.5 42 47 28 56.5 19.5C65.5 11 76.5 6.5 85.5 12.5C95.5 18.5 90 32 81 37C69.5 41.5 61 33 53 41.5C43 51 28.5 63 17 61C10 59.5 6.5 53 12.5 54Z" stroke="#1967d2" stroke-width="7.5" stroke-linecap="round" stroke-linejoin="round"/>
                 <path d="M51.5 59C58.5 67 71 68 80.5 60.5C90 53 92.5 39.5 85.5 32" stroke="#1967d2" stroke-width="7.5" stroke-linecap="round" stroke-linejoin="round"/>
             </svg>
-            <span class="logo-text">SILVERWORKS</span>
+            <span class="logo-text">SILVERLAB</span>
         </div>
-        
         <div class="nav-menu-group">
-            <button class="nav-link-btn active" onclick="location.href='/'">홈</button>
-            <button class="nav-link-btn" onclick="location.href='/login.html?type=seeker'">시니어 등록</button>
-            <button class="nav-link-btn" onclick="location.href='/login.html?type=employer'">사장님 혁신</button>
             <button class="nav-link-btn" onclick="location.href='/board.html'">매칭 게시판</button>
-            <!-- 사장님이 요구하신 대문 통합 버튼 인터페이스 결속 조립 -->
             <button id="navAuthBtn" class="nav-link-btn" style="background-color: #1967d2; color: #ffffff;" onclick="location.href='/login.html'">로그인 / 가입</button>
             <div id="userAvatar" class="user-profile-avatar" onclick="location.href='/profile.html'">MY</div>
         </div>
     </header>
 
     <section class="hero-section">
-        <div class="hero-logo-center">
-            <svg width="75" height="75" viewBox="0 0 100 90" fill="none" xmlns="http://w3.org">
-                <path d="M12.5 54C13.5 53 19.5 54.5 28.5 48.5C38.5 42 47 28 56.5 19.5C65.5 11 76.5 6.5 85.5 12.5C95.5 18.5 90 32 81 37C69.5 41.5 61 33 53 41.5C43 51 28.5 63 17 61C10 59.5 6.5 53 12.5 54Z" stroke="#1967d2" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/>
-                <path d="M51.5 59C58.5 67 71 68 80.5 60.5C90 53 92.5 39.5 85.5 32" stroke="#1967d2" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-        </div>
         <h1 class="hero-title">매장 피크타임,<br><span>품질 보증형</span> 최적화 매칭</h1>
-        <p class="hero-sub">주휴수당·퇴직금 폭탄과 무단 노쇼의 공포를 기술로 해결합니다. 실버웍스는 사장님의 수동 열람권을 폐지하고 검증된 시니어 베테랑을 선착순 자동 매칭하는 스마트 직업정보제공 인프라입니다.</p>
+        <p class="hero-sub">주휴수당·퇴직금 폭탄과 무단 노쇼의 공포를 기술로 해결합니다. 실버랩은 사장님의 수동 열람권을 폐지하고 검증된 시니어 베테랑을 자동 연동하는 스마트 직업정보제공 서비스입니다.</p>
     </section>
+
     <section class="card-section">
-        <div class="info-card" onclick="location.href='/login.html?type=employer'" style="cursor:pointer;">
-            <span class="card-badge">구인 사장님 메뉴 진입 ➔</span>
+        <div class="info-card" onclick="location.href='/login.html?type=employer'">
+            <span class="card-badge">구인 사장님 혁신 채널 진입 ➔</span>
             <h2 class="card-title">필요한 시간만 합법적 고용 솔루션</h2>
-            <p class="card-desc">하루 3시간 피크타임, 원하는 직무와 인원만 지정하여 등록하면 인프라가 가동됩니다. 고용노동부 최저임금 필터를 원천 동기화하여 완벽한 행정 무결성을 보장합니다.</p>
+            <p class="card-desc">하루 3시간 피크타임, 원하는 직무와 인원만 지정하여 등록하면 인프라가 가동됩니다. 외부 영구 클라우드 DB 연동으로 정보가 절대 유실되지 않습니다.</p>
         </div>
-
-        <div class="info-card" onclick="location.href='/login.html?type=seeker'" style="cursor:pointer;">
-            <span class="card-badge">시니어 베테랑 메뉴 진입 ➔</span>
-            <h2 class="card-title">베테랑 전용 표준 이력서 자율 등록</h2>
-            <p class="card-desc">오프라인 국민체력 100 검증 등급과 12가지 정밀 질문지 데이터가 통합 탑재된 실버웍스 전용 공식 이력서 서식이 자동 가공 및 보존되는 안전 구역입니다.</p>
-        </div>
-    </section>
-
-    <section class="policy-section">
-        <div class="policy-container">
-            <h3 class="policy-header">실버웍스 인터넷 직업정보제공 서비스 이용안내</h3>
-            <div class="policy-text">
-                <p style="margin-bottom:8px;">1. 본 플랫폼은 직업안정법 제23조에 의거하여 구인·구직 정보의 연계를 목적으로 가동되는 정식 인터넷 직업정보제공 서비스 인프라입니다.</p>
-                <p style="margin-bottom:8px;">2. 구인자가 입력한 급여 단가가 당해 연도 고용노동부 고시 최저임금에 미달하거나 유해 업종 코드로 판별될 경우 공고 기재 및 저장이 원천 차단됩니다.</p>
-                <p>3. 실버웍스는 구인자와 구직자 상호 간의 정보를 기술적으로 매개하는 IT 시스템만을 제공하며, 근로기준법상 인사·산재 책임은 해당 사업장 매장 고용주(구인자)에게 전적으로 귀속됩니다.</p>
-            </div>
+        <div class="info-card" onclick="location.href='/login.html?type=seeker'">
+            <span class="card-badge">시니어 베테랑 등록 채널 진입 ➔</span>
+            <h2 class="card-title">베테랑 전용 12단계 문진형 이력서 제출</h2>
+            <p class="card-desc">오프라인 국민체력 100 검증 등급과 12가지 정밀 질문지 데이터가 완벽하게 통합 탑재된 실버랩 전용 표준 모던 구직 서식 제출처입니다.</p>
         </div>
     </section>
 
     <footer>
-        <div class="footer-container">
-            <h4 class="footer-title">실버웍스 (SILVERWORKS)</h4>
-            <div class="footer-info-item">대표자 연락처: 010-7464-3657 / 010-9187-9074</div>
-            <div class="footer-info-item">거점 주소: 경기도 성남시 중원구 광명로 79, 4층 (성남동 2257)</div>
-            <div class="footer-info-item">사업 지위: [인터넷 직업정보제공사업 신고 법인]</div>
-            <div class="footer-info-item">정식 주업종 코드: [724000: 데이터베이스 및 온라인 정보 제공업]</div>
-            <div class="footer-copyright">Copyright © 2026 SILVERWORKS. All rights reserved.</div>
+        <div style="max-width:900px; margin:0 auto;">
+            <h4>주식회사 실버랩 (SILVERLAB)</h4>
+            <div>대표자 연락처: 010-7464-3657 / 거점 주소: 경기도 성남시 중원구 광명로 79, 4층</div>
+            <div>정식 주업종 코드: [724000: 데이터베이스 및 온라인 정보 제공업]</div>
+            <div>Copyright © 2026 SILVERLAB. All rights reserved.</div>
         </div>
     </footer>
 
-    <!-- 실시간 상용 세션 추적 및 원형 아바타 UI 스위칭 스크립트 -->
     <script>
         document.addEventListener("DOMContentLoaded", function() {
-            const currentLoggerId = localStorage.getItem('sw_username');
-            const authBtn = document.getElementById('navAuthBtn');
-            const userAvatar = document.getElementById('userAvatar');
-
-            // 로그인 상태(인증 토큰 세션) 존재 여부를 실시간 조건 분기 감지
-            if (currentLoggerId) {
-                authBtn.style.display = 'none'; // 로그인 버튼 소멸
-                userAvatar.style.display = 'flex'; // 둥근 원형 프로필 아바타 활성화
-                userAvatar.innerText = currentLoggerId.substring(0, 2).toUpperCase(); // 아이디 앞 2글자 아바타 표기
-            } else {
-                authBtn.style.display = 'block';
-                userAvatar.style.display = 'none';
+            const id = localStorage.getItem('sw_username');
+            if (id) {
+                document.getElementById('navAuthBtn').style.display = 'none';
+                const av = document.getElementById('userAvatar');
+                av.style.display = 'flex'; av.innerText = id.substring(0, 2).toUpperCase();
             }
         });
     </script>
