@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>실버웍스 (SILVERWORKS) - 품질 보증형 매장 피크타임 최적화 플랫폼</title>
+    <!-- 토스 특유의 광활한 여백 미학과 화이트 타이포그래피 전용 상용 CSS 스타일셋 -->
     <style>
         * {
             box-sizing: border-box;
@@ -41,7 +42,7 @@
             color: #1967d2;
             letter-spacing: -0.5px;
         }
-        /* 링크 단절을 파쇄하는 유기적 이동 경로 메뉴 링크 그룹 */
+        /* 링크 단절을 완벽 파쇄하는 유기적 프리패스 네비게이션 메뉴 링크 그룹 */
         .nav-menu-group {
             display: flex;
             gap: 8px;
@@ -65,7 +66,7 @@
             background-color: #e8f3ff;
             color: #1967d2;
         }
-        /* 토스 스타일의 광활하고 세련된 화이트 타이포그래피 히어로 배너 구역 */
+        /* 화이트 타이포그래피 히어로 배너 구역 스타일 */
         .hero-section {
             padding: 80px 24px 60px 24px;
             text-align: center;
@@ -183,26 +184,23 @@
 </head>
 <body>
 
-    <!-- [유기적 메뉴 연동 헤더 바] 로고와 전방위 이동 루트 링크 일체형 매핑 -->
+    <!-- [유기적 메뉴 연동 헤더 바] 메뉴 진입 시 전용 로그인창(?type=)으로 강제 워프 연동 -->
     <header>
         <div class="logo-container" onclick="location.href='/'">
-            <!-- 사장님이 전달해주신 청량한 실버웍스 오션 블루 파도 공식 심볼 탑재 -->
             <svg width="24" height="24" viewBox="0 0 100 100" fill="none" xmlns="http://w3.org">
                 <path d="M15 55C25 32 43 23 68 28C84 31.5 88.5 44 79.5 51C68 58 57 47.5 48 60C39 72.5 25.5 76 12 68.5C0.75 64 0.75 62 15 55Z" stroke="#1967d2" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/>
             </svg>
             <span class="logo-text">SILVERWORKS</span>
         </div>
         
-        <!-- 링크 단절을 원천 박멸하는 유기적 프리패스 네비게이션 메뉴 그룹 -->
         <div class="nav-menu-group">
             <button class="nav-link-btn active" onclick="location.href='/'">홈</button>
-            <button class="nav-link-btn" onclick="location.href='/seeker.html'">시니어 등록</button>
-            <button class="nav-link-btn" onclick="location.href='/employer.html'">사장님 혁신</button>
+            <button class="nav-link-btn" onclick="location.href='/login.html?type=seeker'">시니어 등록</button>
+            <button class="nav-link-btn" onclick="location.href='/login.html?type=employer'">사장님 혁신</button>
             <button class="nav-link-btn" onclick="location.href='/board.html'">매칭 게시판</button>
         </div>
     </header>
 
-    <!-- 별론 사진 전산 삭제 완료 ➔ 파도 마크 중심의 압도적 화이트 히어로 셋업 -->
     <section class="hero-section">
         <div class="hero-logo-center">
             <svg width="70" height="70" viewBox="0 0 100 100" fill="none" xmlns="http://w3.org">
@@ -213,21 +211,19 @@
         <p class="hero-sub">주휴수당·퇴직금 폭탄과 무단 노쇼의 공포를 기술로 해결합니다. 실버웍스는 사장님의 수동 열람권을 폐지하고 검증된 시니어 베테랑을 선착순 자동 매칭하는 스마트 직업정보제공 인프라입니다.</p>
     </section>
 
-    <!-- 유기적 경로 직관 터치 네비게이션 카드 색션 -->
     <section class="card-section">
-        <div class="info-card" onclick="location.href='/employer.html'" style="cursor:pointer;">
+        <div class="info-card" onclick="location.href='/login.html?type=employer'" style="cursor:pointer;">
             <span class="card-badge">구인 사장님 메뉴 진입 ➔</span>
             <h2 class="card-title">필요한 시간만 합법적 고용 솔루션</h2>
             <p class="card-desc">하루 3시간 피크타임, 원하는 직무와 인원만 지정하여 등록하면 인프라가 가동됩니다. 고용노동부 최저임금 필터를 원천 동기화하여 완벽한 행정 무결성을 보장합니다.</p>
         </div>
 
-        <div class="info-card" onclick="location.href='/seeker.html'" style="cursor:pointer;">
+        <div class="info-card" onclick="location.href='/login.html?type=seeker'" style="cursor:pointer;">
             <span class="card-badge">시니어 베테랑 메뉴 진입 ➔</span>
             <h2 class="card-title">베테랑 전용 표준 이력서 자율 등록</h2>
             <p class="card-desc">오프라인 국민체력 100 검증 등급과 12가지 정밀 질문지 데이터가 통합 탑재된 실버웍스 전용 공식 이력서 서식이 자동 가공 및 보존되는 안전 구역입니다.</p>
         </div>
     </section>
-
     <section class="policy-section">
         <div class="policy-container">
             <h3 class="policy-header">실버웍스 인터넷 직업정보제공 서비스 이용안내</h3>
