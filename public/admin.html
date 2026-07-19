@@ -2,105 +2,214 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <title>실버랩 최고관리자 콘솔 - 마스터 제어실</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>SILVERWORKS 최고관리자 콘솔 - 마스터 제어실</title>
+    <!-- 혼선 유도 색상을 완벽 박멸하고 토스 스타일 오션블루 단일 테마로 격상 완료한 관리자용 CSS 스타일셋 -->
     <style>
-        body { font-family: -apple-system, sans-serif; background-color: #f9fafb; color: #333d4b; padding: 20px; }
-        header { display: flex; justify-content: space-between; align-items: center; padding: 12px 20px; background: white; border-bottom: 1px solid #e5e8eb; border-radius: 8px; }
-        .logo { font-size: 20px; font-weight: 800; color: #1967d2; cursor: pointer; }
-        .card { background: white; border-radius: 12px; border: 1px solid #e5e8eb; padding: 22px; margin-top: 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.01); }
-        h3 { font-size: 16px; font-weight: 700; color: #1b1c1e; margin-bottom: 12px; }
-        table { width: 100%; border-collapse: collapse; font-size: 13px; }
-        th { background: #f2f4f6; color: #4e5968; padding: 10px; text-align: left; font-weight: 600; }
-        td { padding: 12px 10px; border-bottom: 1px solid #f2f4f6; }
-        .fitness-input { width: 70px; padding: 5px; text-align: center; border: 1px solid #d1d6db; border-radius: 4px; font-weight: 600; }
-        .btn { background: #1967d2; color: white; border: none; padding: 6px 12px; border-radius: 6px; cursor: pointer; font-size: 12px; font-weight: 600; }
-        .btn.app-j { background: #00875a; }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, sans-serif; -webkit-tap-highlight-color: transparent; }
+        body { background-color: #f9fafb; color: #333d4b; padding-bottom: 60px; }
+        header { display: flex; justify-content: space-between; align-items: center; padding: 14px 20px; background: white; border-bottom: 1px solid #e5e8eb; border-radius: 8px; position: sticky; top: 0; z-index: 100; }
+        .logo { font-size: 20px; font-weight: 800; color: #1967d2; cursor: pointer; letter-spacing: -0.5px; }
+        .card { background: white; border-radius: 12px; border: 1px solid #e5e8eb; padding: 24px; margin-top: 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.01); }
+        h3 { font-size: 15px; font-weight: 700; color: #1b1c1e; margin-bottom: 14px; border-left: 4px solid #1967d2; padding-left: 10px; }
+        .table-container { width: 100%; overflow-x: auto; margin-top: 10px; }
+        table { width: 100%; border-collapse: collapse; font-size: 13px; text-align: left; min-width: 900px; }
+        th { background: #f2f4f6; color: #4e5968; padding: 12px 10px; font-weight: 600; border-bottom: 1px solid #e5e8eb; }
+        td { padding: 12px 10px; border-bottom: 1px solid #f2f4f6; color: #333d4b; vertical-align: middle; }
+        .fitness-input { width: 75px; padding: 6px; text-align: center; border: 1px solid #d1d6db; border-radius: 6px; font-weight: 600; color: #1b1c1e; outline: none; }
+        .fitness-input:focus { border-color: #1967d2; background-color: #f4f9ff; }
+        /* 오션 블루 오피셜 상용 버튼 디자인 시스템 규격 일괄 통일 */
+        .btn { background: #1967d2; color: white; border: none; padding: 8px 14px; border-radius: 6px; cursor: pointer; font-size: 13px; font-weight: 600; transition: opacity 0.2s; }
+        .btn:hover { opacity: 0.9; }
+        .btn.btn-approve-j { background: #1967d2; }
     </style>
 </head>
 <body>
     <header>
-        <div class="logo" onclick="location.href='/'">SILVERLAB 마스터 제어 대시보드</div>
-        <button class="btn" onclick="location.href='/board.html'">매칭 게시판 실시간 모니터링 ➔</button>
+        <div class="logo" onclick="location.href='/'">SILVERWORKS 최고관제센터</div>
+        <button type="button" class="btn" onclick="location.href='/board.html'">매칭 게시판 모니터링 ➔</button>
     </header>
 
+    <!-- 섹션 1: 가입 명단 및 4대 체력 스펙 실시간 입력 수정 관제판 -->
     <div class="card">
-        <h3>1. 회원 가입 승인 및 4대 체력 측정 스펙 실시간 직접 입력 제어판</h3>
-        <table>
-            <thead><tr><th>아이디</th><th>성명/매장명</th><th>연락처</th><th>등급</th><th>인증상태</th><th>체력등급 입력</th><th>악력(kg)</th><th>유연성(cm)</th><th>심폐지구력</th><th>동적 스펙 업데이트</th></tr></thead>
-            <tbody id="userBody"></tbody>
-        </table>
+        <h3>1. 회원 가입 승인 및 4대 체력 측정 스펙 실시간 직접 입력 제어 패널</h3>
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>아이디</th>
+                        <th>성명/매장명</th>
+                        <th>연락처</th>
+                        <th>등급 분류</th>
+                        <th>인증 상태</th>
+                        <th>체력등급 입력</th>
+                        <th>악력(kg)</th>
+                        <th>유연성(cm)</th>
+                        <th>심폐지구력</th>
+                        <th>동적 스펙 업데이트</th>
+                    </tr>
+                </thead>
+                <tbody id="userBody">
+                    <tr><td colspan="10" style="text-align:center; color:#8b95a1; padding:20px 0;">가입 회원 전산 내역을 파싱 중입니다...</td></tr>
+                </tbody>
+            </table>
+        </div>
     </div>
 
+    <!-- 섹션 2: 사장님 구인공고 실시간 검토 승인제 차단 통제판 -->
     <div class="card">
-        <h3>2. 사장님 구인공고 실시간 검토 심사 통제판 (승인 단추 즉시 board.html 공식 기재)</h3>
-        <table>
-            <thead><tr><th>공고 ID</th><th>사장님 ID</th><th>매장 구인 명세</th><th>피크타임 공고 제목</th><th>근무일자</th><th>확정시급</th><th>검토 상태</th><th>최종 행정 승인</th></tr></thead>
-            <tbody>
-                <tr><td>SL-1</td><td>boss_cafe</td><td style="font-weight:700;">실버랩 카페 성남점</td><td>[카페 바리스타] 주말 오픈 피크타임 조기 지원 구함</td><td>2026-07-25</td><td style="font-weight:700; color:#1152b3;">11,500원</td><td><span style="color:#ff4d4d; font-weight:700;">⏳ 심사대기</span></td><td><button class="btn app-j" onclick="approveJob(1)">공고 검토 최종 승인</button></td></tr>
-                <tr><td>SL-2</td><td>boss_bread</td><td style="font-weight:700;">뚜레쥬르 성남점</td><td>[홀 서빙 보조] 평일 점심 혼잡시간 파트타이머 모집</td><td>2026-07-28</td><td style="font-weight:700; color:#1152b3;">10,030원</td><td><span style="color:#1967d2; font-weight:700;">✓ 승인완료</span></td><td><span style="color:#6b7684; font-weight:700;">게시판 표출중</span></td></tr>
-            </tbody>
-        </table>
+        <h3>2. 사장님 구인공고 실시간 검토 심사 통제 패널 (승인 단추 가동 시 board.html 기재 개통)</h3>
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>공고 ID</th>
+                        <th>사장님 ID</th>
+                        <th>매장 구인처</th>
+                        <th>피크타임 공고 제목 명세</th>
+                        <th>근무일자</th>
+                        <th>확정시급</th>
+                        <th>최종 행정 심사 승인</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>SL-1</td>
+                        <td>boss_cafe</td>
+                        <td style="font-weight:700;">실버웍스 카페 성남점</td>
+                        <td style="color:#4e5968;">[카페 바리스타] 주말 오픈 피크타임 조기 지원 구함</td>
+                        <td>2026-07-25</td>
+                        <td style="font-weight:700; color:#1967d2;">11,500원</td>
+                        <td><button type="button" class="btn btn-approve-j" onclick="approveJob(1)">공고 심사 승인 완료</button></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <!-- 섹션 3: 지원하기 클릭 즉시 동적 전달 매칭 로그 관제판 -->
+    <div class="card">
+        <h3>3. 구직자 지원하기 클릭 즉시 동적 전달 매칭 로그 관제 패널</h3>
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>지원 일련번호</th>
+                        <th>매장 고용주 명세</th>
+                        <th>지원한 피크타임 공고 명세</th>
+                        <th>지원 구직자 성명</th>
+                        <th>시니어 실물 연락처</th>
+                        <th>전산망 결속 상태</th>
+                    </tr>
+                </thead>
+                <tbody id="logBody">
+                    <tr><td colspan="6" style="text-align:center; color:#8b95a1; padding:20px 0;">실시간 구인·구직 원서 접수 로그 피드를 대기 중입니다...</td></tr>
+                </tbody>
+            </table>
+        </div>
     </div>
 
-    <div class="card">
-        <h3>3. 시니어 [지원하기] 클릭 즉시 실시간 전산 전달 연동 매칭 로그 피드</h3>
-        <table>
-            <thead><tr><th>지원 일련번호</th><th>매장 고용주 성명</th><th>지원한 피크타임 공고 명세</th><th>지원 구직자 성명</th><th>시니어 실물 연락처</th><th>전산망 결속 상태</th></tr></thead>
-            <tbody id="logBody"></tbody>
-        </table>
-    </div>
-
+    <!-- [최고관리자 데이터 제어 및 실시간 스펙 업데이트 동기화 엔진 스크립트] -->
     <script>
         function loadAdmin() {
-            fetch('/api/admin/users').then(res => res.json()).then(data => {
-                const body = document.getElementById('userBody'); body.innerHTML = '';
-                data.users.forEach(u => {
-                    const tr = document.createElement('tr');
-                    let inputs = `<td>-</td><td>-</td><td>-</td><td>-</td>`;
-                    if(u.role === 'seeker') {
-                        inputs = `
-                            <td><input type="text" class="fitness-input" id="g_${u.username}" value="${u.fitness_grade || '미인증'}"></td>
-                            <td><input type="text" class="fitness-input" id="gp_${u.username}" value="${u.fitness_grip || '-'}"></td>
-                            <td><input type="text" class="fitness-input" id="f_${u.username}" value="${u.fitness_flex || '-'}"></td>
-                            <td><input type="text" class="fitness-input" id="c_${u.username}" value="${u.fitness_cardio || '-'}"></td>
-                        `;
+            // 1. 가입 회원 명단 실시간 추출 및 4대 체력 스펙 바인딩
+            fetch('/api/admin/users')
+                .then(res => res.json())
+                .then(data => {
+                    const body = document.getElementById('userBody'); 
+                    body.innerHTML = '';
+                    
+                    if(!data.users || data.users.length === 0) {
+                        body.innerHTML = `<tr><td colspan="10" style="text-align:center; padding:20px 0; color:#8b95a1;">현재 전산망에 가입 신청된 회원 내역이 없습니다.</td></tr>`;
+                        return;
                     }
-                    tr.innerHTML = `<td>${u.username}</td><td style="font-weight:700;">${u.name}</td><td>${u.phone}</td><td>${u.role === 'employer'?'구인 사장님':'구직 시니어'}</td><td style="font-weight:700; color:#1967d2;">${u.status}</td>${inputs}<td><button class="btn" onclick="saveSpec('${u.username}')">권한부여 및 스펙저장</button></td>`;
-                    body.appendChild(tr);
-                });
-            });
 
-            fetch('/api/admin/match-logs').then(res => res.json()).then(data => {
-                const body = document.getElementById('logBody'); body.innerHTML = '';
-                if(!data.logs || data.logs.length === 0) { body.innerHTML = `<tr><td colspan="6" style="text-align:center; color:#8b95a1; padding:20px 0;">실시간 구인·구직 원서 접수 대기 중...</td></tr>`; return; }
-                data.logs.forEach(l => {
-                    const tr = document.createElement('tr');
-                    tr.innerHTML = `<td>APP-${l.app_id}</td><td style="font-weight:700;">${l.company_name}</td><td style="color:#1967d2; font-weight:600;">${l.job_title}</td><td style="font-weight:700;">${l.seeker_name} 베테랑</td><td>${l.seeker_phone}</td><td style="color:green; font-weight:700;">실시간 직결 전달됨</td>`;
-                    body.appendChild(tr);
+                    data.users.forEach(u => {
+                        const tr = document.createElement('tr');
+                        let inputs = `<td>-</td><td>-</td><td>-</td><td>-</td>`;
+                        
+                        // 구직 시니어 등급 회원일 경우에만 4대 체력 측정 수치를 직접 기입할 수 있는 인풋 박스를 표출합니다.
+                        if(u.role === 'seeker') {
+                            inputs = `
+                                <td><input type="text" class="fitness-input" id="g_${u.username}" value="${u.fitness_grade || '미인증'}" placeholder="등급"></td>
+                                <td><input type="text" class="fitness-input" id="gp_${u.username}" value="${u.fitness_grip || '-'}" placeholder="kg"></td>
+                                <td><input type="text" class="fitness-input" id="f_${u.username}" value="${u.fitness_flex || '-'}" placeholder="cm"></td>
+                                <td><input type="text" class="fitness-input" id="c_${u.username}" value="${u.fitness_cardio || '-'}" placeholder="레벨"></td>
+                            `;
+                        }
+                        
+                        tr.innerHTML = `
+                            <td style="font-weight:600; color:#1967d2;">${u.username}</td>
+                            <td style="font-weight:700;">${u.name}</td>
+                            <td>${u.phone}</td>
+                            <td><span style="font-weight:600; color:#4e5968;">${u.role === 'employer' ? '구인 사장님' : '구직 시니어'}</span></td>
+                            <td style="font-weight:700;">${u.status === 'approved' ? '승인완료' : '승인대기'}</td>
+                            ${inputs}
+                            <td><button type="button" class="btn" onclick="saveSpec('${u.username}')">스펙 저장</button></td>
+                        `;
+                        body.appendChild(tr);
+                    });
                 });
-            });
+
+            // 2. 시니어 지원하기 클릭 즉시 서버 디스크를 타고 동적 전달되는 매칭 로그 파싱
+            fetch('/api/admin/match-logs')
+                .then(res => res.json())
+                .then(data => {
+                    const body = document.getElementById('logBody'); 
+                    body.innerHTML = '';
+                    
+                    if(!data.logs || data.logs.length === 0) { 
+                        body.innerHTML = `<tr><td colspan="6" style="text-align:center; color:#8b95a1; padding:20px 0;">실시간 구인·구직 원서 접수 내역 대기 중입니다.</td></tr>`; 
+                        return; 
+                    }
+                    
+                    data.logs.forEach(l => {
+                        const tr = document.createElement('tr');
+                        tr.innerHTML = `
+                            <td style="font-weight:600;">APP-${l.app_id}</td>
+                            <td style="font-weight:700;">${l.company_name}</td>
+                            <td style="color:#1967d2; font-weight:600;">${l.job_title}</td>
+                            <td style="font-weight:700;">${l.seeker_name} 베테랑</td>
+                            <td>${l.seeker_phone}</td>
+                            <td style="color:green; font-weight:700;">실시간 직결 전달 완료</td>
+                        `;
+                        body.appendChild(tr);
+                    });
+                });
         }
 
+        // 3. 인풋 상자에 타이핑한 데이터를 가로채서 서버 디스크 DB에 실시간 양방향 영구 보존하는 함수
         function saveSpec(username) {
             let g = "미인증", gp = "-", f = "-", c = "-";
             if(document.getElementById('g_' + username)) {
-                g = document.getElementById('g_' + username).value; gp = document.getElementById('gp_' + username).value;
-                f = document.getElementById('f_' + username).value; c = document.getElementById('c_' + username).value;
+                g = document.getElementById('g_' + username).value.trim(); 
+                gp = document.getElementById('gp_' + username).value.trim();
+                f = document.getElementById('f_' + username).value.trim(); 
+                c = document.getElementById('c_' + username).value.trim();
             }
+            
             fetch('/api/admin/update-user', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ target_username: username, status: 'approved', fitness_grade: g, fitness_grip: gp, fitness_flex: f, fitness_cardio: c })
-            }).then(() => { alert('실시간 물리 DB 스펙 저장 완수!'); loadAdmin(); });
+            }).then(() => { 
+                alert('전산 교차 동기화 대성공!\n\n해당 회원의 권한 등급 승인 완료와 동시에 직접 기입하신 [체력 인증 등급, 절대 악력, 상체 유연성, 심폐지구력] 스펙 지표가 서버 물리 디스크 저장소에 상용 반영되었습니다.'); 
+                loadAdmin(); 
+            });
         }
 
+        // 4. 사장님이 등록 신청한 구인공고 최종 검토 심사 승인 및 board.html 실시간 개통 기재 처리 함수
         function approveJob(id) {
             fetch('/api/admin/approve-job', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ job_id: id, action_status: 'approved' })
-            }).then(() => { alert('공고 최종 승인 완료! board.html 즉시 기재 개통'); loadAdmin(); });
+            }).then(() => { 
+                alert('행정 심사 최종 승인 완료!\n\n해당 매장 구인공고의 전산 락이 해제되었으며 시니어 전용 매칭 게시판(board.html)에 실시간 공식 기재되었습니다.'); 
+                loadAdmin(); 
+            });
         }
+
+        // 마스터 콘솔 대시보드 로딩 즉시 인프라 관제 가동 시동
         loadAdmin();
     </script>
 </body>

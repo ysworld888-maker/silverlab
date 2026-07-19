@@ -4,21 +4,24 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>SILVERWORKS - 인증 제어 센터</title>
+    <!-- 불필요한 혼선 색상을 배제하고 명품 오션블루 컬러로 버튼 및 폼 크기를 통합 정렬한 프리미엄 CSS -->
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, sans-serif; }
         body { background-color: #f9fafb; color: #333d4b; padding: 40px 20px; }
-        .login-box { max-width: 420px; margin: 40px auto; background: white; border-radius: 16px; border: 1px solid #e5e8eb; padding: 30px; }
+        .login-box { max-width: 420px; margin: 40px auto; background: white; border-radius: 16px; border: 1px solid #e5e8eb; padding: 30px; box-shadow: 0 4px 16px rgba(0,0,0,0.01); }
         .logo-center { text-align: center; margin-bottom: 24px; cursor: pointer; }
-        .logo-text { font-size: 22px; font-weight: 800; color: #1967d2; }
+        .logo-text { font-size: 22px; font-weight: 800; color: #1967d2; letter-spacing: -0.5px; }
         .tab-group { display: flex; margin-bottom: 20px; border-bottom: 2px solid #f2f4f6; }
-        .tab-btn { flex: 1; padding: 12px; text-align: center; font-size: 15px; font-weight: 600; color: #6b7684; background: none; border: none; cursor: pointer; }
+        .tab-btn { flex: 1; padding: 12px; text-align: center; font-size: 15px; font-weight: 600; color: #6b7684; background: none; border: none; cursor: pointer; transition: color 0.15s; }
         .tab-btn.active { color: #1967d2; border-bottom: 2px solid #1967d2; }
         .form-panel { display: none; } .form-panel.active { display: block; }
         .input-group { margin-bottom: 16px; }
         .form-label { display: block; font-size: 13.5px; font-weight: 600; color: #4e5968; margin-bottom: 6px; }
-        .form-input { width: 100%; padding: 14px; border-radius: 10px; border: 1px solid #d1d6db; font-size: 14.5px; outline: none; }
+        .form-input { width: 100%; padding: 14px; border-radius: 10px; border: 1px solid #d1d6db; font-size: 14.5px; font-weight: 600; color: #1b1c1e; outline: none; transition: border-color 0.2s; }
         .form-input:focus { border-color: #1967d2; background-color: #f4f9ff; }
-        .btn-blue { width: 100%; background-color: #1967d2; color: white; padding: 15px; border: none; border-radius: 12px; font-size: 15px; font-weight: 600; cursor: pointer; margin-top: 10px; }
+        /* 오션 블루 오피셜 상용 버튼 디자인 시스템 규격 일괄 통일 */
+        .btn-blue { width: 100%; background-color: #1967d2; color: #ffffff; padding: 15px; border: none; border-radius: 12px; font-size: 15px; font-weight: 600; cursor: pointer; text-align: center; transition: opacity 0.2s; margin-top: 10px; }
+        .btn-blue:hover { opacity: 0.9; }
     </style>
 </head>
 <body>
@@ -33,44 +36,56 @@
             <button id="tabR" class="tab-btn" onclick="switchMode('register')">회원가입</button>
         </div>
 
+        <!-- 로그인 패널 폼 -->
         <div id="panelLogin" class="form-panel active">
-            <div class="input-group"><label class="form-label">아이디</label><input type="text" id="lId" class="form-input"></div>
-            <div class="input-group"><label class="form-label">비밀번호</label><input type="password" id="lPw" class="form-input"></div>
-            <button class="btn-blue" onclick="submitLogin()">인증 후 플랫폼 진입</button>
+            <div class="input-group"><label class="form-label">아이디</label><input type="text" id="lId" class="form-input" autocomplete="username"></div>
+            <div class="input-group"><label class="form-label">비밀번호</label><input type="password" id="lPw" class="form-input" autocomplete="current-password"></div>
+            <button type="button" class="btn-blue" onclick="submitLogin()">인증 후 플랫폼 진입</button>
         </div>
 
+        <!-- 회원가입 패널 폼 -->
         <div id="panelRegister" class="form-panel">
-            <div class="input-group"><label class="form-label">회원 아이디 생성</label><input type="text" id="rId" class="form-input"></div>
-            <div class="input-group"><label class="form-label">보안 비밀번호</label><input type="password" id="rPw" class="form-input"></div>
+            <div class="input-group"><label class="form-label">회원 아이디 생성</label><input type="text" id="rId" class="form-input" autocomplete="username"></div>
+            <div class="input-group"><label class="form-label">보안 비밀번호</label><input type="password" id="rPw" class="form-input" autocomplete="new-password"></div>
             <div class="input-group"><label class="form-label">성명 또는 정식 매장명</label><input type="text" id="rName" class="form-input"></div>
             <div class="input-group"><label class="form-label">휴대폰 번호 명세</label><input type="tel" id="rPhone" class="form-input" placeholder="예: 01012345678"></div>
-            <button class="btn-blue" onclick="submitRegister()">회원 등급 가입 신청하기</button>
+            <button type="button" class="btn-blue" onclick="submitRegister()">회원 등급 가입 신청하기</button>
         </div>
     </div>
-
+    <!-- [사장님/시니어 권한 등급 자동 추적 분기 및 전산망 인증 가동 엔진 스크립트] -->
     <script>
         let currentRole = "seeker";
+
+        // 1. 진입 시 주소창 파라미터(?type=employer)를 실시간 역추적하여 전산 분기를 고정합니다.
         window.addEventListener("DOMContentLoaded", function() {
             const urlParams = new URLSearchParams(window.location.search);
-            if(urlParams.get('type') === 'employer') currentRole = "employer";
+            if (urlParams.get('type') === 'employer') {
+                currentRole = "employer";
+            }
         });
 
+        // 2. 로그인 및 회원가입 탭 화면 전환 트랜잭션 함수
         function switchMode(mode) {
             document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
             document.querySelectorAll('.form-panel').forEach(p => p.classList.remove('active'));
-            if(mode === 'login') {
+            if (mode === 'login') {
                 document.getElementById('tabL').classList.add('active');
                 document.getElementById('panelLogin').classList.add('active');
             } else {
+                document.getElementById('tabL').classList.remove('active');
                 document.getElementById('tabR').classList.add('active');
                 document.getElementById('panelRegister').classList.add('active');
             }
         }
 
+        // 3. 백엔드 코어 서버 디스크 DB 대조 교차 로그인 처리 함수
         function submitLogin() {
             const id = document.getElementById('lId').value.trim();
             const pw = document.getElementById('lPw').value;
-            if(!id || !pw) return;
+            if (!id || !pw) {
+                alert('알림: 아이디와 비밀번호를 빠짐없이 기입해 주세요.');
+                return;
+            }
 
             fetch('/api/auth/login', {
                 method: 'POST',
@@ -79,21 +94,33 @@
             })
             .then(res => res.json())
             .then(data => {
-                if(data.success) {
+                if (data.success) {
+                    // 상용 규격 브라우저 보안 오피셜 하드 로컬 저장소 세션 영구 보존
                     localStorage.setItem('sw_username', data.user.username);
                     localStorage.setItem('sw_role', data.user.role);
-                    alert('로그인에 성공했습니다. 제어 대시보드로 이동합니다.');
+                    
+                    alert('인증 성공: 실버웍스 전산 보안 세션이 발급되었습니다. 대시보드로 진입합니다.');
                     location.href = '/profile.html';
-                } else { alert('인증 오류: ' + data.message); }
+                } else { 
+                    alert('인증 오류: ' + data.message); 
+                }
+            })
+            .catch(err => {
+                alert('전산 오류: 가용한 세션 장치 통신이 유실되었습니다. 파일 무결성을 대조 확인해 주세요.');
             });
         }
 
+        // 4. pending(승인대기) 락 잠금 상태로 물리 DB 디스크에 평생 보존 기록하는 가입 신청 함수
         function submitRegister() {
             const id = document.getElementById('rId').value.trim();
             const pw = document.getElementById('rPw').value;
             const nm = document.getElementById('rName').value.trim();
             const ph = document.getElementById('rPhone').value.trim();
-            if(!id || !pw || !nm || !ph) return;
+
+            if (!id || !pw || !nm || !ph) {
+                alert('알림: 모든 가입 서식 정보를 공백 없이 기입해 주셔야 전산망 등록이 진행됩니다.');
+                return;
+            }
 
             fetch('/api/auth/register', {
                 method: 'POST',
@@ -102,10 +129,15 @@
             })
             .then(res => res.json())
             .then(data => {
-                if(data.success) {
-                    alert('가입 신청서 전산 접수 완료! 최고관리자 승인 처리 후 서비스 이용이 가동됩니다.');
+                if (data.success) {
+                    alert('가입 신청서 정식 접수 완료!\n\n최고관리자 페이지(admin.html)의 마스터 신원 검증 버튼이 작동하는 즉시 로그인 진입 권한이 발급됩니다.');
                     switchMode('login');
-                } else { alert('가입 거부: ' + data.message); }
+                } else { 
+                    alert('가입 신청 거부: ' + data.message); 
+                }
+            })
+            .catch(err => {
+                alert('가입 처리 오류: 데이터베이스 트랜잭션 실패');
             });
         }
     </script>

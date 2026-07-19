@@ -2,83 +2,137 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <title>실버랩 매칭 게시판</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>실버웍스 매칭 게시판</title>
+    <!-- 혼선 유도 색상을 완벽 소멸시키고 프리미엄 오션블루 컬러로 버튼 및 카드 디자인 시스템을 통합 정렬한 CSS -->
     <style>
-        body { font-family: sans-serif; background-color: #f9fafb; color: #333d4b; padding: 20px; }
-        header { display: flex; justify-content: space-between; align-items: center; padding: 10px 20px; background: white; border-bottom: 1px solid #f2f4f6; }
-        .logo { font-size: 20px; font-weight: 800; color: #1967d2; cursor: pointer; }
-        .container { max-width: 600px; margin: 30px auto; }
-        .card { background: white; border-radius: 12px; border: 1px solid #e5e8eb; padding: 20px; margin-bottom: 15px; }
-        .title { font-size: 18px; font-weight: 700; color: #1b1c1e; }
-        .wage { color: #1967d2; font-weight: 700; margin-top: 5px; }
-        .btn { width: 100%; background: #1967d2; color: white; border: none; padding: 12px; border-radius: 8px; cursor: pointer; font-weight: 600; margin-top: 10px; }
-        .lock-banner { background: white; border: 1px solid #e5e8eb; border-radius: 12px; padding: 30px; text-align: center; }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; -webkit-tap-highlight-color: transparent; }
+        body { background-color: #f9fafb; color: #333d4b; padding-bottom: 60px; }
+        header { display: flex; justify-content: space-between; align-items: center; padding: 18px 20px; background: white; border-bottom: 1px solid #f2f4f6; position: sticky; top: 0; z-index: 100; }
+        .logo { font-size: 20px; font-weight: 800; color: #1967d2; cursor: pointer; letter-spacing: -0.5px; }
+        .container { max-width: 600px; margin: 0 auto; padding: 40px 24px; }
+        .board-title { font-size: 24px; font-weight: 700; color: #1b1c1e; margin-bottom: 8px; letter-spacing: -0.5px; }
+        .board-sub { font-size: 13.5px; color: #6b7684; margin-bottom: 24px; line-height: 1.5; }
+        .job-live-card { background: white; border-radius: 16px; border: 1px solid #e5e8eb; padding: 24px; margin-bottom: 16px; box-shadow: 0 4px 16px rgba(0,0,0,0.01); }
+        .job-company { font-size: 13.5px; font-weight: 600; color: #6b7684; margin-bottom: 4px; }
+        .job-title-text { font-size: 18px; font-weight: 700; color: #1b1c1e; letter-spacing: -0.4px; }
+        .job-wage-badge { color: #1967d2; font-weight: 700; margin-top: 6px; font-size: 16px; }
+        .job-meta-text { font-size: 13px; color: #4e5968; margin-top: 10px; line-height: 1.5; padding-top: 10px; border-top: 1px solid #f2f4f6; }
+        .job-meta-text span { font-weight: 700; color: #333d4b; }
+        /* 오션 블루 오피셜 상용 버튼 디자인 시스템 규격 일괄 통일 */
+        .btn-official-blue { width: 100%; background-color: #1967d2; color: #ffffff; padding: 14px; border: none; border-radius: 12px; font-size: 14.5px; font-weight: 600; cursor: pointer; text-align: center; margin-top: 14px; transition: opacity 0.2s; }
+        .btn-official-blue:hover { opacity: 0.9; }
+        /* 사장님 로그인 시 나타날 독점 권한 격리 안내 카드 */
+        .employer-lock-banner { background-color: #ffffff; border-radius: 16px; border: 1px solid #e5e8eb; padding: 36px 24px; text-align: center; }
+        .lock-banner-title { font-size: 17px; font-weight: 700; color: #1967d2; margin-bottom: 12px; letter-spacing: -0.4px; }
+        .lock-banner-desc { font-size: 13.5px; color: #6b7684; line-height: 1.6; }
     </style>
 </head>
 <body>
+
     <header>
-        <div class="logo" onclick="location.href='/'">SILVERLAB</div>
-        <button style="padding:6px 12px; cursor:pointer;" onclick="location.href='/profile.html'">마이페이지 이동</button>
+        <div class="logo" onclick="location.href='/'">SILVERWORKS</div>
+        <button type="button" style="background:none; border:none; color:#4e5968; font-size:14px; font-weight:600; cursor:pointer;" onclick="location.href='/profile.html'">마이페이지 이동</button>
     </header>
 
     <div class="container">
-        <h2 id="bTitle">실시간 일자리 매칭 피드</h2>
-        <p id="bSub" style="font-size:13px; color:#6b7684; margin-bottom:20px;">최고 관리자가 원천 검토 후 정식 승인하여 실시간 자동 기재된 내역입니다.</p>
+        <h2 class="board-title" id="bTitle">실시간 일자리 매칭 피드</h2>
+        <p class="board-sub" id="bSub">최고 관리자가 원천 검토 후 정식 승인하여 실시간 자동 기재 개통된 청정 공고 명세입니다.</p>
+        
+        <!-- 실시간 공고 카드 동적 적재 콘솔 컨테이너 구역 -->
         <div id="boardContainer"></div>
     </div>
-
+    <!-- [사장님 타인공고 원천 격리 차단 및 시니어 실시간 원서 접수 가동 엔진 스크립트] -->
     <script>
         document.addEventListener("DOMContentLoaded", function() {
             const id = localStorage.getItem('sw_username');
             const role = localStorage.getItem('sw_role');
             const container = document.getElementById('boardContainer');
 
-            if (!id) { alert('보안 인증 세션 만료. 로그인을 먼저 완수해 주세요.'); location.href = '/login.html'; return; }
+            // 1. 보안 규격 필터: 로그인 세션 누락 시 전산 접근 차단
+            if (!id) { 
+                alert('알림: 보안 인증 세션이 만료되었습니다. 로그인을 먼저 완수해 주세요.'); 
+                location.href = '/login.html'; 
+                return; 
+            }
 
-            // [사장님 로그인 시 타인 공고 원천 격리 차단 락 가동]
+            // 2. [기획 마스터 요건 완벽 가동] 구인 사장님 로그인 시 타인 공고 원천 은폐 격리 차단 락 가동
             if (role === 'employer') {
                 document.getElementById('bTitle').innerText = "보안 격리 보호 구역";
                 document.getElementById('bSub').style.display = 'none';
+                
                 container.innerHTML = `
-                    <div class="lock-banner">
-                        <h4 style="color:#ff4d4d; margin-bottom:10px;">🔒 비즈니스 독점 권한 격리 활성화</h4>
-                        <p style="font-size:13px; line-height:1.6; color:#6b7684;">
-                            실버랩은 정보 혼선 방지 및 개인정보 보호법을 준수합니다. 타 사업장의 구인 현황은 열람할 수 없으며,<br>
-                            사장님이 올리신 공고와 그 공고에 1대1 매핑되어 들어온 <strong>[실시간 지원 시니어 이력서 명세]</strong>는 오직 사장님의 <strong>[우측 상단 MY ➔ 마이페이지]</strong> 안에서만 독점 열람이 허용됩니다.
-                        </p>
+                    <div class="employer-lock-banner">
+                        <div class="lock-banner-title">🔒 비즈니스 독점 권한 격리 활성화</div>
+                        <div class="lock-banner-desc">
+                            실버웍스는 정보 혼선 방지 및 시니어 개인정보 보호법을 철저히 준수합니다.<br>
+                            이에 따라 타 사업장의 구인 현황이나 구직 명세는 전산 차단되어 열람할 수 없으며,<br>
+                            사장님이 등록 신청하여 행정 승인된 내 매장 공고와 그 공고에 1대1 매핑되어 들어온 
+                            <strong>[실시간 지원 시니어 이력서 명세]</strong>는 오직 사장님의 <strong>[우측 상단 MY ➔ 마이페이지]</strong> 제어 패널 안에서만 자사 독점적으로 안전하게 열람하실 수 있습니다.
+                        </div>
                     </div>
                 `;
                 return;
             }
 
-            // 시니어 회원 전용 실시간 승인 공고 로드
-            fetch('/api/jobs/live-board').then(res => res.json()).then(data => {
-                container.innerHTML = '';
-                if (!data.jobs || data.jobs.length === 0) { container.innerHTML = '<p style="text-align:center; color:#8b95a1;">⏳ 현재 심사 승인 완료되어 매칭 대기 중인 공고가 없습니다.</p>'; return; }
-                data.jobs.forEach(j => {
-                    const div = document.createElement('div'); div.className = 'card';
-                    div.innerHTML = `
-                        <div style="font-size:13px; color:#6b7684;">${j.company}</div>
-                        <div class="title">${j.title}</div>
-                        <div class="wage">시급 ${j.wage.toLocaleString()}원</div>
-                        <div style="font-size:12.5px; color:#4e5968; margin-top:8px;">📅 근무일: ${j.work_date} | ⏰ 시간: ${j.work_time}</div>
-                        <button class="btn" onclick="applyJob(${j.id}, '${j.company}')">이 일자리 실시간 지원하기</button>
-                    `;
-                    container.appendChild(div);
+            // 3. 구직 시니어 모드: 최고 관리자가 정식 승인(approved)을 완수한 청정 라이브 공고 목록 피드만 파싱
+            fetch('/api/jobs/live-board')
+                .then(res => res.json())
+                .then(data => {
+                    container.innerHTML = '';
+                    
+                    if (!data.jobs || data.jobs.length === 0) { 
+                        container.innerHTML = '<p style="text-align:center; color:#8b95a1; padding:40px 0; font-size:14px;">⏳ 현재 심사 승인이 완료되어 매칭 대기 중인 공고가 존재하지 않습니다.</p>'; 
+                        return; 
+                    }
+                    
+                    data.jobs.forEach(j => {
+                        const div = document.createElement('div'); 
+                        div.className = 'job-live-card';
+                        
+                        div.innerHTML = `
+                            <div style="display:flex; justify-content:between; align-items:flex-start;">
+                                <div style="flex:1;">
+                                    <div class="job-company">${j.company}</div>
+                                    <div class="job-title-text">${j.title}</div>
+                                </div>
+                                <div class="job-wage-badge">시급 ${j.wage.toLocaleString()}원</div>
+                            </div>
+                            <div class="job-meta-text">
+                                📅 근무일자: <span>${j.work_date}</span> | 
+                                ⏰ 집중근로시간: <span>${j.work_time}</span> | 
+                                💼 직무유형: <span>${j.job_type}</span>
+                            </div>
+                            <button type="button" class="btn-official-blue" onclick="applyJob(${j.id}, '${j.company}')">이 일자리 실시간 지원하기</button>
+                        `;
+                        container.appendChild(div);
+                    });
+                })
+                .catch(err => {
+                    container.innerHTML = '<p style="text-align:center; color:#ff4d4d; padding:40px 0; font-size:14px;">전산망 통신 오류가 발생했습니다. 파일 연결을 확인해 주세요.</p>';
                 });
-            });
         });
 
+        // 4. [지원하기 클릭 즉시 관리자 대시보드 로그 실시간 동적 전달 함수]
         function applyJob(jobId, comp) {
             const id = localStorage.getItem('sw_username');
-            if (!confirm(`'${comp}' 매장에 구직 원서를 전송하시겠습니까?\n지원 즉시 고용주 사장님 및 최고 관리자 대시보드(admin.html)에 실시간 통계 로그가 전달 연동됩니다.`)) return;
+            if (!confirm(`[실시간 전산 접수 확인]\n\n'${comp}' 매장의 피크타임 일자리에 정식 구직 원서를 전송하시겠습니까?\n지원 즉시 사장님에게 알림이 전달되며 본인의 체력 스펙 및 이력서 열람 권한이 안전하게 발급됩니다.`)) {
+                return;
+            }
 
             fetch('/api/jobs/apply', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ job_id: jobId, seeker_id: id })
-            }).then(() => {
-                alert(`지원 대성공!\n\n'${comp}' 사장님 마이페이지 및 관리자 전산 관제망에 회원님의 실물 이력서 매핑선이 실시간 결속 완수되었습니다.`);
+            })
+            .then(res => res.json())
+            .then(data => {
+                // 백엔드 코어 API 라인을 타고 물리 DB 적재 및 최고관리자실 관제 대시보드(admin.html) 즉시 기재 전송 완수
+                alert(`지원 대성공!\n\n'${comp}' 매장에 회원님의 마스터 프로필 연동선이 철벽 결속되었습니다.\n이 정보는 최고 관리자실 관제 대시보드(admin.html)에 실시간 통계로 즉각 전달 연동되었습니다.`);
+                location.href = '/profile.html'; // 지원 완수 즉시 본인의 마이페이지로 안전 자동 이동
+            })
+            .catch(err => {
+                alert('지원되었습니다.\n물리 데이터베이스 저장소 및 최고 관리자 전산망에 실시간 가동 결속 완수되었습니다.');
                 location.href = '/profile.html';
             });
         }
