@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>SILVERWORKS - 출퇴근 및 포인트 정산 제어 센터</title>
+    <!-- 불필요한 혼선 색상을 완벽 차단하고 오션 블루 테마와 세련된 그레이 톤으로 일괄 정렬 통합한 스타일셋 -->
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; -webkit-tap-highlight-color: transparent; }
+        body { background-color: #f9fafb; color: #333d4b; padding-bottom: 60px; }
+        header { display: flex; justify-content: space-between; align-items: center; padding: 18px 20px; background-color: #ffffff; border-bottom: 1px solid #f2f4f6; position: sticky; top: 0; z-index: 100; }
+        .logo-container { display: flex; align-items: center; gap: 12px; cursor: pointer; }
+        .logo-text { font-size: 20px; font-weight: 800; color: #1967d2; letter-spacing: -0.5px; }
+        .container { max-width: 600px; margin: 0 auto; padding: 40px 24px; }
+        .title { font-size: 24px; font-weight: 700; color: #1b1c1e; margin-bottom: 8px; letter-spacing: -0.5px; }
+        .sub { font-size: 14px; color: #6b7684; margin-bottom: 30px; line-height: 1.5; }
+        .info-card { background-color: #ffffff; border-radius: 16px; border: 1px solid #e5e8eb; padding: 24px; margin-bottom: 24px; box-shadow: 0 4px 16px rgba(0,0,0,0.01); }
+        .card-header-title { font-size: 16px; font-weight: 700; color: #333d4b; margin-bottom: 18px; border-bottom: 1px solid #f2f4f6; padding-bottom: 12px; }
+        .data-row { display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid #f9fafb; font-size: 14px; }
+        .data-row:last-child { border-bottom: none; }
+        .data-label { font-weight: 600; color: #4e5968; }
+        .data-value { font-weight: 700; color: #1b1c1e; }
+        .form-group { margin-bottom: 16px; }
+        .form-label { display: block; font-size: 13.5px; font-weight: 600; color: #4e5968; margin-bottom: 8px; }
+        .form-input { width: 100%; padding: 14px; border-radius: 10px; border: 1px solid #d1d6db; font-size: 14.5px; font-weight: 600; color: #1b1c1e; outline: none; transition: border-color 0.2s; }
+        .form-input:focus { border-color: #1967d2; background-color: #f4f9ff; }
+        
+        /* 오션 블루 오피셜 상용 버튼 디자인 시스템 규격 일괄 통일 */
+        .btn-official-blue { width: 100%; background-color: #1967d2; color: #ffffff; padding: 15px; border: none; border-radius: 12px; font-size: 15px; font-weight: 600; cursor: pointer; text-align: center; transition: opacity 0.2s; margin-bottom: 10px; }
+        .btn-official-blue:hover { opacity: 0.9; }
+        .btn-official-blue:disabled { background-color: #b0d4ff; cursor: not-allowed; }
+        .btn-mini-blue { background-color: #1967d2; color: #ffffff; border: none; padding: 8px 14px; border-radius: 6px; font-size: 13px; font-weight: 600; cursor: pointer; }
+        
+        /* 체크박스 디자인 규격 */
+        .check-container { display: flex; align-items: center; gap: 10px; margin-top: 14px; padding: 12px; background-color: #f8f9fa; border-radius: 8px; border: 1px solid #e5e8eb; cursor: pointer; }
+        .check-container input { width: 18px; height: 18px; accent-color: #1967d2; cursor: pointer; }
+        .check-text { font-size: 13.5px; font-weight: 600; color: #4e5968; }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="logo-container" onclick="location.href='/'">
+            <svg width="28" height="26" viewBox="0 0 100 90" fill="none" xmlns="http://w3.org">
+                <path d="M12.5 54C13.5 53 19.5 54.5 28.5 48.5C38.5 42 47 28 56.5 19.5C65.5 11 76.5 6.5 85.5 12.5C95.5 18.5 90 32 81 37C69.5 41.5 61 33 53 41.5C43 51 28.5 63 17 61C10 59.5 6.5 53 12.5 54Z" stroke="#1967d2" stroke-width="7.5" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M51.5 59C58.5 67 71 68 80.5 60.5C90 53 92.5 39.5 85.5 32" stroke="#1967d2" stroke-width="7.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            <span class="logo-text">SILVERWORKS</span>
+        </div>
+        <button class="btn-mini-blue" onclick="location.href='/profile.html'">마이페이지 이동</button>
+    </header>
+    <div class="container">
+        <h1 class="title">현장 출퇴근 및 일급 정산 센터</h1>
+        <p class="sub">매칭이 확정된 고용주와 시니어 회원이 상호작용하여 근태 타임스탬프를 기록하고 안전하게 일급 포인트를 트랜잭션 정산하는 신설 핀테크 통제실입니다.</p>
+
+        <!-- 섹션 1: 연동된 매칭 계약 명세 정보판 -->
+        <div class="info-card">
+            <div class="card-header-title">확정 매칭 계약 신원 명세</div>
+            <div class="data-row"><span class="data-label">구인처 상호명</span><span class="data-value" id="tCompany">-</span></div>
+            <div class="data-row"><span class="data-label">구인 사장님 ID</span><span class="data-value" id="tEmployer">-</span></div>
+            <div class="data-row"><span class="data-label">구직 시니어 ID</span><span class="data-value" id="tSeeker">-</span></div>
+            <div class="data-row"><span class="data-label">시니어 실물 연락처</span><span class="data-value" id="tPhone" style="color:#1967d2;">-</span></div>
+            <div class="data-row"><span class="data-label">현재 현장 근태 상태</span><span class="data-value" id="tStatus">-</span></div>
+        </div>
+
+        <!-- 섹션 2: [구직 시니어 회원 전용 독점 구역] 출근/퇴근 가동반 -->
+        <div id="seekerWorkZone" style="display: none;">
+            <div class="info-card">
+                <div class="card-header-title">구직 시니어 베테랑 전용 근태 타임스탬프 각인기</div>
+                <p style="font-size:13.5px; color:#6b7684; margin-bottom:16px; line-height:1.5;">현장에 도착하시면 출근을, 근로가 종료되면 퇴근 단추를 터치해 주세요. 기록된 데이터는 사장님 제어반과 관리자실로 즉시 전달됩니다.</p>
+                <button type="button" id="btnCheckIn" class="btn-official-blue" onclick="handleAttendance('check_in')">현장 출근하기 각인</button>
+                <button type="button" id="btnCheckOut" class="btn-official-blue" style="background-color:#6b7684;" onclick="handleAttendance('check_out')">현장 퇴근하기 각인</button>
+                
+                <div style="background-color:#f8f9fa; padding:12px; border-radius:8px; font-size:13px; margin-top:10px; line-height:1.6; color:#4e5968; border:1px solid #e5e8eb;">
+                    <div>출근 기록 시간: <span id="timeCheckIn" style="font-weight:700; color:#1b1c1e;">-</span></div>
+                    <div>퇴근 기록 시간: <span id="timeCheckOut" style="font-weight:700; color:#1b1c1e;">-</span></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 섹션 3: [구인 사장님 회원 전용 독점 구역] 최종 동의 및 포인트 정산반 -->
+        <div id="employerWorkZone" style="display: none;">
+            <div class="info-card">
+                <div class="card-header-title">구인 사장님 전용 일급 포인트 정산 지급 패널</div>
+                <p style="font-size:13.5px; color:#6b7684; margin-bottom:16px; line-height:1.5;">해당 시니어 회원의 근태 내역을 확인하신 후 당일 약정된 일급 총액을 산정하여 지급해 주세요. 포인트는 실시간으로 즉시 전송 충전됩니다.</p>
+                
+                <div class="form-group">
+                    <label class="form-label">최종 지급 설정 일급 금액 (원)</label>
+                    <input type="number" id="settleAmount" class="form-input" placeholder="지급할 포인트 액수를 기입하세요">
+                </div>
+
+                <!-- [사장님 오더 완벽 이식] 포인트를 수령하기 위한 최종 게이트인 동의하기 체크박스 컴포넌트 -->
+                <label class="check-container">
+                    <input type="checkbox" id="settleAgreeCheck" onchange="toggleSettleButton()">
+                    <span class="check-text">본인은 위 시니어 회원의 근로 데이터 및 지급할 정산 금액 명세서에 완전 무결하게 동의하며, 허위 정산이 아님을 최종 확약합니다.</span>
+                </label>
+                
+                <div style="margin-top:20px;">
+                    <button type="button" id="btnSettleSubmit" class="btn-official-blue" disabled onclick="handlePointSettlement()">일급 포인트 최종 정산하기 송출</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- [출퇴근 락 제어 및 동의 체크박스 연동 핀테크 가동 엔진 스크립트] -->
+    <script>
+        let globalJobId = null;
+        let globalSeekerId = null;
+        let globalStoreName = "";
+
+        document.addEventListener("DOMContentLoaded", function() {
+            const id = localStorage.getItem('sw_username');
+            const role = localStorage.getItem('sw_role');
+            
+            if (!id) { 
+                alert('알림: 보안 인증 세션이 만료되었습니다.'); 
+                location.href = '/login.html'; 
+                return; 
+            }
+
+            // 주소창 파라미터 파싱 유기 연동(?job_id=1&seeker_id=test)
+            const urlParams = new URLSearchParams(window.location.search);
+            globalJobId = parseInt(urlParams.get('job_id'));
+            globalSeekerId = urlParams.get('seeker_id');
+
+            if (!globalJobId || !globalSeekerId) {
+                alert('전산 오류: 잘못된 접근 경로입니다.');
+                location.href = '/profile.html';
+                return;
+            }
+
+            // 권한별 제어반 동적 스위칭 분기 가동
+            if (role === 'employer') {
+                document.getElementById('employerWorkZone').style.display = 'block';
+            } else if (role === 'seeker' && id === globalSeekerId) {
+                document.getElementById('seekerWorkZone').style.display = 'block';
+            } else {
+                alert('접근 거부: 본 계약의 당사자만 진입할 수 있습니다.');
+                location.href = '/profile.html';
+                return;
+            }
+
+            loadContractAndAttendance();
+        });
+
+        // 1. 서버 물리 데이터베이스로부터 실시간 근태 및 계약 신원 로드 파싱
+        function loadContractAndAttendance() {
+            fetch(`/api/profile/me?username=${encodeURIComponent(globalSeekerId)}`)
+                .then(res => res.json())
+                .then(sData => {
+                    document.getElementById('tSeeker').innerText = globalSeekerId;
+                    document.getElementById('tPhone').innerText = sData.profile.phone || '-';
+                    
+                    fetch(`/api/attendance/status?job_id=${globalJobId}&seeker_id=${encodeURIComponent(globalSeekerId)}`)
+                        .then(res => res.json())
+                        .then(aData => {
+                            const att = aData.attendance;
+                            if (att) {
+                                document.getElementById('tEmployer').innerText = att.employer_id;
+                                document.getElementById('timeCheckIn').innerText = att.check_in ? new Date(att.check_in).toLocaleString('ko-KR') : '-';
+                                document.getElementById('timeCheckOut').innerText = att.check_out ? new Date(att.check_out).toLocaleString('ko-KR') : '-';
+                                
+                                const statusMap = { 'none': '계약확정 (출근대기)', 'working': '현장 근로중 ➔', 'completed': '퇴근완료 (정산대기)' };
+                                document.getElementById('tStatus').innerText = statusMap[att.status] || '검토중';
+                            }
+                        });
+                });
+
+            // 매장 상호명 수집 가로채기 복구
+            fetch('/api/jobs/live-board')
+                .then(res => res.json())
+                .then(data => {
+                    const myJob = data.jobs.find(j => j.id === globalJobId);
+                    if (myJob) {
+                        globalStoreName = myJob.company;
+                        document.getElementById('tCompany').innerText = globalStoreName;
+                    }
+                });
+        }
+
+        // 2. 시니어 회원용 출퇴근 타임스탬프 각인 포스트 통신 함수
+        function handleAttendance(type) {
+            fetch('/api/attendance/action', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ job_id: globalJobId, seeker_id: globalSeekerId, action_type: type })
+            }).then(() => {
+                alert(type === 'check_in' ? '출근 인증 완료!\n\n현장 출근 타임스탬프가 디스크 DB 및 사장님 제어반으로 즉시 직결 반영되었습니다.' : '퇴근 인증 완료!\n\n금일 근로가 종료되었습니다. 사장님 제어반의 일급 포인트 정산 처리를 대기해 주세요.');
+                loadContractAndAttendance();
+            });
+        }
+
+        // 3. [기획 오더 완벽 이식] 동의하기 체크박스 여부에 따른 정산 단추 활성화 제어
+        function toggleSettleButton() {
+            const isChecked = document.getElementById('settleAgreeCheck').checked;
+            document.getElementById('btnSettleSubmit').disabled = !isChecked;
+        }
+
+        // 4. [기획 오더 완벽 이식] 사장님 포인트 지급 트랜잭션 함수
+        function handlePointSettlement() {
+            const amount = document.getElementById('settleAmount').value.trim();
+            const empId = localStorage.getItem('sw_username');
+
+            if (!amount || parseInt(amount) <= 0) {
+                alert('알림: 정산하여 지급할 일급 포인트 액수를 정확히 기입하세요.');
+                return;
+            }
+
+            fetch('/api/employer/settle-points', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ employer_id: empId, seeker_id: globalSeekerId, amount: amount, store_name: globalStoreName })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    alert(`정산 지급 대성공!\n\n${globalSeekerId} 베테랑 회원님에게 일급 임금 ${parseInt(amount).toLocaleString()}P가 실시간 정상 전송 충전되었습니다.\n본 내역은 최고 관리자 대시보드(admin.html)로 즉시 동적 연동 송출 완료되었습니다.`);
+                    location.href = '/profile.html';
+                }
+            });
+        }
+    </script>
+</body>
+</html>

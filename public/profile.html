@@ -31,7 +31,7 @@
         .btn-mini-blue { background-color: #1967d2; color: #ffffff; border: none; padding: 8px 14px; border-radius: 6px; font-size: 13px; font-weight: 600; cursor: pointer; }
         .btn-mini-blue:hover { opacity: 0.9; }
         
-        /* [프리미엄 지원자 카드 컴포넌트 리디자인 스타일 스펙] */
+        /* 프리미엄 지원자 카드 컴포넌트 디자인 스펙 */
         .applicant-card { background: #f8f9fa; border: 1px solid #e5e8eb; border-radius: 14px; padding: 20px; margin-top: 12px; transition: all 0.2s; line-height: 1.6; }
         .applicant-card:hover { border-color: #1967d2; background-color: #fdfeff; box-shadow: 0 4px 12px rgba(25, 103, 210, 0.03); }
         .applicant-name { font-size: 15px; font-weight: 700; color: #1b1c1e; margin-bottom: 6px; }
@@ -39,11 +39,16 @@
         .applicant-meta span { font-weight: 700; color: #1967d2; }
         .applicant-qa-status { font-size: 13.5px; color: #2b8a3e; font-weight: 700; padding: 4px 0; }
         
-        .rank-action-group { margin-top: 14px; padding-top: 12px; border-top: 1px solid #e5e8eb; display: flex; align-items: center; gap: 8px; }
-        .rank-group-title { font-size: 13.5px; font-weight: 700; color: #333d4b; margin-right: 4px; }
+        .rank-action-group { margin-top: 14px; padding-top: 12px; border-top: 1px solid #e5e8eb; display: flex; flex-direction: column; gap: 10px; }
+        .rank-row-line { display: flex; align-items: center; gap: 8px; }
+        .rank-group-title { font-size: 13.5px; font-weight: 700; color: #333d4b; min-width: 120px; }
         .btn-rank { background-color: #ffffff; color: #4e5968; border: 1px solid #d1d6db; padding: 8px 16px; border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer; transition: all 0.15s; flex: 1; max-width: 90px; text-align: center; }
         .btn-rank:hover { background-color: #f2f4f6; }
         .btn-rank.active-rank { background-color: #1967d2; color: #ffffff; border-color: #1967d2; font-weight: 700; box-shadow: 0 2px 6px rgba(25, 103, 210, 0.2); }
+        /* 확정하기 신설 전용 상용 그린/블루 크로스 단추 */
+        .btn-confirm-action { background-color: #00c73c; color: white; border: none; padding: 8px 14px; border-radius: 8px; font-size: 13px; font-weight: 700; cursor: pointer; transition: opacity 0.2s; }
+        .btn-confirm-action:hover { opacity: 0.9; }
+        .btn-work-warp { background-color: #1967d2; color: white; border: none; padding: 8px 14px; border-radius: 8px; font-size: 13px; font-weight: 700; cursor: pointer; text-decoration: none; display: inline-block; text-align: center; }
         
         .qa-box { background: #f8f9fa; padding: 14px; border-radius: 8px; font-size: 14px; margin-top: 6px; color: #1152b3; font-weight: 600; border: 1px solid #e5e8eb; line-height: 1.5; }
     </style>
@@ -74,6 +79,7 @@
             <div class="data-row"><span class="data-label">회원 권한 등급</span><span class="data-value" id="mRole">-</span></div>
             <div class="data-row"><span class="data-label">최종 신원인증 상태</span><span class="data-value" id="mStatus" style="color:#1967d2;">-</span></div>
         </div>
+
         <!-- [구인 사장님 독점 구역] 공고등록기, 계산기, 순위지정 관제 패널 -->
         <div id="bossSection" style="display: none;">
             <div class="info-card">
@@ -88,7 +94,6 @@
                     <button type="button" class="btn-official-blue" onclick="handleJobCreate()">검토 및 공고 등록 신청하기</button>
                 </form>
             </div>
-
             <div class="info-card">
                 <div class="card-header-title">실시간 피크타임 인건비 및 주휴수당 모의 계산기</div>
                 <div class="form-group"><label class="form-label">약정 설정 시급 (원)</label><input type="number" id="calcWage" class="form-input" value="10030" oninput="runFinanceCalculate()"></div>
@@ -100,7 +105,6 @@
                 </div>
             </div>
 
-            <!-- [리디자인 타깃 구역 명세화] 자사 브랜드 디자인 컨셉과 결속된 지원 현황판 -->
             <div class="info-card">
                 <div class="card-header-title">우리 매장 공고별 정식 지원 베테랑 명단 (1대1 독점 격리 및 우선순위 지정)</div>
                 <button type="button" class="btn-official-blue" style="margin-bottom:14px;" onclick="loadBossApplicants(1)">내 공고 실시간 지원자 데이터 파싱 및 1/2/3순위 관제 가동</button>
@@ -125,6 +129,7 @@
                 <div class="data-row"><span class="data-label">상체 유연성 지표</span><span class="data-value" id="fF">-</span></div>
                 <div class="data-row"><span class="data-label">심폐 지구력 레벨</span><span class="data-value" id="fC">-</span></div>
             </div>
+
             <div class="info-card" id="seekerQaCard">
                 <div class="card-header-title">실버웍스 정제형 12단계 문진형 공식 이력서 보존 사본</div>
                 <div id="qaBox"></div>
@@ -133,8 +138,7 @@
 
         <button class="btn-official-blue" style="background-color:#6b7684; margin-top:12px;" onclick="handleOfficialLogout()">실버웍스 안전 시스템 로그아웃</button>
     </div>
-
-    <!-- [오션블루 사장님 지원자 명단 프리미엄 리디자인 가동 엔진 스크립트] -->
+    <!-- [오션블루 사장님 확정하기 트랜잭션 및 마스터 연동 가동 엔진 스크립트] -->
     <script>
         document.addEventListener("DOMContentLoaded", function() {
             const id = localStorage.getItem('sw_username');
@@ -203,7 +207,7 @@
             alert('상담 신청 접수 완료!'); document.getElementById('consultTitle').value = ''; document.getElementById('consultDesc').value = '';
         }
 
-        // [프리미엄 리디자인 완전 이식 개통 함수] 사장님이 지시하신 지원자 카드를 토스 UI 스타일로 정밀 승격 출력
+        // [확정하기 원터치 가동 로직 전면 보완 이식] 투박한 뼈대를 명품 패널 박스로 정밀 바인딩 렌더링
         function loadBossApplicants(jobId) {
             const id = localStorage.getItem('sw_username'), box = document.getElementById('applicantBox');
             fetch(`/api/employer/applicants?employer_id=${id}&job_id=${jobId}`).then(res => res.json()).then(data => {
@@ -213,26 +217,51 @@
                 data.data.forEach(item => {
                     const s = item.seeker_info;
                     const r = item.rank_priority;
+                    const isConfirmed = item.status === 'confirmed';
                     
                     const div = document.createElement('div');
                     div.className = 'applicant-card';
                     
-                    // 불필요한 이모티콘 찌꺼기를 완전 박멸 포맷 세척하고 격조 높은 비즈니스 폰트 정렬로 자동 치환 출력
+                    // 기획 요건 완전 반영: 확정하기 전에는 연락처 장막 보안 보호 락 가동 -> 확정 단추 누르면 실물 폰번호 해제 표출
+                    const displayPhone = isConfirmed ? s.phone : "고용 확정 시 공개됩니다";
+                    const actionBtn = isConfirmed 
+                        ? `<a class="btn-work-warp" href="/work.html?job_id=${jobId}&seeker_id=${s.username}">출퇴근/포인트 정산소 진입 ➔</a>`
+                        : `<button type="button" class="btn-confirm-action" onclick="confirmPartner(${jobId}, '${s.username}')">고용 후보자 확정하기</button>`;
+                    
                     div.innerHTML = `
                         <div class="applicant-name">지원 구직자: ${s.name} 베테랑 회원</div>
-                        <div class="applicant-meta">실물 연락처 명세: ${s.phone}</div>
-                        <div class="applicant-meta">국민체력100 등급: <span>${s.fitness_grade || '미인증'}</span> | 악력: ${s.fitness_grip || '-'}kg | 유연성: ${s.fitness_flex || '-'}cm | 심폐지구력: ${s.fitness_cardio || '-'}</div>
+                        <div class="applicant-meta">실물 연락처 명세: <span style="color:#1967d2;">${displayPhone}</span></div>
+                        <div class="applicant-meta">국민체력100 등급: <span>${s.fitness_grade || '미인증'}</span> | 악력: ${s.fitness_grip || '-'}kg | 유연성: ${s.fitness_flex || '-'}cm</div>
                         <div class="applicant-qa-status">문진 정보 인증 상태: 서버 디스크 원본 사본 연동 열람 승인됨</div>
                         
                         <div class="rank-action-group">
-                            <div class="rank-group-title">우선순위 지망 등급 배정</div>
-                            <button type="button" class="btn-rank ${r===1?'active-rank':''}" onclick="assignPriority(${jobId}, '${s.username}', 1)">1순위</button>
-                            <button type="button" class="btn-rank ${r===2?'active-rank':''}" onclick="active-rank':''}" onclick="assignPriority(${jobId}, '${s.username}', 2)">2순위</button>
-                            <button type="button" class="btn-rank ${r===3?'active-rank':''}" onclick="assignPriority(${jobId}, '${s.username}', 3)">3순위</button>
+                            <div class="rank-row-line">
+                                <div class="rank-group-title">우선순위 지망 배정:</div>
+                                <button type="button" class="btn-rank ${r===1?'active-rank':''}" onclick="assignPriority(${jobId}, '${s.username}', 1)">1순위</button>
+                                <button type="button" class="btn-rank ${r===2?'active-rank':''}" onclick="assignPriority(${jobId}, '${s.username}', 2)">2순위</button>
+                                <button type="button" class="btn-rank ${r===3?'active-rank':''}" onclick="assignPriority(${jobId}, '${s.username}', 3)">3순위</button>
+                            </div>
+                            <div class="rank-row-line" style="margin-top:4px; padding-top:8px; border-top:1px dashed #f2f4f6; justify-content:flex-end; width:100%;">
+                                ${actionBtn}
+                            </div>
                         </div>
                     `;
                     box.appendChild(div);
                 });
+            });
+        }
+
+        // [확정하기 원터치 통신 트랜잭션 핵심 장치] 클릭 즉시 백엔드 스키마 활성화 및 연락처 해제 가동
+        function confirmPartner(jobId, seekerId) {
+            if(!confirm('선택하신 시니어 베테랑 회원을 금일 우리 매장의 정식 구직 근무자로 최종 확정합니까?\n확정 즉시 상대방의 실물 연락처 장막이 해제되며 출퇴근 포인트 정산실이 자동 개통 가동됩니다.')) return;
+            
+            fetch('/api/employer/confirm-seeker', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ job_id: jobId, seeker_id: seekerId })
+            }).then(() => {
+                alert('고용 계약 결속 대성공!\n\n해당 베테랑 구직자의 진짜 연락처가 마운트 해제되었으며 현장 출퇴근 및 일급 정산 상호작용 채널이 실시간 공식 오픈되었습니다.');
+                loadBossApplicants(jobId);
             });
         }
 

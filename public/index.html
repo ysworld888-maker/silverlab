@@ -4,20 +4,23 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>SILVERWORKS - 세상을 은빛 지혜로 채우다</title>
-    <!-- [인프라 여백 혁신] 칸 내부 공간 확장 및 최하단 유실 공백 100% 원천 박멸 규격 CSS -->
+    <!-- [인프라 밸런스 개정] 핀테크 자산 트래커 및 양측 카드 100% 동적 높이 대칭 규격 CSS -->
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; -webkit-tap-highlight-color: transparent; }
-        /* 최하단 여백 발생을 원천 차단하기 위해 바디 자체의 하단 패딩을 완전히 제로(0) 처리 */
         body { background-color: #ffffff; color: #333d4b; padding-bottom: 0px; margin: 0; overflow-x: hidden; }
         header { display: flex; justify-content: space-between; align-items: center; padding: 18px 20px; background-color: #ffffff; border-bottom: 1px solid #f2f4f6; position: sticky; top: 0; z-index: 100; }
         .logo-container { display: flex; align-items: center; gap: 12px; cursor: pointer; }
         .logo-text { font-size: 20px; font-weight: 800; color: #1967d2; letter-spacing: -0.5px; }
-        .nav-menu-group { display: flex; align-items: center; gap: 8px; }
+        .nav-menu-group { display: flex; align-items: center; gap: 12px; }
         .nav-link-btn { background: none; border: none; color: #4e5968; font-size: 14px; font-weight: 600; cursor: pointer; padding: 8px 16px; border-radius: 8px; transition: background-color 0.2s; }
         .nav-link-btn:hover { background-color: #f2f4f6; color: #1967d2; }
+        
+        /* [핵심 신설] 시니어 회원 전용 상용 실시간 일급 포인트 잔액 표출 핀테크 배너 디자인 */
+        .seeker-point-badge { display: none; align-items: center; background-color: #f4f9ff; border: 1px solid #e8f3ff; padding: 6px 14px; border-radius: 20px; font-size: 13.5px; font-weight: 700; color: #1967d2; letter-spacing: -0.3px; box-shadow: inset 0 1px 2px rgba(0,0,0,0.02); }
+        .seeker-point-badge span { color: #1152b3; font-weight: 800; margin-left: 4px; }
+        
         .user-profile-avatar { width: 36px; height: 36px; border-radius: 50%; background-color: #1967d2; color: #ffffff; font-size: 14px; font-weight: 700; display: none; align-items: center; justify-content: center; cursor: pointer; border: 2px solid #e8f3ff; box-shadow: 0 2px 6px rgba(25, 103, 210, 0.2); }
         
-        /* 메인 상단 히어로 단과 하단 카드 배치 마운트 밸런스 정렬 */
         .hero-section { position: relative; padding: 80px 24px 100px 24px; text-align: center; background: linear-gradient(180deg, #f4f9ff 0%, #ffffff 100%); overflow: hidden; }
         .wave-wrapper { position: absolute; bottom: 0; left: 0; width: 100%; height: 85px; overflow: hidden; line-height: 0; }
         .wave-svg { position: absolute; bottom: 0; left: 0; width: 200%; height: 100%; transform: translate3d(0, 0, 0); }
@@ -25,7 +28,6 @@
         .wave-layer2 { animation: wave-move 9s linear infinite; opacity: 0.25; fill: #1967d2; bottom: 2px; }
         
         .hero-logo-center { margin-bottom: 28px; display: inline-block; }
-        /* [공간 미학 대수정] 사장님 오더 반영: 안쪽 빈 공간을 28px에서 40px로 늘려 넉넉하고 쾌적하게 띄움 */
         .card-section { padding: 0 20px; max-width: 900px; margin: -20px auto 40px auto; position: relative; z-index: 10; display: grid; grid-template-columns: 1fr 1fr; gap: 24px; align-items: stretch; }
         @media (max-width: 600px) { .card-section { grid-template-columns: 1fr; margin-top: 10px; margin-bottom: 20px; } }
         
@@ -36,13 +38,11 @@
         .card-title { font-size: 20px; font-weight: 700; margin-bottom: 12px; color: #333d4b; letter-spacing: -0.3px; }
         .card-desc { font-size: 14.5px; line-height: 1.6; color: #4e5968; flex-grow: 1; display: flex; align-items: flex-start; }
         
-        /* 백그라운드 파도 무한 스무스 연동 트랙 */
         @keyframes wave-move {
             0% { transform: translate3d(0, 0, 0); }
             50% { transform: translate3d(-25%, 2px, 0); }
             100% { transform: translate3d(-50%, 0, 0); }
         }
-        /* [최하단 여백 완벽 박멸] 푸터 아래 잔여 여백이 절대 새어 나오지 않도록 마진과 바텀 패딩 구조 마감 조율 */
         footer { background-color: #f2f4f6; color: #6b7684; padding: 40px 20px; font-size: 12px; line-height: 1.8; border-top: 1px solid #e5e8eb; margin-top: 0px; margin-bottom: 0px; width: 100%; position: relative; }
     </style>
 </head>
@@ -58,6 +58,10 @@
         </div>
         <div class="nav-menu-group">
             <button class="nav-link-btn" onclick="location.href='/board.html'">매칭 게시판</button>
+            
+            <!-- [핵심 배치] 시니어 전용 동적 포인트 스위칭 표출 앵커 배너 단추 구역 -->
+            <div id="seekerPointTracker" class="seeker-point-badge">보유 포인트: <span id="seekerPointBalance">0</span>P</div>
+            
             <button id="navAuthBtn" class="nav-link-btn" style="background-color: #1967d2; color: #ffffff;" onclick="location.href='/login.html'">로그인 / 가입</button>
             <div id="userAvatar" class="user-profile-avatar" onclick="location.href='/profile.html'">MY</div>
         </div>
@@ -71,7 +75,7 @@
             </svg>
         </div>
         <h1 class="hero-title" style="font-size: 32px; letter-spacing: -1px; color: #1b1c1e;">세상을 은빛 지혜로 채우다.<br><span style="color: #1967d2;">품질 보증형 최적화 매칭</span></h1>
-        <p class="hero-sub" style="margin-top: 14px; font-size: 15px;">주휴수당·퇴직금 폭탄และ 무단 노쇼의 공포를 해결합니다. 실버웍스는 검증된 시니어 베테랑과 일할 기회를 선물합니다.</p>
+        <p class="hero-sub" style="margin-top: 14px; font-size: 15px;">주휴수당·퇴직금 폭탄과 무단 노쇼의 공포를 해결합니다. 실버웍스는 검증된 시니어 베테랑과 일할 기회를 선물합니다.</p>
         
         <div class="wave-wrapper">
             <svg class="wave-svg" viewBox="0 0 1200 120" preserveAspectRatio="none" xmlns="http://w3.org">
@@ -81,7 +85,7 @@
         </div>
     </section>
     <section class="card-section">
-        <!-- [좌측 첫번째 칸] 안쪽 빈 공간이 40px로 늘어나 쾌적함과 품격을 동시에 갖춘 시니어 진입 카드 -->
+        <!-- [좌측 첫번째 칸] 구직 시니어 회원 전용 진입 명세 카드 단추 -->
         <div class="info-card" onclick="location.href='/login.html?type=seeker'">
             <div style="display: flex; flex-direction: column; justify-content: flex-start; height: 100%;">
                 <span class="card-badge">시니어 페이지 ➔</span>
@@ -90,7 +94,7 @@
             </div>
         </div>
 
-        <!-- [우측 두번째 칸] 안쪽 빈 공간이 40px로 늘어나 쾌적함과 품격을 동시에 갖춘 사장님 진입 카드 -->
+        <!-- [우측 두번째 칸] 구인 사장님 회원 전용 진입 명세 카드 단추 -->
         <div class="info-card" onclick="location.href='/employer.html'">
             <div style="display: flex; flex-direction: column; justify-content: flex-start; height: 100%;">
                 <span class="card-badge">사장님 페이지 ➔</span>
@@ -100,7 +104,7 @@
         </div>
     </section>
 
-    <!-- [하단 공백 차단막 가동] 마진 오차를 제로화하여 여백 유실을 원천 방쇄한 정식 푸터 -->
+    <!-- 하단 공백 차단막 가동 정식 푸터 -->
     <footer>
         <div style="max-width:900px; margin:0 auto;">
             <h4>주식회사 실버웍스 (SILVERWORKS)</h4>
@@ -110,18 +114,33 @@
         </div>
     </footer>
 
-    <!-- [오션블루 프로필 아바타 UI 동적 스위칭 제어 스크립트] -->
+    <!-- [오션블루 프로필 아바타 및 실시간 포인트 잔액 갱신 제어 스크립트] -->
     <script>
         document.addEventListener("DOMContentLoaded", function() {
             const id = localStorage.getItem('sw_username');
+            const role = localStorage.getItem('sw_role');
+            
             if (id) {
-                // 로그인 완료 시 가입/로그인 버튼을 은폐 처리합니다.
+                // 로그인 완료 시 기본 로그인/가입 버튼을 숨깁니다.
                 document.getElementById('navAuthBtn').style.display = 'none';
                 
-                // 마스터 기획 요건: 둥근 원형 프로필 아바타를 동적으로 활성화하고 앞 두 글자를 각인합니다.
+                // 원형 프로필 아바타 아이콘을 활성화하고 앞글자 각인
                 const av = document.getElementById('userAvatar');
                 av.style.display = 'flex'; 
                 av.innerText = id.substring(0, 2).toUpperCase();
+
+                // [기획 요구사항 완벽 실현] 오직 '구직 시니어(seeker)' 권한으로 로그인한 회원에게만 실시간 포인트 명세 배너 표출
+                if (role === 'seeker') {
+                    fetch('/api/profile/me?username=' + encodeURIComponent(id))
+                        .then(res => res.json())
+                        .then(data => {
+                            if (data.success && data.profile) {
+                                document.getElementById('seekerPointTracker').style.display = 'flex';
+                                // 컴포넌트 내부에 진짜 포인트 수치를 포맷화하여 주입합니다.
+                                document.getElementById('seekerPointBalance').innerText = (data.profile.points || 0).toLocaleString();
+                            }
+                        });
+                }
             }
         });
     </script>
