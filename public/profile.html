@@ -24,13 +24,27 @@
         .form-label { display: block; font-size: 13.5px; font-weight: 600; color: #4e5968; margin-bottom: 8px; }
         .form-input { width: 100%; padding: 14px; border-radius: 10px; border: 1px solid #d1d6db; font-size: 14.5px; font-weight: 600; color: #1b1c1e; outline: none; transition: border-color 0.2s; }
         .form-input:focus { border-color: #1967d2; background-color: #f4f9ff; }
+        
         /* 오션 블루 오피셜 상용 버튼 디자인 시스템 규격 일괄 통일 */
         .btn-official-blue { width: 100%; background-color: #1967d2; color: #ffffff; padding: 15px; border: none; border-radius: 12px; font-size: 15px; font-weight: 600; cursor: pointer; text-align: center; transition: opacity 0.2s; }
         .btn-official-blue:hover { opacity: 0.9; }
         .btn-mini-blue { background-color: #1967d2; color: #ffffff; border: none; padding: 8px 14px; border-radius: 6px; font-size: 13px; font-weight: 600; cursor: pointer; }
         .btn-mini-blue:hover { opacity: 0.9; }
-        .btn-rank { background-color: #ffffff; color: #4e5968; border: 1px solid #d1d6db; padding: 6px 12px; border-radius: 6px; font-size: 12px; font-weight: 600; cursor: pointer; transition: all 0.2s; margin-right: 6px; }
-        .btn-rank.active-rank { background-color: #1967d2; color: #ffffff; border-color: #1967d2; }
+        
+        /* [프리미엄 지원자 카드 컴포넌트 리디자인 스타일 스펙] */
+        .applicant-card { background: #f8f9fa; border: 1px solid #e5e8eb; border-radius: 14px; padding: 20px; margin-top: 12px; transition: all 0.2s; line-height: 1.6; }
+        .applicant-card:hover { border-color: #1967d2; background-color: #fdfeff; box-shadow: 0 4px 12px rgba(25, 103, 210, 0.03); }
+        .applicant-name { font-size: 15px; font-weight: 700; color: #1b1c1e; margin-bottom: 6px; }
+        .applicant-meta { font-size: 13.5px; color: #4e5968; margin-bottom: 4px; }
+        .applicant-meta span { font-weight: 700; color: #1967d2; }
+        .applicant-qa-status { font-size: 13.5px; color: #2b8a3e; font-weight: 700; padding: 4px 0; }
+        
+        .rank-action-group { margin-top: 14px; padding-top: 12px; border-top: 1px solid #e5e8eb; display: flex; align-items: center; gap: 8px; }
+        .rank-group-title { font-size: 13.5px; font-weight: 700; color: #333d4b; margin-right: 4px; }
+        .btn-rank { background-color: #ffffff; color: #4e5968; border: 1px solid #d1d6db; padding: 8px 16px; border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer; transition: all 0.15s; flex: 1; max-width: 90px; text-align: center; }
+        .btn-rank:hover { background-color: #f2f4f6; }
+        .btn-rank.active-rank { background-color: #1967d2; color: #ffffff; border-color: #1967d2; font-weight: 700; box-shadow: 0 2px 6px rgba(25, 103, 210, 0.2); }
+        
         .qa-box { background: #f8f9fa; padding: 14px; border-radius: 8px; font-size: 14px; margin-top: 6px; color: #1152b3; font-weight: 600; border: 1px solid #e5e8eb; line-height: 1.5; }
     </style>
 </head>
@@ -86,16 +100,16 @@
                 </div>
             </div>
 
+            <!-- [리디자인 타깃 구역 명세화] 자사 브랜드 디자인 컨셉과 결속된 지원 현황판 -->
             <div class="info-card">
                 <div class="card-header-title">우리 매장 공고별 정식 지원 베테랑 명단 (1대1 독점 격리 및 우선순위 지정)</div>
                 <button type="button" class="btn-official-blue" style="margin-bottom:14px;" onclick="loadBossApplicants(1)">내 공고 실시간 지원자 데이터 파싱 및 1/2/3순위 관제 가동</button>
-                <div id="applicantBox" style="margin-top:12px; display:none; border-top:1px solid #f2f4f6; padding-top:12px;"></div>
+                <div id="applicantBox" style="margin-top:12px; display:none; border-top:1px solid #f2f4f6; padding-top:4px;"></div>
             </div>
         </div>
 
         <!-- [구직 시니어 회원 전용 표출 구역] -->
         <div id="seekerSection" style="display: none;">
-            <!-- 문진 서식 누락 상태인 신규 회원용 동적 알림 패널 박스 -->
             <div class="info-card" id="seekerNoQaPanel" style="display: none; border: 2px solid #1967d2; background-color: #f4f9ff;">
                 <div class="card-header-title" style="color: #1967d2; border-bottom: 1px solid #e8f3ff;">⚠️ 아직 문진형 이력서가 등록되지 않았습니다</div>
                 <p style="font-size: 14px; line-height: 1.6; color: #4e5968; margin-bottom: 18px;">
@@ -120,7 +134,7 @@
         <button class="btn-official-blue" style="background-color:#6b7684; margin-top:12px;" onclick="handleOfficialLogout()">실버웍스 안전 시스템 로그아웃</button>
     </div>
 
-    <!-- [오션블루 사장님/시니어 채널 엄격 구분 및 실제 답변 데이터 실시간 출력 엔진 스크립트] -->
+    <!-- [오션블루 사장님 지원자 명단 프리미엄 리디자인 가동 엔진 스크립트] -->
     <script>
         document.addEventListener("DOMContentLoaded", function() {
             const id = localStorage.getItem('sw_username');
@@ -147,7 +161,6 @@
                     document.getElementById('fF').innerText = (p.fitness_flex || '-') + " cm";
                     document.getElementById('fC').innerText = p.fitness_cardio || '-';
                     
-                    // [사장님 요건 완벽 실현] 고정 문구 대신 시니어가 실제 디스크 DB에 저장한 답변 원본 텍스트 매핑 파싱
                     if (qa) {
                         document.getElementById('seekerNoQaPanel').style.display = 'none';
                         document.getElementById('seekerFitCard').style.display = 'block';
@@ -155,8 +168,6 @@
 
                         const box = document.getElementById('qaBox'); box.innerHTML = '';
                         const qLabels = ["조력자 구분 명세", "구직 베테랑 성함", "생년월일 명세", "휴대폰 번호 명세", "근무 희망 동네", "3층 계단 보행력 지표", "1시간 연속 도보 가능성", "현장 주의 지병 데이터", "식당/마트 청력 소통도", "카카오톡 메시지 활용도", "초단기 근로 수용성", "정부 노인일자리 중복참여 이력"];
-                        
-                        // 서버에서 넘어온 q1 ~ q12 실제 텍스트 문자열 데이터를 1대1 다이렉트로 각 명세 상자에 주입 출력합니다.
                         const answersArray = [qa.q1, qa.q2, qa.q3, qa.q4, qa.q5, qa.q6, qa.q7, qa.q8, qa.q9, qa.q10, qa.q11, qa.q12];
                         
                         for(let i=1; i<=12; i++) {
@@ -192,26 +203,31 @@
             alert('상담 신청 접수 완료!'); document.getElementById('consultTitle').value = ''; document.getElementById('consultDesc').value = '';
         }
 
+        // [프리미엄 리디자인 완전 이식 개통 함수] 사장님이 지시하신 지원자 카드를 토스 UI 스타일로 정밀 승격 출력
         function loadBossApplicants(jobId) {
             const id = localStorage.getItem('sw_username'), box = document.getElementById('applicantBox');
             fetch(`/api/employer/applicants?employer_id=${id}&job_id=${jobId}`).then(res => res.json()).then(data => {
-                box.innerHTML = '<h5 style="color:#1967d2; font-size:13.5px; margin-bottom:8px; border-bottom:1px solid #f2f4f6; padding-bottom:6px;">📦 내 공고 정식 지원 베테랑 명단 (1대1 독점 격리 연동)</h5>'; box.style.display = 'block';
-                if(!data.data || data.data.length === 0) { box.innerHTML += '<p style="font-size:13px; color:#6b7684; text-align:center;">접수된 구직 지원서가 없습니다.</p>'; return; }
+                box.innerHTML = '<h5 style="color:#1967d2; font-size:14px; margin-bottom:12px; font-weight:700;">접수 완료된 지원자 리스트</h5>'; box.style.display = 'block';
+                if(!data.data || data.data.length === 0) { box.innerHTML += '<p style="font-size:13px; color:#6b7684; text-align:center; padding:20px 0;">현재 접수된 구직 지원 원서가 없습니다.</p>'; return; }
                 
                 data.data.forEach(item => {
                     const s = item.seeker_info;
                     const r = item.rank_priority;
                     
                     const div = document.createElement('div');
-                    div.style.cssText = "font-size:13px; padding:12px; background:#f4f9ff; border-radius:8px; margin-top:8px; border:1px dashed #1967d2; line-height:1.6;";
+                    div.className = 'applicant-card';
+                    
+                    // 불필요한 이모티콘 찌꺼기를 완전 박멸 포맷 세척하고 격조 높은 비즈니스 폰트 정렬로 자동 치환 출력
                     div.innerHTML = `
-                        <strong>지원자 성명: ${s.name} 베테랑</strong> (연락처: ${s.phone})<br>
-                        🥇 체력 등급: <span style="color:#1967d2; font-weight:700;">${s.fitness_grade || '미인증'}</span> | 악력: ${s.fitness_grip || '-'}kg | 유연성: ${s.fitness_flex || '-'}cm<br>
-                        👉 문진 정보: <span style="color:green; font-weight:700;">[연동 완료] 마운트된 서버 영구 디스크 사본 열람 승인됨</span><br>
-                        <div style="margin-top:10px; padding-top:8px; border-top:1px solid #e8f3ff;">
-                            <span style="font-weight:700; color:#333d4b; margin-right:10px;">우선순위 지망 배정:</span>
+                        <div class="applicant-name">지원 구직자: ${s.name} 베테랑 회원</div>
+                        <div class="applicant-meta">실물 연락처 명세: ${s.phone}</div>
+                        <div class="applicant-meta">국민체력100 등급: <span>${s.fitness_grade || '미인증'}</span> | 악력: ${s.fitness_grip || '-'}kg | 유연성: ${s.fitness_flex || '-'}cm | 심폐지구력: ${s.fitness_cardio || '-'}</div>
+                        <div class="applicant-qa-status">문진 정보 인증 상태: 서버 디스크 원본 사본 연동 열람 승인됨</div>
+                        
+                        <div class="rank-action-group">
+                            <div class="rank-group-title">우선순위 지망 등급 배정</div>
                             <button type="button" class="btn-rank ${r===1?'active-rank':''}" onclick="assignPriority(${jobId}, '${s.username}', 1)">1순위</button>
-                            <button type="button" class="btn-rank ${r===2?'active-rank':''}" onclick="assignPriority(${jobId}, '${s.username}', 2)">2순위</button>
+                            <button type="button" class="btn-rank ${r===2?'active-rank':''}" onclick="active-rank':''}" onclick="assignPriority(${jobId}, '${s.username}', 2)">2순위</button>
                             <button type="button" class="btn-rank ${r===3?'active-rank':''}" onclick="assignPriority(${jobId}, '${s.username}', 3)">3순위</button>
                         </div>
                     `;
