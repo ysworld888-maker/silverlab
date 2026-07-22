@@ -4,14 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>SILVERWORKS - 구직 시니어 문진표</title>
-    <!-- [사장님 지정 규격] 과거 호평을 받았던 상단 진행 상태바 및 1문항 집중 레이아웃 상용 CSS 명세 -->
+    <!-- [사장님 지정 규격] 과거 호평을 받았던 상단 진행 상태바 및 1문항 집중 레이아웃 상용 CSS 명세 복원 -->
     <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, sans-serif; }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; -webkit-tap-highlight-color: transparent; }
         body { background-color: #ffffff; color: #0f1419; padding: 20px; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
         .qa-wrap-box { width: 100%; max-width: 500px; padding: 32px 24px; border: 1px solid #eff3f4; border-radius: 16px; background-color: #ffffff; box-shadow: 0 4px 16px rgba(0,0,0,0.02); }
         .main-title { font-size: 18px; font-weight: 800; color: #1967d2; text-align: center; margin-bottom: 12px; }
         
-        /* [사장님 오더 복원] 과거 찬사를 보전하셨던 실시간 12단계 기입 상태 바 UI */
+        /* 실시간 12단계 기입 상태 바 UI */
         .progress-container { width: 100%; height: 6px; background-color: #f7f9fa; border-radius: 9999px; margin-bottom: 28px; overflow: hidden; border: 1px solid #eff3f4; }
         .progress-bar-fill { height: 100%; width: 8.33%; background-color: #1967d2; transition: width 0.25s ease-out; }
         .step-indicator { font-size: 13.5px; font-weight: 700; color: #536471; text-align: center; margin-bottom: 24px; }
@@ -44,7 +44,7 @@
             </div>
         </div>
     </div>
-    <!-- [X모달제어·인스타DM·100점평판 실시간 바인딩 가동 엔진 스크립트] -->
+    <!-- [과거 대찬사 12단계 정밀 분할 문진 데이터 정합성 보완 기동 엔진 스크립트] -->
     <script>
         const qLabels = [
             "조력자 구분 명세 (자신 작성 또는 대리인)", "구직 베테랑 성함 명세", "생년월일 명세 (예: 1955년생)", 
@@ -60,7 +60,6 @@
             renderActiveQuestion();
         });
 
-        // [사장님 대찬사 오더 복원] 1개 문항씩만 도출되어 순차 기입 빌드하는 마이크로 분할 가동 엔진 구현
         function renderActiveQuestion() {
             document.getElementById('stepIndicator').innerText = `문항 ${currentStep} / 12 단계`;
             document.getElementById('progressBar').style.width = `${(currentStep / 12) * 100}%`;
@@ -100,19 +99,21 @@
             const id = localStorage.getItem('sw_username');
             if(!id) { location.href = '/login.html'; return; }
 
-            // 1번 문항의 대표 데이터 추출 파싱
-            const firstAnswer = savedAnswers[1];
+            // [롤백 정밀 보정] 12개 문항을 하나의 문자열 사본 데이터로 규격 취합 연동
+            let combinedString = "";
+            for(let i=1; i<=12; i++) {
+                combinedString += `[항목 ${i}] ${savedAnswers[i]} / `;
+            }
 
             fetch('/api/senior/qa', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ username: id, answers: firstAnswer })
+                body: JSON.stringify({ username: id, answers: combinedString })
             })
             .then(res => res.json())
             .then(data => {
                 if(data.success) {
                     alert('축하합니다! 12단계 마이크로 정밀 건강 문진 이력서가 무결하게 최종 접수 제출되었습니다.');
-                    // [지시 수칙 반영] 마감 즉시 대문 메인 홈페이지로 안전 리다이렉트 스위칭 복귀
                     location.href = '/index.html';
                 }
             });
