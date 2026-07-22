@@ -7,39 +7,33 @@
     <!-- [핀테크 환전 밸런스 및 정산 단추 명품 오션블루 리디자인 상용 CSS 스타일 명세] -->
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; -webkit-tap-highlight-color: transparent; }
-        body { background-color: #ffffff; color: #333d4b; padding-bottom: 0px; margin: 0; overflow-x: hidden; }
+        body { background-color: #ffffff; color: #333d4b; margin: 0; overflow-x: hidden; }
         header { display: flex; justify-content: space-between; align-items: center; padding: 18px 20px; background-color: #ffffff; border-bottom: 1px solid #f2f4f6; position: sticky; top: 0; z-index: 100; }
         .logo-container { display: flex; align-items: center; gap: 12px; cursor: pointer; }
         .logo-text { font-size: 20px; font-weight: 800; color: #1967d2; letter-spacing: -0.5px; }
         .nav-menu-group { display: flex; align-items: center; gap: 12px; }
-        
         .nav-link-btn { background: none; border: none; color: #4e5968; font-size: 14px; font-weight: 600; cursor: pointer; padding: 8px 16px; border-radius: 8px; transition: all 0.2s; }
         .nav-link-btn:hover { background-color: #f2f4f6; color: #1967d2; }
         .btn-sns-link { background-color: #f4f9ff; color: #1967d2; border: 1px solid #e8f3ff; font-weight: 700; box-shadow: 0 2px 4px rgba(25, 103, 210, 0.04); }
         .btn-sns-link:hover { background-color: #1967d2; color: #ffffff; border-color: #1967d2; }
-        
-        .seeker-point-badge { display: none; align-items: center; background-color: #f4f9ff; border: 1px solid #e8f3ff; padding: 6px 14px; border-radius: 20px; font-size: 13.5px; font-weight: 700; color: #1967d2; letter-spacing: -0.3px; cursor: pointer; transition: transform 0.2s; }
+        .seeker-point-badge { display: none; align-items: center; background-color: #f4f9ff; border: 1px solid #e8f3ff; padding: 6px 14px; border-radius: 20px; font-size: 13.5px; font-weight: 700; color: #1967d2; letter-spacing: -0.3px; cursor: pointer; }
         .seeker-point-badge:hover { transform: scale(1.03); background-color: #e8f3ff; }
         .seeker-point-badge span { color: #1152b3; font-weight: 800; margin-left: 4px; text-decoration: underline; }
-        
-        /* 핀테크 화면 중앙 포인트 정산 모달창 디자인 */
         .settle-modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.4); display: none; align-items: center; justify-content: center; z-index: 500; padding: 20px; }
         .settle-modal-content { background-color: #ffffff; width: 100%; max-width: 440px; border-radius: 16px; padding: 24px; box-shadow: 0 8px 28px rgba(0,0,0,0.15); border: none; }
         .modal-header-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 1px solid #f2f4f6; padding-bottom: 12px; }
         .modal-main-title { font-size: 17px; font-weight: 700; color: #1b1c1e; }
         .btn-modal-close { background: none; border: none; font-size: 20px; cursor: pointer; color: #4e5968; font-weight: 700; }
-        
         .form-group { margin-bottom: 16px; }
         .form-label { display: block; font-size: 13.5px; font-weight: 600; color: #4e5968; margin-bottom: 8px; }
         .form-input { width: 100%; padding: 13px; border-radius: 10px; border: 1px solid #cfd9de; font-size: 14.5px; font-weight: 600; outline: none; transition: border-color 0.2s; }
         .form-input:focus { border-color: #1967d2; background-color: #f4f9ff; }
         .form-select { width: 100%; padding: 13px; border-radius: 10px; border: 1px solid #cfd9de; font-size: 14.5px; font-weight: 600; outline: none; background-color: #ffffff; }
         .form-select:focus { border-color: #1967d2; }
-        
-        /* [사장님 오더] 정산하기 기능의 '정산하기' 최종 버튼 단추를 홈페이지 오피셜 규격에 맞춰 명품 라운딩 오션블루 단추로 리디자인 */
+        /* [사장님 오더 명품 리디자인] 정산하기 기능의 최종 버튼 단추를 홈페이지 오피셜 규격에 맞춰 세련된 명품 라운딩 오션블루 단추로 코조 밀착 설계 */
         .btn-settle-action-blue { width: 100%; background-color: #1967d2; color: #ffffff; border: none; padding: 14px; border-radius: 9999px; font-size: 15px; font-weight: 700; cursor: pointer; text-align: center; box-shadow: 0 4px 12px rgba(25,103,210,0.15); transition: background-color 0.2s; margin-top: 10px; }
         .btn-settle-action-blue:hover { background-color: #1152b3; }
-        .user-profile-avatar { width: 36px; height: 36px; border-radius: 50%; background-color: #1967d2; color: #ffffff; font-size: 14px; font-weight: 700; display: none; align-items: center; justify-content: center; cursor: pointer; border: 2px solid #e8f3ff; box-shadow: 0 2px 6px rgba(25, 103, 210, 0.2); }
+        .user-profile-avatar { width: 36px; height: 36px; border-radius: 50%; background-color: #1967d2; color: #ffffff; font-size: 14px; font-weight: 700; display: none; align-items: center; justify-content: center; cursor: pointer; border: 2px solid #e8f3ff; }
         .hero-section { position: relative; padding: 80px 24px 100px 24px; text-align: center; background: linear-gradient(180deg, #f4f9ff 0%, #ffffff 100%); overflow: hidden; }
         .wave-wrapper { position: absolute; bottom: 0; left: 0; width: 100%; height: 85px; overflow: hidden; line-height: 0; }
         .wave-svg { position: absolute; bottom: 0; left: 0; width: 200%; height: 100%; transform: translate3d(0, 0, 0); }
@@ -106,7 +100,7 @@
             <div style="display: flex; flex-direction: column; justify-content: flex-start; height: 100%;">
                 <span class="card-badge">시니어 페이지 ➔</span>
                 <h2 class="card-title">베테랑 전용 12단계 문진형 이력서 자율 제출</h2>
-                <p class="card-desc">오프라인 국민체력 100 검증 등급과 사장님이 지정하신 12가지 정밀 건강 문진 데이터가 통합 탑재된 실버웍스 전용 표준 공식 이력서 제출처입니다.</p>
+                <p class="card-desc">체력 인증 등급과 사장님이 지정하신 12가지 정밀 건강 문진 데이터가 통합 탑재된 실버웍스 전용 표준 공식 이력서 제출처입니다.</p>
             </div>
         </div>
 
@@ -213,8 +207,8 @@
             if (targetRole === 'employer') {
                 location.href = '/employer.html';
             } else {
-                // 시니어 회원은 곧바로 자율 문진표 보존서가 내장된 마이프로필 구역으로 다이렉트 자동 개통 이동
-                location.href = `/profile.html?username=${savedId}`;
+                // [사장님 오더 긴급 이식 반영] 마이프로필 우회 파쇄 후, 전에 만들어두었던 12단계 질문지 작성 페이지(seeker.html)로 하이패스 개통 진입 워프
+                location.href = '/seeker.html';
             }
         }
 

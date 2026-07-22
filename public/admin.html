@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>SILVERWORKS 최고관리자 콘솔 - 마스터 전권 제어실</title>
-    <!-- [디자인 정화] 오직 파란색과 하얀색만 사용, 강제삭제 단추만 고급진 프리미엄 레드로 차별화 도출 CSS -->
+    <!-- [디자인 정화 완벽 적용] 오직 파란색과 하얀색만 사용, 강제삭제 단추만 고급진 프리미엄 레드로 차별화 도출 CSS -->
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, sans-serif; }
         body { background-color: #ffffff; color: #0f1419; padding: 20px; }
@@ -12,13 +12,13 @@
         .logo { font-size: 20px; font-weight: 800; color: #1967d2; cursor: pointer; }
         .card { border: 1px solid #eff3f4; border-radius: 12px; padding: 16px; margin-top: 16px; }
         h3 { font-size: 14.5px; font-weight: 700; color: #1967d2; margin-bottom: 10px; }
-        .table-container { width: 100%; overflow-x: auto; }
+        .table-container { width: 100%; overflow-x: auto; margin-top: 10px; }
         table { width: 100%; border-collapse: collapse; font-size: 12.5px; min-width: 800px; }
         th { background-color: #f7f9fa; color: #536471; padding: 8px; font-weight: 600; border-bottom: 1px solid #eff3f4; }
-        td { padding: 8px; border-bottom: 1px solid #eff3f4; }
-        .fitness-input { width: 60px; padding: 4px; text-align: center; border: 1px solid #cfd9de; border-radius: 6px; }
-        
-        /* 사장님 오더 지정 규격: 오직 유해 데이터 강제 즉시 삭제 분쇄 단추에만 부여되는 고급진 프리미엄 레드 명세 */
+        td { padding: 8px; border-bottom: 1px solid #eff3f4; vertical-align: middle; }
+        .fitness-input { width: 60px; padding: 4px; text-align: center; border: 1px solid #cfd9de; border-radius: 6px; font-weight: 600; color: #0f1419; outline: none; }
+        .fitness-input:focus { border-color: #1967d2; background-color: #f4f9ff; }
+        /* [사장님 오더 지정 명세] 관제실 전용 오션블루 버튼 및 유해 로그 영구 파쇄 소멸용 프리미엄 레드 단추 스펙 */
         .btn { background-color: #1967d2; color: #ffffff; border: none; padding: 6px 12px; border-radius: 9999px; cursor: pointer; font-size: 11.5px; font-weight: 700; }
         .btn-fintech { background-color: #ffffff; color: #1967d2; border: 1px solid #1967d2; padding: 4px 10px; border-radius: 9999px; cursor: pointer; font-size: 11px; font-weight: 700; }
         .btn-purge { background-color: #ffffff; color: #ed4956; border: 1px solid #cfd9de; padding: 4px 10px; border-radius: 6px; cursor: pointer; font-size: 11px; font-weight: 700; transition: all 0.2s; }
@@ -77,6 +77,7 @@
             <div id="inspectModalContentBox"></div>
         </div>
     </div>
+    <!-- [최고관리자 데이터 제어 및 사장님 승인버그 완치 가드 엔진 스크립트] -->
     <script>
         function loadAdmin() {
             fetch('/api/admin/users').then(res => res.json()).then(data => {
@@ -92,7 +93,7 @@
                     body.innerHTML += `<tr><td><span class="click-id-link" onclick="openInspectUserModal('${u.username}')">${u.username}</span></td>
                         <td style="font-weight:700;">${u.name}</td><td>${u.phone}</td><td>${u.role==='employer'?'사장님':'시니어'}</td>
                         <td>${u.status==='approved'?'승인완료':'승인대기'}</td>${inputs}
-                        <td><button class="btn" onclick="saveSpec('${u.username}')">저장</button></td></tr>`;
+                        <td><button class="btn" onclick="saveSpec('${u.username}', '${u.role}')">저장</button></td></tr>`; // 권한 속성값 인자 전달 구조 복원 유지
                 });
             });
 
@@ -131,8 +132,7 @@
         function openInspectUserModal(username) {
             document.getElementById('inspectUserModal').style.display = 'flex';
             fetch(`/api/admin/inspect-user?target_username=${encodeURIComponent(username)}`).then(res => res.json()).then(data => {
-                const u = data.profile; const qa = data.senior_answers;
-                let qaHtml = "";
+                const u = data.profile; const qa = data.senior_answers; let qaHtml = "";
                 if(u.role === 'seeker' && qa) {
                     qaHtml = `<div style="margin-top:10px; font-weight:700; color:#1967d2;">구직 문진 이력서 사본</div>`;
                     const answers = [qa.q1, qa.q2, qa.q3, qa.q4, qa.q5, qa.q6, qa.q7, qa.q8, qa.q9, qa.q10, qa.q11, qa.q12];
@@ -149,9 +149,22 @@
         function purgeSnsPost(id) { if(confirm('이 게시글을 강제 파쇄 삭제합니까?')) fetch('/api/admin/purge/post', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ id: id }) }).then(() => loadAdmin()); }
         function purgeSnsDm(id) { if(confirm('이 디엠 메시지를 강제 파쇄 삭제합니까?')) fetch('/api/admin/purge/dm', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ id: id }) }).then(() => loadAdmin()); }
         function purgeSnsReview(id) { if(confirm('이 평판 데이터를 강제 파쇄 삭제합니까?')) fetch('/api/admin/purge/review', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ id: id }) }).then(() => loadAdmin()); }
-        function saveSpec(user) { fetch('/api/admin/update-user', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ target_username: user, status: 'approved', fitness_grade: document.getElementById('g_'+user).value, fitness_grip: document.getElementById('gp_'+user).value, fitness_flex: document.getElementById('f_'+user).value, fitness_cardio: document.getElementById('c_'+user).value }) }).then(() => { alert('스펙 반영 완료'); loadAdmin(); }); }
+        
+        // [사장님 지시 완벽 보완 결함 완치] 사장님 회원일 경우 하위 체력 인풋 바인딩 추출 과정을 면제 가드 분기하여 저장버튼 먹통 락을 완벽히 해결 처리
+        function saveSpec(user, userRole) {
+            let g = "미인증", gp = "-", f = "-", c = "-";
+            if (userRole === 'seeker' && document.getElementById('g_' + user)) {
+                g = document.getElementById('g_' + user).value; gp = document.getElementById('gp_' + user).value;
+                f = document.getElementById('f_' + user).value; c = document.getElementById('c_' + user).value;
+            }
+            fetch('/api/admin/update-user', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ target_username: user, status: 'approved', fitness_grade: g, fitness_grip: gp, fitness_flex: f, fitness_cardio: c })
+            }).then(() => { alert('전산 교차 동기화 완료: 계정 승인 및 명세 저장이 정식 이행되었습니다.'); loadAdmin(); });
+        }
         function approveJob(id) { fetch('/api/admin/approve-job', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ job_id: id, action_status: 'approved' }) }).then(() => { alert('공고 승인 완료'); loadAdmin(); }); }
-
+        
         loadAdmin();
     </script>
 </body>
