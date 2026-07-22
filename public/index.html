@@ -16,8 +16,12 @@
         .nav-link-btn:hover { background-color: #f2f4f6; color: #1967d2; }
         .btn-sns-link { background-color: #f4f9ff; color: #1967d2; border: 1px solid #e8f3ff; font-weight: 700; box-shadow: 0 2px 4px rgba(25, 103, 210, 0.04); }
         .btn-sns-link:hover { background-color: #1967d2; color: #ffffff; border-color: #1967d2; }
+        
+        /* [사장님 오더 긴급 이식] 로그아웃 전용 고급진 프리미엄 레드 명세 단추 스타일셋 */
+        .btn-logout-red { display: none; background: none; border: 1px solid #cfd9de; color: #ed4956; font-size: 13px; font-weight: 700; cursor: pointer; padding: 6px 14px; border-radius: 8px; transition: all 0.2s; }
+        .btn-logout-red:hover { background-color: #fff0f1; border-color: #ed4956; }
+        
         .seeker-point-badge { display: none; align-items: center; background-color: #f4f9ff; border: 1px solid #e8f3ff; padding: 6px 14px; border-radius: 20px; font-size: 13.5px; font-weight: 700; color: #1967d2; letter-spacing: -0.3px; cursor: pointer; }
-        .seeker-point-badge:hover { transform: scale(1.03); background-color: #e8f3ff; }
         .seeker-point-badge span { color: #1152b3; font-weight: 800; margin-left: 4px; text-decoration: underline; }
         .settle-modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.4); display: none; align-items: center; justify-content: center; z-index: 500; padding: 20px; }
         .settle-modal-content { background-color: #ffffff; width: 100%; max-width: 440px; border-radius: 16px; padding: 24px; box-shadow: 0 8px 28px rgba(0,0,0,0.15); border: none; }
@@ -26,10 +30,9 @@
         .btn-modal-close { background: none; border: none; font-size: 20px; cursor: pointer; color: #4e5968; font-weight: 700; }
         .form-group { margin-bottom: 16px; }
         .form-label { display: block; font-size: 13.5px; font-weight: 600; color: #4e5968; margin-bottom: 8px; }
-        .form-input { width: 100%; padding: 13px; border-radius: 10px; border: 1px solid #cfd9de; font-size: 14.5px; font-weight: 600; outline: none; transition: border-color 0.2s; }
+        .form-input { width: 100%; padding: 13px; border-radius: 10px; border: 1px solid #cfd9de; font-size: 14.5px; font-weight: 600; outline: none; }
         .form-input:focus { border-color: #1967d2; background-color: #f4f9ff; }
         .form-select { width: 100%; padding: 13px; border-radius: 10px; border: 1px solid #cfd9de; font-size: 14.5px; font-weight: 600; outline: none; background-color: #ffffff; }
-        .form-select:focus { border-color: #1967d2; }
         .btn-settle-action-blue { width: 100%; background-color: #1967d2; color: #ffffff; border: none; padding: 14px; border-radius: 9999px; font-size: 15px; font-weight: 700; cursor: pointer; text-align: center; box-shadow: 0 4px 12px rgba(25,103,210,0.15); transition: background-color 0.2s; margin-top: 10px; }
         .btn-settle-action-blue:hover { background-color: #1152b3; }
         .user-profile-avatar { width: 36px; height: 36px; border-radius: 50%; background-color: #1967d2; color: #ffffff; font-size: 14px; font-weight: 700; display: none; align-items: center; justify-content: center; cursor: pointer; border: 2px solid #e8f3ff; }
@@ -70,6 +73,8 @@
             
             <div id="seekerPointTracker" class="seeker-point-badge" onclick="openSettleWithdrawModal()">보유 포인트: <span id="seekerPointBalance">0</span>P (정산하기)</div>
             
+            <!-- [로그아웃 단추 신설 마운트 배치] -->
+            <button id="navLogoutBtn" class="btn-logout-red" onclick="handleExecuteLogoutAction()">로그아웃</button>
             <button id="navAuthBtn" class="nav-link-btn" style="background-color: #1967d2; color: #ffffff;" onclick="location.href='/login.html'">로그인 / 가입</button>
             <div id="userAvatar" class="user-profile-avatar" onclick="location.href='/profile.html'">MY</div>
         </div>
@@ -83,12 +88,12 @@
             </svg>
         </div>
         <h1 class="hero-title" style="font-size: 32px; letter-spacing: -1px; color: #1b1c1e;">세상을 은빛 지혜로 채우다.<br><span style="color: #1967d2;">구인구직 피드 마스터 시스템</span></h1>
-        <p class="hero-sub" style="margin-top: 14px; font-size: 15px;">주휴수당·퇴직금 폭탄과 무단 노쇼의 공포를 해결합니다. 실버웍스는 검증된 시니어 베테랑과 일할 기회를 선물합니다.</p>
+        <p class="hero-sub" style="margin-top: 14px; font-size: 15px;">주휴수당·퇴직금 폭탄 and 무단 노쇼의 공포를 해결합니다. 실버웍스는 검증된 시니어 베테랑과 일할 기회를 선물합니다.</p>
         
         <div class="wave-wrapper">
             <svg class="wave-svg" viewBox="0 0 1200 120" preserveAspectRatio="none" xmlns="http://w3.org">
-                <path class="wave-layer1" d="M0,60 C150,100 350,20 500,60 C650,100 850,20 1000,60 C1150,100 1350,20 1500,60 L1500,120 L0,120 Z"></path>
-                <path class="wave-layer2" d="M0,50 C200,10 400,90 600,40 C800,10 1000,90 1200,40 C1400,10 1600,90 1800,40 L1800,120 L0,120 Z"></path>
+                <path class="wave-layer1" d="M0,60 C150,100 350,20 500,60 C650,100 850,20 1000,60 L1500,120 L0,120 Z"></path>
+                <path class="wave-layer2" d="M0,50 C200,10 400,90 600,40 C800,10 1000,90 1200,40 L1800,120 L0,120 Z"></path>
             </svg>
         </div>
     </section>
@@ -110,7 +115,7 @@
             </div>
         </div>
     </section>
-    <!-- 사장님 오더 지정 규격: 명품 라운딩 오션블루 'btn-settle-action-blue' 정산하기 단추가 내장된 모달 구조 -->
+    <!-- 명품 라운딩 오션블루 'btn-settle-action-blue' 정산하기 단추가 내장된 모달 구조 -->
     <div id="settleWithdrawModal" class="settle-modal-overlay">
         <div class="settle-modal-content">
             <div class="modal-header-row">
@@ -136,7 +141,6 @@
                 <label class="form-label">정산 신청 금액 (보유 포인트 한도 내)</label>
                 <input type="number" id="wWithdrawAmount" class="form-input" placeholder="정산받을 포인트 액수를 입력하세요">
             </div>
-            <!-- 리디자인 장착 단추 -->
             <button type="button" class="btn-settle-action-blue" onclick="submitSettleWithdrawRequest()">정산금 입금 신청서 본부 전송</button>
         </div>
     </div>
@@ -160,6 +164,10 @@
             
             if (id) {
                 document.getElementById('navAuthBtn').style.display = 'none';
+                
+                // [사장님 오더 실행] 세션이 살아있을 때 은밀하게 로그아웃 전용 단추 노출 가동
+                document.getElementById('navLogoutBtn').style.display = 'inline-block';
+                
                 const av = document.getElementById('userAvatar');
                 av.style.display = 'flex'; 
                 av.innerText = id.substring(0, 2).toUpperCase();
@@ -178,19 +186,28 @@
             }
         });
 
-        // [사장님 지시 사항 1번 완벽 보완] 비로그인 상태일 때 대문을 완전히 열어 보여주고, 단추 터치 시에만 로그인 창으로 워프 연동
+        // [사장님 특명 지시 사항] 영구 자격증명 사본을 깨끗하게 파쇄 소멸시키고 화면 새로고침 이행 처리 함수
+        function handleExecuteLogoutAction() {
+            if(!confirm('실버웍스 보안망 탈출 고지:\n현재 가동 중인 마스터 자동 로그인 보안 세션을 영구 해제 파쇄하고 로그아웃합니까?')) return;
+            
+            localStorage.removeItem('sw_username');
+            localStorage.removeItem('sw_role');
+            localStorage.removeItem('sw_name');
+            
+            alert('보안 세션 파쇄 종결!\n성공적으로 로그아웃 처분되었습니다. 대문 광장을 청정 리셋합니다.');
+            location.reload();
+        }
+
         function handleVerifyRouteGuard(targetRole) {
             const savedId = localStorage.getItem('sw_username');
             const savedRole = localStorage.getItem('sw_role');
 
-            // A. 세션 정보가 없는 로그아웃(비로그인) 상태일 경우, 해당하는 로그인 창 유형으로 유연하게 리다이렉트 자동 이동
             if (!savedId || !savedRole) {
                 alert('알림: 회원 인증이 필요합니다. 로그인 화면으로 안전하게 연결합니다.');
                 location.href = `/login.html?type=${targetRole}`;
                 return;
             }
 
-            // B. 교차 권한 침범 검출 시 철벽 방어 가드 차단 통제
             if (savedRole !== targetRole) {
                 if (savedRole === 'employer') {
                     alert('보안 가드 경고: 사장님 회원 계정으로는 [구직 시니어 회원전용] 이력서 및 문진 서식 시스템 구역에 진입할 수 없습니다.');
@@ -200,7 +217,6 @@
                 return;
             }
 
-            // C. 일치 권한 및 세션 확보 시 일일이 재로그인할 필요 없이 1초 만에 프리패스 이동 가동
             if (targetRole === 'employer') {
                 location.href = '/employer.html';
             } else {

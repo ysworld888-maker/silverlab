@@ -4,24 +4,37 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>SILVERWORKS - 구직 시니어 문진표</title>
-    <!-- [사장님 지정 규격] 과거 호평을 받았던 상단 진행 상태바 및 1문항 집중 레이아웃 상용 CSS 명세 복원 -->
+    <!-- [사장님 설계 완벽 복원] 오직 파란색과 하얀색만 사용, 라디오 버튼 및 주관식 혼합형 초정밀 CSS 명세 -->
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; -webkit-tap-highlight-color: transparent; }
         body { background-color: #ffffff; color: #0f1419; padding: 20px; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
-        .qa-wrap-box { width: 100%; max-width: 500px; padding: 32px 24px; border: 1px solid #eff3f4; border-radius: 16px; background-color: #ffffff; box-shadow: 0 4px 16px rgba(0,0,0,0.02); }
+        .qa-wrap-box { width: 100%; max-width: 520px; padding: 32px 24px; border: 1px solid #eff3f4; border-radius: 16px; background-color: #ffffff; box-shadow: 0 4px 16px rgba(0,0,0,0.02); }
         .main-title { font-size: 18px; font-weight: 800; color: #1967d2; text-align: center; margin-bottom: 12px; }
         
-        /* 실시간 12단계 기입 상태 바 UI */
+        /* 12단계 실시간 기입 상태 게이지 바 UI */
         .progress-container { width: 100%; height: 6px; background-color: #f7f9fa; border-radius: 9999px; margin-bottom: 28px; overflow: hidden; border: 1px solid #eff3f4; }
         .progress-bar-fill { height: 100%; width: 8.33%; background-color: #1967d2; transition: width 0.25s ease-out; }
         .step-indicator { font-size: 13.5px; font-weight: 700; color: #536471; text-align: center; margin-bottom: 24px; }
         
-        .q-active-card { display: flex; flex-direction: column; gap: 12px; }
-        .q-title-label { font-size: 16px; font-weight: 800; color: #0f1419; line-height: 1.5; margin-bottom: 4px; }
+        .q-active-card { display: flex; flex-direction: column; gap: 14px; }
+        .q-title-label { font-size: 16px; font-weight: 800; color: #0f1419; line-height: 1.5; margin-bottom: 6px; letter-spacing: -0.3px; }
+        .q-sub-notice { font-size: 13px; color: #536471; font-weight: 600; line-height: 1.4; margin-bottom: 8px; background-color: #f7f9fa; padding: 10px; border-radius: 8px; }
+        
+        /* 주관식 인풋 스타일 명세 */
         .form-input { width: 100%; padding: 14px; border-radius: 10px; border: 1px solid #cfd9de; font-size: 15px; font-weight: 600; outline: none; }
         .form-input:focus { border-color: #1967d2; background-color: #f4f9ff; }
         
-        .btn-row-layout { display: flex; gap: 10px; margin-top: 14px; }
+        /* [사장님 기획 이식] 라디오 객관식 선택형 디자인 명세 */
+        .radio-option-row { display: flex; align-items: center; gap: 12px; padding: 14px; border: 1px solid #cfd9de; border-radius: 10px; cursor: pointer; transition: all 0.15s; }
+        .radio-option-row:hover { background-color: #f7f9fa; border-color: #1967d2; }
+        .radio-option-row.selected { border-color: #1967d2; background-color: #f4f9ff; }
+        .radio-circle { width: 18px; height: 18px; border-radius: 50%; border: 2px solid #cfd9de; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+        .radio-option-row.selected .radio-circle { border-color: #1967d2; }
+        .radio-dot { width: 8px; height: 8px; border-radius: 50%; background-color: #1967d2; display: none; }
+        .radio-option-row.selected .radio-dot { display: block; }
+        .radio-label-text { font-size: 14.5px; font-weight: 600; color: #0f1419; }
+        
+        .btn-row-layout { display: flex; gap: 10px; margin-top: 16px; }
         .btn-action { flex: 1; background-color: #1967d2; color: #ffffff; border: none; padding: 14px; border-radius: 9999px; font-size: 14.5px; font-weight: 700; cursor: pointer; text-align: center; transition: background-color 0.15s; }
         .btn-action:hover { background-color: #1152b3; }
         .btn-action.back { background-color: #ffffff; color: #536471; border: 1px solid #cfd9de; }
@@ -35,8 +48,17 @@
         <div class="progress-container"><div class="progress-bar-fill" id="progressBar"></div></div>
         
         <div class="q-active-card">
+            <!-- 안내 문구 출현 인터페이스 구역 -->
+            <div class="q-sub-notice" id="questionNotice" style="display:none;"></div>
             <div class="q-title-label" id="questionLabel">로딩 중...</div>
-            <input type="text" id="activeAnswerInput" class="form-input" placeholder="답변을 입력하고 엔터를 누르세요" onkeypress="if(event.keyCode===13) handleNextStep()">
+            
+            <!-- 주관식 입력 폼 엔드포인트 -->
+            <div id="inputFormSlot" style="display:none;">
+                <input type="text" id="activeAnswerInput" class="form-input" placeholder="답변을 입력하고 엔터를 누르세요" onkeypress="if(event.keyCode===13) handleNextStep()">
+            </div>
+            
+            <!-- 사장님 기획 원본 규격: 라디오 객관식 선택 폼 슬롯 -->
+            <div id="radioFormSlot" style="display:none; flex-direction:column; gap:10px;"></div>
             
             <div class="btn-row-layout">
                 <button type="button" class="btn-action back" id="backBtn" style="display:none;" onclick="handlePrevStep()">이전</button>
@@ -44,40 +66,109 @@
             </div>
         </div>
     </div>
-    <!-- [과거 대찬사 12단계 정밀 분할 문진 데이터 정합성 보완 기동 엔진 스크립트] -->
+    <!-- [사장님 실물 기획서 원본 데이터셋 기반 라디오/인풋 스위칭 구동 엔진] -->
     <script>
-        const qLabels = [
-            "조력자 구분 명세 (자신 작성 또는 대리인)", "구직 베테랑 성함 명세", "생년월일 명세 (예: 1955년생)", 
-            "휴대폰 번호 연락처 명세", "근무 희망 동네 지역 명세", "3층 계단 보행력 지표 상태", 
-            "1시간 연속 도보 가능성 여부", "현장 주의가 필요한 지병 데이터", "식당 및 마트 청력 소통도 유무", 
-            "카카오톡 메시지 원활 활용도", "초단기(하루 3시간) 근로 수용성", "정부 노인일자리 중복참여 이력"
+        // 사장님 스크린샷 이미지 속 원문 100% 영전 각인 스키마 명세서
+        const qSchema = [
+            {
+                type: "radio",
+                q: "오늘 이 일자리 신청은 누가 도와주고 계시나요?",
+                options: ["어르신 본인이 직접 스마트폰을 보고 있어요.", "아들, 딸, 손주 등 가족이 대신 눌러주고 있어요.", "주변 사람의 도움을 받고 있어요."]
+            },
+            { type: "input", q: "성함이 어떻게 되시나요?" },
+            { type: "input", q: "생년월일을 입력해 주세요. (예: 1955년생)" },
+            { type: "input", q: "휴대전화 번호를 적어주세요." },
+            { type: "input", q: "근무를 희망하는 동네 이름을 적어주세요. (ex. 성남시 분당구)" },
+            {
+                type: "radio",
+                q: "아파트나 지하철 계단을 이용할 때, 쉬지 않고 3층 높이까지 걸어서 올라가실 수 있습니까?",
+                notice: "지금부터는 건강관련 질문입니다.\n답변하신 정보를 바탕으로 최적의 일자리를 매칭드리겠습니다.",
+                options: ["네, 숨차지 않고 잘 올라갑니다.", "무릎이나 허리가 조금 쑤시지만 올라갑니다.", "쉬면서 올라가야 하거나 힘듭니다."]
+            },
+            { type: "input", q: "1시간 연속 도보 가능성 여부를 적어주세요." },
+            { type: "input", q: "현장 주의가 필요한 지병 데이터를 적어주세요. (없으시면 '없음' 기입)" },
+            { type: "input", q: "식당 및 마트 청력 소통도 유무를 적어주세요." },
+            { type: "input", q: "카카오톡 메시지 원활 활용도를 적어주세요." },
+            { type: "input", q: "초단기(하루 3시간) 근로 수용성을 적어주세요." },
+            { type: "input", q: "정부 노인일자리 중복참여 이력을 적어주세요." }
         ];
         
         let currentStep = 1;
         const savedAnswers = {};
+        let selectedRadioValue = "";
 
         document.addEventListener("DOMContentLoaded", function() {
             renderActiveQuestion();
         });
 
+        // [기획 원본형 퓨전] 라디오 세그먼트와 일반 인풋 폼을 동적으로 판독 선택 분기 출력하는 마스터 엔진
         function renderActiveQuestion() {
+            const currentQ = qSchema[currentStep - 1];
+            
             document.getElementById('stepIndicator').innerText = `문항 ${currentStep} / 12 단계`;
             document.getElementById('progressBar').style.width = `${(currentStep / 12) * 100}%`;
-            document.getElementById('questionLabel').innerText = `Q${currentStep}. ${qLabels[currentStep - 1]}`;
+            document.getElementById('questionLabel').innerText = `Q${currentStep}. ${currentQ.q}`;
             
-            const input = document.getElementById('activeAnswerInput');
-            input.value = savedAnswers[currentStep] || '';
-            input.focus();
+            // 안내 서브 텍스트 가드 제어 처리
+            const noticeBox = document.getElementById('questionNotice');
+            if (currentQ.notice) {
+                noticeBox.style.display = 'block';
+                noticeBox.innerText = currentQ.notice;
+            } else {
+                noticeBox.style.display = 'none';
+            }
+
+            const inputSlot = document.getElementById('inputFormSlot');
+            const radioSlot = document.getElementById('radioFormSlot');
+            
+            if (currentQ.type === "input") {
+                radioSlot.style.display = 'none';
+                inputSlot.style.display = 'block';
+                const input = document.getElementById('activeAnswerInput');
+                input.value = savedAnswers[currentStep] || '';
+                input.focus();
+            } else {
+                inputSlot.style.display = 'none';
+                radioSlot.style.display = 'flex';
+                radioSlot.innerHTML = '';
+                selectedRadioValue = savedAnswers[currentStep] || '';
+
+                currentQ.options.forEach(opt => {
+                    const isSelected = opt === selectedRadioValue;
+                    const row = document.createElement('div');
+                    row.className = `radio-option-row ${isSelected ? 'selected' : ''}`;
+                    row.onclick = () => handleSelectRadioOption(row, opt);
+                    row.innerHTML = `
+                        <div class="radio-circle"><div class="radio-dot"></div></div>
+                        <div class="radio-label-text">${opt}</div>
+                    `;
+                    radioSlot.appendChild(row);
+                });
+            }
 
             document.getElementById('backBtn').style.display = currentStep > 1 ? 'block' : 'none';
             document.getElementById('nextBtn').innerText = currentStep === 12 ? '문진표 최종 완료 제출' : '다음 단계';
         }
 
+        function handleSelectRadioOption(element, val) {
+            document.querySelectorAll('.radio-option-row').forEach(r => r.classList.remove('selected'));
+            element.classList.add('selected');
+            selectedRadioValue = val;
+        }
+
         function handleNextStep() {
-            const val = document.getElementById('activeAnswerInput').value.trim();
-            if (!val) { alert('해당 문항의 답변을 기입해 주십시오.'); return; }
+            const currentQ = qSchema[currentStep - 1];
+            let finalVal = "";
+
+            if (currentQ.type === "input") {
+                finalVal = document.getElementById('activeAnswerInput').value.trim();
+            } else {
+                finalVal = selectedRadioValue;
+            }
+
+            if (!finalVal) { alert('해당 문항의 답변을 기입 혹은 선택해 주십시오.'); return; }
             
-            savedAnswers[currentStep] = val;
+            savedAnswers[currentStep] = finalVal;
 
             if (currentStep < 12) {
                 currentStep++;
@@ -89,7 +180,12 @@
 
         function handlePrevStep() {
             if (currentStep > 1) {
-                savedAnswers[currentStep] = document.getElementById('activeAnswerInput').value.trim();
+                const currentQ = qSchema[currentStep - 1];
+                if (currentQ.type === "input") {
+                    savedAnswers[currentStep] = document.getElementById('activeAnswerInput').value.trim();
+                } else {
+                    savedAnswers[currentStep] = selectedRadioValue;
+                }
                 currentStep--;
                 renderActiveQuestion();
             }
@@ -99,10 +195,9 @@
             const id = localStorage.getItem('sw_username');
             if(!id) { location.href = '/login.html'; return; }
 
-            // [롤백 정밀 보정] 12개 문항을 하나의 문자열 사본 데이터로 규격 취합 연동
             let combinedString = "";
             for(let i=1; i<=12; i++) {
-                combinedString += `[항목 ${i}] ${savedAnswers[i]} / `;
+                combinedString += `[문항 ${i}] ${savedAnswers[i]} / `;
             }
 
             fetch('/api/senior/qa', {
@@ -113,7 +208,7 @@
             .then(res => res.json())
             .then(data => {
                 if(data.success) {
-                    alert('축하합니다! 12단계 마이크로 정밀 건강 문진 이력서가 무결하게 최종 접수 제출되었습니다.');
+                    alert('축하합니다! 사장님 설계 원본 규격의 라디오 믹싱 건강 문진 이력서가 최종 제출 완료되었습니다.');
                     location.href = '/index.html';
                 }
             });
