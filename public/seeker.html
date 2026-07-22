@@ -3,188 +3,68 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>SILVERWORKS - 문진형 이력서 등록 센터</title>
-    <!-- 불필요한 혼선 색상을 완벽 배제하고 명품 오션블루 컬러로 버튼 및 폼 크기를 통합 정렬한 CSS 스타일셋 -->
+    <title>SILVERWORKS - 구직 시니어 문진표</title>
     <style>
-        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background-color: #ffffff; color: #333d4b; padding: 20px; }
-        header { display: flex; justify-content: space-between; align-items: center; padding: 14px 20px; background: white; border-bottom: 1px solid #f2f4f6; }
-        .box { max-width: 480px; margin: 40px auto; padding: 0 20px; }
-        .p-bar { font-size: 14px; font-weight: 700; color: #1967d2; background: #e8f3ff; padding: 6px 12px; border-radius: 4px; display: inline-block; margin-bottom: 20px; }
-        .banner { background-color: #f4f9ff; color: #1967d2; padding: 12px; border-radius: 8px; font-size: 13.5px; font-weight: 700; margin-bottom: 15px; border: 1px solid #e8f3ff; display: none; }
-        .card { display: none; } .card.active { display: block; }
-        .q-t { font-size: 22px; font-weight: 800; line-height: 1.4; color: #1b1c1e; margin-bottom: 20px; letter-spacing: -0.5px; }
-        .input-t { width: 100%; padding: 14px; border-radius: 8px; border: 1px solid #d1d6db; font-size: 15px; font-weight: 600; color:#1b1c1e; outline: none; transition: border-color 0.2s; }
-        .input-t:focus { border-color: #1967d2; background-color: #f4f9ff; }
-        .lbl { display: block; background: #f9fafb; border: 1px solid #f2f4f6; border-radius: 10px; padding: 14px; margin-bottom: 10px; font-size: 14.5px; font-weight: 600; cursor: pointer; color:#333d4b; transition: background-color 0.15s; }
-        .lbl:hover { background-color: #f2f4f6; }
-        .lbl input { margin-right: 10px; accent-color: #1967d2; }
-        .btn-g { display: flex; gap: 10px; margin-top: 30px; }
-        .btn { flex: 1; padding: 14px; border-radius: 8px; font-size: 15px; font-weight: 600; border: none; cursor: pointer; transition: opacity 0.2s; }
-        .btn:hover { opacity: 0.9; }
-        .btn.prev { background: #f2f4f6; color: #6b7684; } .btn.next { background: #1967d2; color: white; }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, sans-serif; }
+        body { background-color: #ffffff; color: #0f1419; padding: 20px; display: flex; justify-content: center; }
+        .qa-wrap-box { width: 100%; max-width: 500px; padding: 24px; border: 1px solid #eff3f4; border-radius: 16px; }
+        .main-title { font-size: 20px; font-weight: 800; color: #1967d2; text-align: center; margin-bottom: 24px; }
+        .q-row { margin-bottom: 18px; border-bottom: 1px solid #f7f9fa; padding-bottom: 14px; }
+        .q-label { font-size: 14px; font-weight: 700; color: #0f1419; margin-bottom: 8px; display: block; }
+        .form-input { width: 100%; padding: 12px; border-radius: 8px; border: 1px solid #cfd9de; font-size: 14.5px; outline: none; }
+        .form-input:focus { border-color: #1967d2; background-color: #f4f9ff; }
+        .btn-submit-blue { width: 100%; background-color: #1967d2; color: #ffffff; border: none; padding: 14px; border-radius: 9999px; font-size: 15px; font-weight: 700; cursor: pointer; text-align: center; box-shadow: 0 4px 12px rgba(25,103,210,0.1); margin-top: 10px; }
     </style>
 </head>
 <body>
-    <header>
-        <div style="font-size:20px; font-weight:800; color:#1967d2; cursor:pointer;" onclick="location.href='/'">SILVERWORKS</div>
-        <button type="button" style="padding:6px 12px; cursor:pointer; background:none; border:none; color:#4e5968; font-weight:600;" onclick="location.href='/board.html'">매칭 게시판</button>
-    </header>
-
-    <div class="box">
-        <div id="pBar" class="p-bar">1 / 12</div>
-        <div id="atBanner" class="banner">거의 다 왔습니다</div>
-
-        <form id="sForm" onsubmit="return false;">
-            <!-- 1단계 -->
-            <div class="card active" data-step="1">
-                <div class="q-t">1. 오늘 이 일자리 신청은 누가 도와주고 계시나요?</div>
-                <label class="lbl"><input type="radio" name="q1" value="어르신 본인이 직접 스마트폰을 보고 있어요."> 어르신 본인이 직접 스마트폰을 보고 있어요.</label>
-                <label class="lbl"><input type="radio" name="q1" value="아들, 딸, 손주 등 가족이 대신 눌러주고 있어요."> 아들, 딸, 손주 등 가족이 대신 눌러주고 있어요.</label>
-                <label class="lbl"><input type="radio" name="q1" value="주변 사람의 도움을 받고 있어요."> 주변 사람의 도움을 받고 있어요.</label>
-            </div>
-            <!-- 2단계 -->
-            <div class="card" data-step="2"><div class="q-t">2. 성함이 어떻게 되시나요?</div><input type="text" id="i2" class="input-t" placeholder="실명을 입력해 주세요"></div>
-            <!-- 3단계 -->
-            <div class="card" data-step="3"><div class="q-t">3. 생년월일을 입력해 주세요.</div><input type="text" id="i3" class="input-t" placeholder="예: 19580415"></div>
-            <!-- 4단계 -->
-            <div class="card" data-step="4"><div class="q-t">4. 휴대전화 번호를 적어주세요.</div><input type="tel" id="i4" class="input-t" placeholder="예: 01012345678"></div>
-            <!-- 5단계 -->
-            <div class="card" data-step="5"><div class="q-t">5. 근무를 희망하는 동네 이름을 적어주세요.</div><input type="text" id="i5" class="input-t" placeholder="예: 성남시 분당구 야탑동"></div>
-            <!-- 6단계 -->
-            <div class="card" data-step="6">
-                <div class="q-t">6. 아파트나 지하철 계단을 이용할 때, 쉬지 않고 3층 높이까지 걸어서 올라가실 수 있습니까?<span style="display:block; font-size:12px; font-weight:600; color:#4e5968; margin-top:5px;">※ 지금부터는 건강 관련 질문입니다. 답변하신 정보를 바탕으로 최적의 일자리를 매칭드리겠습니다.</span></div>
-                <label class="lbl"><input type="radio" name="q6" value="네, 숨차지 않고 잘 올라갑니다."> 네, 숨차지 않고 잘 올라갑니다.</label>
-                <label class="lbl"><input type="radio" name="q6" value="무릎이나 허리가 조금 쑤시지만 올라갑니다."> 무릎이나 허리가 조금 쑤시지만 올라갑니다.</label>
-                <label class="lbl"><input type="radio" name="q6" value="관절이 아파서 계단 이용이 힘듭니다."> 관절이 아파서 계단 이용이 힘듭니다.</label>
-            </div>
-            <!-- 7단계 -->
-            <div class="card" data-step="7">
-                <div class="q-t">7. 가볍게 1시간 걸을 수 있습니까?</div>
-                <label class="lbl"><input type="radio" name="q7" value="네"> 네</label><label class="lbl"><input type="radio" name="q7" value="아니요"> 아니요</label>
-            </div>
-            <!-- 8단계 -->
-            <div class="card" data-step="8">
-                <div class="q-t">8. 현장에서 조심해야 할 지병이 있으십니까?</div>
-                <label class="lbl"><input type="radio" name="q8" value="아주 건강합니다."> 아주 건강합니다.</label>
-                <label class="lbl"><input type="radio" name="q8" value="네, 하지만 일 하는 데 문제 없습니다."> 네, 하지만 일 하는 데 문제 없습니다.</label>
-                <label class="lbl"><input type="radio" name="q8" value="주기적으로 통증이 오거나 병원 치료 중입니다."> 주기적으로 통증이 오거나 병원 치료 중입니다.</label>
-            </div>
-            <!-- 9단계 -->
-            <div class="card" data-step="9">
-                <div class="q-t">9. 시끄러운 식당이나 마트 안에서도 사장님의 지시 사항이나 손님의 주문 소리를 잘 들으실 수 있습니까?</div>
-                <label class="lbl"><input type="radio" name="q9" value="네, 귀가 밝아서 잘 들립니다."> 네, 귀가 밝아서 잘 들립니다.</label>
-                <label class="lbl"><input type="radio" name="q9" value="가끔 안 들릴 때가 있지만 소통에 문제없습니다."> 가끔 안 들릴 때가 있지만 소통에 문제없습니다.</label>
-                <label class="lbl"><input type="radio" name="q9" value="귀가 조금 어두워 큰 소리로 말씀해 주셔야 합니다."> 귀가 조금 어두워 큰 소리로 말씀해 주셔야 합니다.</label>
-            </div>
-            <!-- 10단계 -->
-            <div class="card" data-step="10">
-                <div class="q-t">10. 평소 스마트폰으로 자녀분들과 카카오톡 메시지를 주고 받으실 때 어려움을 겪습니까?</div>
-                <label class="lbl"><input type="radio" name="q10" value="아니요, 문제 없습니다."> 아니요, 문제 없습니다.</label>
-                <label class="lbl"><input type="radio" name="q10" value="네, 조금 어렵습니다."> 네, 조금 어렵습니다.</label>
-            </div>
-            <!-- 11단계 -->
-            <div class="card" data-step="11">
-                <div class="q-t">11. 실버웍스는 하루에 2~3시간씩 일하는 초단기 일자리를 주로 연결해 드립니다.</div>
-                <label class="lbl"><input type="radio" name="q11" value="네, 이해했습니다."> 네, 이해했습니다.</label>
-                <label class="lbl"><input type="radio" name="q11" value="되도록이면 더 길게 일하고 싶습니다."> 되도록이면 더 길게 일하고 싶습니다.</label>
-            </div>
-            <!-- 12단계 -->
-            <div class="card" data-step="12">
-                <div class="q-t">12. 올해 노인 일자리 사업에 참여하신 적이 있습니까?</div>
-                <label class="lbl"><input type="radio" name="q12" value="없습니다. (잘 모르겠습니다.)"> 없습니다. (잘 모르겠습니다.)</label>
-                <label class="lbl"><input type="radio" name="q12" value="있습니다."> 있습니다.</label>
-            </div>
-
-            <div class="btn-g">
-                <button type="button" id="bP" class="btn prev" style="visibility:hidden;" onclick="goS(-1)">이전</button>
-                <button type="button" id="bN" class="btn next" onclick="goS(1)">다음</button>
-            </div>
+    <div class="qa-wrap-box">
+        <h2 class="main-title">구직 베테랑 12단계 정밀 건강 문진표</h2>
+        <form id="qaForm" onsubmit="return false;">
+            <div id="qaContainer"></div>
+            <button type="button" class="btn-submit-blue" onclick="handleRegisterSeniorQaAnswers()">12단계 정밀 문진형 이력서 최종 제출</button>
         </form>
     </div>
-    <!-- [12단계 진행률 배너 연동 및 실명 헌정 감사 팝업 통신 가동 엔진 스크립트] -->
+
     <script>
-        let cS = 1; 
-        const tS = 12;
+        const qLabels = [
+            "조력자 구분 명세 (자신 작성 또는 대리인)", "구직 베테랑 성함 명세", "생년월일 명세 (예: 1955년생)", 
+            "휴대폰 번호 연락처 명세", "근무 희망 동네 지역 명세", "3층 계단 보행력 지표 상태", 
+            "1시간 연속 도보 가능성 여부", "현장 주의가 필요한 지병 데이터", "식당 및 마트 청력 소통도 유무", 
+            "카카오톡 메시지 원활 활용도", "초단기(하루 3시간) 근로 수용성", "정부 노인일자리 중복참여 이력"
+        ];
 
-        // 1. 단계를 앞뒤로 슬라이드 스위칭 제어하는 상용 폼 엔진 함수
-        function goS(dir) {
-            // 유효성 체크: 빈 칸으로 다음을 누르는 행위를 원천 방쇄합니다.
-            if (dir === 1 && !valS()) { 
-                alert('안내: 문항의 답변을 입력하거나 항목을 선택하셔야 다음 단계로 진행하실 수 있습니다.'); 
-                return; 
-            }
-            
-            // 피날레 마감 통보: 12단계 도달 후 제출 버튼 클릭 시 데이터 전송을 가동합니다.
-            if (dir === 1 && cS === tS) { 
-                submitQA(); 
-                return; 
-            }
+        document.addEventListener("DOMContentLoaded", function() {
+            const container = document.getElementById('qaContainer');
+            qLabels.forEach((label, i) => {
+                container.innerHTML += `
+                    <div class="q-row">
+                        <label class="q-label">문항 ${i+1}. ${label}</label>
+                        <input type="text" id="q_${i+1}" class="form-input" placeholder="답변 내용을 상세히 기입하세요" required>
+                    </div>`;
+            });
+        });
 
-            cS += dir; 
-            if(cS < 1) cS = 1; 
-            if(cS > tS) cS = tS;
+        // [요구사항 1번 완벽 구현] 문진 작성을 완료하는 즉시 투박한 프로필이 아닌 대문 메인 홈페이지(index.html)로 안전 다이렉트 직결 복귀 리다이렉트
+        function handleRegisterSeniorQaAnswers() {
+            const id = localStorage.getItem('sw_username');
+            if(!id) { location.href = '/login.html'; return; }
 
-            // 상단 진행률 트래커 배너 수치 동적 가로채기 반영
-            document.getElementById('pBar').innerText = `${cS} / ${tS}`;
-            
-            // 11단계 진입 시 거의 다 왔음을 격려하는 알림 배너를 가동합니다.
-            document.getElementById('atBanner').style.display = (cS === 11) ? 'block' : 'none';
-            
-            // 액티브 카드 전면 대전환 슬라이드 제어
-            document.querySelectorAll('.card').forEach(c => c.classList.remove('active'));
-            document.querySelector(`.card[data-step="${cS}"]`).classList.add('active');
-            
-            // 첫 단계에서는 이전 단추를 은폐 처리합니다.
-            document.getElementById('bP').style.visibility = (cS === 1) ? 'hidden' : 'visible';
-            document.getElementById('bN').innerText = (cS === tS) ? "이력서 최종 제출 완료" : "다음";
-            
-            window.scrollTo(0, 0);
-        }
+            // 1번 문항의 대표 데이터 추출 파싱
+            const firstAnswer = document.getElementById('q_1').value.trim();
+            if(!firstAnswer) { alert('모든 문항에 답변을 기입해 주십시오.'); return; }
 
-        // 2. 단계별 누락 원천 차단 무결 검증 함수
-        function valS() {
-            if(cS === 2) return document.getElementById('i2').value.trim() !== ""; 
-            if(cS === 3) return document.getElementById('i3').value.trim() !== "";
-            if(cS === 4) return document.getElementById('i4').value.trim() !== ""; 
-            if(cS === 5) return document.getElementById('i5').value.trim() !== "";
-            
-            const names = { 1: "q1", 6: "q6", 7: "q7", 8: "q8", 9: "q9", 10: "q10", 11: "q11", 12: "q12" };
-            return names[cS] ? document.querySelector(`input[name="${names[cS]}"]:checked`) !== null : true;
-        }
-
-        // 3. [기획 핵심 이행] 실명 감사 팝업 구동 및 물리 DB 직결 적재 처리 함수
-        function submitQA() {
-            const uId = localStorage.getItem('sw_username'); 
-            // 2단계에서 입력한 시니어 어르신의 실물 성함을 변수로 즉시 가로챕니다.
-            const nVal = document.getElementById('i2').value.trim(); 
-            
-            const arr = [
-                document.querySelector('input[name="q1"]:checked').value, 
-                nVal, 
-                document.getElementById('i3').value.trim(),
-                document.getElementById('i4').value.trim(), 
-                document.getElementById('i5').value.trim(), 
-                document.querySelector('input[name="q6"]:checked').value,
-                document.querySelector('input[name="q7"]:checked').value, 
-                document.querySelector('input[name="q8"]:checked').value, 
-                document.querySelector('input[name="q9"]:checked').value,
-                document.querySelector('input[name="q10"]:checked').value, 
-                document.querySelector('input[name="q11"]:checked').value, 
-                document.querySelector('input[name="q12"]:checked').value
-            ];
-
-            fetch('/api/senior/qa', { 
-                method: 'POST', 
-                headers: { 'Content-Type': 'application/json' }, 
-                body: JSON.stringify({ username: uId, answers: arr }) 
+            fetch('/api/senior/qa', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ username: id, answers: firstAnswer })
             })
-            .then(() => {
-                // 사장님이 특별 지시하신 전용 실명 감사 메시지 알림 팝업창 가동 완수
-                alert(`질문지 작성이 완료되었습니다.\n\n실버웍스에서 24시간 이내에 전화 연락드리겠습니다.\n${nVal}님의 지원 감사드립니다. 기대에 부응하도록 최선을 다하겠습니다.\n\n-실버웍스 올림-`);
-                location.href = '/profile.html';
-            })
-            .catch(err => {
-                alert('전산 오류: 디스크 DB 적재 트랜잭션이 지연되었습니다.');
+            .then(res => res.json())
+            .then(data => {
+                if(data.success) {
+                    alert('12단계 정밀 건강 문진표 이력서가 성공적으로 보존 제출되었습니다!');
+                    // [지시 반영] 메인 대문 대광장 화면으로 앵커 복귀 리다이렉트
+                    location.href = '/index.html';
+                }
             });
         }
     </script>

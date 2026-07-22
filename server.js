@@ -17,7 +17,7 @@ const db = new sqlite3.Database(dbPath);
 
 const hashPw = (pw) => crypto.createHash('sha256').update(pw).digest('hex');
 
-// 가입 트랜잭션 실패 오류를 차단하기 위한 하드디스크 스키마 테이블 안전 마운트 프로토콜
+// [핀테크 및 수수료 징수, 공고 심사 락 전산망 가동] 하드웨어 물리 디스크 인스턴스 serialize 세단 마운트
 db.serialize(() => {
     db.run(`CREATE TABLE IF NOT EXISTS users (
         id INTEGER PRIMARY KEY AUTOINCREMENT, username TEXT UNIQUE, password TEXT, name TEXT, phone TEXT, role TEXT, status TEXT,
@@ -53,11 +53,14 @@ db.serialize(() => {
     db.run(`CREATE TABLE IF NOT EXISTS cash_withdrawals (
         id INTEGER PRIMARY KEY AUTOINCREMENT, seeker_id TEXT, bank_name TEXT, account_number TEXT, amount INTEGER, status TEXT DEFAULT 'pending', created_at DATETIME DEFAULT CURRENT_TIMESTAMP
     )`);
+    
+    // [요구사항 2번 신설 반영] 사장님 매장의 실시간 문의 명세 및 문의 버튼을 터치한 시점 시각 타임스탬프 보존 영구 테이블 생성
+    db.run(`CREATE TABLE IF NOT EXISTS store_consults (
+        id INTEGER PRIMARY KEY AUTOINCREMENT, store_name TEXT, phone TEXT, created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+    )`);
 
-    // [트랜잭션 락 완벽 파쇄] 기존 구버전 구동 환경에서 sns_posts 테이블에 title 컬럼 누락 시 자동 강제 추가 가드 처리
-    db.run(`ALTER TABLE sns_posts ADD COLUMN title TEXT`, (err) => {
-        // 이미 컬럼이 존재할 경우 에러는 자동 패스 처리되어 안전하게 트랜잭션을 보존합니다.
-    });
+    // [트랜잭션 가드 처리] 구버전 테이블 대응 컬럼 자동 강제 유연 확장 가이드
+    db.run(`ALTER TABLE sns_posts ADD COLUMN title TEXT`, (err) => {});
 });
 // 회원가입 신청 트랜잭션 라우터
 app.post('/api/auth/register', (req, res) => {
@@ -80,7 +83,18 @@ app.post('/api/auth/login', (req, res) => {
     });
 });
 
-// SNS 소통실 트위터(X) 모달형 제목/내용 파싱 및 등록 API
+// [요구사항 2번 반영 신설] 사장님 매장 행정 문의 데이터 및 실시간 시점 시각 타임스탬프 DB 저장 API
+app.post('/api/employer/consult', (req, res) => {
+    const { store_name, phone } = req.body;
+    if(!store_name || !phone) return res.status(400).json({ success: false, message: "누락된 입력 정보" });
+    
+    db.run(`INSERT INTO store_consults (store_name, phone) VALUES (?, ?)`, [store_name.trim(), phone.trim()], (err) => {
+        if (err) return res.status(500).json({ success: false });
+        res.json({ success: true, message: "행정 문의 및 실시간 접수 시각 데이터가 전산망에 안전하게 보존되었습니다." });
+    });
+});
+
+// SNS 소통실 트위터(X) 스타일 API
 app.get('/api/sns/posts', (req, res) => {
     db.all(`SELECT * FROM sns_posts ORDER BY id DESC`, [], (err, rows) => res.json({ success: true, posts: rows || [] }));
 });
@@ -188,7 +202,7 @@ app.post('/api/admin/settle/request-employer', (req, res) => {
             const commission = Math.floor(w.amount * 0.1);
             const totalBill = w.amount + commission;
 
-            const billingMsg = `[실버웍스 대금 청구서] 사장님 매장(${storeName})에서 근무한 @${w.seeker_id} 시니어의 급여 정산이 본부에 의해 선지급 완료되었습니다. 이에 따라 약정된 중개 수수료 10%(${commission.toLocaleString()}원)가 가산된 총 ${totalBill.toLocaleString()}원의 정산 대금을 본부 계좌로 이체해 주시기 바랍니다.`;
+            const billingMsg = `[실버웍스 대금 청구서] 사장님 매장(${storeName})에서 근무한 @${w.seeker_id} 시니어의 급여 정산이 본부에 의해 선지급 완료되었습니다. 이에 따라 약정된 중개 수수료 10%(${commission.toLocaleString()}원)가 가산된 총 ${totalBill.toLocaleString()}원의 정산 대금을 본부 계좌(국민은행 4345-SILVER)로 이체해 주시기 바랍니다.`;
             
             db.run(`INSERT INTO sns_dms (sender, receiver, message) VALUES ('admin_system', ?, ?)`, [bossId, billingMsg], () => {
                 res.json({ success: true, message: `구인 사장님(@${bossId})에게 수수료 10%가 포함된 총액 청구서 DM 독촉 알림이 가동 발송되었습니다.` });
@@ -197,20 +211,24 @@ app.post('/api/admin/settle/request-employer', (req, res) => {
     });
 });
 
-// 최고관리자 API - 환전 정산 내역 및 소셜 패키지 취합 송출 관제
+// [기획 대개정] 핀테크 정산, 실시간 문의 내역 및 접수 시각 로그 통합 관제 패키지 API
 app.get('/api/admin/match-logs', (req, res) => {
     db.all(`SELECT * FROM sns_posts ORDER BY id DESC`, [], (err, postsRows) => {
         db.all(`SELECT * FROM sns_dms ORDER BY id DESC`, [], (err, dmsRows) => {
             db.all(`SELECT * FROM reputation_reviews ORDER BY id DESC`, [], (err, revRows) => {
                 db.all(`SELECT * FROM point_logs ORDER BY id DESC`, [], (err, pointRows) => {
                     db.all(`SELECT * FROM cash_withdrawals ORDER BY id DESC`, [], (err, withdrawRows) => {
-                        res.json({ 
-                            success: true, 
-                            posts: postsRows || [], 
-                            dms: dmsRows || [], 
-                            reviews: revRows || [], 
-                            points: pointRows || [],
-                            withdrawals: withdrawRows || []
+                        // 요구사항 2번 신설 테이블 취합: 사장님 행정 문의 및 실시간 타임스탬프 내역 연동 적재
+                        db.all(`SELECT * FROM store_consults ORDER BY id DESC`, [], (err, consultRows) => {
+                            res.json({ 
+                                success: true, 
+                                posts: postsRows || [], 
+                                dms: dmsRows || [], 
+                                reviews: revRows || [], 
+                                points: pointRows || [],
+                                withdrawals: withdrawRows || [],
+                                consults: consultRows || []
+                            });
                         });
                     });
                 });
@@ -219,28 +237,33 @@ app.get('/api/admin/match-logs', (req, res) => {
     });
 });
 
+// 최고관리자 API - 가입 회원 실시간 파싱 및 갱신된 포인트 잔액 바인딩 호출
 app.get('/api/admin/users', (req, res) => {
     db.all(`SELECT * FROM users ORDER BY id DESC`, [], (err, rows) => res.json({ success: true, users: rows || [] }));
 });
 
+// 최고관리자 API - 4대 체력 스펙 제어 패널 업데이트
 app.post('/api/admin/update-user', (req, res) => {
     const { target_username, status, fitness_grade, fitness_grip, fitness_flex, fitness_cardio } = req.body;
     db.run(`UPDATE users SET status = ?, fitness_grade = ?, fitness_grip = ?, fitness_flex = ?, fitness_cardio = ? WHERE username = ?`,
         [status, fitness_grade, fitness_grip, fitness_flex, fitness_cardio, target_username], () => res.json({ success: true }));
 });
 
+// [요구사항 3번 반영] 구인 공고 직접 생성 등록 API (pending 상태로 격리 수신)
 app.post('/api/jobs/create', (req, res) => {
     const { employer_id, title, company, work_date, work_time, wage, job_type } = req.body;
     db.run(`INSERT INTO jobs (employer_id, title, company, work_date, work_time, wage, job_type, status) VALUES (?, ?, ?, ?, ?, ?, ?, 'pending')`,
         [employer_id, title, company, work_date, work_time, parseInt(wage), job_type], () => res.json({ success: true }));
 });
 
+// 사장님 API - 우선순위 지망 배정 제어 단추
 app.post('/api/employer/update-rank', (req, res) => {
     const { job_id, seeker_id, rank_priority } = req.body;
     db.run(`UPDATE applications SET rank_priority = ? WHERE job_id = ? AND seeker_id = ?`,
         [parseInt(rank_priority), job_id, seeker_id], () => res.json({ success: true }));
 });
 
+// 내 공고 지원 베테랑 명단 독점 파싱 및 매칭 상태 분기 추적 호출
 app.get('/api/employer/applicants', (req, res) => {
     const { employer_id, job_id } = req.query;
     db.get(`SELECT employer_id FROM jobs WHERE id = ?`, [job_id], (err, job) => {
@@ -266,10 +289,12 @@ app.get('/api/employer/applicants', (req, res) => {
     });
 });
 
+// 매칭 게시판 API - 관리자 승인이 완료된 라이브 공고 피드 반환
 app.get('/api/jobs/live-board', (req, res) => {
     db.all(`SELECT * FROM jobs WHERE status = 'approved' ORDER BY id DESC`, [], (err, rows) => res.json({ success: true, jobs: rows || [] }));
 });
 
+// 최고관리자 API - 사장님 등록 공고 전체 심사 제어판 호출
 app.get('/api/admin/jobs-all', (req, res) => {
     db.all(`SELECT * FROM jobs ORDER BY id DESC`, [], (err, rows) => res.json({ success: true, jobs: rows || [] }));
 });
@@ -278,6 +303,7 @@ app.post('/api/admin/approve-job', (req, res) => {
     db.run(`UPDATE jobs SET status = ? WHERE id = ?`, [req.body.action_status, req.body.job_id], () => res.json({ success: true }));
 });
 
+// 내 매장 공고와 확정 결속을 마친 출퇴근 현황판 호출 라인
 app.get('/api/attendance/status', (req, res) => {
     const { job_id, seeker_id } = req.query;
     db.get(`SELECT * FROM attendance WHERE job_id = ? AND seeker_id = ?`, [job_id, seeker_id], (err, row) => {
@@ -309,12 +335,14 @@ app.get('/api/profile/me', (req, res) => {
 app.post('/api/senior/qa', (req, res) => {
     const { username, answers } = req.body;
     db.run(`INSERT OR REPLACE INTO senior_qa (username, q1, q2, q3, q4, q5, q6, q7, q8, q9, q10, q11, q12) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-        [username, answers, answers, answers, answers, answers, answers, answers, answers, answers, answers, answers, answers], () => res.json({ success: true }));
+        [username, answers[0], answers[1], answers[2], answers[3], answers[4], answers[5], answers[6], answers[7], answers[8], answers[9], answers[10], answers[11]], () => {
+            res.json({ success: true });
+        });
 });
 
 app.post('/api/jobs/apply', (req, res) => {
     db.run(`INSERT INTO applications (job_id, seeker_id) VALUES (?, ?)`, [req.body.job_id, req.body.seeker_id], () => res.json({ success: true }));
 });
 
-app.listen(PORT, () => console.log(`SILVERWORKS 핀테크 수수료 인프라 엔진 포트: ${PORT}`));
+app.listen(PORT, () => console.log(`SILVERWORKS 통합 코어 정산 인프라 엔진 가동 포트: ${PORT}`));
 module.exports = app;

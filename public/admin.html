@@ -18,7 +18,8 @@
         td { padding: 8px; border-bottom: 1px solid #eff3f4; vertical-align: middle; }
         .fitness-input { width: 60px; padding: 4px; text-align: center; border: 1px solid #cfd9de; border-radius: 6px; font-weight: 600; color: #0f1419; outline: none; }
         .fitness-input:focus { border-color: #1967d2; background-color: #f4f9ff; }
-        /* [사장님 오더 지정 명세] 관제실 전용 오션블루 버튼 및 유해 로그 영구 파쇄 소멸용 프리미엄 레드 단추 스펙 */
+        
+        /* 관제실 전용 오션블루 버튼 및 유해 로그 영구 파쇄 소멸용 프리미엄 레드 단추 스펙 */
         .btn { background-color: #1967d2; color: #ffffff; border: none; padding: 6px 12px; border-radius: 9999px; cursor: pointer; font-size: 11.5px; font-weight: 700; }
         .btn-fintech { background-color: #ffffff; color: #1967d2; border: 1px solid #1967d2; padding: 4px 10px; border-radius: 9999px; cursor: pointer; font-size: 11px; font-weight: 700; }
         .btn-purge { background-color: #ffffff; color: #ed4956; border: 1px solid #cfd9de; padding: 4px 10px; border-radius: 6px; cursor: pointer; font-size: 11px; font-weight: 700; transition: all 0.2s; }
@@ -34,7 +35,6 @@
         <div class="logo" onclick="location.href='/'">SILVERWORKS 최고관제센터</div>
         <button type="button" class="btn" onclick="location.href='/board.html'">매칭 게시판 모니터링</button>
     </header>
-
     <div class="card" style="border-color: #1967d2;">
         <h3>0. 시니어 베테랑 계좌 정산 청구 관리 패널</h3>
         <div class="table-container"><table>
@@ -52,15 +52,24 @@
     </div>
 
     <div class="card">
-        <h3>2. 사장님 구인공고 심사 통제 패널</h3>
+        <h3>2. 사장님 구인공고 심사 통제 패널 (승인 즉시 매칭 게시판 라이브 개통)</h3>
         <div class="table-container"><table>
             <thead><tr><th>공고 ID</th><th>사장님 ID</th><th>매장명</th><th>공고 제목 명세</th><th>근무일</th><th>시급</th><th>심사</th></tr></thead>
             <tbody id="jobAdminBody"></tbody>
         </table></div>
     </div>
 
+    <!-- [요구사항 2번 완벽 이식] 섹션 3: 사장님이 문의 단추를 터치한 실시간 시점 시각 타임스탬프 연동 관제판 -->
+    <div class="card">
+        <h3>3. 실버웍스 원터치 다이렉트 매장 행정 문의 실시간 관제 패널</h3>
+        <div class="table-container"><table>
+            <thead><tr><th>접수 번호</th><th>문의 매장 상호명 명세</th><th>대표자 전화번호 연락처</th><th>문의 버튼 터치 실시간 시각 (타임스탬프)</th></tr></thead>
+            <tbody id="storeConsultBody"></tbody>
+        </table></div>
+    </div>
+
     <div class="card" style="border-color: #ed4956;">
-        <h3 style="color:#ed4956;">3. 소셜 생태계 감시 및 강제 삭제 통제 패널</h3>
+        <h3 style="color:#ed4956;">4. 소셜 생태계 감시 및 강제 삭제 통제 패널</h3>
         <div class="table-container">
             <table style="margin-bottom:12px;"><thead><tr><th>글 번호</th><th>작성자 ID</th><th>제목</th><th>본문 내용</th><th>운영자 처분</th></tr></thead><tbody id="adminTimelineBody"></tbody></table>
             <table style="margin-bottom:12px;"><thead><tr><th>메시지 ID</th><th>송신자</th><th>수신자</th><th>비밀 DM 내용 명세</th><th>운영자 처분</th></tr></thead><tbody id="adminDmBody"></tbody></table>
@@ -77,7 +86,6 @@
             <div id="inspectModalContentBox"></div>
         </div>
     </div>
-    <!-- [최고관리자 데이터 제어 및 사장님 승인버그 완치 가드 엔진 스크립트] -->
     <script>
         function loadAdmin() {
             fetch('/api/admin/users').then(res => res.json()).then(data => {
@@ -93,7 +101,7 @@
                     body.innerHTML += `<tr><td><span class="click-id-link" onclick="openInspectUserModal('${u.username}')">${u.username}</span></td>
                         <td style="font-weight:700;">${u.name}</td><td>${u.phone}</td><td>${u.role==='employer'?'사장님':'시니어'}</td>
                         <td>${u.status==='approved'?'승인완료':'승인대기'}</td>${inputs}
-                        <td><button class="btn" onclick="saveSpec('${u.username}', '${u.role}')">저장</button></td></tr>`; // 권한 속성값 인자 전달 구조 복원 유지
+                        <td><button class="btn" onclick="saveSpec('${u.username}', '${u.role}')">저장</button></td></tr>`;
                 });
             });
 
@@ -114,6 +122,21 @@
                         <td style="font-weight:800; color:#1967d2;">${w.amount.toLocaleString()} P</td><td>${isP?'입금대기':'정산완료'}</td>
                         <td>${isP?`<button class="btn-fintech" onclick="executeCompleteSeekerSettle(${w.id})">정산 완료</button><button class="btn" onclick="executeRequestEmployerSettle(${w.id})">정산완료 (사장님)</button>`:'✓ 종결'}</td></tr>`;
                 });
+
+                // [요구사항 2번 완벽 구현] 사장님 매장 페이지에서 전송한 행정 문의 내역 및 실시간 타임스탬프 시각 파싱 출력
+                const consultBody = document.getElementById('storeConsultBody'); consultBody.innerHTML = '';
+                if(!data.consults || data.consults.length === 0) {
+                    consultBody.innerHTML = `<tr><td colspan="4" style="text-align:center; color:#536471; padding:15px 0;">실시간 매장 행정 문의 피드가 비어있습니다.</td></tr>`;
+                } else {
+                    data.consults.forEach(c => {
+                        consultBody.innerHTML += `<tr>
+                            <td>C-${c.id}</td>
+                            <td style="font-weight:700;">${c.store_name}</td>
+                            <td style="font-weight:700; color:#1967d2;">${c.phone}</td>
+                            <td style="color:#536471; font-weight:700;">${new Date(c.created_at).toLocaleString('ko-KR')}</td>
+                        </tr>`;
+                    });
+                }
 
                 const tBody = document.getElementById('adminTimelineBody'); tBody.innerHTML = '';
                 data.posts.forEach(p => { tBody.innerHTML += `<tr><td>${p.id}</td><td>@${p.username}</td><td>${p.title||'일반'}</td><td>${p.content}</td><td><button class="btn-purge" onclick="purgeSnsPost(${p.id})">강제삭제</button></td></tr>`; });
@@ -149,22 +172,18 @@
         function purgeSnsPost(id) { if(confirm('이 게시글을 강제 파쇄 삭제합니까?')) fetch('/api/admin/purge/post', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ id: id }) }).then(() => loadAdmin()); }
         function purgeSnsDm(id) { if(confirm('이 디엠 메시지를 강제 파쇄 삭제합니까?')) fetch('/api/admin/purge/dm', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ id: id }) }).then(() => loadAdmin()); }
         function purgeSnsReview(id) { if(confirm('이 평판 데이터를 강제 파쇄 삭제합니까?')) fetch('/api/admin/purge/review', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ id: id }) }).then(() => loadAdmin()); }
-        
-        // [사장님 지시 완벽 보완 결함 완치] 사장님 회원일 경우 하위 체력 인풋 바인딩 추출 과정을 면제 가드 분기하여 저장버튼 먹통 락을 완벽히 해결 처리
         function saveSpec(user, userRole) {
             let g = "미인증", gp = "-", f = "-", c = "-";
             if (userRole === 'seeker' && document.getElementById('g_' + user)) {
                 g = document.getElementById('g_' + user).value; gp = document.getElementById('gp_' + user).value;
                 f = document.getElementById('f_' + user).value; c = document.getElementById('c_' + user).value;
             }
-            fetch('/api/admin/update-user', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ target_username: user, status: 'approved', fitness_grade: g, fitness_grip: gp, fitness_flex: f, fitness_cardio: c })
-            }).then(() => { alert('전산 교차 동기화 완료: 계정 승인 및 명세 저장이 정식 이행되었습니다.'); loadAdmin(); });
+            fetch('/api/admin/update-user', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ target_username: user, status: 'approved', fitness_grade: g, fitness_grip: gp, fitness_flex: f, fitness_cardio: c }) }).then(() => { alert('스펙 반영 완료'); loadAdmin(); });
         }
-        function approveJob(id) { fetch('/api/admin/approve-job', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ job_id: id, action_status: 'approved' }) }).then(() => { alert('공고 승인 완료'); loadAdmin(); }); }
         
+        // [요구사항 3번 반영 완벽 결속] 파란색 공고 승인 단추 터치 즉시 status를 approved로 치환 락을 완전히 해제하여 매칭게시판 기재 연동 가동
+        function approveJob(id) { fetch('/api/admin/approve-job', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ job_id: id, action_status: 'approved' }) }).then(() => { alert('행정 심사 최종 승인 대완공!\n\n해당 매장의 구인공고 락이 정상 해제되었으며 매칭 게시판(board.html) 피드에 정식 라이브 개통 기재되었습니다.'); loadAdmin(); }); }
+
         loadAdmin();
     </script>
 </body>
