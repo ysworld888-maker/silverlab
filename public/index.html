@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>SILVERWORKS - 세상을 은빛 지혜로 채우다</title>
-    <!-- [인프라 밸런스 개정] 핀테크 자산 트래커 및 양측 카드 100% 동적 높이 대칭 규격 CSS -->
+    <title>SILVERWORKS - 구인구직 피드</title>
+    <!-- [소셜 인프라 개통] 소통 단추 신설 및 메인 명칭 최적화 정렬 토스 프리미엄 CSS -->
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; -webkit-tap-highlight-color: transparent; }
         body { background-color: #ffffff; color: #333d4b; padding-bottom: 0px; margin: 0; overflow-x: hidden; }
@@ -12,11 +12,16 @@
         .logo-container { display: flex; align-items: center; gap: 12px; cursor: pointer; }
         .logo-text { font-size: 20px; font-weight: 800; color: #1967d2; letter-spacing: -0.5px; }
         .nav-menu-group { display: flex; align-items: center; gap: 12px; }
-        .nav-link-btn { background: none; border: none; color: #4e5968; font-size: 14px; font-weight: 600; cursor: pointer; padding: 8px 16px; border-radius: 8px; transition: background-color 0.2s; }
+        
+        /* 오션 블루 오피셜 상용 네비게이션 버튼 디자인 시스템 규격 일괄 통일 */
+        .nav-link-btn { background: none; border: none; color: #4e5968; font-size: 14px; font-weight: 600; cursor: pointer; padding: 8px 16px; border-radius: 8px; transition: all 0.2s; }
         .nav-link-btn:hover { background-color: #f2f4f6; color: #1967d2; }
         
-        /* [핵심 신설] 시니어 회원 전용 상용 실시간 일급 포인트 잔액 표출 핀테크 배너 디자인 */
-        .seeker-point-badge { display: none; align-items: center; background-color: #f4f9ff; border: 1px solid #e8f3ff; padding: 6px 14px; border-radius: 20px; font-size: 13.5px; font-weight: 700; color: #1967d2; letter-spacing: -0.3px; box-shadow: inset 0 1px 2px rgba(0,0,0,0.02); }
+        /* [핵심 신설] 좌측에 웅장하게 출현할 소셜 네트워크 독립 단추 스펙 */
+        .btn-sns-link { background-color: #f4f9ff; color: #1967d2; border: 1px solid #e8f3ff; font-weight: 700; box-shadow: 0 2px 4px rgba(25, 103, 210, 0.04); }
+        .btn-sns-link:hover { background-color: #1967d2; color: #ffffff; border-color: #1967d2; }
+        
+        .seeker-point-badge { display: none; align-items: center; background-color: #f4f9ff; border: 1px solid #e8f3ff; padding: 6px 14px; border-radius: 20px; font-size: 13.5px; font-weight: 700; color: #1967d2; letter-spacing: -0.3px; }
         .seeker-point-badge span { color: #1152b3; font-weight: 800; margin-left: 4px; }
         
         .user-profile-avatar { width: 36px; height: 36px; border-radius: 50%; background-color: #1967d2; color: #ffffff; font-size: 14px; font-weight: 700; display: none; align-items: center; justify-content: center; cursor: pointer; border: 2px solid #e8f3ff; box-shadow: 0 2px 6px rgba(25, 103, 210, 0.2); }
@@ -26,7 +31,6 @@
         .wave-svg { position: absolute; bottom: 0; left: 0; width: 200%; height: 100%; transform: translate3d(0, 0, 0); }
         .wave-layer1 { animation: wave-move 14s linear infinite; opacity: 0.15; fill: #1967d2; }
         .wave-layer2 { animation: wave-move 9s linear infinite; opacity: 0.25; fill: #1967d2; bottom: 2px; }
-        
         .hero-logo-center { margin-bottom: 28px; display: inline-block; }
         .card-section { padding: 0 20px; max-width: 900px; margin: -20px auto 40px auto; position: relative; z-index: 10; display: grid; grid-template-columns: 1fr 1fr; gap: 24px; align-items: stretch; }
         @media (max-width: 600px) { .card-section { grid-template-columns: 1fr; margin-top: 10px; margin-bottom: 20px; } }
@@ -57,9 +61,10 @@
             <span class="logo-text">SILVERWORKS</span>
         </div>
         <div class="nav-menu-group">
+            <!-- [구인구직 대소통 혁신 완벽 이식] 가장 왼쪽에 독립 배치한 실시간 SNS 소통실 채널 단추 버튼 -->
+            <button class="nav-link-btn btn-sns-link" onclick="location.href='/sns.html'">소통 채널 진입 ➔</button>
             <button class="nav-link-btn" onclick="location.href='/board.html'">매칭 게시판</button>
             
-            <!-- [핵심 배치] 시니어 전용 동적 포인트 스위칭 표출 앵커 배너 단추 구역 -->
             <div id="seekerPointTracker" class="seeker-point-badge">보유 포인트: <span id="seekerPointBalance">0</span>P</div>
             
             <button id="navAuthBtn" class="nav-link-btn" style="background-color: #1967d2; color: #ffffff;" onclick="location.href='/login.html'">로그인 / 가입</button>
@@ -74,7 +79,8 @@
                 <path d="M51.5 59C58.5 67 71 68 80.5 60.5C90 53 92.5 39.5 85.5 32" stroke="#1967d2" stroke-width="7.5" stroke-linecap="round" stroke-linejoin="round"/>
             </svg>
         </div>
-        <h1 class="hero-title" style="font-size: 32px; letter-spacing: -1px; color: #1b1c1e;">세상을 은빛 지혜로 채우다.<br><span style="color: #1967d2;">품질 보증형 최적화 매칭</span></h1>
+        <!-- [사장님 지시 완벽 이행] 대문 메인 헤더 이름을 '구인구직 피드' 체계로 격상 조율 -->
+        <h1 class="hero-title" style="font-size: 32px; letter-spacing: -1px; color: #1b1c1e;">세상을 은빛 지혜로 채우다.<br><span style="color: #1967d2;">구인구직 피드 마스터 시스템</span></h1>
         <p class="hero-sub" style="margin-top: 14px; font-size: 15px;">주휴수당·퇴직금 폭탄과 무단 노쇼의 공포를 해결합니다. 실버웍스는 검증된 시니어 베테랑과 일할 기회를 선물합니다.</p>
         
         <div class="wave-wrapper">
@@ -107,7 +113,7 @@
     <!-- 하단 공백 차단막 가동 정식 푸터 -->
     <footer>
         <div style="max-width:900px; margin:0 auto;">
-            <h4>실버웍스 (SILVERWORKS)</h4>
+            <h4>주식회사 실버웍스 (SILVERWORKS)</h4>
             <div>대표자 연락처: 010-7464-3657, 010-9187-9074 / 거점 주소: 경기도 성남시 중원구 광명로 79, 4층</div>
             <div>정식 주업종 코드: [724000: 데이터베이스 및 온라인 정보 제공업] | 부업종: [경영컨설팅업]</div>
             <div>Copyright © 2026 SILVERWORKS. All rights reserved.</div>
@@ -129,14 +135,13 @@
                 av.style.display = 'flex'; 
                 av.innerText = id.substring(0, 2).toUpperCase();
 
-                // [기획 요구사항 완벽 실현] 오직 '구직 시니어(seeker)' 권한으로 로그인한 회원에게만 실시간 포인트 명세 배너 표출
+                // 오직 '구직 시니어(seeker)' 권한으로 로그인한 회원에게만 실시간 포인트 명세 배너 표출
                 if (role === 'seeker') {
                     fetch('/api/profile/me?username=' + encodeURIComponent(id))
                         .then(res => res.json())
                         .then(data => {
                             if (data.success && data.profile) {
                                 document.getElementById('seekerPointTracker').style.display = 'flex';
-                                // 컴포넌트 내부에 진짜 포인트 수치를 포맷화하여 주입합니다.
                                 document.getElementById('seekerPointBalance').innerText = (data.profile.points || 0).toLocaleString();
                             }
                         });

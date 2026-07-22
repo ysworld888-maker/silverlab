@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>SILVERWORKS 최고관리자 콘솔 - 마스터 제어실</title>
-    <!-- 혼선 유도 색상을 완벽 박멸하고 토스 스타일 오션블루 단일 테마로 격상 완료한 관리자용 CSS 스타일셋 -->
+    <title>SILVERWORKS 최고관리자 콘솔 - 마스터 전권 제어실</title>
+    <!-- 혼선 유도 색상을 완벽 박멸하고 토스 스타일 오션블루 단일 테마 및 운영자 강제 처분 전용 CSS -->
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, sans-serif; -webkit-tap-highlight-color: transparent; }
         body { background-color: #f9fafb; color: #333d4b; padding-bottom: 60px; }
-        header { display: flex; justify-content: space-between; align-items: center; padding: 14px 20px; background: white; border-bottom: 1px solid #e5e8eb; border-radius: 8px; position: sticky; top: 0; z-index: 100; }
+        header { display: flex; justify-content: space-between; align-items: center; padding: 14px 20px; background: white; border-bottom: 1px solid #e5e8eb; position: sticky; top: 0; z-index: 100; }
         .logo { font-size: 20px; font-weight: 800; color: #1967d2; cursor: pointer; letter-spacing: -0.5px; }
         .card { background: white; border-radius: 12px; border: 1px solid #e5e8eb; padding: 24px; margin-top: 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.01); }
         h3 { font-size: 15px; font-weight: 700; color: #1b1c1e; margin-bottom: 14px; border-left: 4px solid #1967d2; padding-left: 10px; }
@@ -18,9 +18,12 @@
         td { padding: 12px 10px; border-bottom: 1px solid #f2f4f6; color: #333d4b; vertical-align: middle; }
         .fitness-input { width: 75px; padding: 6px; text-align: center; border: 1px solid #d1d6db; border-radius: 6px; font-weight: 600; color: #1b1c1e; outline: none; }
         .fitness-input:focus { border-color: #1967d2; background-color: #f4f9ff; }
-        /* 오션 블루 오피셜 상용 버튼 디자인 시스템 규격 일괄 통일 */
+        
+        /* 오션 블루 오피셜 및 운영자 강제 삭제 처분 빨간색 단추 디자인 규격 */
         .btn { background: #1967d2; color: white; border: none; padding: 8px 14px; border-radius: 6px; cursor: pointer; font-size: 13px; font-weight: 600; transition: opacity 0.2s; }
         .btn:hover { opacity: 0.9; }
+        .btn-purge { background: #f5222d; color: white; border: none; padding: 6px 12px; border-radius: 6px; cursor: pointer; font-size: 12px; font-weight: 700; }
+        .btn-purge:hover { opacity: 0.85; }
     </style>
 </head>
 <body>
@@ -28,7 +31,6 @@
         <div class="logo" onclick="location.href='/'">SILVERWORKS 최고관제센터</div>
         <button type="button" class="btn" onclick="location.href='/board.html'">매칭 게시판 모니터링 ➔</button>
     </header>
-
     <!-- 섹션 1: 가입 명단 및 4대 체력 스펙 실시간 입력 수정 관제판 -->
     <div class="card">
         <h3>1. 회원 가입 승인 및 4대 체력 측정 스펙 실시간 직접 입력 제어 패널</h3>
@@ -77,7 +79,8 @@
             </table>
         </div>
     </div>
-    <!-- 섹션 3: [사장님 오더 반영] 원터치 다이렉트 행정 문의 실시간 관제판 -->
+
+    <!-- 섹션 3: 원터치 다이렉트 행정 문의 실시간 관제판 -->
     <div class="card">
         <h3>3. 실버웍스 원터치 다이렉트 행정 문의 실시간 관제 패널</h3>
         <div class="table-container">
@@ -96,8 +99,7 @@
             </table>
         </div>
     </div>
-
-    <!-- [최고관리자 데이터 제어 및 실시간 스펙·문의 동기화 엔진 스크립트] -->
+    <!-- [최고관리자 데이터 제어 및 실시간 스펙·소셜 전권 통제 엔진 스크립트 1단] -->
     <script>
         function loadAdmin() {
             // 1. 가입 회원 명단 실시간 추출 및 4대 체력 스펙 바인딩
@@ -106,16 +108,13 @@
                 .then(data => {
                     const body = document.getElementById('userBody'); 
                     body.innerHTML = '';
-                    
                     if(!data.users || data.users.length === 0) {
                         body.innerHTML = `<tr><td colspan="10" style="text-align:center; padding:20px 0; color:#8b95a1;">현재 전산망에 가입 신청된 회원 내역이 없습니다.</td></tr>`;
                         return;
                     }
-
                     data.users.forEach(u => {
                         const tr = document.createElement('tr');
                         let inputs = `<td>-</td><td>-</td><td>-</td><td>-</td>`;
-                        
                         if(u.role === 'seeker') {
                             inputs = `
                                 <td><input type="text" class="fitness-input" id="g_${u.username}" value="${u.fitness_grade || '미인증'}" placeholder="등급"></td>
@@ -124,7 +123,6 @@
                                 <td><input type="text" class="fitness-input" id="c_${u.username}" value="${u.fitness_cardio || '-'}" placeholder="레벨"></td>
                             `;
                         }
-                        
                         tr.innerHTML = `
                             <td style="font-weight:600; color:#1967d2;">${u.username}</td>
                             <td style="font-weight:700;">${u.name}</td>
@@ -144,12 +142,10 @@
                 .then(data => {
                     const body = document.getElementById('jobAdminBody');
                     body.innerHTML = '';
-                    
                     if(!data.jobs || data.jobs.length === 0) {
-                        body.innerHTML = `<tr><td colspan="7" style="text-align:center; padding:20px 0; color:#8b95a1;">현재 심사 대기 중인 공고 명세가 존재하지 않습니다.</td></tr>`;
+                        body.innerHTML = `<tr><td colspan="7" style="text-align:center; color:#8b95a1; padding:20px 0;">현재 심사 대기 중인 공고 명세가 존재하지 않습니다.</td></tr>`;
                         return;
                     }
-
                     data.jobs.forEach(j => {
                         const tr = document.createElement('tr');
                         const isApproved = j.status === 'approved';
@@ -168,11 +164,10 @@
                     });
                 });
 
-            // 3. [사장님 오더 반영] employer.html 문의하기 누르는 즉시 실시간 연동 포착 출력 파싱
+            // 3. employer.html 문의하기 누르는 즉시 실시간 연동 포착 출력 파싱
             const consultStore = localStorage.getItem('sw_consult_store');
             const consultPhone = localStorage.getItem('sw_consult_phone');
             const consultBody = document.getElementById('storeConsultBody');
-            
             if (consultStore && consultPhone) {
                 consultBody.innerHTML = `
                     <tr>
@@ -183,11 +178,91 @@
                     </tr>
                 `;
             } else {
-                consultBody.innerHTML = `<tr><td colspan="4" style="text-align:center; color:#8b95a1; padding:20px 0;">실시간 매장 행정 문의 접수 피드를 대기 중입니다.</td></tr>`;
+                consultBody.innerHTML = `<tr><td colspan="4" style="text-align:center; color:#8b95a1; padding:20px 0;">실시간 매장 행정 문의 접수 피드를 대기 중입니다...</td></tr>`;
             }
+            // 4. [소셜 대통합 통제망 연결] 게시물, DM 메시지, 100점 평판 실시간 감시 파싱
+            fetch('/api/admin/match-logs')
+                .then(res => res.json())
+                .then(data => {
+                    // 가동 채널 A : 타임라인 포스트
+                    const timelineBody = document.getElementById('adminTimelineBody');
+                    timelineBody.innerHTML = '';
+                    if(!data.posts || data.posts.length === 0) {
+                        timelineBody.innerHTML = `<tr><td colspan="5" style="text-align:center; color:#8b95a1; padding:10px 0;">소통실 게시글 내역이 비어있습니다.</td></tr>`;
+                    } else {
+                        data.posts.forEach(p => {
+                            timelineBody.innerHTML += `
+                                <tr>
+                                    <td>${p.id}</td>
+                                    <td style="font-weight:700; color:#1967d2;">${p.username}</td>
+                                    <td>${p.content}</td>
+                                    <td style="color:#8b95a1; font-size:12px;">${new Date(p.created_at).toLocaleString('ko-KR')}</td>
+                                    <td><button type="button" class="btn-purge" onclick="purgeSnsPost(${p.id})">강제삭제</button></td>
+                                </tr>
+                            `;
+                        });
+                    }
+
+                    // 가동 채널 B : 1대1 디엠메시지
+                    const dmBody = document.getElementById('adminDmBody');
+                    dmBody.innerHTML = '';
+                    if(!data.dms || data.dms.length === 0) {
+                        dmBody.innerHTML = `<tr><td colspan="6" style="text-align:center; color:#8b95a1; padding:10px 0;">회원간 교환된 다이렉트 디엠 내역이 없습니다.</td></tr>`;
+                    } else {
+                        data.dms.forEach(d => {
+                            dmBody.innerHTML += `
+                                <tr>
+                                    <td>DM-${d.id}</td>
+                                    <td style="font-weight:700; color:green;">${d.sender}</td>
+                                    <td style="font-weight:700; color:#1967d2;">${d.receiver}</td>
+                                    <td style="font-weight:600;">${d.message}</td>
+                                    <td style="color:#8b95a1; font-size:12px;">${new Date(d.created_at).toLocaleString('ko-KR')}</td>
+                                    <td><button type="button" class="btn-purge" onclick="purgeSnsDm(${d.id})">강제삭제</button></td>
+                                </tr>
+                            `;
+                        });
+                    }
+
+                    // 가동 채널 C : 100점 평판 리뷰 피드백
+                    const revBody = document.getElementById('adminReviewBody');
+                    revBody.innerHTML = '';
+                    if(!data.reviews || data.reviews.length === 0) {
+                        revBody.innerHTML = `<tr><td colspan="7" style="text-align:center; color:#8b95a1; padding:10px 0;">아직 제출된 100점 만점 기준 절대 평판 보증서가 없습니다.</td></tr>`;
+                    } else {
+                        data.reviews.forEach(r => {
+                            revBody.innerHTML += `
+                                <tr>
+                                    <td>REV-${r.id}</td>
+                                    <td style="font-weight:700; color:#1967d2;">${r.target_id}</td>
+                                    <td style="font-weight:700; color:#4e5968;">${r.author_id}</td>
+                                    <td>${r.review_text}</td>
+                                    <td style="font-weight:800; color:#f5222d;">${r.score} 점 / 100점</td>
+                                    <td style="color:#8b95a1; font-size:12px;">${new Date(r.created_at).toLocaleString('ko-KR')}</td>
+                                    <td><button type="button" class="btn-purge" onclick="purgeSnsReview(${r.id})">강제삭제</button></td>
+                                </tr>
+                            `;
+                        });
+                    }
+                });
         }
 
-        // 4. 인풋 상자에 타이핑한 데이터를 가로채서 서버 디스크 DB에 실시간 양방향 영구 보존하는 함수
+        // ==========================================================================
+        // 운영자 전권 처분: 버튼 원터치 클릭 시 즉시 데이터베이스 강제 파쇄 삭제 처리부
+        // ==========================================================================
+        function purgeSnsPost(id) {
+            if(!confirm('경고: 운영자 특권으로 해당 타임라인 게시글을 전산망 상에서 즉시 강제 삭제 파쇄 처분합니까?')) return;
+            fetch('/api/admin/purge/post', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ id: id }) }).then(() => { alert('해당 소셜 타임라인 게시물이 즉시 파쇄 삭제되었습니다.'); loadAdmin(); });
+        }
+        function purgeSnsDm(id) {
+            if(!confirm('경고: 운영자 특권으로 회원 간 오고 간 비밀 DM 다이렉트 메시지를 전산망에서 즉시 강제 파쇄 삭제합니까?')) return;
+            fetch('/api/admin/purge/dm', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ id: id }) }).then(() => { alert('해당 디엠 메시지 원본이 즉시 파쇄 삭제되었습니다.'); loadAdmin(); });
+        }
+        function purgeSnsReview(id) {
+            if(!confirm('경고: 운영자 특권으로 기재된 100점 만점 평판 보증서 피드백을 전산망에서 즉시 강제 삭제합니까?\n삭제 즉시 상대방의 누적 평점 지수에서도 실시간 제외 차감됩니다.')) return;
+            fetch('/api/admin/purge/review', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ id: id }) }).then(() => { alert('해당 평판 보증서 데이터가 즉시 파쇄 삭제되었습니다.'); loadAdmin(); });
+        }
+
+        // 인풋 상자에 타이핑한 데이터를 가로채서 서버 디스크 DB에 실시간 양방향 영구 보존하는 함수
         function saveSpec(username) {
             let g = "미인증", gp = "-", f = "-", c = "-";
             if(document.getElementById('g_' + username)) {
@@ -196,7 +271,6 @@
                 f = document.getElementById('f_' + username).value.trim(); 
                 c = document.getElementById('c_' + username).value.trim();
             }
-            
             fetch('/api/admin/update-user', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -207,7 +281,7 @@
             });
         }
 
-        // 5. 사장님이 등록 신청한 구인공고 최종 검토 심사 승인 및 board.html 실시간 개통 기재 처리 함수
+        // 사장님이 등록 신청한 구인공고 최종 검토 심사 승인 처리 함수
         function approveJob(id) {
             fetch('/api/admin/approve-job', {
                 method: 'POST',
