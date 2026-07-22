@@ -1,8 +1,3 @@
-// ==========================================================================
-// SILVERWORKS (실버웍스) - 핀테크 현금 환전 정산 및 중개 수수료 10% 관리자 관제 시스템
-// [특이사항] 파일별 전/중/후반부 3단계 분할 / 시니어 환전 모달 가동 / 오피셜 DM 자동 알림
-// ==========================================================================
-
 const express = require('express');
 const path = require('path');
 const fs = require('fs');
@@ -22,7 +17,7 @@ const db = new sqlite3.Database(dbPath);
 
 const hashPw = (pw) => crypto.createHash('sha256').update(pw).digest('hex');
 
-// [핀테크 환전 전산망 가동] 시니어 현금 인출 정산 신청 내역 보존을 위한 영구 DB 테이블 스키마 인스턴스 serialize 세단 마운트
+// 가입 트랜잭션 실패 오류를 차단하기 위한 하드디스크 스키마 테이블 안전 마운트 프로토콜
 db.serialize(() => {
     db.run(`CREATE TABLE IF NOT EXISTS users (
         id INTEGER PRIMARY KEY AUTOINCREMENT, username TEXT UNIQUE, password TEXT, name TEXT, phone TEXT, role TEXT, status TEXT,
@@ -55,22 +50,97 @@ db.serialize(() => {
     db.run(`CREATE TABLE IF NOT EXISTS reputation_reviews (
         id INTEGER PRIMARY KEY AUTOINCREMENT, target_id TEXT, author_id TEXT, review_text TEXT, score INTEGER, created_at DATETIME DEFAULT CURRENT_TIMESTAMP
     )`);
-    
-    // [핀테크 혁신 핵심 신설] 시니어 회원의 현금 정산 신청 명세를 하드웨어 디스크에 각인할 영구 원장 테이블 생성
     db.run(`CREATE TABLE IF NOT EXISTS cash_withdrawals (
         id INTEGER PRIMARY KEY AUTOINCREMENT, seeker_id TEXT, bank_name TEXT, account_number TEXT, amount INTEGER, status TEXT DEFAULT 'pending', created_at DATETIME DEFAULT CURRENT_TIMESTAMP
     )`);
+
+    // [트랜잭션 락 완벽 파쇄] 기존 구버전 구동 환경에서 sns_posts 테이블에 title 컬럼 누락 시 자동 강제 추가 가드 처리
+    db.run(`ALTER TABLE sns_posts ADD COLUMN title TEXT`, (err) => {
+        // 이미 컬럼이 존재할 경우 에러는 자동 패스 처리되어 안전하게 트랜잭션을 보존합니다.
+    });
 });
-// ==========================================================================
-// [핀테크 기능 가동 API] 시니어 회원의 실시간 계좌 정산(환전) 신청서 접수 단
-// ==========================================================================
+// 회원가입 신청 트랜잭션 라우터
+app.post('/api/auth/register', (req, res) => {
+    const { username, password, name, phone, role } = req.body;
+    db.run(`INSERT INTO users (username, password, name, phone, role, status) VALUES (?, ?, ?, ?, ?, 'pending')`, 
+        [username, hashPw(password), name, phone, role], function(err) {
+            if (err) return res.status(400).json({ success: false, message: "이미 사용 중인 아이디" });
+            res.json({ success: true });
+        });
+});
+
+// 로그인 검증 필터 API
+app.post('/api/auth/login', (req, res) => {
+    const { username, password, requested_role } = req.body;
+    db.get(`SELECT * FROM users WHERE username = ? AND password = ?`, [username, hashPw(password)], (err, u) => {
+        if (!u) return res.status(400).json({ success: false, message: "계정 정보 불일치" });
+        if (u.role !== requested_role) return res.status(403).json({ success: false, message: "진입 권한 채널 불일치" });
+        if (u.status === 'pending') return res.status(403).json({ success: false, message: "현재 신원 승인 대기 상태" });
+        res.json({ success: true, user: u });
+    });
+});
+
+// SNS 소통실 트위터(X) 모달형 제목/내용 파싱 및 등록 API
+app.get('/api/sns/posts', (req, res) => {
+    db.all(`SELECT * FROM sns_posts ORDER BY id DESC`, [], (err, rows) => res.json({ success: true, posts: rows || [] }));
+});
+
+app.post('/api/sns/posts/create', (req, res) => {
+    const { username, title, content } = req.body;
+    if(!content || content.trim() === "") return res.status(400).json({ success: false });
+    const finalTitle = title && title.trim() !== "" ? title.trim() : "새로운 피드 소식";
+    db.run(`INSERT INTO sns_posts (username, title, content) VALUES (?, ?, ?)`, [username, finalTitle, content.trim()], () => res.json({ success: true }));
+});
+
+// SNS 소통실 인스타그램 DM 규격 1대1 다이렉트 메시지 통신 API
+app.get('/api/sns/dms', (req, res) => {
+    const { sender, receiver } = req.query;
+    db.all(`SELECT * FROM sns_dms WHERE (sender = ? AND receiver = ?) OR (sender = ? AND receiver = ?) ORDER BY id ASC`,
+        [sender, receiver, receiver, sender], (err, rows) => res.json({ success: true, dms: rows || [] }));
+});
+
+app.post('/api/sns/dms/send', (req, res) => {
+    const { sender, receiver, message } = req.body;
+    if(!receiver || !message || message.trim() === "") return res.status(400).json({ success: false });
+    db.run(`INSERT INTO sns_dms (sender, receiver, message) VALUES (?, ?, ?)`, [sender, receiver, message.trim()], () => res.json({ success: true }));
+});
+
+// 100점 만점 절대 평판 리뷰 등록 및 산출 파싱 API
+app.get('/api/sns/reputation', (req, res) => {
+    const { target_id } = req.query;
+    db.all(`SELECT * FROM reputation_reviews WHERE target_id = ? ORDER BY id DESC`, [target_id], (err, rows) => {
+        if(!rows || rows.length === 0) return res.json({ success: true, reviews: [], avg: 100 });
+        let sum = 0; rows.forEach(r => sum += r.score);
+        res.json({ success: true, reviews: rows, avg: Math.floor(sum / rows.length) });
+    });
+});
+
+app.post('/api/sns/reputation/create', (req, res) => {
+    const { target_id, author_id, review_text, score } = req.body;
+    const finalScore = Math.max(1, Math.min(100, parseInt(score) || 100)); 
+    db.run(`INSERT INTO reputation_reviews (target_id, author_id, review_text, score) VALUES (?, ?, ?, ?)`,
+        [target_id, author_id, review_text.trim(), finalScore], () => res.json({ success: true }));
+});
+
+// 최고 관리자실 게시글/디엠/평판 리뷰 영구 파쇄 소멸 API
+app.post('/api/admin/purge/post', (req, res) => {
+    db.run(`DELETE FROM sns_posts WHERE id = ?`, [req.body.id], () => res.json({ success: true }));
+});
+
+app.post('/api/admin/purge/dm', (req, res) => {
+    db.run(`DELETE FROM sns_dms WHERE id = ?`, [req.body.id], () => res.json({ success: true }));
+});
+
+app.post('/api/admin/purge/review', (req, res) => {
+    db.run(`DELETE FROM reputation_reviews WHERE id = ?`, [req.body.id], () => res.json({ success: true }));
+});
+// 시니어 회원의 실시간 계좌 정산(환전) 신청서 접수 단
 app.post('/api/settle/withdraw-request', (req, res) => {
     const { seeker_id, bank_name, account_number, amount } = req.body;
     const reqAmount = parseInt(amount) || 0;
 
     if (reqAmount <= 0) return res.status(400).json({ success: false, message: "올바른 정산 금액을 입력하세요." });
 
-    // 잔액 검증: 시니어의 보유 포인트가 정산 신청 금액보다 많은지 교차 검증
     db.get(`SELECT points FROM users WHERE username = ? AND role = 'seeker'`, [seeker_id], (err, u) => {
         if (!u || u.points < reqAmount) {
             return res.status(400).json({ success: false, message: "보유하신 포인트 잔액이 부족하여 정산 신청이 거부되었습니다." });
@@ -84,23 +154,17 @@ app.post('/api/settle/withdraw-request', (req, res) => {
     });
 });
 
-// ==========================================================================
-// [운영자 전권 API] 1. 시니어 정산 완료 처리 (포인트 차감 및 오피셜 알림 DM 발송)
-// ==========================================================================
+// 운영자 전권 API - 1. 시니어 정산 완료 처리 (포인트 차감 및 오피셜 알림 DM 발송)
 app.post('/api/admin/settle/complete-seeker', (req, res) => {
     const { withdrawal_id } = req.body;
 
     db.get(`SELECT * FROM cash_withdrawals WHERE id = ?`, [withdrawal_id], (err, w) => {
         if (!w || w.status !== 'pending') return res.status(400).json({ success: false, message: "이미 처리되었거나 존재하지 않는 내역입니다." });
 
-        // A. 시니어 포인트 영구 차감 집행
         db.run(`UPDATE users SET points = points - ? WHERE username = ? AND role = 'seeker'`, [w.amount, w.seeker_id], (err) => {
             if (err) return res.status(500).json({ success: false });
 
-            // B. 신청서 상태 'completed'로 종결 업데이트
             db.run(`UPDATE cash_withdrawals SET status = 'completed' WHERE id = ?`, [withdrawal_id], () => {
-                
-                // C. 인스타 디엠 통신망에 관리자 오피셜 입금 고지 알림 자동 출격 송출
                 const systemMsg = `[실버웍스 정산본부 알림] 회원님이 신청하신 ${w.bank_name} 계좌 정산금 ${w.amount.toLocaleString()}원의 실물 현금 계좌 이체가 완료되었습니다. 가상 포인트 잔액이 성공적으로 차감 연동되었습니다.`;
                 db.run(`INSERT INTO sns_dms (sender, receiver, message) VALUES ('admin_system', ?, ?)`, [w.seeker_id, systemMsg], () => {
                     res.json({ success: true, message: "시니어 계좌 이체 확정 및 포인트 차감 정산이 무결하게 이행 완료되었습니다." });
@@ -110,26 +174,21 @@ app.post('/api/admin/settle/complete-seeker', (req, res) => {
     });
 });
 
-// ==========================================================================
-// [운영자 전권 API] 2. 사장님 정산 완료 처리 (수수료 10% 청구 독촉 DM 자동 발송)
-// ==========================================================================
+// 운영자 전권 API - 2. 사장님 정산 완료 처리 (수수료 10% 청구 독촉 DM 자동 발송)
 app.post('/api/admin/settle/request-employer', (req, res) => {
     const { withdrawal_id } = req.body;
 
     db.get(`SELECT * FROM cash_withdrawals WHERE id = ?`, [withdrawal_id], (err, w) => {
         if (!w) return res.status(404).json({ success: false });
 
-        // 계약 관계를 추적하여 해당 시니어를 고용한 사장님(employer_id) 검출
         db.get(`SELECT employer_id, store_name FROM point_logs WHERE seeker_id = ? ORDER BY id DESC LIMIT 1`, [w.seeker_id], (err, log) => {
             const bossId = log ? log.employer_id : "employer";
             const storeName = log ? log.store_name : "소속 사업장";
             
-            // 수수료 10% 계산
             const commission = Math.floor(w.amount * 0.1);
             const totalBill = w.amount + commission;
 
-            // 사장님 계정 인스타 디엠실로 중개 수수료 10% 가산 청구 대금 독촉장 자동 송출 발송
-            const billingMsg = `[실버웍스 대금 청구서] 사장님 매장(${storeName})에서 근무한 @${w.seeker_id} 시니어의 급여 정산이 본부에 의해 선지급 완료되었습니다. 이에 따라 약정된 중개 수수료 10%(${commission.toLocaleString()}원)가 가산된 총 ${totalBill.toLocaleString()}원의 정산 대금을 본부 계좌(국민은행 4345-SILVER)로 이체해 주시기 바랍니다.`;
+            const billingMsg = `[실버웍스 대금 청구서] 사장님 매장(${storeName})에서 근무한 @${w.seeker_id} 시니어의 급여 정산이 본부에 의해 선지급 완료되었습니다. 이에 따라 약정된 중개 수수료 10%(${commission.toLocaleString()}원)가 가산된 총 ${totalBill.toLocaleString()}원의 정산 대금을 본부 계좌로 이체해 주시기 바랍니다.`;
             
             db.run(`INSERT INTO sns_dms (sender, receiver, message) VALUES ('admin_system', ?, ?)`, [bossId, billingMsg], () => {
                 res.json({ success: true, message: `구인 사장님(@${bossId})에게 수수료 10%가 포함된 총액 청구서 DM 독촉 알림이 가동 발송되었습니다.` });
@@ -137,13 +196,13 @@ app.post('/api/admin/settle/request-employer', (req, res) => {
         });
     });
 });
-// 최고관리자 API - [기획 대수정 반영] 환전 정산 내역 및 SNS 로그, 포인트 로그를 단일 묶음 패키지로 마스터 송출 관제
+
+// 최고관리자 API - 환전 정산 내역 및 소셜 패키지 취합 송출 관제
 app.get('/api/admin/match-logs', (req, res) => {
     db.all(`SELECT * FROM sns_posts ORDER BY id DESC`, [], (err, postsRows) => {
         db.all(`SELECT * FROM sns_dms ORDER BY id DESC`, [], (err, dmsRows) => {
             db.all(`SELECT * FROM reputation_reviews ORDER BY id DESC`, [], (err, revRows) => {
                 db.all(`SELECT * FROM point_logs ORDER BY id DESC`, [], (err, pointRows) => {
-                    // 신설: 시니어 현금 정산 신청 목록을 교차 취합하여 패키지에 적재
                     db.all(`SELECT * FROM cash_withdrawals ORDER BY id DESC`, [], (err, withdrawRows) => {
                         res.json({ 
                             success: true, 
@@ -160,33 +219,28 @@ app.get('/api/admin/match-logs', (req, res) => {
     });
 });
 
-// 최고관리자 API - 가입 회원 실시간 파싱 및 갱신된 포인트 잔액 바인딩 호출
 app.get('/api/admin/users', (req, res) => {
     db.all(`SELECT * FROM users ORDER BY id DESC`, [], (err, rows) => res.json({ success: true, users: rows || [] }));
 });
 
-// 최고관리자 API - 4대 체력 스펙 제어 패널 업데이트
 app.post('/api/admin/update-user', (req, res) => {
     const { target_username, status, fitness_grade, fitness_grip, fitness_flex, fitness_cardio } = req.body;
     db.run(`UPDATE users SET status = ?, fitness_grade = ?, fitness_grip = ?, fitness_flex = ?, fitness_cardio = ? WHERE username = ?`,
         [status, fitness_grade, fitness_grip, fitness_flex, fitness_cardio, target_username], () => res.json({ success: true }));
 });
 
-// 구인 공고 직접 생성 등록 API
 app.post('/api/jobs/create', (req, res) => {
     const { employer_id, title, company, work_date, work_time, wage, job_type } = req.body;
     db.run(`INSERT INTO jobs (employer_id, title, company, work_date, work_time, wage, job_type, status) VALUES (?, ?, ?, ?, ?, ?, ?, 'pending')`,
         [employer_id, title, company, work_date, work_time, parseInt(wage), job_type], () => res.json({ success: true }));
 });
 
-// 사장님 API - 우선순위 지망 배정 제어 단추
 app.post('/api/employer/update-rank', (req, res) => {
     const { job_id, seeker_id, rank_priority } = req.body;
     db.run(`UPDATE applications SET rank_priority = ? WHERE job_id = ? AND seeker_id = ?`,
         [parseInt(rank_priority), job_id, seeker_id], () => res.json({ success: true }));
 });
 
-// 내 공고 지원 베테랑 명단 독점 파싱 및 매칭 상태 분기 추적 호출
 app.get('/api/employer/applicants', (req, res) => {
     const { employer_id, job_id } = req.query;
     db.get(`SELECT employer_id FROM jobs WHERE id = ?`, [job_id], (err, job) => {
@@ -212,12 +266,10 @@ app.get('/api/employer/applicants', (req, res) => {
     });
 });
 
-// 매칭 게시판 API - 관리자 승인이 완료된 라이브 공고 피드 반환
 app.get('/api/jobs/live-board', (req, res) => {
     db.all(`SELECT * FROM jobs WHERE status = 'approved' ORDER BY id DESC`, [], (err, rows) => res.json({ success: true, jobs: rows || [] }));
 });
 
-// 최고관리자 API - 사장님 등록 공고 전체 심사 제어판 호출
 app.get('/api/admin/jobs-all', (req, res) => {
     db.all(`SELECT * FROM jobs ORDER BY id DESC`, [], (err, rows) => res.json({ success: true, jobs: rows || [] }));
 });
@@ -226,7 +278,6 @@ app.post('/api/admin/approve-job', (req, res) => {
     db.run(`UPDATE jobs SET status = ? WHERE id = ?`, [req.body.action_status, req.body.job_id], () => res.json({ success: true }));
 });
 
-// 내 매장 공고와 확정 결속을 마친 출퇴근 현황판 호출 라인
 app.get('/api/attendance/status', (req, res) => {
     const { job_id, seeker_id } = req.query;
     db.get(`SELECT * FROM attendance WHERE job_id = ? AND seeker_id = ?`, [job_id, seeker_id], (err, row) => {
