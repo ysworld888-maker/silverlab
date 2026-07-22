@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>SILVERWORKS - 구인구직 피드</title>
-    <!-- [대기업 공식 웹사옥 스펙] 극상의 모던함과 미니멀리즘 시각 밸런싱 세리프 융합 CSS 명세 -->
+    <!-- [대기업 공식 웹사옥 스펙] 파도 클릭 펄스 치솟음 및 잔물결 입자 3안 퓨전 통합 CSS 명세 -->
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Malgun Gothic", "맑은 고딕", helvetica, sans-serif; letter-spacing: -0.4px; -webkit-tap-highlight-color: transparent; }
         body { background-color: #ffffff; color: #1c1c1e; margin: 0; overflow-x: hidden; -webkit-font-smoothing: antialiased; }
@@ -37,17 +37,26 @@
         .btn-settle-action-blue:hover { background-color: #1152b3; transform: translateY(-2px); }
         .user-profile-avatar { width: 40px; height: 40px; border-radius: 50%; background-color: #1967d2; color: #ffffff; font-size: 14px; font-weight: 700; display: none; align-items: center; justify-content: center; cursor: pointer; border: 2px solid #ffffff; box-shadow: 0 4px 12px rgba(25, 103, 210, 0.15); }
         
-        /* [사장님 오더] 밋밋함 완전 제거를 위해 메인 오션 배경의 상하 패딩과 깊이감을 극대화 연장 확장 */
-        .hero-section { position: relative; padding: 220px 24px 280px 24px; text-align: center; background: linear-gradient(180deg, rgba(25, 103, 210, 0.08) 0%, rgba(25, 103, 210, 0.03) 50%, #ffffff 100%); overflow: hidden; }
-        .wave-wrapper { position: absolute; bottom: 0; left: 0; width: 100%; height: 140px; overflow: hidden; }
+        /* 밋밋함 차단: 백그라운드 그라데이션 확장 및 클릭 터치 영역(cursor: pointer) 확보 */
+        .hero-section { position: relative; padding: 220px 24px 280px 24px; text-align: center; background: linear-gradient(180deg, rgba(25, 103, 210, 0.08) 0%, rgba(25, 103, 210, 0.03) 50%, #ffffff 100%); overflow: hidden; cursor: pointer; }
+        .wave-wrapper { position: absolute; bottom: 0; left: 0; width: 100%; height: 140px; overflow: hidden; pointer-events: none; transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
         .wave-svg { position: absolute; bottom: 0; left: 0; width: 200%; height: 100%; }
         .wave-layer1 { opacity: 0.08; fill: #1967d2; }
         .wave-layer2 { opacity: 0.15; fill: #1967d2; bottom: 2px; }
         
-        /* [스크롤 당황 버그 완치] 최상단 원위치 도달 시에만 정교하게 출현하도록 인터랙션 계수 셋업 */
+        /* [요구사항 2안] 파도 클릭 시 전체 파도 높이가 순간 펄스로 솟구치게 만드는 인터랙션 애니메이션 클래스 */
+        .hero-section.pulse-wave-active .wave-wrapper { transform: scaleY(1.35) translateY(-5px); }
+        
+        /* [요구사항 3안] 스크롤 진입 시 생성될 가상 물방울(Ripple) 입자들의 개별 렌더링 스타일 구조 정의 */
+        .ripple-drop { position: absolute; background-color: rgba(25, 103, 210, 0.2); border-radius: 50%; pointer-events: none; z-index: 4; animation: ripple-rise-fade 1.6s ease-out forwards; }
+        @keyframes ripple-rise-fade {
+            0% { transform: translateY(140px) scale(0.4); opacity: 0; }
+            30% { opacity: 0.7; }
+            100% { transform: translateY(-30px) scale(1.6); opacity: 0; }
+        }
+        
         .card-section { padding: 0 24px; max-width: 1040px; margin: -140px auto 100px auto; position: sticky; top: 140px; z-index: 10; display: grid; grid-template-columns: 1fr 1fr; gap: 32px; transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.4s ease-out; transform: translateY(0); opacity: 1; }
         @media (max-width: 600px) { .card-section { grid-template-columns: 1fr; margin-top: -60px; } }
-        /* 스크롤 시 위로 완벽 실종 차단 가드 클래스 */
         .card-section.hidden-scroll { transform: translateY(-160px); opacity: 0; pointer-events: none; }
         
         .info-card { background-color: #ffffff; border-radius: 28px; padding: 48px; border: 1px solid #e5e8eb; cursor: pointer; display: flex; flex-direction: column; justify-content: space-between; min-height: 280px; box-shadow: 0 12px 36px rgba(0,0,0,0.03); transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1); }
@@ -56,7 +65,6 @@
         .card-title { font-size: 22px; font-weight: 700; margin-bottom: 16px; color: #1c1c1e; letter-spacing: -0.5px; }
         .card-desc { font-size: 15px; line-height: 1.7; color: #636366; }
         
-        /* 대기업 풋터 정형 경계 레이아웃 */
         footer { background-color: #f2f4f6; color: #636366; padding: 60px 24px; font-size: 13px; line-height: 2.0; border-top: 2px solid #e5e8eb; width: 100%; position: relative; margin-top: 120px; }
         footer h4 { color: #1c1c1e; font-size: 15px; font-weight: 700; margin-bottom: 12px; }
     </style>
@@ -77,13 +85,13 @@
         </div>
     </header>
 
-    <!-- [대기업 사옥 스펙] 웅장한 깊이감 확장을 위해 상하 패딩과 그라데이션 반경 전면 리모델링 -->
-    <section class="hero-section">
-        <h1 class="hero-title" style="font-size: 34px; font-weight: 800; color: #1967d2; letter-spacing: -1.5px; line-height: 1.45;">변화에 도전할 사장님과 베테랑 시니어 구직자들의 만남</h1>
+    <!-- [요구사항 2안 이식] 파도 클릭 시 pulse 애니메이션 효과 트리거를 위한 id와 onclick 함수 바인딩 바존 각인 -->
+    <section class="hero-section" id="heroWaveSection" onclick="handleTriggerWavePulseAnimation()">
+        <h1 class="hero-title" style="font-size: 34px; font-weight: 800; color: #1967d2; letter-spacing: -1.5px; line-height: 1.45; pointer-events: none;">변화에 도전할 사장님과 베테랑 시니어 구직자들의 만남</h1>
         <div class="wave-wrapper"><svg class="wave-svg" viewBox="0 0 1200 120" preserveAspectRatio="none"><path class="wave-layer1" d="M0,60 C150,100 350,20 500,60 C650,100 850,20 1000,60 L1500,120 L0,120 Z"></path><path class="wave-layer2" d="M0,50 C200,10 400,90 600,40 C800,10 1000,90 1200,40 L1800,120 L0,120 Z"></path></svg></div>
     </section>
 
-    <!-- [당황스러운 돌발 돌출 완치 버그필터 탑재] 카드 진입로 섹션 영역 -->
+    <!-- 카드 진입로 섹션 영역 -->
     <section class="card-section" id="animatedCardSection">
         <div class="info-card" onclick="handleVerifyRouteGuard('seeker')">
             <div><span class="card-badge">시니어 마이페이지</span><h2 class="card-title">베테랑 전용 12단계 문진형 이력서 자율 제출</h2><p class="card-desc">체력 인증 등급과 사장님이 지정하신 12가지 정밀 건강 문진 데이터가 통합 탑재된 실버웍스 전용 표준 공식 이력서 제출처입니다.</p></div>
@@ -93,7 +101,7 @@
         </div>
     </section>
 
-    <!-- [대기업 오피셜 가이드 스펙] 가독성 극대화를 위한 미니멀리즘 스토리텔링 리포트 섹션 -->
+    <!-- 가독성이 극대화된 미니멀리즘 스토리텔링 리포트 섹션 -->
     <div style="max-width: 720px; margin: 360px auto 120px auto; padding: 0 24px; line-height: 2.2; color: #3a3a3c; font-size: 16px; word-break: keep-all; position: relative; z-index: 5;">
         
         <h3 style="font-size: 22px; font-weight: 800; color: #1c1c1e; margin-bottom: 16px; letter-spacing: -0.8px;">매장을 책임져줄 성실한 사람을 구하는 것은<br>하늘의 별 따기가 되었습니다.</h3>
@@ -101,7 +109,7 @@
         <div style="border-left: 4px solid #1967d2; background-color: #f8f9fa; padding: 24px; border-radius: 12px; font-size: 15px; color: #1967d2; font-weight: 600; line-height: 1.7; margin: 28px 0; box-shadow: 0 4px 16px rgba(0,0,0,0.01);">
             "자영업자 4명 중 3명이 알바생의 갑작스러운 결근·퇴사 등 '노쇼(No-Show)'로 인해 곤란한 상황을 겪은 것으로 나타났다."
             <div style="margin-top: 12px; font-size: 13px; color: #8e8e93; font-weight: 500;">
-                출처: <a href="https://sedaily.com" target="_blank" style="color: #1967d2; text-decoration: underline; font-weight: 700; transition: color 0.2s;">중장년 알바와 MZ 사장… 문제는 없을까? 직접 들어봤다 | 서울경제</a>
+                출처: <a href="https://sedaily.com" target="_blank" style="color: #1967d2; text-decoration: underline; font-weight: 700;">중장년 알바와 MZ 사장… 문제는 없을까? 직접 들어봤다 | 서울경제</a>
             </div>
         </div>
 
@@ -161,7 +169,7 @@
         </div>
     </div>
 
-    <!-- [사장님 오더] 명확한 경계 구분선(border-top)과 세련된 다크그레이 풋터 구조 마감 완공 -->
+    <!-- 명확한 경계 구분선과 세련된 다크그레이 풋터 구조 마감 완공 -->
     <footer>
         <div style="max-width: 1040px; margin: 0 auto;">
             <h4>주식회사 실버웍스 (SILVERWORKS)</h4>
@@ -171,10 +179,12 @@
         </div>
     </footer>
 
-    <!-- [스크롤 시점 추적 버그 교정 엔진 및 세션 가동 자바스크립트] -->
+    <!-- [파도 펄스 치솟음 및 잔물결 입자 무한 동적 결속 스크립트] -->
     <script>
         let globalCurrentPoints = 0;
         let lastScrollTop = 0;
+        let isWaveAnimating = false;
+        let rippleInterval = null;
 
         document.addEventListener("DOMContentLoaded", function() {
             const id = localStorage.getItem('sw_username');
@@ -201,25 +211,77 @@
                 }
             }
 
-            // [사장님 특명] 스크롤 중간에 돌발적으로 버튼이 출현하는 버그 완치 모듈
             const animatedCardSection = document.getElementById('animatedCardSection');
+            const heroWaveSection = document.getElementById('heroWaveSection');
             
             window.addEventListener('scroll', function() {
                 let currentScroll = window.pageYOffset || document.documentElement.scrollTop;
                 
-                if (currentScroll > lastScrollTop && currentScroll > 60) {
-                    // 아래로 내릴 때는 위로 밀려나며 실종 소멸 유지
+                if (currentScroll > lastScrollTop && currentScroll > 50) {
                     animatedCardSection.classList.add('hidden-scroll');
                 } else {
-                    // [버그 차단 분기 가드] 스크롤을 올리더라도 오직 최상단 원래 자리(60px 이하)에 도달했을 때만 정교하게 출현
                     if (currentScroll <= 60) {
                         animatedCardSection.classList.remove('hidden-scroll');
+                    }
+                }
+                
+                // [요구사항 3안 연동 완벽 조립] 검은 원 공백 구역 진입 감제 추적 로직 수립
+                if (currentScroll >= 160 && currentScroll <= 420) {
+                    if (!rippleInterval) {
+                        rippleInterval = setInterval(createWaveRippleParticle, 180);
+                    }
+                } else {
+                    if (rippleInterval) {
+                        clearInterval(rippleInterval);
+                        rippleInterval = null;
                     }
                 }
                 
                 lastScrollTop = currentScroll <= 0 ? 0 : currentScroll;
             }, { passive: true });
         });
+
+        // [요구사항 2안 이식] 파도 구역 직접 클릭 터치 시 전체 맥박이 일시적으로 위로 세차게 출렁 치솟는 함수
+        function handleTriggerWavePulseAnimation() {
+            if (isWaveAnimating) return;
+            isWaveAnimating = true;
+            
+            const section = document.getElementById('heroWaveSection');
+            section.classList.add('pulse-wave-active');
+            
+            // 물방울 퍼짐 시각 충격 배가 효과 추가 주입
+            for(let i=0; i<8; i++) {
+                setTimeout(createWaveRippleParticle, i * 60);
+            }
+            
+            setTimeout(() => {
+                section.classList.remove('pulse-wave-active');
+                isWaveAnimating = false;
+            }, 450);
+        }
+
+        // [요구사항 3안 이식] 밋밋한 검은 원 구역을 은은하게 채워줄 몽환적 물방울 피어오름 생성 유닛
+        function createWaveRippleParticle() {
+            const section = document.getElementById('heroWaveSection');
+            if (!section) return;
+            
+            const drop = document.createElement('div');
+            drop.className = 'ripple-drop';
+            
+            // 가로 전 반경 무작위 분산 배치
+            const randomX = Math.floor(Math.random() * window.innerWidth);
+            const randomSize = Math.floor(Math.random() * 12) + 6; // 6px ~ 18px 크기 편차
+            
+            drop.style.left = `${randomX}px`;
+            drop.style.bottom = '0px';
+            drop.style.width = `${randomSize}px`;
+            drop.style.height = `${randomSize}px`;
+            
+            section.appendChild(drop);
+            
+            // 애니메이션이 끝나 타오른 소멸 입자는 전산 메모리 확보를 위해 완전 삭제
+            setTimeout(() => { drop.remove(); }, 1600);
+        }
 
         function handleExecuteLogoutAction() {
             if(!confirm('보안 세션을 로그아웃합니까?')) return;
