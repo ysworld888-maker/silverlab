@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>SILVERWORKS - 구인구직 피드</title>
-    <!-- [소셜 인프라 개통] 소통 단추 신설 및 메인 명칭 최적화 정렬 토스 프리미엄 CSS -->
+    <!-- [핀테크 환전 밸런스] 보유 포인트 부활 및 현금 정산 모달 팝업창 전용 CSS 스타일 명세 -->
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; -webkit-tap-highlight-color: transparent; }
         body { background-color: #ffffff; color: #333d4b; padding-bottom: 0px; margin: 0; overflow-x: hidden; }
@@ -13,19 +13,30 @@
         .logo-text { font-size: 20px; font-weight: 800; color: #1967d2; letter-spacing: -0.5px; }
         .nav-menu-group { display: flex; align-items: center; gap: 12px; }
         
-        /* 오션 블루 오피셜 상용 네비게이션 버튼 디자인 시스템 규격 일괄 통일 */
         .nav-link-btn { background: none; border: none; color: #4e5968; font-size: 14px; font-weight: 600; cursor: pointer; padding: 8px 16px; border-radius: 8px; transition: all 0.2s; }
         .nav-link-btn:hover { background-color: #f2f4f6; color: #1967d2; }
-        
-        /* [핵심 신설] 좌측에 웅장하게 출현할 소셜 네트워크 독립 단추 스펙 */
         .btn-sns-link { background-color: #f4f9ff; color: #1967d2; border: 1px solid #e8f3ff; font-weight: 700; box-shadow: 0 2px 4px rgba(25, 103, 210, 0.04); }
         .btn-sns-link:hover { background-color: #1967d2; color: #ffffff; border-color: #1967d2; }
         
-        .seeker-point-badge { display: none; align-items: center; background-color: #f4f9ff; border: 1px solid #e8f3ff; padding: 6px 14px; border-radius: 20px; font-size: 13.5px; font-weight: 700; color: #1967d2; letter-spacing: -0.3px; }
-        .seeker-point-badge span { color: #1152b3; font-weight: 800; margin-left: 4px; }
+        /* [긴급 긴장 복구] 시니어 로그인 시 완벽히 노출될 오피셜 터치형 포인트 잔액 수령 배너 */
+        .seeker-point-badge { display: none; align-items: center; background-color: #f4f9ff; border: 1px solid #e8f3ff; padding: 6px 14px; border-radius: 20px; font-size: 13.5px; font-weight: 700; color: #1967d2; letter-spacing: -0.3px; cursor: pointer; transition: transform 0.2s; }
+        .seeker-point-badge:hover { transform: scale(1.03); background-color: #e8f3ff; }
+        .seeker-point-badge span { color: #1152b3; font-weight: 800; margin-left: 4px; text-decoration: underline; }
         
+        /* [핵심 신설] 시니어 회원의 계좌 환전 처리를 피로감 없이 가동해 줄 화면 중앙 포인트 정산 모달창 디자인 */
+        .settle-modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.4); display: none; align-items: center; justify-content: center; z-index: 500; padding: 20px; }
+        .settle-modal-content { background-color: #ffffff; width: 100%; max-width: 440px; border-radius: 16px; padding: 24px; box-shadow: 0 8px 28px rgba(0,0,0,0.15); border: none; }
+        .modal-header-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 1px solid #f2f4f6; padding-bottom: 12px; }
+        .modal-main-title { font-size: 17px; font-weight: 700; color: #1b1c1e; }
+        .btn-modal-close { background: none; border: none; font-size: 20px; cursor: pointer; color: #4e5968; font-weight: 700; }
+        
+        .form-group { margin-bottom: 16px; }
+        .form-label { display: block; font-size: 13.5px; font-weight: 600; color: #4e5968; margin-bottom: 8px; }
+        .form-input { width: 100%; padding: 13px; border-radius: 10px; border: 1px solid #cfd9de; font-size: 14.5px; font-weight: 600; outline: none; transition: border-color 0.2s; }
+        .form-input:focus { border-color: #1967d2; background-color: #f4f9ff; }
+        .form-select { width: 100%; padding: 13px; border-radius: 10px; border: 1px solid #cfd9de; font-size: 14.5px; font-weight: 600; outline: none; background-color: #ffffff; }
+        .form-select:focus { border-color: #1967d2; }
         .user-profile-avatar { width: 36px; height: 36px; border-radius: 50%; background-color: #1967d2; color: #ffffff; font-size: 14px; font-weight: 700; display: none; align-items: center; justify-content: center; cursor: pointer; border: 2px solid #e8f3ff; box-shadow: 0 2px 6px rgba(25, 103, 210, 0.2); }
-        
         .hero-section { position: relative; padding: 80px 24px 100px 24px; text-align: center; background: linear-gradient(180deg, #f4f9ff 0%, #ffffff 100%); overflow: hidden; }
         .wave-wrapper { position: absolute; bottom: 0; left: 0; width: 100%; height: 85px; overflow: hidden; line-height: 0; }
         .wave-svg { position: absolute; bottom: 0; left: 0; width: 200%; height: 100%; transform: translate3d(0, 0, 0); }
@@ -34,14 +45,11 @@
         .hero-logo-center { margin-bottom: 28px; display: inline-block; }
         .card-section { padding: 0 20px; max-width: 900px; margin: -20px auto 40px auto; position: relative; z-index: 10; display: grid; grid-template-columns: 1fr 1fr; gap: 24px; align-items: stretch; }
         @media (max-width: 600px) { .card-section { grid-template-columns: 1fr; margin-top: 10px; margin-bottom: 20px; } }
-        
         .info-card { background-color: #f9fafb; border-radius: 20px; padding: 40px; border: 1px solid #f2f4f6; cursor: pointer; position: relative; overflow: hidden; transition: transform 0.2s, box-shadow 0.2s; display: flex; flex-direction: column; justify-content: space-between; height: 100%; min-height: 240px; }
         .info-card:hover { transform: translateY(-4px); box-shadow: 0 12px 24px rgba(25, 103, 210, 0.06); border-color: #1967d2; }
-        
         .card-badge { display: inline-block; background-color: #e8f3ff; color: #1967d2; padding: 6px 10px; border-radius: 6px; font-size: 12px; font-weight: 700; margin-bottom: 18px; width: fit-content; }
         .card-title { font-size: 20px; font-weight: 700; margin-bottom: 12px; color: #333d4b; letter-spacing: -0.3px; }
         .card-desc { font-size: 14.5px; line-height: 1.6; color: #4e5968; flex-grow: 1; display: flex; align-items: flex-start; }
-        
         @keyframes wave-move {
             0% { transform: translate3d(0, 0, 0); }
             50% { transform: translate3d(-25%, 2px, 0); }
@@ -55,17 +63,17 @@
     <header>
         <div class="logo-container" onclick="location.href='/'">
             <svg width="28" height="26" viewBox="0 0 100 90" fill="none" xmlns="http://w3.org">
-                <path d="M12.5 54C13.5 53 19.5 54.5 28.5 48.5C38.5 42 47 28 56.5 19.5C65.5 11 76.5 6.5 85.5 12.5C95.5 18.5 90 32 81 37C69.5 41.5 61 33 53 41.5C43 51 28.5 63 17 61C10 59.5 6.5 53 12.5 54Z" stroke="#1967d2" stroke-width="7.5" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M12.5 54C13.5 53 19.5 54.5 28.5 48.5C38.5 42 47 28 56.5 19.5C65.5 11 76.5 6.5 85.5 12.5" stroke="#1967d2" stroke-width="7.5" stroke-linecap="round" stroke-linejoin="round"/>
                 <path d="M51.5 59C58.5 67 71 68 80.5 60.5C90 53 92.5 39.5 85.5 32" stroke="#1967d2" stroke-width="7.5" stroke-linecap="round" stroke-linejoin="round"/>
             </svg>
             <span class="logo-text">SILVERWORKS</span>
         </div>
         <div class="nav-menu-group">
-            <!-- [구인구직 대소통 혁신 완벽 이식] 가장 왼쪽에 독립 배치한 실시간 SNS 소통실 채널 단추 버튼 -->
             <button class="nav-link-btn btn-sns-link" onclick="location.href='/sns.html'">소통 채널 진입 ➔</button>
             <button class="nav-link-btn" onclick="location.href='/board.html'">매칭 게시판</button>
             
-            <div id="seekerPointTracker" class="seeker-point-badge">보유 포인트: <span id="seekerPointBalance">0</span>P</div>
+            <!-- [포인트 배너 복구 완료] 클릭하면 화면 중앙 정산하기 계좌 모달창이 발동하는 앵커 결속 -->
+            <div id="seekerPointTracker" class="seeker-point-badge" onclick="openSettleWithdrawModal()">보유 포인트: <span id="seekerPointBalance">0</span>P (정산하기)</div>
             
             <button id="navAuthBtn" class="nav-link-btn" style="background-color: #1967d2; color: #ffffff;" onclick="location.href='/login.html'">로그인 / 가입</button>
             <div id="userAvatar" class="user-profile-avatar" onclick="location.href='/profile.html'">MY</div>
@@ -75,11 +83,10 @@
     <section class="hero-section">
         <div class="hero-logo-center">
             <svg width="75" height="75" viewBox="0 0 100 90" fill="none" xmlns="http://w3.org">
-                <path d="M12.5 54C13.5 53 19.5 54.5 28.5 48.5C38.5 42 47 28 56.5 19.5C65.5 11 76.5 6.5 85.5 12.5C95.5 18.5 90 32 81 37C69.5 41.5 61 33 53 41.5C43 51 28.5 63 17 61C10 59.5 6.5 53 12.5 54Z" stroke="#1967d2" stroke-width="7.5" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M12.5 54C13.5 53 19.5 54.5 28.5 48.5C38.5 42 47 28 56.5 19.5C65.5 11 76.5 6.5 85.5 12.5" stroke="#1967d2" stroke-width="7.5" stroke-linecap="round" stroke-linejoin="round"/>
                 <path d="M51.5 59C58.5 67 71 68 80.5 60.5C90 53 92.5 39.5 85.5 32" stroke="#1967d2" stroke-width="7.5" stroke-linecap="round" stroke-linejoin="round"/>
             </svg>
         </div>
-        <!-- [사장님 지시 완벽 이행] 대문 메인 헤더 이름을 '구인구직 피드' 체계로 격상 조율 -->
         <h1 class="hero-title" style="font-size: 32px; letter-spacing: -1px; color: #1b1c1e;">세상을 은빛 지혜로 채우다.<br><span style="color: #1967d2;">구인구직 피드 마스터 시스템</span></h1>
         <p class="hero-sub" style="margin-top: 14px; font-size: 15px;">주휴수당·퇴직금 폭탄과 무단 노쇼의 공포를 해결합니다. 실버웍스는 검증된 시니어 베테랑과 일할 기회를 선물합니다.</p>
         
@@ -110,6 +117,36 @@
         </div>
     </section>
 
+    <!-- [사장님 오더 완벽 이식] 가시성 피로감을 제로화시키는 계좌 기입식 현금 정산 신청 모달창 구조 HTML -->
+    <div id="settleWithdrawModal" class="settle-modal-overlay">
+        <div class="settle-modal-content">
+            <div class="modal-header-row">
+                <span class="modal-main-title">시니어 보유 포인트 현금 정산 신청</span>
+                <button type="button" class="btn-modal-close" onclick="closeSettleWithdrawModal()">✕</button>
+            </div>
+            <div class="form-group">
+                <label class="form-label">환전 수령할 입금 은행 선택</label>
+                <select id="wBankName" class="form-select">
+                    <option value="국민은행">국민은행</option>
+                    <option value="신한은행">신한은행</option>
+                    <option value="우리은행">우리은행</option>
+                    <option value="하나은행">하나은행</option>
+                    <option value="카카오뱅크">카카오뱅크</option>
+                    <option value="토스뱅크">토스뱅크</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label class="form-label">본인 명의 입금 계좌번호</label>
+                <input type="text" id="wAccountNumber" class="form-input" placeholder="하이픈(-) 없이 숫자만 기입하세요">
+            </div>
+            <div class="form-group">
+                <label class="form-label">정산 신청 금액 (보유 포인트 한도 내)</label>
+                <input type="number" id="wWithdrawAmount" class="form-input" placeholder="정산받을 포인트 액수를 입력하세요">
+            </div>
+            <button type="button" class="btn-official-blue" style="margin-top:10px;" onclick="submitSettleWithdrawRequest()">정산금 입금 신청서 본부 전송</button>
+        </div>
+    </div>
+
     <!-- 하단 공백 차단막 가동 정식 푸터 -->
     <footer>
         <div style="max-width:900px; margin:0 auto;">
@@ -122,32 +159,76 @@
 
     <!-- [오션블루 프로필 아바타 및 실시간 포인트 잔액 갱신 제어 스크립트] -->
     <script>
+        let globalCurrentPoints = 0;
+
         document.addEventListener("DOMContentLoaded", function() {
             const id = localStorage.getItem('sw_username');
             const role = localStorage.getItem('sw_role');
             
             if (id) {
-                // 로그인 완료 시 기본 로그인/가입 버튼을 숨깁니다.
                 document.getElementById('navAuthBtn').style.display = 'none';
-                
-                // 원형 프로필 아바타 아이콘을 활성화하고 앞글자 각인
                 const av = document.getElementById('userAvatar');
                 av.style.display = 'flex'; 
                 av.innerText = id.substring(0, 2).toUpperCase();
 
-                // 오직 '구직 시니어(seeker)' 권한으로 로그인한 회원에게만 실시간 포인트 명세 배너 표출
                 if (role === 'seeker') {
                     fetch('/api/profile/me?username=' + encodeURIComponent(id))
                         .then(res => res.json())
                         .then(data => {
                             if (data.success && data.profile) {
+                                globalCurrentPoints = data.profile.points || 0;
                                 document.getElementById('seekerPointTracker').style.display = 'flex';
-                                document.getElementById('seekerPointBalance').innerText = (data.profile.points || 0).toLocaleString();
+                                document.getElementById('seekerPointBalance').innerText = globalCurrentPoints.toLocaleString();
                             }
                         });
                 }
             }
         });
+
+        // [모달 제어 엔진] 포인트 정산 신청 모달 제어 함수
+        function openSettleWithdrawModal() {
+            document.getElementById('settleWithdrawModal').style.display = 'flex';
+            document.getElementById('wWithdrawAmount').value = globalCurrentPoints; // 기본값으로 최대 잔액 바인딩 기입
+        }
+
+        function closeSettleWithdrawModal() {
+            document.getElementById('settleWithdrawModal').style.display = 'none';
+            document.getElementById('wAccountNumber').value = '';
+            document.getElementById('wWithdrawAmount').value = '';
+        }
+
+        // 핀테크 본부 서버 저장소로 현금 정산 신청서를 실시간 송출하는 트랜잭션 함수
+        function submitSettleWithdrawRequest() {
+            const id = localStorage.getItem('sw_username');
+            const bank = document.getElementById('wBankName').value;
+            const account = document.getElementById('wAccountNumber').value.trim();
+            const amount = parseInt(document.getElementById('wWithdrawAmount').value) || 0;
+
+            if (!account || amount <= 0) {
+                alert('알림: 계좌번호와 정산 신청 금액을 오차 없이 정확히 입력하세요.');
+                return;
+            }
+            if (amount > globalCurrentPoints) {
+                alert(`잔액 초과 오류: 현재 정산 가능한 최대 보유 포인트는 ${globalCurrentPoints.toLocaleString()}P 입니다.`);
+                return;
+            }
+
+            fetch('/api/settle/withdraw-request', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ seeker_id: id, bank_name: bank, account_number: account, amount: amount })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    alert('정산 대금 신청 대성공!\n\n제출하신 실물 입금 계좌 양식이 본부 최고 관리자실(admin.html)로 실시간 직결 송출 접수되었습니다. 운영자 검토 승인 즉시 계좌 이체가 단행됩니다.');
+                    closeSettleWithdrawModal();
+                    location.reload();
+                } else {
+                    alert('정산 오류: ' + data.message);
+                }
+            });
+        }
     </script>
 </body>
 </html>
