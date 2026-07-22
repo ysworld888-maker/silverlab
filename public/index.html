@@ -30,7 +30,6 @@
         .form-input:focus { border-color: #1967d2; background-color: #f4f9ff; }
         .form-select { width: 100%; padding: 13px; border-radius: 10px; border: 1px solid #cfd9de; font-size: 14.5px; font-weight: 600; outline: none; background-color: #ffffff; }
         .form-select:focus { border-color: #1967d2; }
-        /* [사장님 오더 명품 리디자인] 정산하기 기능의 최종 버튼 단추를 홈페이지 오피셜 규격에 맞춰 세련된 명품 라운딩 오션블루 단추로 코조 밀착 설계 */
         .btn-settle-action-blue { width: 100%; background-color: #1967d2; color: #ffffff; border: none; padding: 14px; border-radius: 9999px; font-size: 15px; font-weight: 700; cursor: pointer; text-align: center; box-shadow: 0 4px 12px rgba(25,103,210,0.15); transition: background-color 0.2s; margin-top: 10px; }
         .btn-settle-action-blue:hover { background-color: #1152b3; }
         .user-profile-avatar { width: 36px; height: 36px; border-radius: 50%; background-color: #1967d2; color: #ffffff; font-size: 14px; font-weight: 700; display: none; align-items: center; justify-content: center; cursor: pointer; border: 2px solid #e8f3ff; }
@@ -95,7 +94,6 @@
     </section>
 
     <section class="card-section">
-        <!-- [시니어 전용 카드 진입로] 클릭 제어 함수 바인딩 연동 구동 -->
         <div class="info-card" onclick="handleVerifyRouteGuard('seeker')">
             <div style="display: flex; flex-direction: column; justify-content: flex-start; height: 100%;">
                 <span class="card-badge">시니어 페이지 ➔</span>
@@ -104,7 +102,6 @@
             </div>
         </div>
 
-        <!-- [사장님 전용 카드 진입로] 클릭 제어 함수 바인딩 연동 구동 -->
         <div class="info-card" onclick="handleVerifyRouteGuard('employer')">
             <div style="display: flex; flex-direction: column; justify-content: flex-start; height: 100%;">
                 <span class="card-badge">사장님 페이지 ➔</span>
@@ -181,14 +178,14 @@
             }
         });
 
-        // [핵심 오더 완벽 실행] 한 번 로그인 시 무조건 프리패스 통과 및 타 권한 진입 절대 격리 방어 필터 가드 함수
+        // [사장님 지시 사항 1번 완벽 보완] 비로그인 상태일 때 대문을 완전히 열어 보여주고, 단추 터치 시에만 로그인 창으로 워프 연동
         function handleVerifyRouteGuard(targetRole) {
             const savedId = localStorage.getItem('sw_username');
             const savedRole = localStorage.getItem('sw_role');
 
-            // A. 세션 정보가 아예 없는 비로그인 상태일 경우 로그인 창으로 앵커링 워프
+            // A. 세션 정보가 없는 로그아웃(비로그인) 상태일 경우, 해당하는 로그인 창 유형으로 유연하게 리다이렉트 자동 이동
             if (!savedId || !savedRole) {
-                alert('알림: 정식 회원 전용 진입망입니다. 먼저 로그인을 수행해 주세요.');
+                alert('알림: 회원 인증이 필요합니다. 로그인 화면으로 안전하게 연결합니다.');
                 location.href = `/login.html?type=${targetRole}`;
                 return;
             }
@@ -207,7 +204,6 @@
             if (targetRole === 'employer') {
                 location.href = '/employer.html';
             } else {
-                // [사장님 오더 긴급 이식 반영] 마이프로필 우회 파쇄 후, 전에 만들어두었던 12단계 질문지 작성 페이지(seeker.html)로 하이패스 개통 진입 워프
                 location.href = '/seeker.html';
             }
         }

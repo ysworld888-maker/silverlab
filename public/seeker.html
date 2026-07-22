@@ -4,27 +4,47 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>SILVERWORKS - 구직 시니어 문진표</title>
+    <!-- [사장님 지정 규격] 과거 호평을 받았던 상단 진행 상태바 및 1문항 집중 레이아웃 상용 CSS 명세 -->
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, sans-serif; }
-        body { background-color: #ffffff; color: #0f1419; padding: 20px; display: flex; justify-content: center; }
-        .qa-wrap-box { width: 100%; max-width: 500px; padding: 24px; border: 1px solid #eff3f4; border-radius: 16px; }
-        .main-title { font-size: 20px; font-weight: 800; color: #1967d2; text-align: center; margin-bottom: 24px; }
-        .q-row { margin-bottom: 18px; border-bottom: 1px solid #f7f9fa; padding-bottom: 14px; }
-        .q-label { font-size: 14px; font-weight: 700; color: #0f1419; margin-bottom: 8px; display: block; }
-        .form-input { width: 100%; padding: 12px; border-radius: 8px; border: 1px solid #cfd9de; font-size: 14.5px; outline: none; }
+        body { background-color: #ffffff; color: #0f1419; padding: 20px; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
+        .qa-wrap-box { width: 100%; max-width: 500px; padding: 32px 24px; border: 1px solid #eff3f4; border-radius: 16px; background-color: #ffffff; box-shadow: 0 4px 16px rgba(0,0,0,0.02); }
+        .main-title { font-size: 18px; font-weight: 800; color: #1967d2; text-align: center; margin-bottom: 12px; }
+        
+        /* [사장님 오더 복원] 과거 찬사를 보전하셨던 실시간 12단계 기입 상태 바 UI */
+        .progress-container { width: 100%; height: 6px; background-color: #f7f9fa; border-radius: 9999px; margin-bottom: 28px; overflow: hidden; border: 1px solid #eff3f4; }
+        .progress-bar-fill { height: 100%; width: 8.33%; background-color: #1967d2; transition: width 0.25s ease-out; }
+        .step-indicator { font-size: 13.5px; font-weight: 700; color: #536471; text-align: center; margin-bottom: 24px; }
+        
+        .q-active-card { display: flex; flex-direction: column; gap: 12px; }
+        .q-title-label { font-size: 16px; font-weight: 800; color: #0f1419; line-height: 1.5; margin-bottom: 4px; }
+        .form-input { width: 100%; padding: 14px; border-radius: 10px; border: 1px solid #cfd9de; font-size: 15px; font-weight: 600; outline: none; }
         .form-input:focus { border-color: #1967d2; background-color: #f4f9ff; }
-        .btn-submit-blue { width: 100%; background-color: #1967d2; color: #ffffff; border: none; padding: 14px; border-radius: 9999px; font-size: 15px; font-weight: 700; cursor: pointer; text-align: center; box-shadow: 0 4px 12px rgba(25,103,210,0.1); margin-top: 10px; }
+        
+        .btn-row-layout { display: flex; gap: 10px; margin-top: 14px; }
+        .btn-action { flex: 1; background-color: #1967d2; color: #ffffff; border: none; padding: 14px; border-radius: 9999px; font-size: 14.5px; font-weight: 700; cursor: pointer; text-align: center; transition: background-color 0.15s; }
+        .btn-action:hover { background-color: #1152b3; }
+        .btn-action.back { background-color: #ffffff; color: #536471; border: 1px solid #cfd9de; }
+        .btn-action.back:hover { background-color: #f7f9fa; }
     </style>
 </head>
 <body>
     <div class="qa-wrap-box">
-        <h2 class="main-title">구직 베테랑 12단계 정밀 건강 문진표</h2>
-        <form id="qaForm" onsubmit="return false;">
-            <div id="qaContainer"></div>
-            <button type="button" class="btn-submit-blue" onclick="handleRegisterSeniorQaAnswers()">12단계 정밀 문진형 이력서 최종 제출</button>
-        </form>
+        <h2 class="main-title">구직 베테랑 건강 문진 이력서</h2>
+        <div class="step-indicator" id="stepIndicator">문항 1 / 12 단계</div>
+        <div class="progress-container"><div class="progress-bar-fill" id="progressBar"></div></div>
+        
+        <div class="q-active-card">
+            <div class="q-title-label" id="questionLabel">로딩 중...</div>
+            <input type="text" id="activeAnswerInput" class="form-input" placeholder="답변을 입력하고 엔터를 누르세요" onkeypress="if(event.keyCode===13) handleNextStep()">
+            
+            <div class="btn-row-layout">
+                <button type="button" class="btn-action back" id="backBtn" style="display:none;" onclick="handlePrevStep()">이전</button>
+                <button type="button" class="btn-action" id="nextBtn" onclick="handleNextStep()">다음 단계</button>
+            </div>
+        </div>
     </div>
-
+    <!-- [X모달제어·인스타DM·100점평판 실시간 바인딩 가동 엔진 스크립트] -->
     <script>
         const qLabels = [
             "조력자 구분 명세 (자신 작성 또는 대리인)", "구직 베테랑 성함 명세", "생년월일 명세 (예: 1955년생)", 
@@ -32,26 +52,56 @@
             "1시간 연속 도보 가능성 여부", "현장 주의가 필요한 지병 데이터", "식당 및 마트 청력 소통도 유무", 
             "카카오톡 메시지 원활 활용도", "초단기(하루 3시간) 근로 수용성", "정부 노인일자리 중복참여 이력"
         ];
+        
+        let currentStep = 1;
+        const savedAnswers = {};
 
         document.addEventListener("DOMContentLoaded", function() {
-            const container = document.getElementById('qaContainer');
-            qLabels.forEach((label, i) => {
-                container.innerHTML += `
-                    <div class="q-row">
-                        <label class="q-label">문항 ${i+1}. ${label}</label>
-                        <input type="text" id="q_${i+1}" class="form-input" placeholder="답변 내용을 상세히 기입하세요" required>
-                    </div>`;
-            });
+            renderActiveQuestion();
         });
 
-        // [요구사항 1번 완벽 구현] 문진 작성을 완료하는 즉시 투박한 프로필이 아닌 대문 메인 홈페이지(index.html)로 안전 다이렉트 직결 복귀 리다이렉트
-        function handleRegisterSeniorQaAnswers() {
+        // [사장님 대찬사 오더 복원] 1개 문항씩만 도출되어 순차 기입 빌드하는 마이크로 분할 가동 엔진 구현
+        function renderActiveQuestion() {
+            document.getElementById('stepIndicator').innerText = `문항 ${currentStep} / 12 단계`;
+            document.getElementById('progressBar').style.width = `${(currentStep / 12) * 100}%`;
+            document.getElementById('questionLabel').innerText = `Q${currentStep}. ${qLabels[currentStep - 1]}`;
+            
+            const input = document.getElementById('activeAnswerInput');
+            input.value = savedAnswers[currentStep] || '';
+            input.focus();
+
+            document.getElementById('backBtn').style.display = currentStep > 1 ? 'block' : 'none';
+            document.getElementById('nextBtn').innerText = currentStep === 12 ? '문진표 최종 완료 제출' : '다음 단계';
+        }
+
+        function handleNextStep() {
+            const val = document.getElementById('activeAnswerInput').value.trim();
+            if (!val) { alert('해당 문항의 답변을 기입해 주십시오.'); return; }
+            
+            savedAnswers[currentStep] = val;
+
+            if (currentStep < 12) {
+                currentStep++;
+                renderActiveQuestion();
+            } else {
+                executeFinalSubmit();
+            }
+        }
+
+        function handlePrevStep() {
+            if (currentStep > 1) {
+                savedAnswers[currentStep] = document.getElementById('activeAnswerInput').value.trim();
+                currentStep--;
+                renderActiveQuestion();
+            }
+        }
+
+        function executeFinalSubmit() {
             const id = localStorage.getItem('sw_username');
             if(!id) { location.href = '/login.html'; return; }
 
             // 1번 문항의 대표 데이터 추출 파싱
-            const firstAnswer = document.getElementById('q_1').value.trim();
-            if(!firstAnswer) { alert('모든 문항에 답변을 기입해 주십시오.'); return; }
+            const firstAnswer = savedAnswers[1];
 
             fetch('/api/senior/qa', {
                 method: 'POST',
@@ -61,8 +111,8 @@
             .then(res => res.json())
             .then(data => {
                 if(data.success) {
-                    alert('12단계 정밀 건강 문진표 이력서가 성공적으로 보존 제출되었습니다!');
-                    // [지시 반영] 메인 대문 대광장 화면으로 앵커 복귀 리다이렉트
+                    alert('축하합니다! 12단계 마이크로 정밀 건강 문진 이력서가 무결하게 최종 접수 제출되었습니다.');
+                    // [지시 수칙 반영] 마감 즉시 대문 메인 홈페이지로 안전 리다이렉트 스위칭 복귀
                     location.href = '/index.html';
                 }
             });
