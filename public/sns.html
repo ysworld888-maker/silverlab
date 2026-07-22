@@ -22,7 +22,6 @@
         /* 트위터 스펙: 푸른색 거대 트윗 모달 발동 버튼 */
         .btn-tweet-modal-open { width: 90%; background-color: #1967d2; color: #ffffff; border: none; padding: 14px; border-radius: 9999px; font-size: 15px; font-weight: 700; cursor: pointer; text-align: center; margin-top: 16px; box-shadow: 0 4px 12px rgba(25,103,210,0.15); transition: background-color 0.2s; }
         .btn-tweet-modal-open:hover { background-color: #1152b3; }
-        
         /* 2. 중앙 본체 피드 타임라인 영역 */
         .x-main-timeline-zone { margin-left: 275px; width: 600px; min-height: 100vh; border-right: 1px solid #eff3f4; display: flex; flex-direction: column; }
         @media (max-width: 1000px) { .x-main-timeline-zone { margin-left: 70px; width: calc(100% - 70px); max-width: 600px; } }
@@ -34,6 +33,7 @@
         .sns-sub-btn.active::after { content: ""; position: absolute; bottom: 0; left: 35%; width: 30%; height: 4px; background-color: #1967d2; border-radius: 9999px; }
         
         .sns-panel { display: none; } .sns-panel.active { display: block; }
+        
         /* 3. 트위터 실물 캡처 연동 계층형 피드 및 메시지 버블 스타일셋 */
         .post-item-box { border-bottom: 1px solid #eff3f4; padding: 16px; display: flex; gap: 12px; position: relative; }
         .post-left-avatar { width: 40px; height: 40px; border-radius: 50%; background-color: #1967d2; color: #ffffff; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 700; text-transform: uppercase; cursor: pointer; flex-shrink: 0; }
@@ -43,8 +43,7 @@
         .post-author:hover { text-decoration: underline; }
         .post-time { font-size: 14px; color: #536471; }
         .post-title-tag { font-size: 15px; font-weight: 800; color: #1967d2; margin-bottom: 4px; }
-        .post-text { font-size: 15px; line-height: 1.5; color: #0f1419; white-break: break-all; }
-        
+        .post-text { font-size: 15px; line-height: 1.5; color: #0f1419; word-break: break-all; }
         /* 인스타 디엠 윈도우 */
         .dm-container { padding: 16px; display: flex; flex-direction: column; height: calc(100vh - 120px); }
         .dm-chat-window { border: 1px solid #eff3f4; border-radius: 16px; flex-grow: 1; overflow-y: auto; padding: 16px; background-color: #ffffff; margin-bottom: 14px; display: flex; flex-direction: column; gap: 10px; }
@@ -61,7 +60,7 @@
         .form-input { width: 100%; padding: 14px; border-radius: 12px; border: 1px solid #cfd9de; font-size: 14.5px; outline: none; }
         .form-input:focus { border-color: #1967d2; }
         
-        /* [사장님 오더 완벽 실현] 가시적 피로감을 없애줄 화면 중앙 팝업식 트윗 글쓰기 모달 배경 디자인 */
+        /* 화면 중앙 팝업식 트윗 글쓰기 모달 배경 디자인 */
         .tweet-modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.4); display: none; align-items: flex-start; justify-content: center; z-index: 500; padding-top: 80px; }
         .tweet-modal-content { background-color: #ffffff; width: 100%; max-width: 520px; border-radius: 16px; padding: 20px; box-shadow: 0 8px 28px rgba(0,0,0,0.15); border: none; }
         .modal-header-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
@@ -87,7 +86,6 @@
                 <a href="/board.html" class="nav-item-row"><span class="nav-text-label">매칭 게시판</span></a>
                 <a href="/profile.html" class="nav-item-row"><span class="nav-text-label">마이 프로필</span></a>
             </div>
-            <!-- [가시성 혁신] 피로감을 없애주는 원터치 모달 열기 제어 버튼 단추 -->
             <button type="button" class="btn-tweet-modal-open" onclick="openTweetWriteModal()"><span>소통 피드 올리기</span></button>
         </div>
     </div>
@@ -146,7 +144,7 @@
         </div>
     </div>
 
-    <!-- [사장님 지시 완벽 구현] 가시적 피로감을 완전히 제로화 시키는 화면 중앙 팝업 모달창 컴포넌트 구조 -->
+    <!-- 중앙 팝업 모달창 컴포넌트 구조 -->
     <div id="tweetWriteModal" class="tweet-modal-overlay">
         <div class="tweet-modal-content">
             <div class="modal-header-row">
@@ -176,7 +174,7 @@
             loadTimelinePosts();
         });
 
-        // [모달 제어 엔진 신설] 글쓰기 모달 팝업창 열기 및 닫기 기능
+        // 글쓰기 팝업 모달창 열기 및 닫기 기능 제어 엔진
         function openTweetWriteModal() {
             document.getElementById('tweetWriteModal').style.display = 'flex';
             document.getElementById('postContentInput').focus();
@@ -207,7 +205,7 @@
             }
         }
 
-        // 1. 트위터(X) 실물 캡처 연동형 계층 타임라인 로드 파싱 함수
+        // 1. 트위터(X) 실물 연동형 계층 타임라인 로드 파싱 함수
         function loadTimelinePosts() {
             const container = document.getElementById('timelineFeedContainer');
             fetch('/api/sns/posts')
