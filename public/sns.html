@@ -3,135 +3,165 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>SILVERWORKS - 소셜 소통 센터</title>
-    <!-- 트위터(X)의 타임라인 미학과 인스타 DM의 직관성을 융합한 프리미엄 소셜 CSS 스타일 명세 -->
+    <title>SILVERWORKS - 소통 채널 피드</title>
+    <!-- [트위터 실물 캡처 완벽 이식] 좌측 수직 메뉴 바, 모달 팝업 글쓰기 및 계층형 피드 전용 CSS -->
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; -webkit-tap-highlight-color: transparent; }
-        body { background-color: #f9fafb; color: #262626; padding-bottom: 60px; }
-        header { display: flex; justify-content: space-between; align-items: center; padding: 18px 20px; background-color: #ffffff; border-bottom: 1px solid #e5e8eb; position: sticky; top: 0; z-index: 100; }
-        .logo-container { display: flex; align-items: center; gap: 12px; cursor: pointer; }
-        .logo-text { font-size: 20px; font-weight: 800; color: #1967d2; letter-spacing: -0.5px; }
+        body { background-color: #ffffff; color: #0f1419; margin: 0; display: flex; justify-content: center; min-height: 100vh; overflow-x: hidden; }
         
-        .container { max-width: 800px; margin: 0 auto; padding: 30px 20px; display: grid; grid-template-columns: 1fr; gap: 24px; }
-        .info-card { background-color: #ffffff; border-radius: 16px; border: 1px solid #e5e8eb; padding: 24px; box-shadow: 0 4px 16px rgba(0,0,0,0.01); }
-        .card-header-title { font-size: 16px; font-weight: 700; color: #1b1c1e; margin-bottom: 16px; border-bottom: 1px solid #f2f4f6; padding-bottom: 10px; letter-spacing: -0.3px; }
+        /* 1. 트위터 실물 캡처 규격: 좌측 고정식 메인 사이드 가드바 UI */
+        .x-sidebar-left { width: 275px; height: 100vh; position: fixed; left: calc(50% - 475px); top: 0; padding: 12px 20px; display: flex; flex-direction: column; justify-content: space-between; border-right: 1px solid #eff3f4; z-index: 100; }
+        @media (max-width: 1000px) { .x-sidebar-left { width: 70px; left: 0; padding: 12px 8px; align-items: center; } .nav-text-label, .btn-tweet-modal-open span { display: none; } .btn-tweet-modal-open { width: 46px; height: 46px; padding: 0; border-radius: 50%; display: flex; align-items: center; justify-content: center; } }
         
-        /* 세그먼트 소셜 상단 탭 메뉴 규격 */
-        .sns-tab-group { display: flex; background-color: #f2f4f6; border-radius: 12px; padding: 4px; margin-bottom: 8px; gap: 4px; }
-        .sns-tab-btn { flex: 1; border: none; padding: 12px; border-radius: 8px; font-size: 14px; font-weight: 700; color: #4e5968; background-color: transparent; cursor: pointer; transition: all 0.2s; text-align: center; }
-        .sns-tab-btn.active { background-color: #1967d2; color: #ffffff; box-shadow: 0 2px 6px rgba(25, 103, 210, 0.15); }
+        .logo-x-area { padding: 12px; cursor: pointer; display: inline-block; }
+        .nav-menu-list { display: flex; flex-direction: column; gap: 4px; margin-top: 4px; width: 100%; }
+        .nav-item-row { display: flex; align-items: center; gap: 20px; padding: 12px; border-radius: 9999px; cursor: pointer; font-size: 20px; font-weight: 500; color: #0f1419; transition: background-color 0.2s; width: fit-content; text-decoration: none; }
+        .nav-item-row:hover { background-color: rgba(15, 20, 25, 0.1); color: #1967d2; }
+        .nav-item-row.active { font-weight: 700; color: #1967d2; }
+        
+        /* 트위터 스펙: 푸른색 거대 트윗 모달 발동 버튼 */
+        .btn-tweet-modal-open { width: 90%; background-color: #1967d2; color: #ffffff; border: none; padding: 14px; border-radius: 9999px; font-size: 15px; font-weight: 700; cursor: pointer; text-align: center; margin-top: 16px; box-shadow: 0 4px 12px rgba(25,103,210,0.15); transition: background-color 0.2s; }
+        .btn-tweet-modal-open:hover { background-color: #1152b3; }
+        
+        /* 2. 중앙 본체 피드 타임라인 영역 */
+        .x-main-timeline-zone { margin-left: 275px; width: 600px; min-height: 100vh; border-right: 1px solid #eff3f4; display: flex; flex-direction: column; }
+        @media (max-width: 1000px) { .x-main-timeline-zone { margin-left: 70px; width: calc(100% - 70px); max-width: 600px; } }
+        
+        .timeline-header-sticky { position: sticky; top: 0; background-color: rgba(255, 255, 255, 0.85); backdrop-filter: blur(12px); border-bottom: 1px solid #eff3f4; padding: 16px; font-size: 20px; font-weight: 700; z-index: 50; display: flex; justify-content: space-between; align-items: center; }
+        .sns-sub-tabs { display: flex; border-bottom: 1px solid #eff3f4; background-color: #ffffff; }
+        .sns-sub-btn { flex: 1; background: none; border: none; padding: 16px 0; font-size: 15px; font-weight: 600; color: #536471; cursor: pointer; text-align: center; position: relative; }
+        .sns-sub-btn.active { color: #0f1419; font-weight: 700; }
+        .sns-sub-btn.active::after { content: ""; position: absolute; bottom: 0; left: 35%; width: 30%; height: 4px; background-color: #1967d2; border-radius: 9999px; }
         
         .sns-panel { display: none; } .sns-panel.active { display: block; }
+        /* 3. 트위터 실물 캡처 연동 계층형 피드 및 메시지 버블 스타일셋 */
+        .post-item-box { border-bottom: 1px solid #eff3f4; padding: 16px; display: flex; gap: 12px; position: relative; }
+        .post-left-avatar { width: 40px; height: 40px; border-radius: 50%; background-color: #1967d2; color: #ffffff; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 700; text-transform: uppercase; cursor: pointer; flex-shrink: 0; }
+        .post-right-body { flex-grow: 1; }
+        .post-meta-line { display: flex; align-items: center; gap: 6px; font-size: 14.5px; margin-bottom: 4px; }
+        .post-author { font-weight: 700; color: #0f1419; text-decoration: none; }
+        .post-author:hover { text-decoration: underline; }
+        .post-time { font-size: 14px; color: #536471; }
+        .post-title-tag { font-size: 15px; font-weight: 800; color: #1967d2; margin-bottom: 4px; }
+        .post-text { font-size: 15px; line-height: 1.5; color: #0f1419; white-break: break-all; }
         
-        /* 트위터(X)/스레드 타임라인 양식 스타일 */
-        .form-textarea { width: 100%; padding: 14px; border-radius: 10px; border: 1px solid #d1d6db; font-size: 14.5px; font-weight: 500; color: #1b1c1e; outline: none; resize: none; height: 90px; transition: border-color 0.2s; }
-        .form-textarea:focus { border-color: #1967d2; background-color: #f4f9ff; }
-        .form-input { width: 100%; padding: 12px; border-radius: 8px; border: 1px solid #d1d6db; font-size: 14px; font-weight: 600; outline: none; }
+        /* 인스타 디엠 윈도우 */
+        .dm-container { padding: 16px; display: flex; flex-direction: column; height: calc(100vh - 120px); }
+        .dm-chat-window { border: 1px solid #eff3f4; border-radius: 16px; flex-grow: 1; overflow-y: auto; padding: 16px; background-color: #ffffff; margin-bottom: 14px; display: flex; flex-direction: column; gap: 10px; }
+        .dm-bubble { max-width: 70%; padding: 11px 16px; border-radius: 20px; font-size: 14.5px; line-height: 1.5; font-weight: 500; word-break: break-all; }
+        .dm-bubble.mine { background-color: #1967d2; color: #ffffff; align-self: flex-end; border-bottom-right-radius: 4px; }
+        .dm-bubble.opp { background-color: #eff3f4; color: #0f1419; align-self: flex-start; border-bottom-left-radius: 4px; }
+        .dm-sender-label { font-size: 11px; color: #536471; margin-bottom: -4px; font-weight: 600; padding: 0 4px; }
+        .dm-form-row { display: flex; gap: 8px; }
+        
+        /* 100점 만점 평판지수 패널 */
+        .rep-form-box { padding: 20px; }
+        .form-group { margin-bottom: 18px; }
+        .form-label { display: block; font-size: 14px; font-weight: 700; color: #0f1419; margin-bottom: 8px; }
+        .form-input { width: 100%; padding: 14px; border-radius: 12px; border: 1px solid #cfd9de; font-size: 14.5px; outline: none; }
         .form-input:focus { border-color: #1967d2; }
         
-        .post-item-box { border-bottom: 1px solid #f2f4f6; padding: 16px 4px; line-height: 1.6; }
-        .post-item-box:last-child { border-bottom: none; }
-        .post-author { font-weight: 700; color: #1967d2; margin-right: 6px; font-size: 14.5px; }
-        .post-time { font-size: 12px; color: #8b95a1; margin-left: 8px; }
-        .post-text { font-size: 14.5px; color: #333d4b; margin-top: 4px; }
-        
-        /* 인스타그램 다이렉트 메시지(DM) 윈도우 스타일 */
-        .dm-chat-window { border: 1px solid #e5e8eb; border-radius: 12px; height: 320px; overflow-y: auto; padding: 16px; background-color: #f9fafb; margin-bottom: 12px; display: flex; flex-direction: column; gap: 10px; }
-        .dm-bubble { max-width: 75%; padding: 10px 14px; border-radius: 14px; font-size: 14px; line-height: 1.5; font-weight: 500; word-break: break-all; }
-        .dm-bubble.mine { background-color: #1967d2; color: #ffffff; align-self: flex-end; border-bottom-right-radius: 2px; }
-        .dm-bubble.opp { background-color: #ffffff; color: #262626; align-self: flex-start; border-bottom-left-radius: 2px; border: 1px solid #e5e8eb; }
-        .dm-sender-label { font-size: 11px; color: #8b95a1; margin-bottom: -4px; font-weight: 600; }
-        
-        /* 100점 만점 평판 검증 보드 */
-        .rep-card-item { padding: 14px; border-bottom: 1px solid #f2f4f6; font-size: 14px; line-height: 1.6; }
-        .rep-card-item:last-child { border-bottom: none; }
-        .rep-score-tag { display: inline-block; background-color: #fff0f0; color: #f5222d; padding: 2px 6px; border-radius: 4px; font-size: 11px; font-weight: 800; margin-left: 6px; }
-        .rep-score-tag.high { background-color: #e8f3ff; color: #1967d2; }
-        
-        .btn-official-blue { width: 100%; background-color: #1967d2; color: #ffffff; padding: 14px; border: none; border-radius: 10px; font-size: 14.5px; font-weight: 600; cursor: pointer; text-align: center; transition: opacity 0.2s; }
-        .btn-official-blue:hover { opacity: 0.9; }
-        .btn-mini-blue { background-color: #1967d2; color: #ffffff; border: none; padding: 6px 12px; border-radius: 6px; font-size: 12px; font-weight: 600; cursor: pointer; }
+        /* [사장님 오더 완벽 실현] 가시적 피로감을 없애줄 화면 중앙 팝업식 트윗 글쓰기 모달 배경 디자인 */
+        .tweet-modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.4); display: none; align-items: flex-start; justify-content: center; z-index: 500; padding-top: 80px; }
+        .tweet-modal-content { background-color: #ffffff; width: 100%; max-width: 520px; border-radius: 16px; padding: 20px; box-shadow: 0 8px 28px rgba(0,0,0,0.15); border: none; }
+        .modal-header-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+        .btn-modal-close { background: none; border: none; font-size: 20px; cursor: pointer; color: #0f1419; font-weight: 700; }
+        .btn-tweet-submit { background-color: #1967d2; color: white; border: none; padding: 8px 18px; border-radius: 9999px; font-size: 14.5px; font-weight: 700; cursor: pointer; }
+        .form-textarea { width: 100%; padding: 12px 0; border: none; font-size: 18px; font-weight: 500; color: #0f1419; outline: none; resize: none; height: 120px; }
     </style>
 </head>
 <body>
 
-    <header>
-        <div class="logo-container" onclick="location.href='/'">
-            <svg width="28" height="26" viewBox="0 0 100 90" fill="none" xmlns="http://w3.org">
-                <path d="M12.5 54C13.5 53 19.5 54.5 28.5 48.5C38.5 42 47 28 56.5 19.5C65.5 11 76.5 6.5 85.5 12.5+M" stroke="#1967d2" stroke-width="7.5" stroke-linecap="round" stroke-linejoin="round"/>
-                <path d="M51.5 59C58.5 67 71 68 80.5 60.5C90 53 92.5 39.5 85.5 32" stroke="#1967d2" stroke-width="7.5" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-            <span class="logo-text">SILVERWORKS 소셜룸</span>
+    <!-- 1. 좌측 트위터 공식 가드바 인터페이스 메뉴 -->
+    <div class="x-sidebar-left">
+        <div style="width: 100%;">
+            <div class="logo-x-area" onclick="location.href='/'">
+                <svg width="32" height="30" viewBox="0 0 100 90" fill="none" xmlns="http://w3.org">
+                    <path d="M12.5 54C13.5 53 19.5 54.5 28.5 48.5C38.5 42 47 28 56.5 19.5C65.5 11 76.5 6.5 85.5 12.5" stroke="#1967d2" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M51.5 59C58.5 67 71 68 80.5 60.5C90 53 92.5 39.5 85.5 32" stroke="#1967d2" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+            </div>
+            <div class="nav-menu-list">
+                <a href="/" class="nav-item-row"><span class="nav-text-label">구인구직 피드</span></a>
+                <a href="/sns.html" class="nav-item-row active"><span class="nav-text-label">소통 채널</span></a>
+                <a href="/board.html" class="nav-item-row"><span class="nav-text-label">매칭 게시판</span></a>
+                <a href="/profile.html" class="nav-item-row"><span class="nav-text-label">마이 프로필</span></a>
+            </div>
+            <!-- [가시성 혁신] 피로감을 없애주는 원터치 모달 열기 제어 버튼 단추 -->
+            <button type="button" class="btn-tweet-modal-open" onclick="openTweetWriteModal()"><span>소통 피드 올리기</span></button>
         </div>
-        <button class="btn-mini-blue" onclick="location.href='/profile.html'">마이페이지 가기</button>
-    </header>
-    <div class="container">
-        <!-- 3대 채널 통합 세그먼트 단추 대화 상자 제어 링크선 -->
-        <div class="sns-tab-group">
-            <button type="button" id="tabBtnTimeline" class="sns-tab-btn active" onclick="switchSnsPanel('timeline')">구인구직 타임라인 (X/스레드)</button>
-            <button type="button" id="tabBtnDm" class="sns-tab-btn" onclick="switchSnsPanel('dm')">비밀 디엠 메세지 (인스타DM)</button>
-            <button type="button" id="tabBtnRep" class="sns-tab-btn" onclick="switchSnsPanel('rep')">100점 평판 보증서 기입실</button>
+    </div>
+
+    <!-- 2. 중앙 메인 트위터형 타임라인 피드 타깃 구역 -->
+    <div class="x-main-timeline-zone">
+        <div class="timeline-header-sticky">
+            <span>홈 소통방</span>
+        </div>
+        
+        <div class="sns-sub-tabs">
+            <button type="button" id="tabBtnTimeline" class="sns-sub-btn active" onclick="switchXPanel('timeline')">타임라인 피드</button>
+            <button type="button" id="tabBtnDm" class="sns-sub-btn" onclick="switchXPanel('dm')">비밀 디엠방</button>
+            <button type="button" id="tabBtnRep" class="sns-sub-btn" onclick="switchXPanel('rep')">100점 평판 기입실</button>
         </div>
 
-        <!-- [채널 1 구역] 트위터(X)/스레드 방식의 자율 한 줄 피드 타임라인 패널 -->
+        <!-- 가동 채널 1 : 트위터형 글 보드 피드 리스트 -->
         <div id="panelTimeline" class="sns-panel active">
-            <div class="info-card" style="margin-bottom:18px;">
-                <div class="card-header-title">지금 우리 공동체에 한 줄 생각 피드 배포하기</div>
-                <div class="form-group">
-                    <textarea id="postContentInput" class="form-textarea" placeholder="지금 어떤 생각을 하고 계시나요? 구인 사장님, 구직 시니어 회원들과 자율적으로 소통해 보세요."></textarea>
-                </div>
-                <button type="button" class="btn-official-blue" onclick="handleSubmitSnsPost()">실시간 소셜 한 줄 피드 배포 적재</button>
-            </div>
-            <div class="info-card">
-                <div class="card-header-title">실버웍스 소셜 라이브 타임라인 피드 피드백</div>
-                <div id="timelineFeedContainer"></div>
-            </div>
+            <div id="timelineFeedContainer"></div>
         </div>
 
-        <!-- [채널 2 구역] 인스타그램 디엠(DM) 규격의 회원간 1대1 비밀 통신 메시지 패널 -->
+        <!-- 가동 채널 2 : 1대1 비밀 디엠 윈도우룸 -->
         <div id="panelDm" class="sns-panel">
-            <div class="info-card">
-                <div class="card-header-title">인스타그램 DM 규격 1대1 다이렉트 비밀 메시지 룸</div>
-                <div class="form-group" style="display:flex; gap:10px; margin-bottom:12px;">
-                    <input type="text" id="dmReceiverInput" class="form-input" placeholder="상대방 회원 아이디(ID)를 정확히 입력하세요">
-                    <button type="button" class="btn-mini-blue" style="min-width:90px;" onclick="handleFetchDmLog()">비밀대화 연결</button>
+            <div class="dm-container">
+                <div class="form-group" style="display:flex; gap:8px; margin-bottom:12px;">
+                    <input type="text" id="dmReceiverInput" class="form-input" style="padding:10px;" placeholder="상대방 회원 ID를 지정 입력하세요">
+                    <button type="button" class="btn-tweet-submit" style="border-radius:10px;" onclick="handleFetchDmLog()">대화방 연결</button>
                 </div>
-                
-                <!-- 실시간 메시지 버블이 착륙 표출되는 채팅 윈도우 -->
                 <div id="dmChatWindowBox" class="dm-chat-window">
-                    <div style="text-align:center; color:#8b95a1; font-size:13px; margin:auto 0;">상대방 아이디를 지정하여 대화방을 개통해 주세요.</div>
+                    <div style="text-align:center; color:#536471; font-size:13.5px; margin:auto 0;">대화할 회원의 아이디를 기입하고 연결해 주세요.</div>
                 </div>
-
-                <div class="form-group" style="display:flex; gap:10px; margin-bottom:0;">
-                    <input type="text" id="dmMessageInput" class="form-input" placeholder="비밀 메시지 내용을 타이핑하세요..." onkeypress="if(event.keyCode===13) handleSendDmMessage()">
-                    <button type="button" class="btn-mini-blue" style="min-width:80px; background-color:#1967d2;" onclick="handleSendDmMessage()">보내기</button>
+                <div class="dm-form-row">
+                    <input type="text" id="dmMessageInput" class="form-input" placeholder="비밀 디엠 메시지를 입력하세요..." onkeypress="if(event.keyCode===13) handleSendXDm()">
+                    <button type="button" class="btn-tweet-submit" onclick="handleSendXDm()">전송</button>
                 </div>
             </div>
         </div>
 
-        <!-- [채널 3 구역] 사장님 지시 전면 반영: 100점 만점 기준 절대 평판 지수 기입 패널 -->
+        <!-- 가동 채널 3 : 100점 기준 평판 보증서 작성실 -->
         <div id="panelRep" class="sns-panel">
-            <div class="info-card">
-                <div class="card-header-title">100점 절대 평점 기준 회원 평판 검증 보증서 기입 제출처</div>
-                <p style="font-size:13px; color:#6b7684; margin-bottom:16px; line-height:1.5;">상대방 회원(특히 근무 시니어)의 아이디를 지정하고 100점 만점 기준으로 점수와 피드백을 주입해 주세요. 평정 즉시 해당 회원의 프로필 평판 평점 지표에 동적 누적 연동 반영됩니다.</p>
-                
+            <div class="rep-form-box">
                 <div class="form-group">
-                    <label class="form-label">평가 대상 회원 아이디 (ID)</label>
-                    <input type="text" id="repTargetInput" class="form-input" placeholder="대상자 아이디를 기입하세요">
+                    <label class="form-label">평가 보증 대상 회원 아이디 (ID)</label>
+                    <input type="text" id="repTargetInput" class="form-input" placeholder="상대방 아이디를 정확히 기입">
                 </div>
                 <div class="form-group">
-                    <label class="form-label">부여할 절대 평판 신용 점수 (1점 ~ 100점 만점 자율 배정)</label>
+                    <label class="form-label">부여할 절대 평판 점수 (1점 ~ 100점 만점 기준 보존 배정)</label>
                     <input type="number" id="repScoreInput" class="form-input" min="1" max="100" value="100">
                 </div>
                 <div class="form-group">
-                    <label class="form-label">사장님/동료 관점의 명확한 실물 평판 검증 피드백 문장</label>
-                    <input type="text" id="repTextInput" class="form-input" placeholder="예: 무단 노쇼나 주휴수당 분쟁 소지 없이 100점 만점에 100점짜리 베테랑 근무 성실도를 보여주셨습니다.">
+                    <label class="form-label">실물 평판 신용 피드백 검증 문장</label>
+                    <input type="text" id="repTextInput" class="form-input" placeholder="예: 약속 준수율 100점 만점에 100점짜리 베테랑 시니어 회원입니다.">
                 </div>
-                <button type="button" class="btn-official-blue" onclick="handleRegisterSnsReputation()">100점 기준 평판 보증서 실시간 제출 송출</button>
+                <button type="button" class="btn-tweet-submit" style="width:100%; padding:14px; border-radius:12px; font-size:15px;" onclick="handleRegisterXReputation()">100점 기준 평판 보증서 실시간 제출</button>
             </div>
         </div>
     </div>
-    <!-- [X타임라인·인스타DM·100점평판 실시간 바인딩 가동 엔진 스크립트] -->
+
+    <!-- [사장님 지시 완벽 구현] 가시적 피로감을 완전히 제로화 시키는 화면 중앙 팝업 모달창 컴포넌트 구조 -->
+    <div id="tweetWriteModal" class="tweet-modal-overlay">
+        <div class="tweet-modal-content">
+            <div class="modal-header-row">
+                <button type="button" class="btn-modal-close" onclick="closeTweetWriteModal()">✕</button>
+                <button type="button" class="btn-tweet-submit" onclick="handleSubmitXPost()">트윗 배포</button>
+            </div>
+            <div class="form-group" style="margin-bottom:8px;">
+                <input type="text" id="postTitleInput" class="form-input" style="border:none; padding:4px 0; font-size:15px; font-weight:700; color:#1967d2;" placeholder="공고 소식 제목 또는 말머리 기입 (선택)">
+            </div>
+            <div class="form-group" style="margin-bottom:0;">
+                <textarea id="postContentInput" class="form-textarea" placeholder="무슨 일이 일어나고 있나요? 생각을 나누어 보세요."></textarea>
+            </div>
+        </div>
+    </div>
+    <!-- [X모달제어·인스타DM·100점평판 실시간 바인딩 가동 엔진 스크립트] -->
     <script>
         let myId = null;
         let dmInterval = null;
@@ -139,16 +169,28 @@
         document.addEventListener("DOMContentLoaded", function() {
             myId = localStorage.getItem('sw_username');
             if (!myId) {
-                alert('알림: 보안 세션이 만료되었습니다. 로그인 페이지로 워프합니다.');
+                alert('알림: 보안 세션이 만료되었습니다. 로그인 페이지로 이동합니다.');
                 location.href = '/login.html';
                 return;
             }
             loadTimelinePosts();
         });
 
+        // [모달 제어 엔진 신설] 글쓰기 모달 팝업창 열기 및 닫기 기능
+        function openTweetWriteModal() {
+            document.getElementById('tweetWriteModal').style.display = 'flex';
+            document.getElementById('postContentInput').focus();
+        }
+
+        function closeTweetWriteModal() {
+            document.getElementById('tweetWriteModal').style.display = 'none';
+            document.getElementById('postTitleInput').value = '';
+            document.getElementById('postContentInput').value = '';
+        }
+
         // 3대 소셜 채널 탭 패널 동적 전환 스위칭 함수
-        function switchSnsPanel(type) {
-            document.querySelectorAll('.sns-tab-btn').forEach(b => b.classList.remove('active'));
+        function switchXPanel(type) {
+            document.querySelectorAll('.sns-sub-btn').forEach(b => b.classList.remove('active'));
             document.querySelectorAll('.sns-panel').forEach(p => p.classList.remove('active'));
             clearInterval(dmInterval);
 
@@ -165,7 +207,7 @@
             }
         }
 
-        // 1. 트위터(X)/스레드 방식 실시간 타임라인 게시글 파싱 로드 함수
+        // 1. 트위터(X) 실물 캡처 연동형 계층 타임라인 로드 파싱 함수
         function loadTimelinePosts() {
             const container = document.getElementById('timelineFeedContainer');
             fetch('/api/sns/posts')
@@ -173,43 +215,51 @@
                 .then(data => {
                     container.innerHTML = '';
                     if (!data.posts || data.posts.length === 0) {
-                        container.innerHTML = '<p style="text-align:center; color:#8b95a1; padding:20px 0; font-size:13.5px;">현재 실시간 타임라인에 등록된 게시글 소통 피드가 없습니다.</p>';
+                        container.innerHTML = '<p style="text-align:center; color:#536471; padding:40px 0; font-size:14.5px;">현재 타임라인에 등록된 소통 피드가 없습니다.</p>';
                         return;
                     }
                     data.posts.forEach(p => {
                         container.innerHTML += `
                             <div class="post-item-box">
-                                <div>
-                                    <span class="post-author" style="cursor:pointer;" onclick="location.href='/profile.html?username=${p.username}'">${p.username}</span>
-                                    <span class="post-time">${new Date(p.created_at).toLocaleString('ko-KR')}</span>
+                                <div class="post-left-avatar" onclick="location.href='/profile.html?username=${p.username}'">
+                                    ${p.username.substring(0, 2)}
                                 </div>
-                                <div class="post-text">${p.content}</div>
+                                <div class="post-right-body">
+                                    <div class="post-meta-line">
+                                        <span class="post-author" style="cursor:pointer;" onclick="location.href='/profile.html?username=${p.username}'">@${p.username}</span>
+                                        <span class="post-time">· ${new Date(p.created_at).toLocaleDateString('ko-KR')}</span>
+                                    </div>
+                                    <div class="post-title-tag">[${p.title || '일반피드'}]</div>
+                                    <div class="post-text">${p.content}</div>
+                                </div>
                             </div>
                         `;
                     });
                 });
         }
 
-        function handleSubmitSnsPost() {
+        // 모달창에서 입력한 값을 백엔드 디스크 스키마 저장소로 전송 파싱하는 함수
+        function handleSubmitXPost() {
+            const title = document.getElementById('postTitleInput').value.trim();
             const content = document.getElementById('postContentInput').value.trim();
-            if (!content) { alert('내용을 입력하세요.'); return; }
+            if (!content) { alert('트윗 내용을 입력하세요.'); return; }
 
             fetch('/api/sns/posts/create', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ username: myId, content: content })
+                body: JSON.stringify({ username: myId, title: title, content: content })
             }).then(() => {
-                alert('소셜 타임라인 한 줄 피드 배포 적재 성공!');
-                document.getElementById('postContentInput').value = '';
+                alert('트위터(X) 스타일 소셜 피드가 성공적으로 배포 적재되었습니다!');
+                closeTweetWriteModal();
                 loadTimelinePosts();
             });
         }
 
-        // 2. 인스타그램 DM 규격 1대1 다이렉트 메시지 실시간 파싱 추적 함수
+        // 2. 인스타그램 DM 규격 1대1 다이렉트 메시지 파싱 연동
         function handleFetchDmLog() {
             const receiver = document.getElementById('dmReceiverInput').value.trim();
             if (!receiver) { alert('상대방 아이디를 기입하세요.'); return; }
-            if (receiver === myId) { alert('알림: 나 자신과의 대화방은 지원하지 않습니다.'); return; }
+            if (receiver === myId) { alert('알림: 본인 자가 대화방은 연동하지 않습니다.'); return; }
 
             clearInterval(dmInterval);
             const win = document.getElementById('dmChatWindowBox');
@@ -220,7 +270,7 @@
                     .then(data => {
                         win.innerHTML = '';
                         if (!data.dms || data.dms.length === 0) {
-                            win.innerHTML = `<div style="text-align:center; color:#8b95a1; font-size:13px; margin:auto 0;">${receiver} 회원님과의 비밀 대화방이 개통되었습니다. 선제 메시지를 보내보세요.</div>`;
+                            win.innerHTML = `<div style="text-align:center; color:#536471; font-size:13.5px; margin:auto 0;">@${receiver} 회원님과의 비밀 대화방이 개통되었습니다.</div>`;
                             return;
                         }
                         data.dms.forEach(d => {
@@ -238,7 +288,7 @@
             dmInterval = setInterval(fetchAction, 2000); // 2초 주기 실시간 폴링 가동
         }
 
-        function handleSendDmMessage() {
+        function handleSendXDm() {
             const receiver = document.getElementById('dmReceiverInput').value.trim();
             const message = document.getElementById('dmMessageInput').value.trim();
             if (!receiver || !message) return;
@@ -253,21 +303,21 @@
             });
         }
 
-        // 3. [사장님 지시 완벽 이행] 100점 기준 절대 평판 신용 서식 제출 등록 함수
-        function handleRegisterSnsReputation() {
+        // 3. 100점 절대 기준 평판 보증서 등록 함수
+        function handleRegisterXReputation() {
             const target = document.getElementById('repTargetInput').value.trim();
             const score = parseInt(document.getElementById('repScoreInput').value) || 100;
             const text = document.getElementById('repTextInput').value.trim();
 
-            if (!target || !text) { alert('대상 아이디와 평판 피드백 문항을 빠짐없이 기입해 주세요.'); return; }
-            if (score < 1 || score > 100) { alert('평판 점수는 1점부터 100점 만점 범위 내에서 기입하셔야 전산 연동됩니다.'); return; }
+            if (!target || !text) { alert('대상 아이디와 평판 피드백 문항을 누락 없이 입력하세요.'); return; }
+            if (score < 1 || score > 100) { alert('평판 점수는 1점부터 100점 만점 범위 내에서 전산 연동됩니다.'); return; }
 
             fetch('/api/sns/reputation/create', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ target_id: target, author_id: myId, review_text: text, score: score })
             }).then(() => {
-                alert(`100점 만점 기준 절대 평판 보증서 제출 대성공!\n\n${target} 회원님의 신용 지표 지리에 즉시 마운트 누적 결속되었습니다.\n본 명세 로그 데이터는 최고 관리자 콘솔 대시보드(admin.html)로 실시간 전달 연동되었습니다.`);
+                alert(`100점 만점 기준 절대 평판 보증서 전송 완료!\n\n@${target} 회원님의 마이프로필 신용 통계 지표에 실시간 바인딩 연동되었습니다.`);
                 document.getElementById('repTargetInput').value = '';
                 document.getElementById('repScoreInput').value = 100;
                 document.getElementById('repTextInput').value = '';

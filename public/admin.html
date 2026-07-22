@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>SILVERWORKS 최고관리자 콘솔 - 마스터 전권 제어실</title>
-    <!-- 혼선 유도 색상을 완벽 박멸하고 토스 스타일 오션블루 단일 테마 및 운영자 강제 처분 전용 CSS -->
+    <!-- 혼선 유도 색상을 완벽 박멸하고 토스 스타일 오션블루 단일 테마 및 원천 계정 열람 모달 전용 CSS -->
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, sans-serif; -webkit-tap-highlight-color: transparent; }
         body { background-color: #f9fafb; color: #333d4b; padding-bottom: 60px; }
@@ -19,11 +19,18 @@
         .fitness-input { width: 75px; padding: 6px; text-align: center; border: 1px solid #d1d6db; border-radius: 6px; font-weight: 600; color: #1b1c1e; outline: none; }
         .fitness-input:focus { border-color: #1967d2; background-color: #f4f9ff; }
         
-        /* 오션 블루 오피셜 및 운영자 강제 삭제 처분 빨간색 단추 디자인 규격 */
-        .btn { background: #1967d2; color: white; border: none; padding: 8px 14px; border-radius: 6px; cursor: pointer; font-size: 13px; font-weight: 600; transition: opacity 0.2s; }
-        .btn:hover { opacity: 0.9; }
+        .btn { background: #1967d2; color: white; border: none; padding: 8px 14px; border-radius: 6px; cursor: pointer; font-size: 13px; font-weight: 600; }
         .btn-purge { background: #f5222d; color: white; border: none; padding: 6px 12px; border-radius: 6px; cursor: pointer; font-size: 12px; font-weight: 700; }
         .btn-purge:hover { opacity: 0.85; }
+        
+        /* [사장님 오더 완벽 이식] 가입 회원 계정 실시간 강제 열람 검출용 중앙 팝업 모달창 스타일 명세 */
+        .inspect-modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.4); display: none; align-items: center; justify-content: center; z-index: 600; padding: 20px; }
+        .inspect-modal-content { background-color: #ffffff; width: 100%; max-width: 580px; border-radius: 16px; padding: 24px; box-shadow: 0 8px 32px rgba(0,0,0,0.15); max-height: 85vh; overflow-y: auto; }
+        .inspect-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px; border-bottom: 1px solid #e5e8eb; padding-bottom: 12px; }
+        .inspect-close-btn { background: none; border: none; font-size: 22px; cursor: pointer; color: #4e5968; font-weight: 700; }
+        .inspect-scroll-box { padding: 4px 0; }
+        .click-id-link { color: #1967d2; font-weight: 700; cursor: pointer; text-decoration: underline; }
+        .click-id-link:hover { color: #1152b3; }
     </style>
 </head>
 <body>
@@ -33,12 +40,12 @@
     </header>
     <!-- 섹션 1: 가입 명단 및 4대 체력 스펙 실시간 입력 수정 관제판 -->
     <div class="card">
-        <h3>1. 회원 가입 승인 및 4대 체력 측정 스펙 실시간 직접 입력 제어 패널</h3>
+        <h3>1. 회원 가입 승인 및 4대 체력 측정 스펙 실시간 직접 입력 제어 패널 (ID 클릭 시 강제 열람 모달 가동)</h3>
         <div class="table-container">
             <table>
                 <thead>
                     <tr>
-                        <th>아이디</th>
+                        <th>아이디(클릭)</th>
                         <th>성명/매장명</th>
                         <th>연락처</th>
                         <th>등급 분류</th>
@@ -65,7 +72,7 @@
                 <thead>
                     <tr>
                         <th>공고 ID</th>
-                        <th>사장님 ID</th>
+                        <th>사장님 ID(클릭)</th>
                         <th>매장 구인처</th>
                         <th>피크타임 공고 제목 명세</th>
                         <th>근무일자</th>
@@ -99,10 +106,62 @@
             </table>
         </div>
     </div>
-    <!-- [최고관리자 데이터 제어 및 실시간 스펙·소셜 전권 통제 엔진 스크립트 1단] -->
+    <!-- 섹션 4: [소셜 네트워크(SNS) 게시글 및 1대1 DM 메시지, 100점 평판 영구 파쇄 제어반] -->
+    <div class="card" style="border: 2px solid #f5222d;">
+        <h3 style="color:#f5222d; border-left-color:#f5222d;">4. 실버웍스 소셜 공동체 생태계 실시간 감시 및 운영자 강제 삭제 통제 패널</h3>
+        
+        <div style="margin-top: 16px;">
+            <h4 style="font-size:13.5px; font-weight:700; color:#262626; margin-bottom:6px;">📊 가동 채널 A: 구인구직 타임라인 (X/스레드) 게시글 원천 관리 피드</h4>
+            <div class="table-container" style="max-height: 200px; overflow-y: auto;">
+                <table>
+                    <thead>
+                        <tr><th>글 번호</th><th>작성자 ID</th><th>말머리 제목</th><th>게시물 본문 내용</th><th>작성 일자</th><th>운영자 처분</th></tr>
+                    </thead>
+                    <tbody id="adminTimelineBody"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <div style="margin-top: 24px;">
+            <h4 style="font-size:13.5px; font-weight:700; color:#262626; margin-bottom:6px;">📊 가동 채널 B: 인스타그램 DM 규격 1대1 다이렉트 비밀 메시지 추적 피드</h4>
+            <div class="table-container" style="max-height: 200px; overflow-y: auto;">
+                <table>
+                    <thead>
+                        <tr><th>메시지 ID</th><th>송신자 (발신)</th><th>수신자 (대상)</th><th>비밀 메시지 내용 명세</th><th>발송 일자</th><th>운영자 처분</th></tr>
+                    </thead>
+                    <tbody id="adminDmBody"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <div style="margin-top: 24px;">
+            <h4 style="font-size:13.5px; font-weight:700; color:#262626; margin-bottom:6px;">📊 가동 채널 C: 100점 만점 기준 절대 평판 리뷰 보증서 감시 피드</h4>
+            <div class="table-container" style="max-height: 200px; overflow-y: auto;">
+                <table>
+                    <thead>
+                        <tr><th>리뷰 번호</th><th>평가 대상자</th><th>작성 사장님</th><th>평판 검증 피드백 문장</th><th>부여점수</th><th>평가 일자</th><th>운영자 처분</th></tr>
+                    </thead>
+                    <tbody id="adminReviewBody"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- [신설 기재] 가입 회원 계정 강제 원천 열람 출현 팝업 모달창 컴포넌트 HTML 구조 -->
+    <div id="inspectUserModal" class="inspect-modal-overlay">
+        <div class="inspect-modal-content">
+            <div class="inspect-header">
+                <h3 style="margin-bottom:0; border:none; padding:0; font-size:17px;" id="inspectModalTitle">마스터 신원 원장 영구 검출록</h3>
+                <button type="button" class="inspect-close-btn" onclick="closeInspectUserModal()">✕</button>
+            </div>
+            <div class="inspect-scroll-box" id="inspectModalContentBox"></div>
+        </div>
+    </div>
+
+    <!-- [최고관리자 데이터 제어 및 실시간 스펙·소셜 전권 통제 엔진 스크립트 2단 코어] -->
     <script>
         function loadAdmin() {
-            // 1. 가입 회원 명단 실시간 추출 및 4대 체력 스펙 바인딩
+            // 1. 가입 회원 명단 실시간 추출 및 4대 체력 스펙 바인딩 (아이디 클릭 시 원천 열람 강제 연결)
             fetch('/api/admin/users')
                 .then(res => res.json())
                 .then(data => {
@@ -124,7 +183,7 @@
                             `;
                         }
                         tr.innerHTML = `
-                            <td style="font-weight:600; color:#1967d2;">${u.username}</td>
+                            <td><span class="click-id-link" onclick="openInspectUserModal('${u.username}')">${u.username}</span></td>
                             <td style="font-weight:700;">${u.name}</td>
                             <td>${u.phone}</td>
                             <td><span style="font-weight:600; color:#4e5968;">${u.role === 'employer' ? '구인 사장님' : '구직 시니어'}</span></td>
@@ -135,52 +194,7 @@
                         body.appendChild(tr);
                     });
                 });
-
-            // 2. 사장님이 등록 요청한 모든 원본 구인공고 목록 추출 파싱
-            fetch('/api/admin/jobs-all')
-                .then(res => res.json())
-                .then(data => {
-                    const body = document.getElementById('jobAdminBody');
-                    body.innerHTML = '';
-                    if(!data.jobs || data.jobs.length === 0) {
-                        body.innerHTML = `<tr><td colspan="7" style="text-align:center; color:#8b95a1; padding:20px 0;">현재 심사 대기 중인 공고 명세가 존재하지 않습니다.</td></tr>`;
-                        return;
-                    }
-                    data.jobs.forEach(j => {
-                        const tr = document.createElement('tr');
-                        const isApproved = j.status === 'approved';
-                        tr.innerHTML = `
-                            <td>SL-${j.id}</td>
-                            <td style="color:#6b7684;">${j.employer_id}</td>
-                            <td style="font-weight:700;">${j.company}</td>
-                            <td style="color:#4e5968;">${j.title}</td>
-                            <td>${j.work_date}</td>
-                            <td style="font-weight:700; color:#1967d2;">${j.wage.toLocaleString()}원</td>
-                            <td>
-                                ${isApproved ? `<span style="font-weight:700; color:#4e5968;">✓ 개통 기재중</span>` : `<button type="button" class="btn" onclick="approveJob(${j.id})">공고 심사 승인</button>`}
-                            </td>
-                        `;
-                        body.appendChild(tr);
-                    });
-                });
-
-            // 3. employer.html 문의하기 누르는 즉시 실시간 연동 포착 출력 파싱
-            const consultStore = localStorage.getItem('sw_consult_store');
-            const consultPhone = localStorage.getItem('sw_consult_phone');
-            const consultBody = document.getElementById('storeConsultBody');
-            if (consultStore && consultPhone) {
-                consultBody.innerHTML = `
-                    <tr>
-                        <td><span style="color:#1967d2; font-weight:800;">🎯 문의 실시간 접수됨</span></td>
-                        <td style="font-weight:700;">${consultStore}</td>
-                        <td style="font-weight:700; color:#1967d2;">${consultPhone}</td>
-                        <td style="color:green; font-weight:700;">원터치 다이렉트 결속망 연결 완료</td>
-                    </tr>
-                `;
-            } else {
-                consultBody.innerHTML = `<tr><td colspan="4" style="text-align:center; color:#8b95a1; padding:20px 0;">실시간 매장 행정 문의 접수 피드를 대기 중입니다...</td></tr>`;
-            }
-            // 4. [소셜 대통합 통제망 연결] 게시물, DM 메시지, 100점 평판 실시간 감시 파싱
+            // 4. 소셜 대통합 통제망 연결 - 게시물, DM 메시지, 100점 평판 실시간 감시 파싱
             fetch('/api/admin/match-logs')
                 .then(res => res.json())
                 .then(data => {
@@ -188,13 +202,14 @@
                     const timelineBody = document.getElementById('adminTimelineBody');
                     timelineBody.innerHTML = '';
                     if(!data.posts || data.posts.length === 0) {
-                        timelineBody.innerHTML = `<tr><td colspan="5" style="text-align:center; color:#8b95a1; padding:10px 0;">소통실 게시글 내역이 비어있습니다.</td></tr>`;
+                        timelineBody.innerHTML = `<tr><td colspan="6" style="text-align:center; color:#8b95a1; padding:10px 0;">소통실 게시글 내역이 비어있습니다.</td></tr>`;
                     } else {
                         data.posts.forEach(p => {
                             timelineBody.innerHTML += `
                                 <tr>
                                     <td>${p.id}</td>
                                     <td style="font-weight:700; color:#1967d2;">${p.username}</td>
+                                    <td style="font-weight:800; color:#1152b3;">${p.title || '일반피드'}</td>
                                     <td>${p.content}</td>
                                     <td style="color:#8b95a1; font-size:12px;">${new Date(p.created_at).toLocaleString('ko-KR')}</td>
                                     <td><button type="button" class="btn-purge" onclick="purgeSnsPost(${p.id})">강제삭제</button></td>
@@ -247,7 +262,62 @@
         }
 
         // ==========================================================================
-        // 운영자 전권 처분: 버튼 원터치 클릭 시 즉시 데이터베이스 강제 파쇄 삭제 처리부
+        // [사장님 지시 완벽 이식] 운영자 특권: 가입 회원 아이디 클릭 즉시 강제 실시간 열람 모달 발동
+        // ==========================================================================
+        function openInspectUserModal(targetUsername) {
+            const overlay = document.getElementById('inspectUserModal');
+            const contentBox = document.getElementById('inspectModalContentBox');
+            
+            overlay.style.display = 'flex';
+            contentBox.innerHTML = '<p style="text-align:center; color:#536471; padding:20px 0;">서버 데이터베이스 물리 디스크 원본 사본 강제 파싱 추출 중...</p>';
+            
+            fetch(`/api/admin/inspect-user?target_username=${encodeURIComponent(targetUsername)}`)
+                .then(res => res.json())
+                .then(data => {
+                    if(!data.success) {
+                        contentBox.innerHTML = `<p style="color:#f5222d; font-weight:700;">추출 실패: ${data.message}</p>`;
+                        return;
+                    }
+                    const u = data.profile; const qa = data.senior_answers;
+                    let qaHtml = "";
+                    if(u.role === 'seeker' && qa) {
+                        qaHtml = `<h4 style="font-size:14px; color:#1967d2; margin-top:18px; margin-bottom:8px; border-top:1px dashed #e5e8eb; padding-top:12px;">📄 구직 베테랑 12단계 정밀 문진형 공식 이력서 사본</h4>`;
+                        const qLabels = ["조력자 구분 명세", "구직 베테랑 성함", "생년월일 명세", "휴대폰 번호 명세", "근무 희망 동네", "3층 계단 보행력 지표", "1시간 연속 도보 가능성", "현장 주의 지병 데이터", "식당/마트 청력 소통도", "카카오톡 메시지 활용도", "초단기 근로 수용성", "정부 노인일자리 중복참여 이력"];
+                        const answersArray = [qa.q1, qa.q2, qa.q3, qa.q4, qa.q5, qa.q6, qa.q7, qa.q8, qa.q9, qa.q10, qa.q11, qa.q12];
+                        
+                        for(let i=1; i<=12; i++) {
+                            qaHtml += `
+                                <div style="font-size:12px; font-weight:700; color:#536471; margin-top:8px;">항목 ${i}. ${qLabels[i-1]}</div>
+                                <div style="background:#f4f9ff; color:#1967d2; font-size:12.5px; padding:10px; border-radius:6px; margin-top:4px; font-weight:600; border:1px solid #e8f3ff;">${answersArray[i-1] || '미기입'}</div>
+                            `;
+                        }
+                    } else if(u.role === 'seeker') {
+                        qaHtml = `<p style="margin-top:14px; font-size:13px; color:#536471; text-align:center; background:#fafafa; padding:14px; border-radius:8px;">알림: 해당 구직 시니어 회원은 아직 12단계 문진 이력서를 제출하지 않은 공백 상태입니다.</p>`;
+                    } else {
+                        qaHtml = `<p style="margin-top:14px; font-size:13px; color:#536471; text-align:center; background:#fafafa; padding:14px; border-radius:8px;">알림: 해당 계정은 사장님(employer) 권한이므로 건강 문진 수집서 사본이 면제 대상입니다.</p>`;
+                    }
+                    
+                    contentBox.innerHTML = `
+                        <div style="font-size:14px; line-height:1.6; color:#333d4b;">
+                            <div style="display:flex; justify-content:space-between; padding:8px 0; border-bottom:1px solid #f2f4f6;"><strong>가입자 아이디(ID):</strong> <span style="font-weight:700; color:#1967d2;">${u.username}</span></div>
+                            <div style="display:flex; justify-content:space-between; padding:8px 0; border-bottom:1px solid #f2f4f6;"><strong>정식 성명/상호명:</strong> <span style="font-weight:700;">${u.name}</span></div>
+                            <div style="display:flex; justify-content:space-between; padding:8px 0; border-bottom:1px solid #f2f4f6;"><strong>실물 전화번호 연락처:</strong> <span style="font-weight:700; color:#1967d2;">${u.phone}</span></div>
+                            <div style="display:flex; justify-content:space-between; padding:8px 0; border-bottom:1px solid #f2f4f6;"><strong>회원 등급 권한 분류:</strong> <span>${u.role === 'employer' ? '구인 사장님 (employer)' : '구직 시니어 (seeker)'}</span></div>
+                            <div style="display:flex; justify-content:space-between; padding:8px 0; border-bottom:1px solid #f2f4f6;"><strong>체력 종합 검증 등급:</strong> <span style="font-weight:700;">${u.fitness_grade || '미인증'}</span></div>
+                            <div style="display:flex; justify-content:space-between; padding:8px 0; border-bottom:1px solid #f2f4f6;"><strong>전자 포인트 보유 잔액:</strong> <span style="font-weight:700; color:green;">${(u.points || 0).toLocaleString()} P</span></div>
+                        </div>
+                        ${qaHtml}
+                    `;
+                });
+        }
+
+        function closeInspectUserModal() {
+            document.getElementById('inspectUserModal').style.display = 'none';
+            document.getElementById('inspectModalContentBox').innerHTML = '';
+        }
+
+        // ==========================================================================
+        // 운영자 절대 전권: 버튼 원터치 클릭 시 즉시 가상 데이터베이스 원천 강제 파쇄 삭제
         // ==========================================================================
         function purgeSnsPost(id) {
             if(!confirm('경고: 운영자 특권으로 해당 타임라인 게시글을 전산망 상에서 즉시 강제 삭제 파쇄 처분합니까?')) return;
@@ -288,7 +358,7 @@
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ job_id: id, action_status: 'approved' })
             }).then(() => { 
-                alert('행정 심사 최종 승인 완료!\n\n해당 매장 구인공고의 전산 락이 해제되었으며 시니어 전용 매칭 게시판(board.html)에 실시간 공식 기재되었습니다.'); 
+                alert('행정 심사 최종 승인 완료!\n\n해당 매장 구인공고의 전산 락이 해제되었으며 공식 기재되었습니다.'); 
                 loadAdmin(); 
             });
         }

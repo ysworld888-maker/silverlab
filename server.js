@@ -1,6 +1,6 @@
 // ==========================================================================
-// SILVERWORKS (실버웍스) - 소셜 네트워크(SNS) 및 관리자 전권 통제 인프라 시스템
-// [특이사항] 파일별 전/중/후반부 3단계 분할 / 이모티콘 전량 박멸 / 100점 평판 기준 개편
+// SILVERWORKS (실버웍스) - 트위터(X) 미학 소셜룸 및 관리자 계정 열람 통제 시스템
+// [특이사항] 파일별 전/중/후반부 3단계 분할 / 모달 팝업창 공식 주입 / 이모티콘 전량 박멸
 // ==========================================================================
 
 const express = require('express');
@@ -22,7 +22,7 @@ const db = new sqlite3.Database(dbPath);
 
 const hashPw = (pw) => crypto.createHash('sha256').update(pw).digest('hex');
 
-// [소셜 인프라 개통] 100점 만점 평판 점수 보존을 위한 스키마 테이블 및 X(트위터) 타임라인, 인스타 DM 기록 보존 레이어 구축
+// [X 소셜 생태계 마운트] 100점 평판 기준선 및 트위터(X)형 모달 타이틀/콘텐츠 저장을 위한 스키마 테이블 초기화
 db.serialize(() => {
     db.run(`CREATE TABLE IF NOT EXISTS users (
         id INTEGER PRIMARY KEY AUTOINCREMENT, username TEXT UNIQUE, password TEXT, name TEXT, phone TEXT, role TEXT, status TEXT,
@@ -47,20 +47,18 @@ db.serialize(() => {
         id INTEGER PRIMARY KEY AUTOINCREMENT, job_id INTEGER, seeker_id TEXT, employer_id TEXT, check_in DATETIME, check_out DATETIME, status TEXT DEFAULT 'none'
     )`);
     
-    // 신설 1: 스레드 및 X(트위터) 규격의 텍스트 기반 소셜 타임라인 테이블 마운트
+    // 신설 보완: 트위터(X) 및 스레드 미학의 제목(title)과 본문을 개별 수집 보존할 소셜 테이블 업그레이드
     db.run(`CREATE TABLE IF NOT EXISTS sns_posts (
-        id INTEGER PRIMARY KEY AUTOINCREMENT, username TEXT, content TEXT, created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+        id INTEGER PRIMARY KEY AUTOINCREMENT, username TEXT, title TEXT, content TEXT, created_at DATETIME DEFAULT CURRENT_TIMESTAMP
     )`);
-    // 신설 2: 인스타그램 디엠(DM) 규격의 회원간 1대1 비밀 메시지 통신 보존 테이블 마운트
     db.run(`CREATE TABLE IF NOT EXISTS sns_dms (
         id INTEGER PRIMARY KEY AUTOINCREMENT, sender TEXT, receiver TEXT, message TEXT, created_at DATETIME DEFAULT CURRENT_TIMESTAMP
     )`);
-    // 신설 3: 사장님이 지정하신 [100점 만점 기준 절대 평판 신용 평가] 누적 산정용 영구 보존 테이블 마운트
     db.run(`CREATE TABLE IF NOT EXISTS reputation_reviews (
         id INTEGER PRIMARY KEY AUTOINCREMENT, target_id TEXT, author_id TEXT, review_text TEXT, score INTEGER, created_at DATETIME DEFAULT CURRENT_TIMESTAMP
     )`);
 });
-// 회원인증 및 권한 채널 제어 처리 통로
+// 회원가입 신청 트랜잭션 라우터
 app.post('/api/auth/register', (req, res) => {
     const { username, password, name, phone, role } = req.body;
     db.run(`INSERT INTO users (username, password, name, phone, role, status) VALUES (?, ?, ?, ?, ?, 'pending')`, 
@@ -70,6 +68,7 @@ app.post('/api/auth/register', (req, res) => {
         });
 });
 
+// 로그인 검증 필터 API
 app.post('/api/auth/login', (req, res) => {
     const { username, password, requested_role } = req.body;
     db.get(`SELECT * FROM users WHERE username = ? AND password = ?`, [username, hashPw(password)], (err, u) => {
@@ -81,20 +80,21 @@ app.post('/api/auth/login', (req, res) => {
 });
 
 // ==========================================================================
-// [신설] 2-1. SNS 소통실 X/스레드 스타일 타임라인 게시글 파싱 및 등록 API
+// [보완 이식] 2-1. SNS 소통실 트위터(X) 모달형 제목/내용 파싱 및 등록 API
 // ==========================================================================
 app.get('/api/sns/posts', (req, res) => {
     db.all(`SELECT * FROM sns_posts ORDER BY id DESC`, [], (err, rows) => res.json({ success: true, posts: rows || [] }));
 });
 
 app.post('/api/sns/posts/create', (req, res) => {
-    const { username, content } = req.body;
+    const { username, title, content } = req.body;
     if(!content || content.trim() === "") return res.status(400).json({ success: false });
-    db.run(`INSERT INTO sns_posts (username, content) VALUES (?, ?)`, [username, content.trim()], () => res.json({ success: true }));
+    const finalTitle = title && title.trim() !== "" ? title.trim() : "새로운 피드 소식";
+    db.run(`INSERT INTO sns_posts (username, title, content) VALUES (?, ?, ?)`, [username, finalTitle, content.trim()], () => res.json({ success: true }));
 });
 
 // ==========================================================================
-// [신설] 2-2. SNS 소통실 인스타그램 DM 규격 1대1 다이렉트 메시지 통신 API
+// 2-2. SNS 소통실 인스타그램 DM 규격 1대1 다이렉트 메시지 통신 API
 // ==========================================================================
 app.get('/api/sns/dms', (req, res) => {
     const { sender, receiver } = req.query;
@@ -109,7 +109,7 @@ app.post('/api/sns/dms/send', (req, res) => {
 });
 
 // ==========================================================================
-// [신설] 2-3. [사장님 오더] 100점 만점 기준 절대 평판 리뷰 등록 및 산출 파싱 API
+// [대대적 전산 개조] 2-3. 100점 만점 기준 절대 평판 리뷰 등록 및 산출 파싱 API
 // ==========================================================================
 app.get('/api/sns/reputation', (req, res) => {
     const { target_id } = req.query;
@@ -122,13 +122,13 @@ app.get('/api/sns/reputation', (req, res) => {
 
 app.post('/api/sns/reputation/create', (req, res) => {
     const { target_id, author_id, review_text, score } = req.body;
-    const finalScore = Math.max(1, Math.min(100, parseInt(score) || 100)); // 100점 락 제어 가드
+    const finalScore = Math.max(1, Math.min(100, parseInt(score) || 100)); // 100점 가드락 바인딩
     db.run(`INSERT INTO reputation_reviews (target_id, author_id, review_text, score) VALUES (?, ?, ?, ?)`,
         [target_id, author_id, review_text.trim(), finalScore], () => res.json({ success: true }));
 });
 
 // ==========================================================================
-// [신설] 2-4. [최고 운영자 전권 통제 API] 관리자실 버튼 원터치 클릭 시 즉시 강제 파쇄 삭제
+// [운영자 특권 통제] 2-4. 최고 관리자실 게시글/디엠/평판 리뷰 영구 파쇄 소멸 API
 // ==========================================================================
 app.post('/api/admin/purge/post', (req, res) => {
     db.run(`DELETE FROM sns_posts WHERE id = ?`, [req.body.id], () => res.json({ success: true }));
@@ -141,6 +141,19 @@ app.post('/api/admin/purge/dm', (req, res) => {
 app.post('/api/admin/purge/review', (req, res) => {
     db.run(`DELETE FROM reputation_reviews WHERE id = ?`, [req.body.id], () => res.json({ success: true }));
 });
+// ==========================================================================
+// [신설] 2-5. [사장님 오더 완벽 이식] 최고 관리자 계정 임의 강제 실시간 열람 API
+// ==========================================================================
+app.get('/api/admin/inspect-user', (req, res) => {
+    const { target_username } = req.query;
+    db.get(`SELECT username, name, phone, role, status, fitness_grade, fitness_grip, fitness_flex, fitness_cardio, points FROM users WHERE username = ?`, [target_username], (err, u) => {
+        if (!u) return res.status(404).json({ success: false, message: "존재하지 않는 회원 계정" });
+        db.get(`SELECT * FROM senior_qa WHERE username = ?`, [target_username], (err, qa) => {
+            res.json({ success: true, profile: u, senior_answers: qa || null });
+        });
+    });
+});
+
 // [핀테크 기능 가동 API] 사장님이 시니어를 선택해 고용 '확정하기'를 단행하는 채널
 app.post('/api/employer/confirm-seeker', (req, res) => {
     const { job_id, seeker_id } = req.body;
@@ -254,7 +267,7 @@ app.get('/api/attendance/status', (req, res) => {
     });
 });
 
-// 최고관리자 API - [소셜 대격변 반영] 포인트 로그와 더불어 SNS 모든 원천 데이터 묶음을 단일 패키지로 마스터 송출 관제
+// 최고관리자 API - 포인트 로그와 더불어 SNS 모든 원천 데이터 묶음을 단일 패키지로 마스터 송출 관제
 app.get('/api/admin/match-logs', (req, res) => {
     db.all(`SELECT * FROM sns_posts ORDER BY id DESC`, [], (err, postsRows) => {
         db.all(`SELECT * FROM sns_dms ORDER BY id DESC`, [], (err, dmsRows) => {

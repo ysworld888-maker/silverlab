@@ -3,377 +3,308 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>SILVERWORKS - 프로필 피드</title>
-    <!-- [인프라 대격변] 인스타그램 미학과 평판 시스템, 개인 자율 피드 엔진이 통합 결속된 상용 CSS 명세 -->
+    <title>SILVERWORKS - 마이 프로필</title>
+    <!-- [인스타 감성 완전 탈거] 트위터(X)의 와이드 배너 감성 미학과 상단 로그아웃 버튼이 주입된 프리미엄 상용 CSS -->
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; -webkit-tap-highlight-color: transparent; }
-        body { background-color: #ffffff; color: #262626; padding-bottom: 60px; }
-        header { display: flex; justify-content: space-between; align-items: center; padding: 14px 20px; background-color: #ffffff; border-bottom: 1px solid #dbdbdb; position: sticky; top: 0; z-index: 100; }
-        .logo-container { display: flex; align-items: center; gap: 10px; cursor: pointer; }
-        .logo-text { font-size: 20px; font-weight: 800; color: #1967d2; letter-spacing: -0.5px; }
-        .container { max-width: 935px; margin: 0 auto; padding: 30px 20px; }
+        body { background-color: #ffffff; color: #0f1419; margin: 0; display: flex; justify-content: center; min-height: 100vh; overflow-x: hidden; }
         
-        /* 인스타그램 오피셜 프로필 헤드 구역 UI 아키텍처 */
-        .insta-profile-header { display: flex; align-items: center; margin-bottom: 44px; gap: 40px; border-bottom: 1px solid #efefef; padding-bottom: 44px; }
-        @media (max-width: 735px) { .insta-profile-header { gap: 20px; margin-bottom: 24px; padding-bottom: 24px; } }
-        .avatar-circle-zone { flex-shrink: 0; width: 150px; height: 150px; border-radius: 50%; background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%); padding: 3px; display: flex; align-items: center; justify-content: center; }
-        @media (max-width: 735px) { .avatar-circle-zone { width: 90px; height: 90px; } }
-        .avatar-inner { width: 100%; height: 100%; border-radius: 50%; background-color: #1967d2; border: 4px solid #ffffff; color: #ffffff; font-size: 42px; font-weight: 800; display: flex; align-items: center; justify-content: center; text-transform: uppercase; }
-        @media (max-width: 735px) { .avatar-inner { font-size: 24px; border-width: 2px; } }
+        /* 트위터(X) 스타일: 메인 수직 가드바 레이아웃 일체화 동기화 */
+        .x-sidebar-left { width: 275px; height: 100vh; position: fixed; left: calc(50% - 475px); top: 0; padding: 12px 20px; display: flex; flex-direction: column; justify-content: space-between; border-right: 1px solid #eff3f4; z-index: 100; }
+        @media (max-width: 1000px) { .x-sidebar-left { width: 70px; left: 0; padding: 12px 8px; align-items: center; } .nav-text-label { display: none; } }
         
-        .profile-info-column { flex-grow: 1; }
-        .info-username-row { display: flex; align-items: center; gap: 20px; margin-bottom: 20px; flex-wrap: wrap; }
-        .info-username { font-size: 28px; font-weight: 300; color: #262626; }
+        .logo-x-area { padding: 12px; cursor: pointer; display: inline-block; }
+        .nav-menu-list { display: flex; flex-direction: column; gap: 4px; margin-top: 4px; width: 100%; }
+        .nav-item-row { display: flex; align-items: center; gap: 20px; padding: 12px; border-radius: 9999px; cursor: pointer; font-size: 20px; font-weight: 500; color: #0f1419; transition: background-color 0.2s; width: fit-content; text-decoration: none; }
+        .nav-item-row:hover { background-color: rgba(15, 20, 25, 0.1); color: #1967d2; }
+        .nav-item-row.active { font-weight: 700; color: #1967d2; }
         
-        /* 인스타그램 3대 지표 트래커 시스템 (피드 수, 평판 지수, 구직 횟수) */
-        .info-stats-row { display: flex; gap: 40px; margin-bottom: 20px; font-size: 16px; }
-        .stat-item { color: #262626; }
-        .stat-item span { font-weight: 600; color: #1967d2; }
-        .profile-bio-text { font-size: 16px; line-height: 1.5; font-weight: 400; color: #262626; }
-        .profile-bio-text strong { font-weight: 600; display: block; margin-bottom: 4px; }
-        /* 인스타그램 감성 탭 메뉴 및 그리드 보드 아키텍처 */
-        .insta-tabs-nav { display: flex; justify-content: center; border-top: 1px solid #dbdbdb; gap: 60px; }
-        .insta-tab-item { background: none; border: none; padding: 18px 0; font-size: 12px; font-weight: 600; color: #8e8e8e; cursor: pointer; letter-spacing: 1px; display: flex; align-items: center; gap: 6px; border-top: 1px solid transparent; margin-top: -1px; text-transform: uppercase; }
-        .insta-tab-item.active { color: #262626; border-top: 1px solid #262626; }
+        /* 중앙 트위터형 와이드 마이페이지 본체 단 구조 */
+        .x-main-timeline-zone { margin-left: 275px; width: 600px; min-height: 100vh; border-right: 1px solid #eff3f4; display: flex; flex-direction: column; position: relative; }
+        @media (max-width: 1000px) { .x-main-timeline-zone { margin-left: 70px; width: calc(100% - 70px); max-width: 600px; } }
         
-        .feed-content-zone { display: none; margin-top: 24px; }
-        .feed-content-zone.active { display: block; }
+        .timeline-header-sticky { position: sticky; top: 0; background-color: rgba(255, 255, 255, 0.85); backdrop-filter: blur(12px); border-bottom: 1px solid #eff3f4; padding: 16px; font-size: 20px; font-weight: 700; z-index: 50; display: flex; justify-content: space-between; align-items: center; }
         
-        /* 세련된 카드형 피드 및 리뷰 디자인 스펙 */
-        .info-card { background-color: #ffffff; border-radius: 12px; border: 1px solid #dbdbdb; padding: 24px; margin-bottom: 24px; box-shadow: 0 1px 2px rgba(0,0,0,0.03); }
-        .card-header-title { font-size: 15px; font-weight: 700; color: #262626; margin-bottom: 16px; border-bottom: 1px solid #efefef; padding-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px; }
+        /* [핵심 지시 오더 완벽 이행] 눈에 가장 잘 띄는 우측 상단의 정식 오션블루 로그아웃 버튼 스펙 */
+        .btn-logout-top-right { background-color: #ffffff; color: #ed4956; border: 1px solid #cfd9de; padding: 8px 16px; border-radius: 9999px; font-size: 14px; font-weight: 700; cursor: pointer; transition: background-color 0.2s; }
+        .btn-logout-top-right:hover { background-color: #fff0f1; border-color: #ed4956; }
+        
+        /* 트위터 공식 규격 상단 와이드 그레이 커버 및 침투형 원형 프로필 구역 */
+        .x-wide-cover-banner { width: 100%; height: 200px; background-color: #cfd9de; position: relative; }
+        .x-avatar-profile-wrap { width: 112px; height: 112px; border-radius: 50%; background-color: #1967d2; border: 4px solid #ffffff; position: absolute; left: 16px; bottom: -56px; color: #ffffff; font-size: 32px; font-weight: 800; display: flex; align-items: center; justify-content: center; text-transform: uppercase; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+        
+        .x-profile-details-area { padding: 68px 16px 20px 16px; border-bottom: 1px solid #eff3f4; }
+        .x-details-name { font-size: 22px; font-weight: 800; color: #0f1419; }
+        .x-details-handle { font-size: 14px; color: #536471; margin-top: 2px; }
+        /* 트위터(X) 스타일 슬림 지표 통계 스키마 트래커 */
+        .x-stats-row { display: flex; gap: 20px; margin-top: 12px; font-size: 14.5px; color: #536471; }
+        .x-stat-item span { font-weight: 700; color: #0f1419; }
+        
+        .x-bio-text-line { font-size: 15px; line-height: 1.5; color: #0f1419; margin-top: 12px; }
+        
+        /* 탭 구조 양식 */
+        .x-tabs-nav { display: flex; border-bottom: 1px solid #eff3f4; margin-top: 4px; }
+        .x-tab-btn { flex: 1; background: none; border: none; padding: 16px 0; font-size: 15px; font-weight: 600; color: #536471; cursor: pointer; text-align: center; position: relative; }
+        .x-tab-btn.active { color: #0f1419; font-weight: 700; }
+        .x-tab-btn.active::after { content: ""; position: absolute; bottom: 0; left: 35%; width: 30%; height: 4px; background-color: #1967d2; border-radius: 9999px; }
+        
+        .profile-content-zone { display: none; padding: 16px; }
+        .profile-content-zone.active { display: block; }
+        
+        /* 마이페이지 범용 정보 블록 카드 */
+        .info-card { background-color: #ffffff; border-radius: 16px; border: 1px solid #eff3f4; padding: 24px; margin-bottom: 20px; box-shadow: 0 1px 3px rgba(0,0,0,0.02); }
+        .card-header-title { font-size: 16px; font-weight: 700; color: #0f1419; margin-bottom: 16px; border-bottom: 1px solid #f2f4f6; padding-bottom: 10px; }
+        .data-row { display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid #f9fafb; font-size: 14px; }
+        .data-row:last-child { border-bottom: none; }
+        .data-label { font-weight: 600; color: #536471; }
+        .data-value { font-weight: 700; color: #0f1419; }
         
         .form-group { margin-bottom: 16px; }
-        .form-label { display: block; font-size: 13px; font-weight: 600; color: #4e5968; margin-bottom: 8px; }
-        .form-input { width: 100%; padding: 14px; border-radius: 8px; border: 1px solid #dbdbdb; font-size: 14px; font-weight: 500; color: #262626; outline: none; transition: border-color 0.2s; }
-        .form-input:focus { border-color: #a8a8a8; }
-        .form-textarea { width: 100%; padding: 14px; border-radius: 8px; border: 1px solid #dbdbdb; font-size: 14px; font-weight: 500; color: #262626; outline: none; resize: none; height: 100px; transition: border-color 0.2s; }
-        .form-textarea:focus { border-color: #a8a8a8; }
+        .form-label { display: block; font-size: 13.5px; font-weight: 600; color: #536471; margin-bottom: 8px; }
+        .form-input { width: 100%; padding: 14px; border-radius: 12px; border: 1px solid #cfd9de; font-size: 14.5px; font-weight: 600; color: #0f1419; outline: none; }
+        .form-input:focus { border-color: #1967d2; background-color: #f4f9ff; }
         
-        /* 오션 블루 오피셜 규격 및 인스타 감성 제어 단추 시스템 */
-        .btn-official-blue { width: 100%; background-color: #1967d2; color: #ffffff; padding: 14px; border: none; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer; text-align: center; transition: opacity 0.2s; }
-        .btn-official-blue:hover { opacity: 0.9; }
-        .btn-mini-danger { background-color: #ffffff; color: #ed4956; border: 1px solid #dbdbdb; padding: 6px 12px; border-radius: 6px; font-size: 12px; font-weight: 600; cursor: pointer; }
-        .btn-mini-danger:hover { background-color: #fafafa; }
-        .btn-mini-blue { background-color: #1967d2; color: #ffffff; border: none; padding: 6px 12px; border-radius: 6px; font-size: 12px; font-weight: 600; cursor: pointer; }
-        
-        /* 피드 아이템 레이아웃 구조 */
-        .feed-list-wrapper { display: grid; grid-template-columns: 1fr; gap: 20px; }
-        .single-feed-box { border: 1px solid #dbdbdb; border-radius: 12px; background: #ffffff; overflow: hidden; }
-        .feed-box-header { display: flex; justify-content: space-between; align-items: center; padding: 14px 16px; border-bottom: 1px solid #efefef; }
-        .feed-box-user { font-size: 14px; font-weight: 600; color: #262626; }
-        .feed-box-body { padding: 16px; font-size: 14.5px; line-height: 1.6; color: #262626; }
-        .feed-box-img-placeholder { width: 100%; height: 250px; background-color: #f5f5f5; display: flex; align-items: center; justify-content: center; font-size: 14px; color: #8e8e8e; font-weight: 600; border-bottom: 1px solid #efefef; text-transform: uppercase; letter-spacing: 0.5px; }
-        
-        /* 평판 리뷰 리스트 양식 스펙 */
-        .review-comment-item { padding: 14px 16px; border-bottom: 1px solid #efefef; font-size: 14px; line-height: 1.5; }
-        .review-comment-item:last-child { border-bottom: none; }
-        .review-author { font-weight: 600; color: #262626; margin-right: 8px; }
-        .review-score-badge { display: inline-block; background-color: #e8f3ff; color: #1967d2; padding: 2px 6px; border-radius: 4px; font-size: 11px; font-weight: 700; margin-left: 6px; }
+        .btn-official-blue { width: 100%; background-color: #1967d2; color: #ffffff; padding: 15px; border: none; border-radius: 9999px; font-size: 15px; font-weight: 700; cursor: pointer; text-align: center; }
+        .btn-official-blue:hover { background-color: #1152b3; }
+        .btn-rank { background-color: #ffffff; color: #536471; border: 1px solid #cfd9de; padding: 8px 16px; border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer; transition: all 0.15s; flex: 1; max-width: 90px; text-align: center; }
+        .btn-rank.active-rank { background-color: #1967d2; color: #ffffff; border-color: #1967d2; font-weight: 700; }
+        .btn-confirm-action { background-color: #00c73c; color: white; border: none; padding: 8px 14px; border-radius: 8px; font-size: 13px; font-weight: 700; cursor: pointer; }
+        .btn-work-warp { background-color: #1967d2; color: white; border: none; padding: 8px 14px; border-radius: 8px; font-size: 13px; font-weight: 700; text-decoration: none; display: inline-block; }
+        .applicant-card { background: #fafafa; border: 1px solid #eff3f4; border-radius: 14px; padding: 20px; margin-top: 12px; line-height: 1.6; }
+        .qa-box { background: #f8f9fa; padding: 14px; border-radius: 8px; font-size: 14px; margin-top: 6px; color: #1152b3; font-weight: 600; border: 1px solid #eff3f4; }
     </style>
 </head>
 <body>
 
-    <header>
-        <div class="logo-container" onclick="location.href='/'">
-            <svg width="24" height="22" viewBox="0 0 100 90" fill="none" xmlns="http://w3.org">
-                <path d="M12.5 54C13.5 53 19.5 54.5 28.5 48.5C38.5 42 47 28 56.5 19.5C65.5 11 76.5 6.5 85.5 12.5C95.5 18.5 90 32 81 37C69.5 41.5 61 33 53 41.5C43 51 28.5 63 17 61C10 59.5 6.5 53 12.5 54Z" stroke="#1967d2" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
-                <path d="M51.5 59C58.5 67 71 68 80.5 60.5C90 53 92.5 39.5 85.5 32" stroke="#1967d2" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-            <span class="logo-text">SILVERWORKS</span>
-        </div>
-        <button type="button" class="btn-mini-blue" onclick="location.href='/board.html'">매칭 게시판</button>
-    </header>
-    <div class="container">
-        <!-- 인스타그램 오피셜 프로필 상단 신원 명세판 구역 -->
-        <div class="insta-profile-header">
-            <div class="avatar-circle-zone">
-                <div class="avatar-inner" id="mAvatar">-</div>
+    <!-- 1. 좌측 트위터 수직 가드바 인터페이스 메뉴 동기화 -->
+    <div class="x-sidebar-left">
+        <div style="width: 100%;">
+            <div class="logo-x-area" onclick="location.href='/'">
+                <svg width="32" height="30" viewBox="0 0 100 90" fill="none" xmlns="http://w3.org">
+                    <path d="M12.5 54C13.5 53 19.5 54.5 28.5 48.5C38.5 42 47 28 56.5 19.5C65.5 11 76.5 6.5 85.5 12.5" stroke="#1967d2" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M51.5 59C58.5 67 71 68 80.5 60.5C90 53 92.5 39.5 85.5 32" stroke="#1967d2" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
             </div>
-            <div class="profile-info-column">
-                <div class="info-username-row">
-                    <h2 class="info-username" id="mId">-</h2>
-                </div>
-                <!-- 인스타그램 3대 핵심 지표 트래커 시스템 (피드, 평판점수, 구직횟수) -->
-                <div class="info-stats-row">
-                    <div class="stat-item">게시물 <span id="statFeedCount">0</span></div>
-                    <div class="stat-item">평판 평점 <span id="statRepScore">5.0</span></div>
-                    <div class="stat-item">매칭 계약 <span id="statMatchCount">1</span></div>
-                </div>
-                <div class="profile-bio-text">
-                    <strong id="mName">-</strong>
-                    <span id="mBioRole">실버웍스 인증 마스터</span><br>
-                    <span id="mPhone" style="color:#6b7684; font-size:14px;">-</span>
-                </div>
+            <div class="nav-menu-list">
+                <a href="/" class="nav-item-row"><span class="nav-text-label">구인구직 피드</span></a>
+                <a href="/sns.html" class="nav-item-row"><span class="nav-text-label">소통 채널</span></a>
+                <a href="/board.html" class="nav-item-row"><span class="nav-text-label">매칭 게시판</span></a>
+                <a href="/profile.html" class="nav-item-row active"><span class="nav-text-label">마이 프로필</span></a>
             </div>
         </div>
+    </div>
 
-        <!-- 인스그램 피드 스위칭용 상용 탭 메뉴 링크선 -->
-        <div class="insta-tabs-nav">
-            <button type="button" id="tabFeed" class="insta-tab-item active" onclick="switchInstaTab('feed')">게시물</button>
-            <button type="button" id="tabReview" class="insta-tab-item" onclick="switchInstaTab('review')">평판 리뷰 피드</button>
-            <button type="button" id="tabSettle" class="insta-tab-item" id="tabSettleBtn" style="display:none;" onclick="switchInstaTab('settle')">일급 정산소</button>
+    <!-- 2. 중앙 본체 영역 -->
+    <div class="x-main-timeline-zone">
+        <div class="timeline-header-sticky">
+            <span id="topHeaderTitle">프로필</span>
+            <!-- [사장님 지시 완벽 이행] 가장 확실하고 직관적으로 파쇄 로그아웃 시킬 상용 버튼 우측 상단 박멸 배치 -->
+            <button type="button" class="btn-logout-top-right" onclick="handleOfficialLogout()">안전 로그아웃</button>
         </div>
-
-        <!-- 탭 1 구역: 개인 자율 피드 업로드 에디터 및 피드 보드 리스트 -->
-        <div id="zoneFeed" class="feed-content-zone active">
-            <div class="info-card" id="myFeedEditorBox">
-                <div class="card-header-title">새로운 현장 근로 피드 배포하기</div>
-                <div class="form-group">
-                    <label class="form-label">오늘의 현장 근로 내용 및 다짐 소회</label>
-                    <textarea id="feedText" class="form-textarea" placeholder="오늘 매장에서 수고하신 근로 소회나 다짐 피드를 자유롭게 기록해 보세요."></textarea>
-                </div>
-                <button type="button" class="btn-official-blue" onclick="handleCreateMyFeed()">실시간 개인 피드 배포 적재</button>
-            </div>
-            <div class="card-header-title" style="margin-bottom:14px; border:none;">베테랑 공식 피드 보드</div>
-            <div id="myFeedListContainer" class="feed-list-wrapper"></div>
+        
+        <div class="x-wide-cover-banner">
+            <div class="x-avatar-profile-wrap" id="mAvatar">-</div>
         </div>
-
-        <!-- 탭 2 구역: 타 사장님 회원들이 기입 누적해 줄 평판 리뷰 피드 보드 -->
-        <div id="zoneReview" class="feed-content-zone">
-            <div class="info-card" id="employerReviewEditorBox" style="display:none; border: 2px solid #1967d2;">
-                <div class="card-header-title" style="color:#1967d2;">금일 파견 베테랑 회원 평판도 한 줄 검증서 기입</div>
-                <div class="form-group">
-                    <label class="form-label">부여할 평판 신용 점수 (1점 ~ 5점 자율 배정)</label>
-                    <input type="number" id="revScore" class="form-input" min="1" max="5" value="5">
-                </div>
-                <div class="form-group">
-                    <label class="form-label">사장님 관점의 진짜 한 줄 평가 피드백</label>
-                    <input type="text" id="revText" class="form-input" placeholder="예: 무단 노쇼 없이 시간 약속을 칼날같이 엄수해 주셨고 친절하십니다.">
-                </div>
-                <button type="button" class="btn-official-blue" onclick="handleCreateRepReview()">평판 신용 보증서 실시간 제출</button>
-            </div>
-            <div class="info-card" style="padding:0;">
-                <div class="card-header-title" style="padding:20px 24px 10px 24px; border-bottom:1px solid #efefef;">타 회원 평판 검증 피드백 로그</div>
-                <div id="reviewListContainer"></div>
+        
+        <div class="x-profile-details-area">
+            <div class="x-details-name" id="mName">-</div>
+            <div class="x-details-handle" id="mId">@username</div>
+            <div class="x-bio-text-line" id="mBioRole">실버웍스 정식 연동 마스터 회원</div>
+            
+            <!-- [사장님 지시 반영] 100점 만점 평판 절대 등급 수치 기반 계합 통계 보드 수립 -->
+            <div class="x-stats-row">
+                <div class="x-stat-item"><span id="statMatchCount">1</span> 매칭 일자리</div>
+                <div class="x-stat-item">절대 평판 신용 <span id="statRepScore">100</span> 점 / 100점만점</div>
             </div>
         </div>
-
-        <!-- 탭 3 구역: 구인 사장님 전용 확정자 일급 정산 및 출퇴근 관제 기제소 -->
-        <div id="zoneSettle" class="feed-content-zone">
+        
+        <div class="x-tabs-nav">
+            <button type="button" id="tabBtnMainInfo" class="x-tab-btn active" onclick="switchProfileTab('main')">신원 명세</button>
+            <button type="button" id="tabBtnActionZone" class="x-tab-btn" onclick="switchProfileTab('action')">관제 제어반</button>
+        </div>
+        
+        <!-- 하위 패널 1 : 기본 명세 -->
+        <div id="zoneMainInfo" class="profile-content-zone active">
             <div class="info-card">
-                <div class="card-header-title">우리 매장 공고별 정식 지원 베테랑 명단 (1대1 독점 격리 관제)</div>
-                <button type="button" class="btn-official-blue" style="margin-bottom:14px;" onclick="loadBossApplicants(1)">내 공고 실시간 지원자 데이터 파싱 및 1/2/3순위 관제 가동</button>
-                <div id="applicantBox" style="margin-top:12px; display:none; border-top:1px solid #f2f4f6; padding-top:4px;"></div>
+                <div class="card-header-title">계정 신원 기본 내역서</div>
+                <div class="data-row"><span class="data-label">사용자 아이디</span><span class="data-value" id="dispId">-</span></div>
+                <div class="data-row"><span class="data-label">휴대폰 번호 명세</span><span class="data-value" id="dispPhone">-</span></div>
+                <div class="data-row"><span class="data-label">회원 권한 유형</span><span class="data-value" id="dispRole">-</span></div>
+                <div class="data-row"><span class="data-label">신원인증 가동 상태</span><span class="data-value" id="dispStatus" style="color:#1967d2;">-</span></div>
+            </div>
+            
+            <div class="info-card" id="seekerFitCard" style="display:none;">
+                <div class="card-header-title">국민체력 100 오프라인 검증 지표 스펙</div>
+                <div class="data-row"><span class="data-label">체력 인증 종합 등급</span><span class="data-value" id="fG" style="color:#1967d2;">-</span></div>
+                <div class="data-row"><span class="data-label">절대 악력 측정치</span><span class="data-value" id="fGp">-</span></div>
+                <div class="data-row"><span class="data-label">상체 유연성 지표</span><span class="data-value" id="fF">-</span></div>
+                <div class="data-row"><span class="data-label">심폐 지구력 레벨</span><span class="data-value" id="fC">-</span></div>
+            </div>
+            
+            <div class="info-card" id="seekerQaCard" style="display:none;">
+                <div class="card-header-title">실버웍스 정제형 12단계 문진형 공식 이력서 보존 사본</div>
+                <div id="qaBox"></div>
             </div>
         </div>
-    <!-- [오션블루 인스타 미학 피드 가동 및 평판 점수 누적 실시간 계산 통계 스크립트 엔진 1단] -->
+        <!-- 하위 패널 2 : 사장님 전용 구인 제어실 상자 및 시니어 관제실 -->
+        <div id="zoneActionZone" class="profile-content-zone">
+            <div id="bossSection" style="display: none;">
+                <div class="info-card">
+                    <div class="card-header-title">우리 매장 피크타임 구인공고 실시간 직접 등록 패널</div>
+                    <form id="jobCreateForm" onsubmit="return false;">
+                        <div class="form-group"><label class="form-label">매장 상호명 명세</label><input type="text" id="jCompany" class="form-input" placeholder="예: 실버웍스 카페 성남점"></div>
+                        <div class="form-group"><label class="form-label">피크타임 공고 제목</label><input type="text" id="jTitle" class="form-input" placeholder="예: 주말 오픈 바리스타 구함"></div>
+                        <div class="form-group"><label class="form-label">근무 희망 일자</label><input type="date" id="jDate" class="form-input"></div>
+                        <div class="form-group"><label class="form-label">집중 근로 시간대 명세</label><input type="text" id="jTime" class="form-input" placeholder="예: 오전 09:00 - 오후 12:00 (3시간)"></div>
+                        <div class="form-group"><label class="form-label">확정 약정 시급 (원)</label><input type="number" id="jWage" class="form-input" placeholder="최저시급 이상 입력"></div>
+                        <div class="form-group"><label class="form-label">직무 근로 유형</label><input type="text" id="jType" class="form-input" placeholder="예: 외식 매장 가공 파트타임"></div>
+                        <button type="button" class="btn-official-blue" onclick="handleJobCreate()">검토 및 공고 등록 신청하기</button>
+                    </form>
+                </div>
+
+                <div class="info-card">
+                    <div class="card-header-title">실시간 피크타임 인건비 및 주휴수당 모의 계산기</div>
+                    <div class="form-group"><label class="form-label">약정 설정 시급 (원)</label><input type="number" id="calcWage" class="form-input" value="10030" oninput="runFinanceCalculate()"></div>
+                    <div class="form-group"><label class="form-label">주간 집중 근로 시간 (시간)</label><input type="number" id="calcHours" class="form-input" value="15" oninput="runFinanceCalculate()"></div>
+                    <div style="background-color:#f8f9fa; padding:16px; border-radius:10px; margin-bottom:16px; font-size:14px; line-height:1.6;">
+                        <div style="display:flex; justify-content:space-between; margin-bottom:6px;"><span>기본 소정 근로 임금:</span><span id="resBase" style="font-weight:700;">0 원</span></div>
+                        <div style="display:flex; justify-content:space-between; margin-bottom:6px; color:#1967d2;"><span>예상 지급 주휴수당:</span><span id="resExtra" style="font-weight:700;">0 원</span></div>
+                        <div style="display:flex; justify-content:space-between; padding-top:6px; border-top:1px solid #eff3f4; font-size:15px; font-weight:700; color:#1152b3;"><span>월간 예상 총 인건비 지출액:</span><span id="resTotal">0 원</span></div>
+                    </div>
+                </div>
+
+                <div class="info-card">
+                    <div class="card-header-title">우리 매장 공고별 정식 지원 베테랑 명단 (우선순위 및 고용 확정)</div>
+                    <button type="button" class="btn-official-blue" style="margin-bottom:14px; border-radius:12px;" onclick="loadBossApplicants(1)">내 공고 실시간 지원자 데이터 파싱 가동</button>
+                    <div id="applicantBox" style="margin-top:12px; display:none; border-top:1px solid #eff3f4; padding-top:4px;"></div>
+                </div>
+            </div>
+            
+            <div id="seekerActionPanel" style="display:none;">
+                <div class="info-card">
+                    <div class="card-header-title">시니어 구직 회원 관제 안내</div>
+                    <p style="font-size:14px; color:#536471; line-height:1.6;">구직 전용 모던 이력서 문진표 서식은 최초 1회 등록 완료 후 영구 마운트 보존됩니다. 추가적인 스펙 등급 심사 변경은 최고 관리자실의 오프라인 검증 후 일괄 기재 자동 반영 처리됩니다.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- [오션블루 트위터 에디션 가동 및 100점 절대평판 제어 스크립트 엔진 1단] -->
     <script>
-        let currentUserId = ""; // 현재 로그인한 사용자 ID
-        let targetProfileId = ""; // 현재 조회 중인 프로필의 대상 ID
+        let myUsernameId = "";
+        let targetViewId = "";
 
         document.addEventListener("DOMContentLoaded", function() {
-            currentUserId = localStorage.getItem('sw_username');
-            const role = localStorage.getItem('sw_role');
+            myUsernameId = localStorage.getItem('sw_username');
+            if (!myUsernameId) { location.href = '/login.html'; return; }
             
-            if (!currentUserId) { location.href = '/login.html'; return; }
-
-            // 주소창 파라미터 파싱 유기 연동 (?username=아이디 형식으로 타인 피드 조회 가능하도록 인프라 유도)
             const urlParams = new URLSearchParams(window.location.search);
-            targetProfileId = urlParams.get('username') || currentUserId;
-
-            // 로컬 스토리지에 자율 적재 시뮬레이션할 피드 및 리뷰 원천 데이터 초기화 트리거
-            if(!localStorage.getItem('sw_feeds_db')) {
-                localStorage.setItem('sw_feeds_db', JSON.stringify([
-                    { id: 1, username: targetProfileId, text: "주말 오픈 오픈 멤버로 출근 완료했습니다! 손님들을 환한 미소로 맞이하겠습니다.", created_at: "2026.07.20" }
-                ]));
-            }
-            if(!localStorage.getItem('sw_reviews_db')) {
-                localStorage.setItem('sw_reviews_db', JSON.stringify([
-                    { id: 1, target: targetProfileId, author: "employer1", text: "무단 노쇼 없이 시간 약속을 칼날같이 엄수해 주셨고 친절하십니다.", score: 5 }
-                ]));
-            }
-
-            fetch('/api/profile/me?username=' + encodeURIComponent(targetProfileId)).then(res => res.json()).then(data => {
-                const p = data.profile;
-                document.getElementById('mId').innerText = p.username;
+            targetViewId = urlParams.get('username') || myUsernameId;
+            
+            fetch('/api/profile/me?username=' + encodeURIComponent(targetViewId)).then(res => res.json()).then(data => {
+                const p = data.profile; const qa = data.senior_answers;
+                
+                document.getElementById('mId').innerText = "@" + p.username;
                 document.getElementById('mName').innerText = p.name;
-                document.getElementById('mPhone').innerText = p.phone;
+                document.getElementById('mPhone').innerText = "연락처 명세: " + p.phone;
                 document.getElementById('mAvatar').innerText = p.username.substring(0, 2);
                 
-                // 내가 내 프로필을 보고 있으며 + 'employer(구인 사장님)' 세션 등급일 때만 일급 정산 탭 및 공고 파싱 제어반 표출
-                if (currentUserId === targetProfileId && role === 'employer') {
-                    document.getElementById('tabSettle').style.style.display = 'flex';
-                    document.getElementById('mBioRole').innerText = "구인 사업장 공식 사장님 제어 세션";
+                document.getElementById('dispId').innerText = p.username;
+                document.getElementById('dispPhone').innerText = p.phone;
+                document.getElementById('dispStatus').innerText = p.status === 'approved' ? "정식 승인 및 가동중" : "신원 승인 대기중";
+                
+                if (p.role === 'employer') {
+                    document.getElementById('topHeaderTitle').innerText = "구인 사장님 제어실";
+                    document.getElementById('dispRole').innerText = "구인 사업장 고용주 사장님 (employer)";
+                    if(myUsernameId === targetViewId) {
+                        document.getElementById('bossSection').style.display = 'block';
+                        runFinanceCalculate();
+                    }
+                } else {
+                    document.getElementById('topHeaderTitle').innerText = "나의 시니어 베테랑 이력서 명세";
+                    document.getElementById('dispRole').innerText = "구직 전문 시니어 베테랑 (seeker)";
+                    document.getElementById('seekerFitCard').style.display = 'block';
+                    document.getElementById('seekerQaCard').style.display = 'block';
+                    if(myUsernameId === targetViewId) {
+                        document.getElementById('seekerActionPanel').style.display = 'block';
+                    }
+                    
+                    document.getElementById('fG').innerText = p.fitness_grade || '미인증';
+                    document.getElementById('fGp').innerText = (p.fitness_grip || '-') + " kg";
+                    document.getElementById('fF').innerText = (p.fitness_flex || '-') + " cm";
+                    document.getElementById('fC').innerText = p.fitness_cardio || '-';
+                    
+                    if (qa) {
+                        const box = document.getElementById('qaBox'); box.innerHTML = '';
+                        const qLabels = ["조력자 구분 명세", "구직 베테랑 성함", "생년월일 명세", "휴대폰 번호 명세", "근무 희망 동네", "3층 계단 보행력 지표", "1시간 연속 도보 가능성", "현장 주의 지병 데이터", "식당/마트 청력 소통도", "카카오톡 메시지 활용도", "초단기 근로 수용성", "정부 노인일자리 중복참여 이력"];
+                        const answersArray = [qa.q1, qa.q2, qa.q3, qa.q4, qa.q5, qa.q6, qa.q7, qa.q8, qa.q9, qa.q10, qa.q11, qa.q12];
+                        
+                        for(let i=1; i<=12; i++) {
+                            const realAnswer = answersArray[i-1] || "기입 내역 누락됨";
+                            box.innerHTML += `
+                                <div style="margin-top:14px; font-size:13px; font-weight:700; color:#536471;">📄 이력서 항목 ${i}. ${qLabels[i-1]}</div>
+                                <div class="qa-box" style="color: #1967d2; background-color: #f4f9ff;">${realAnswer}</div>
+                            `;
+                        }
+                    }
                 }
 
-                // 타인 사장님이 구직 시니어의 피드에 접근했을 때는 평판 작성 에디터 박스를 활짝 엽니다.
-                if (currentUserId !== targetProfileId && role === 'employer') {
-                    document.getElementById('employerReviewEditorBox').style.display = 'block';
-                }
-
-                // 本인 프로필이 아닐 경우에는 피드 기입 편집 창을 엄격 은폐 숨김 처리합니다.
-                if (currentUserId !== targetProfileId) {
-                    document.getElementById('myFeedEditorBox').style.display = 'none';
-                }
-
-                renderLocalFeedsAndReviews();
+                fetch(`/api/sns/reputation?target_id=${encodeURIComponent(targetViewId)}`)
+                    .then(res => res.json())
+                    .then(rData => {
+                        document.getElementById('statRepScore').innerText = rData.avg;
+                    });
             });
         });
-
-        // 인스타그램 상단 탭 스위칭 제어 모듈 함수
-        function switchInstaTab(type) {
-            document.querySelectorAll('.insta-tab-item').forEach(b => b.classList.remove('active'));
-            document.querySelectorAll('.feed-content-zone').forEach(z => z.classList.remove('active'));
-            
-            if (type === 'feed') {
-                document.getElementById('tabFeed').classList.add('active');
-                document.getElementById('zoneFeed').classList.add('active');
-            } else if (type === 'review') {
-                document.getElementById('tabReview').classList.add('active');
-                document.getElementById('zoneReview').classList.add('active');
+        function switchProfileTab(type) {
+            document.querySelectorAll('.x-tab-btn').forEach(b => b.classList.remove('active'));
+            document.querySelectorAll('.profile-content-zone').forEach(z => z.classList.remove('active'));
+            if(type === 'main') {
+                document.getElementById('tabBtnMainInfo').classList.add('active');
+                document.getElementById('zoneMainInfo').classList.add('active');
             } else {
-                document.getElementById('tabSettle').classList.add('active');
-                document.getElementById('zoneSettle').classList.add('active');
-            }
-        }
-        // [핵심 로직 자율 적재 제어 기능] 로컬 스토리지를 물리 디스크 창고 삼아 피드와 평판 리뷰 실시간 렌더링 출력
-        function renderLocalFeedsAndReviews() {
-            const feedContainer = document.getElementById('myFeedListContainer');
-            const reviewContainer = document.getElementById('reviewListContainer');
-            
-            const feeds = JSON.parse(localStorage.getItem('sw_feeds_db')) || [];
-            const reviews = JSON.parse(localStorage.getItem('sw_reviews_db')) || [];
-
-            // 1. 해당 유저 아이디와 매핑 결속된 개인 자율 피드 필터링 바인딩 출력
-            const myFeeds = feeds.filter(f => f.username === targetProfileId);
-            document.getElementById('statFeedCount').innerText = myFeeds.length;
-            feedContainer.innerHTML = '';
-
-            if(myFeeds.length === 0) {
-                feedContainer.innerHTML = '<p style="text-align:center; color:#8e8e8e; padding:30px 0; font-size:14px;">등록된 게시물이 없습니다.</p>';
-            } else {
-                myFeeds.forEach(f => {
-                    const div = document.createElement('div');
-                    div.className = 'single-feed-box';
-                    const actionGroup = (currentUserId === f.username) 
-                        ? `<button class="btn-mini-danger" style="margin-right:6px;" onclick="handleDeleteFeed(${f.id})">삭제</button>
-                           <button class="btn-mini-blue" onclick="handleUpdateFeed(${f.id})">수정</button>` 
-                        : '';
-
-                    div.innerHTML = `
-                        <div class="feed-box-header">
-                            <span class="feed-box-user">${f.username}</span>
-                            <div>${actionGroup}</div>
-                        </div>
-                        <div class="feed-box-img-placeholder">SILVERWORKS LIVE FEED DATA</div>
-                        <div class="feed-box-body">${f.text}</div>
-                    `;
-                    feedContainer.appendChild(div);
-                });
-            }
-
-            // 2. 타 회원 평판 검증 피드백 분석 계산 및 출력 파싱
-            const targetReviews = reviews.filter(r => r.target === targetProfileId);
-            reviewContainer.innerHTML = '';
-            
-            if(targetReviews.length === 0) {
-                reviewContainer.innerHTML = '<p style="text-align:center; color:#8e8e8e; padding:20px 0; font-size:14px;">아직 누적된 타 회원 평판 검증서가 없습니다.</p>';
-                document.getElementById('statRepScore').innerText = "5.0";
-            } else {
-                let sum = 0;
-                targetReviews.forEach(r => {
-                    sum += r.score;
-                    reviewContainer.innerHTML += `
-                        <div class="review-comment-item">
-                            <span class="review-author">${r.author}</span> ${r.text}
-                            <span class="review-score-badge">평판점수 ${r.score}점</span>
-                        </div>
-                    `;
-                });
-                const avgScore = (sum / targetReviews.length).toFixed(1);
-                document.getElementById('statRepScore').innerText = avgScore;
+                document.getElementById('tabBtnActionZone').classList.add('active');
+                document.getElementById('zoneActionZone').classList.add('active');
             }
         }
 
-        // 개인 자율 피드 실시간 업로드 가동 함수
-        function handleCreateMyFeed() {
-            const txt = document.getElementById('feedText').value.trim();
-            if(!txt) { alert('내용을 기입하세요.'); return; }
-            
-            const feeds = JSON.parse(localStorage.getItem('sw_feeds_db')) || [];
-            feeds.push({ id: Date.now(), username: currentUserId, text: txt, created_at: "2026.07.22" });
-            localStorage.setItem('sw_feeds_db', JSON.stringify(feeds));
-            
-            alert('인스타그램 스타일 개인 피드 배포 적재 대성공!');
-            document.getElementById('feedText').value = '';
-            renderLocalFeedsAndReviews();
+        function handleJobCreate() {
+            const id = localStorage.getItem('sw_username'), comp = document.getElementById('jCompany').value.trim(), tit = document.getElementById('jTitle').value.trim(), dt = document.getElementById('jDate').value, tm = document.getElementById('jTime').value.trim(), wg = document.getElementById('jWage').value.trim(), ty = document.getElementById('jType').value.trim();
+            if(!comp || !tit || !dt || !tm || !wg || !ty) { alert('모든 항목을 입력해 주세요.'); return; }
+            fetch('/api/jobs/create', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ employer_id: id, title: tit, company: comp, work_date: dt, work_time: tm, wage: wg, job_type: ty }) }).then(() => { alert('공고 등록 신청 완료!'); location.reload(); });
         }
 
-        // 개인 자율 피드 수정 처리 함수
-        function handleUpdateFeed(feedId) {
-            const newText = prompt('수정할 새로운 피드 내용을 입력해 주세요:');
-            if(!newText || !newText.trim()) return;
-
-            let feeds = JSON.parse(localStorage.getItem('sw_feeds_db')) || [];
-            feeds = feeds.map(f => f.id === feedId ? { ...f, text: newText.trim() } : f);
-            localStorage.setItem('sw_feeds_db', JSON.stringify(feeds));
-            
-            alert('피드 수정 사항이 정상 반영되었습니다.');
-            renderLocalFeedsAndReviews();
+        function runFinanceCalculate() {
+            const wage = parseInt(document.getElementById('calcWage').value) || 0, hours = parseFloat(document.getElementById('calcHours').value) || 0;
+            const baseWage = Math.floor(wage * hours * 4.345); let extraWage = hours >= 15 ? Math.floor((hours / 40) * 8 * wage * 4.345) : 0;
+            document.getElementById('resBase').innerText = baseWage.toLocaleString() + " 원"; document.getElementById('resExtra').innerText = extraWage.toLocaleString() + " 원"; document.getElementById('resTotal').innerText = (baseWage + extraWage).toLocaleString() + " 원";
         }
 
-        // 개인 자율 피드 삭제 처리 함수
-        function handleDeleteFeed(feedId) {
-            if(!confirm('정말로 이 피드 게시물을 전산 소멸 삭제하시겠습니까?')) return;
-            
-            let feeds = JSON.parse(localStorage.getItem('sw_feeds_db')) || [];
-            feeds = feeds.filter(f => f.id !== feedId);
-            localStorage.setItem('sw_feeds_db', JSON.stringify(feeds));
-            
-            alert('피드가 물리 디스크에서 삭제되었습니다.');
-            renderLocalFeedsAndReviews();
-        }
-
-        // 사장님이 타인의 프로필에 평판 신용 서식을 주입 제출하는 함수
-        function handleCreateRepReview() {
-            const score = parseInt(document.getElementById('revScore').value) || 5;
-            const text = document.getElementById('revText').value.trim();
-            
-            if(!text) { alert('평판 피드백 문장을 기입해 주세요.'); return; }
-            
-            const reviews = JSON.parse(localStorage.getItem('sw_reviews_db')) || [];
-            reviews.push({ id: Date.now(), target: targetProfileId, author: currentUserId, text: text, score: score });
-            localStorage.setItem('sw_reviews_db', JSON.stringify(reviews));
-            
-            alert('평판 신용 보증서 제출 및 누적 통계 연동 대성공!');
-            document.getElementById('revText').value = '';
-            renderLocalFeedsAndReviews();
-        }
-
-        // [확정하기 오더 기능 연동] 내 매장 공고 지원 베테랑 명단 파싱 렌더 가동
         function loadBossApplicants(jobId) {
-            const box = document.getElementById('applicantBox');
-            fetch(`/api/employer/applicants?employer_id=${currentUserId}&job_id=${jobId}`).then(res => res.json()).then(data => {
+            const id = localStorage.getItem('sw_username'), box = document.getElementById('applicantBox');
+            fetch(`/api/employer/applicants?employer_id=${id}&job_id=${jobId}`).then(res => res.json()).then(data => {
                 box.innerHTML = '<h5 style="color:#1967d2; font-size:14px; margin-bottom:12px; font-weight:700;">접수 완료된 지원자 리스트</h5>'; box.style.display = 'block';
-                if(!data.data || data.data.length === 0) { box.innerHTML += '<p style="font-size:13px; color:#6b7684; text-align:center; padding:20px 0;">현재 접수된 구직 지원 원서가 없습니다.</p>'; return; }
+                if(!data.data || data.data.length === 0) { box.innerHTML += '<p style="font-size:13px; color:#536471; text-align:center; padding:20px 0;">현재 구직 지원 원서가 없습니다.</p>'; return; }
                 
                 data.data.forEach(item => {
-                    const s = item.seeker_info;
-                    const r = item.rank_priority;
-                    const isConfirmed = item.status === 'confirmed';
-                    const div = document.createElement('div');
-                    div.className = 'applicant-card';
-                    
+                    const s = item.seeker_info; const r = item.rank_priority; const isConfirmed = item.status === 'confirmed';
+                    const div = document.createElement('div'); div.className = 'applicant-card';
                     const displayPhone = isConfirmed ? s.phone : "고용 확정 시 공개됩니다";
                     const actionBtn = isConfirmed 
                         ? `<a class="btn-work-warp" href="/work.html?job_id=${jobId}&seeker_id=${s.username}">출퇴근/포인트 정산소 진입 ➔</a>`
                         : `<button type="button" class="btn-confirm-action" onclick="confirmPartner(${jobId}, '${s.username}')">고용 후보자 확정하기</button>`;
                     
                     div.innerHTML = `
-                        <div class="applicant-name">지원 구직자: <a href="/profile.html?username=${s.username}" style="color:#1967d2; font-weight:700; text-decoration:none;">${s.name} 베테랑 프로필 피드 구경 ➔</a></div>
+                        <div class="applicant-name">지원 구직자: <a href="/profile.html?username=${s.username}" style="color:#1967d2; font-weight:700; text-decoration:none;">@${s.name} 프로필 확인 ➔</a></div>
                         <div class="applicant-meta">실물 연락처 명세: <span style="color:#1967d2;">${displayPhone}</span></div>
                         <div class="applicant-meta">국민체력100 등급: <span>${s.fitness_grade || '미인증'}</span> | 악력: ${s.fitness_grip || '-'}kg</div>
                         <div class="rank-action-group">
                             <div class="rank-row-line">
-                                <div class="rank-group-title">우선순위 지망 배정:</div>
                                 <button type="button" class="btn-rank ${r===1?'active-rank':''}" onclick="assignPriority(${jobId}, '${s.username}', 1)">1순위</button>
                                 <button type="button" class="btn-rank ${r===2?'active-rank':''}" onclick="assignPriority(${jobId}, '${s.username}', 2)">2순위</button>
                                 <button type="button" class="btn-rank ${r===3?'active-rank':''}" onclick="assignPriority(${jobId}, '${s.username}', 3)">3순위</button>
                             </div>
-                            <div class="rank-row-line" style="margin-top:4px; padding-top:8px; border-top:1px dashed #f2f4f6; justify-content:flex-end; width:100%;">
-                                ${actionBtn}
-                            </div>
+                            <div style="text-align:right; margin-top:8px;">${actionBtn}</div>
                         </div>
                     `;
                     box.appendChild(div);
@@ -382,19 +313,19 @@
         }
 
         function confirmPartner(jobId, seekerId) {
-            if(!confirm('선택하신 시니어 베테랑 회원을 최종 확정합니까?')) return;
-            fetch('/api/employer/confirm-seeker', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ job_id: jobId, seeker_id: seekerId }) }).then(() => {
-                alert('고용 계약 결속 대성공!'); loadBossApplicants(jobId);
-            });
+            if(!confirm('해당 시니어 회원을 최종 확정합니까?')) return;
+            fetch('/api/employer/confirm-seeker', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ job_id: jobId, seeker_id: seekerId }) }).then(() => { alert('고용 결속 성공!'); loadBossApplicants(jobId); });
         }
 
         function assignPriority(jobId, seekerId, rankNum) {
-            fetch('/api/employer/update-rank', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ job_id: jobId, seeker_id: seekerId, rank_priority: rankNum }) }).then(() => {
-                alert(`지망 배정 성공! [${rankNum}순위]`); loadBossApplicants(jobId);
-            });
+            fetch('/api/employer/update-rank', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ job_id: jobId, seeker_id: seekerId, rank_priority: rankNum }) }).then(() => { alert(`지망 배정 성공! [${rankNum}순위]`); loadBossApplicants(jobId); });
         }
 
-        function handleOfficialLogout() { localStorage.clear(); alert('보안 세션 파쇄 완료.'); location.href = '/'; }
+        function handleOfficialLogout() { 
+            localStorage.clear(); 
+            alert('안전 세션 파쇄 완료: 실버웍스 전산 보안망으로부터 안전하게 로그아웃되었습니다.'); 
+            location.href = '/'; 
+        }
     </script>
 </body>
 </html>
