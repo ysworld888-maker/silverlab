@@ -4,22 +4,28 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>SILVERWORKS - 인증 제어 센터</title>
-    <!-- 불필요한 혼선 색상을 배제하고 명품 오션블루 컬러로 버튼 및 폼 크기를 통합 정렬한 프리미엄 CSS -->
+    <!-- [신원 분류 등급 선택 단추 신설] 토스 미학 오션블루 컬러 기반 이중 분기형 CSS 스타일 명세 -->
     <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, sans-serif; }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, sans-serif; -webkit-tap-highlight-color: transparent; }
         body { background-color: #f9fafb; color: #333d4b; padding: 40px 20px; }
         .login-box { max-width: 420px; margin: 40px auto; background: white; border-radius: 16px; border: 1px solid #e5e8eb; padding: 30px; box-shadow: 0 4px 16px rgba(0,0,0,0.01); }
         .logo-center { text-align: center; margin-bottom: 24px; cursor: pointer; }
         .logo-text { font-size: 22px; font-weight: 800; color: #1967d2; letter-spacing: -0.5px; }
+        
         .tab-group { display: flex; margin-bottom: 20px; border-bottom: 2px solid #f2f4f6; }
         .tab-btn { flex: 1; padding: 12px; text-align: center; font-size: 15px; font-weight: 600; color: #6b7684; background: none; border: none; cursor: pointer; transition: color 0.15s; }
         .tab-btn.active { color: #1967d2; border-bottom: 2px solid #1967d2; }
+        
+        /* [핵심 신설] 시니어 회원 / 사장님 회원 자율 선택용 세그먼트 단추 스타일 양식 */
+        .role-selector-container { display: flex; background-color: #f2f4f6; border-radius: 10px; padding: 4px; margin-bottom: 20px; gap: 4px; }
+        .role-select-btn { flex: 1; border: none; padding: 10px; border-radius: 8px; font-size: 13.5px; font-weight: 700; color: #4e5968; background-color: transparent; cursor: pointer; transition: all 0.2s ease; text-align: center; }
+        .role-select-btn.active { background-color: #1967d2; color: #ffffff; box-shadow: 0 2px 6px rgba(25, 103, 210, 0.15); }
+        
         .form-panel { display: none; } .form-panel.active { display: block; }
         .input-group { margin-bottom: 16px; }
         .form-label { display: block; font-size: 13.5px; font-weight: 600; color: #4e5968; margin-bottom: 6px; }
         .form-input { width: 100%; padding: 14px; border-radius: 10px; border: 1px solid #d1d6db; font-size: 14.5px; font-weight: 600; color: #1b1c1e; outline: none; transition: border-color 0.2s; }
         .form-input:focus { border-color: #1967d2; background-color: #f4f9ff; }
-        /* 오션 블루 오피셜 상용 버튼 디자인 시스템 규격 일괄 통일 */
         .btn-blue { width: 100%; background-color: #1967d2; color: #ffffff; padding: 15px; border: none; border-radius: 12px; font-size: 15px; font-weight: 600; cursor: pointer; text-align: center; transition: opacity 0.2s; margin-top: 10px; }
         .btn-blue:hover { opacity: 0.9; }
     </style>
@@ -36,6 +42,12 @@
             <button id="tabR" class="tab-btn" onclick="switchMode('register')">회원가입</button>
         </div>
 
+        <!-- [사장님 오더 완벽 반영] 시니어 회원 / 사장님 회원 자율 전환 선택 세그먼트 단추 본체 -->
+        <div class="role-selector-container">
+            <button type="button" id="roleBtnSeeker" class="role-select-btn active" onclick="setRole('seeker')">시니어 회원</button>
+            <button type="button" id="roleBtnEmployer" class="role-select-btn" onclick="setRole('employer')">사장님 회원</button>
+        </div>
+
         <!-- 로그인 패널 폼 -->
         <div id="panelLogin" class="form-panel active">
             <div class="input-group"><label class="form-label">아이디</label><input type="text" id="lId" class="form-input" autocomplete="username"></div>
@@ -47,24 +59,32 @@
         <div id="panelRegister" class="form-panel">
             <div class="input-group"><label class="form-label">회원 아이디 생성</label><input type="text" id="rId" class="form-input" autocomplete="username"></div>
             <div class="input-group"><label class="form-label">보안 비밀번호</label><input type="password" id="rPw" class="form-input" autocomplete="new-password"></div>
-            <div class="input-group"><label class="form-label">성명 또는 정식 매장명</label><input type="text" id="rName" class="form-input"></div>
+            <div class="input-group"><label class="form-label" id="nameLabel">성명 또는 정식 매장명</label><input type="text" id="rName" class="form-input"></div>
             <div class="input-group"><label class="form-label">휴대폰 번호 명세</label><input type="tel" id="rPhone" class="form-input" placeholder="예: 01012345678"></div>
-            <button type="button" class="btn-blue" onclick="submitRegister()">회원 등급 가입 신청하기</button>
+            <button type="button" class="btn-blue" id="btnRegisterSubmit" onclick="submitRegister()">시니어 회원 가입 신청하기</button>
         </div>
     </div>
-    <!-- [사장님/시니어 권한 등급 자동 추적 분기 및 전산망 인증 가동 엔진 스크립트] -->
+    <!-- [사장님/시니어 회원가입 및 로그인 선택 세그먼트 토글 분기 가동 엔진 스크립트] -->
     <script>
         let currentRole = "seeker";
 
-        // 1. 진입 시 주소창 파라미터(?type=employer)를 실시간 역추적하여 전산 분기를 고정합니다.
-        window.addEventListener("DOMContentLoaded", function() {
-            const urlParams = new URLSearchParams(window.location.search);
-            if (urlParams.get('type') === 'employer') {
-                currentRole = "employer";
+        // [핵심 신설] 시니어 / 사장님 버튼 선택 시 데이터 상태를 실시간 스위칭하고 UI 글자를 동적 갱신하는 함수
+        function setRole(role) {
+            currentRole = role;
+            document.querySelectorAll('.role-select-btn').forEach(b => b.classList.remove('active'));
+            
+            if (role === 'seeker') {
+                document.getElementById('roleBtnSeeker').classList.add('active');
+                document.getElementById('nameLabel').innerText = "구직 베테랑 성함";
+                document.getElementById('btnRegisterSubmit').innerText = "시니어 회원 가입 신청하기";
+            } else {
+                document.getElementById('roleBtnEmployer').classList.add('active');
+                document.getElementById('nameLabel').innerText = "정식 매장 상호명";
+                document.getElementById('btnRegisterSubmit').innerText = "구인 사장님 가입 신청하기";
             }
-        });
+        }
 
-        // 2. 로그인 및 회원가입 탭 화면 전환 트랜잭션 함수
+        // 로그인 및 회원가입 탭 화면 전환 트랜잭션 함수
         function switchMode(mode) {
             document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
             document.querySelectorAll('.form-panel').forEach(p => p.classList.remove('active'));
@@ -78,7 +98,7 @@
             }
         }
 
-        // 3. 백엔드 코어 서버 디스크 DB 대조 교차 로그인 처리 함수 (권한 오독 완전 원천 차단)
+        // 백엔드 코어 서버 디스크 DB 대조 교차 로그인 처리 함수 (권한 구분 완전 동역 직결)
         function submitLogin() {
             const id = document.getElementById('lId').value.trim();
             const pw = document.getElementById('lPw').value;
@@ -99,18 +119,18 @@
                     localStorage.setItem('sw_username', data.user.username);
                     localStorage.setItem('sw_role', data.user.role);
                     
-                    alert('인증 성공: 실버웍스 전산 보안 세션이 발급되었습니다. 대시보드로 진입합니다.');
+                    alert('인증 성공: 실버웍스 전산 보안 세션이 발급되었습니다. 마이페이지로 진입합니다.');
                     location.href = '/profile.html';
                 } else { 
                     alert('인증 오류: ' + data.message); 
                 }
             })
             .catch(err => {
-                alert('인증 실패: 가용한 권한 채널 혹은 계정 정보가 일치하지 않습니다.');
+                alert('인증 실패: 선택하신 회원 유형(시니어/사장님) 채널 정보 혹은 계정 비밀번호가 일치하지 않습니다.');
             });
         }
 
-        // 4. pending(승인대기) 락 잠금 상태로 물리 DB 디스크에 평생 보존 기록하는 가입 신청 함수
+        // pending(승인대기) 락 잠금 상태로 물리 DB 디스크에 가입 신청 서식을 전송하는 함수
         function submitRegister() {
             const id = document.getElementById('rId').value.trim();
             const pw = document.getElementById('rPw').value;
