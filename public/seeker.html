@@ -4,17 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>SILVERWORKS - 구직 시니어 문진표</title>
-    <!-- [사장님 지시 2안 반영] 간결하고 단순한 파란색 플로팅 서클 링 게이지 내장 프리미엄 CSS 명세 -->
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Malgun Gothic", "맑은 고딕", helvetica, sans-serif; letter-spacing: -0.4px; -webkit-tap-highlight-color: transparent; }
         body { background-color: #ffffff; color: #0f1419; padding: 20px; display: flex; justify-content: center; align-items: center; min-height: 100vh; -webkit-font-smoothing: antialiased; }
         .qa-wrap-box { width: 100%; max-width: 520px; padding: 36px 28px; border: 1px solid #eff3f4; border-radius: 24px; background-color: #ffffff; box-shadow: 0 12px 36px rgba(0,0,0,0.03); }
         
-        /* [사장님 오더] 타이틀과 서클 링 게이지를 가로 정렬 결속시키는 모던 세단 레이아웃 */
         .qa-header-flex-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 32px; padding-bottom: 16px; border-bottom: 1px solid #f2f4f6; }
         .main-title { font-size: 19px; font-weight: 800; color: #1c1c1e; letter-spacing: -0.5px; }
         
-        /* [2안 최적화] 단순하고 간결한 서클 링 트래커 그래픽 스킨셋 */
         .circle-gauge-wrapper { position: relative; width: 46px; height: 46px; display: flex; align-items: center; justify-content: center; }
         .circle-gauge-svg { transform: rotate(-90deg); width: 100%; height: 100%; }
         .circle-bg { fill: none; stroke: #f2f4f6; stroke-width: 4; }
@@ -25,13 +22,11 @@
         .q-title-label { font-size: 16.5px; font-weight: 800; color: #1c1c1e; line-height: 1.5; margin-bottom: 4px; letter-spacing: -0.3px; }
         .q-sub-notice { font-size: 13px; color: #1967d2; font-weight: 600; line-height: 1.45; margin-bottom: 8px; background-color: rgba(25,103,210,0.04); padding: 12px 14px; border-radius: 10px; border-left: 3px solid #1967d2; }
         
-        /* 주관식 인풋 스타일 보존 */
-        .form-input { width: 100%; padding: 14px; border-radius: 12px; border: 1px solid #d1d1d6; font-size: 15px; font-weight: 600; outline: none; }
+        .form-input { width: 100%; padding: 14px; border-radius: 12px; border: 1px solid #d1d1d6; font-size: 15px; font-weight: 600; outline: none; transition: border-color 0.2s; }
         .form-input:focus { border-color: #1967d2; background-color: #f4f9ff; }
         
-        /* 객관식 라디오 단추 디자인 보존 */
         .radio-option-row { display: flex; align-items: center; gap: 12px; padding: 14px; border: 1px solid #d1d1d6; border-radius: 12px; cursor: pointer; transition: all 0.15s cubic-bezier(0.25, 1, 0.5, 1); }
-        .radio-option-row:hover { background-color: #f2f4f6; border-color: #1967d2; }
+        .radio-option-row:hover, .radio-option-row:focus { background-color: #f2f4f6; border-color: #1967d2; outline: none; }
         .radio-option-row.selected { border-color: #1967d2; background-color: #f4f9ff; }
         .radio-circle { width: 18px; height: 18px; border-radius: 50%; border: 2px solid #d1d1d6; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
         .radio-option-row.selected .radio-circle { border-color: #1967d2; }
@@ -41,64 +36,50 @@
         
         .btn-row-layout { display: flex; gap: 12px; margin-top: 18px; }
         .btn-action { flex: 1; background-color: #1967d2; color: #ffffff; border: none; padding: 15px; border-radius: 9999px; font-size: 15px; font-weight: 700; cursor: pointer; text-align: center; box-shadow: 0 4px 12px rgba(25,103,210,0.15); transition: all 0.2s; }
-        .btn-action:hover { background-color: #1152b3; transform: translateY(-1px); }
+        .btn-action:hover, .btn-action:focus { background-color: #1152b3; transform: translateY(-1px); outline: none; }
         .btn-action.back { background-color: #ffffff; color: #48484a; border: 1px solid #d1d1d6; box-shadow: none; }
-        .btn-action.back:hover { background-color: #f2f4f6; }
+        .btn-action.back:hover, .btn-action.back:focus { background-color: #f2f4f6; }
     </style>
 </head>
 <body>
-    <div class="qa-wrap-box">
-        <!-- [사장님 지시 2안 반영] 컴팩트 플로팅 서클 링 융합형 고급 헤더 배치 라인 -->
-        <div class="qa-header-flex-row">
+    <main class="qa-wrap-box">
+        <header class="qa-header-flex-row">
             <h2 class="main-title">구직 베테랑 건강 문진 이력서</h2>
             
-            <!-- 간결하고 단순한 파란색 서클 링 트래커 그래픽 UI 원장 마운트 -->
-            <div class="circle-gauge-wrapper">
+            <div class="circle-gauge-wrapper" aria-hidden="true">
                 <svg class="circle-gauge-svg" viewBox="0 0 36 36">
                     <circle class="circle-bg" cx="18" cy="18" r="16"/>
-                    <!-- stroke-dasharray 둘레 계수 100 기준 보정 제어선 -->
-                    <circle class="circle-progress" id="circleProgressElement" cx="18" cy="18" r="16" stroke-dasharray="100" stroke-dashoffset="91.66"/>
+                    <circle class="circle-progress" id="circleProgressElement" cx="18" cy="18" r="16" stroke-dasharray="100.53" stroke-dashoffset="100.53"/>
                 </svg>
                 <div class="circle-step-number" id="circleStepNumberElement">1</div>
             </div>
-        </div>
+        </header>
         
-        <div class="q-active-card">
-            <div class="q-sub-notice" id="questionNotice" style="display:none;"></div>
-            <div class="q-title-label" id="questionLabel">로딩 중...</div>
+        <section class="q-active-card">
+            <div class="q-sub-notice" id="questionNotice" style="display:none;" aria-live="polite"></div>
+            <h3 class="q-title-label" id="questionLabel">로딩 중...</h3>
             
-            <!-- 주관식 입력 폼 슬롯 보존 -->
             <div id="inputFormSlot" style="display:none;">
-                <input type="text" id="activeAnswerInput" class="form-input" placeholder="답변을 입력하고 엔터를 누르세요" onkeypress="if(event.keyCode===13) handleNextStep()">
+                <input type="text" id="activeAnswerInput" class="form-input" placeholder="답변을 입력하고 엔터를 누르세요" onkeypress="if(event.key === 'Enter') handleNextStep()" aria-label="답변 입력란">
             </div>
             
-            <!-- 사장님 기획 원본 규격: 라디오 객관식 선택 폼 슬롯 보존 -->
-            <div id="radioFormSlot" style="display:none; flex-direction:column; gap:10px;"></div>
+            <div id="radioFormSlot" style="display:none; flex-direction:column; gap:10px;" role="radiogroup"></div>
             
             <div class="btn-row-layout">
                 <button type="button" class="btn-action back" id="backBtn" style="display:none;" onclick="handlePrevStep()">이전</button>
                 <button type="button" class="btn-action" id="nextBtn" onclick="handleNextStep()">다음 단계</button>
             </div>
-        </div>
-    </div>
-    <!-- [사장님 지시 2안: 플로팅 서클 링 진행 연동 스위칭 구동 엔진 스크립트] -->
+        </section>
+    </main>
+
     <script>
         const qSchema = [
-            {
-                type: "radio",
-                q: "오늘 이 일자리 신청은 누가 도와주고 계시나요?",
-                options: ["어르신 본인이 직접 스마트폰을 보고 있어요.", "아들, 딸, 손주 등 가족이 대신 눌러주고 있어요.", "주변 사람의 도움을 받고 있어요."]
-            },
+            { type: "radio", q: "오늘 이 일자리 신청은 누가 도와주고 계시나요?", options: ["어르신 본인이 직접 스마트폰을 보고 있어요.", "아들, 딸, 손주 등 가족이 대신 눌러주고 있어요.", "주변 사람의 도움을 받고 있어요."] },
             { type: "input", q: "성함이 어떻게 되시나요?" },
             { type: "input", q: "생년월일을 입력해 주세요. (예: 1955년생)" },
             { type: "input", q: "휴대전화 번호를 적어주세요." },
             { type: "input", q: "근무를 희망하는 동네 이름을 적어주세요. (ex. 성남시 분당구)" },
-            {
-                type: "radio",
-                q: "아파트나 지하철 계단을 이용할 때, 쉬지 않고 3층 높이까지 걸어서 올라가실 수 있습니까?",
-                notice: "지금부터는 건강관련 질문입니다.\n답변하신 정보를 바탕으로 최적의 일자리를 매칭드리겠습니다.",
-                options: ["네, 숨차지 않고 잘 올라갑니다.", "무릎이나 허리가 조금 쑤시지만 올라갑니다.", "쉬면서 올라가야 하거나 힘듭니다."]
-            },
+            { type: "radio", q: "아파트나 지하철 계단을 이용할 때, 쉬지 않고 3층 높이까지 걸어서 올라가실 수 있습니까?", notice: "지금부터는 건강관련 질문입니다.\n답변하신 정보를 바탕으로 최적의 일자리를 매칭드리겠습니다.", options: ["네, 숨차지 않고 잘 올라갑니다.", "무릎이나 허리가 조금 쑤시지만 올라갑니다.", "쉬면서 올라가야 하거나 힘듭니다."] },
             { type: "input", q: "1시간 연속 도보 가능성 여부를 적어주세요." },
             { type: "input", q: "현장 주의가 필요한 지병 데이터를 적어주세요. (없으시면 '없음' 기입)" },
             { type: "input", q: "식당 및 마트 청력 소통도 유무를 적어주세요." },
@@ -108,22 +89,38 @@
         ];
         
         let currentStep = 1;
-        const savedAnswers = {};
+        const totalSteps = qSchema.length;
+        let savedAnswers = {};
         let selectedRadioValue = "";
+        const circleCircumference = 100.53; 
 
         document.addEventListener("DOMContentLoaded", function() {
+            loadDraftFromLocalStorage();
             renderActiveQuestion();
         });
 
-        // [2안 서클 링 실시간 스트로크 오프셋 계산 주입기 결속 엔진]
+        // 브라우저 로컬 스토리지 임시 저장 불러오기
+        function loadDraftFromLocalStorage() {
+            const savedStep = localStorage.getItem('sw_qa_step');
+            const savedData = localStorage.getItem('sw_qa_answers');
+            if (savedStep) currentStep = parseInt(savedStep, 10);
+            if (savedData) {
+                try { savedAnswers = JSON.parse(savedData); } catch(e) { savedAnswers = {}; }
+            }
+        }
+
+        // 현재 진행 상태 및 답변 임시 백업
+        function saveDraftToLocalStorage() {
+            localStorage.setItem('sw_qa_step', currentStep);
+            localStorage.setItem('sw_qa_answers', JSON.stringify(savedAnswers));
+        }
+
         function renderActiveQuestion() {
             const currentQ = qSchema[currentStep - 1];
             
-            // 단순하고 간결한 숫자 기제 연동
             document.getElementById('circleStepNumberElement').innerText = currentStep;
             
-            // SVG 대기업 정형화 계산선 수식 마운트 (dasharray 100 기준 보정)
-            const strokeOffset = 100 - ((currentStep / 12) * 100);
+            const strokeOffset = circleCircumference - ((currentStep / totalSteps) * circleCircumference);
             document.getElementById('circleProgressElement').style.strokeDashoffset = strokeOffset;
             
             document.getElementById('questionLabel').innerText = `Q${currentStep}. ${currentQ.q}`;
@@ -144,18 +141,22 @@
                 inputSlot.style.display = 'block';
                 const input = document.getElementById('activeAnswerInput');
                 input.value = savedAnswers[currentStep] || '';
-                input.focus();
+                setTimeout(() => input.focus(), 50);
             } else {
                 inputSlot.style.display = 'none';
                 radioSlot.style.display = 'flex';
                 radioSlot.innerHTML = '';
                 selectedRadioValue = savedAnswers[currentStep] || '';
 
-                currentQ.options.forEach(opt => {
+                currentQ.options.forEach((opt) => {
                     const isSelected = opt === selectedRadioValue;
                     const row = document.createElement('div');
                     row.className = `radio-option-row ${isSelected ? 'selected' : ''}`;
+                    row.tabIndex = 0;
+                    row.setAttribute('role', 'radio');
+                    row.setAttribute('aria-checked', isSelected);
                     row.onclick = () => handleSelectRadioOption(row, opt);
+                    row.onkeypress = (e) => { if(e.key === 'Enter') handleSelectRadioOption(row, opt); };
                     row.innerHTML = `
                         <div class="radio-circle"><div class="radio-dot"></div></div>
                         <div class="radio-label-text">${opt}</div>
@@ -165,30 +166,32 @@
             }
 
             document.getElementById('backBtn').style.display = currentStep > 1 ? 'block' : 'none';
-            document.getElementById('nextBtn').innerText = currentStep === 12 ? '문진표 최종 완료 제출' : '다음 단계';
+            document.getElementById('nextBtn').innerText = currentStep === totalSteps ? '문진표 최종 완료 제출' : '다음 단계';
         }
 
         function handleSelectRadioOption(element, val) {
-            document.querySelectorAll('.radio-option-row').forEach(r => r.classList.remove('selected'));
+            document.querySelectorAll('.radio-option-row').forEach(r => {
+                r.classList.remove('selected');
+                r.setAttribute('aria-checked', 'false');
+            });
             element.classList.add('selected');
+            element.setAttribute('aria-checked', 'true');
             selectedRadioValue = val;
         }
 
         function handleNextStep() {
             const currentQ = qSchema[currentStep - 1];
-            let finalVal = "";
+            let finalVal = currentQ.type === "input" ? document.getElementById('activeAnswerInput').value.trim() : selectedRadioValue;
 
-            if (currentQ.type === "input") {
-                finalVal = document.getElementById('activeAnswerInput').value.trim();
-            } else {
-                finalVal = selectedRadioValue;
+            if (!finalVal) { 
+                alert('해당 문항의 답변을 기입 혹은 선택해 주십시오.'); 
+                return; 
             }
-
-            if (!finalVal) { alert('해당 문항의 답변을 기입 혹은 선택해 주십시오.'); return; }
             
             savedAnswers[currentStep] = finalVal;
+            saveDraftToLocalStorage(); // 자동 저장 실행
 
-            if (currentStep < 12) {
+            if (currentStep < totalSteps) {
                 currentStep++;
                 renderActiveQuestion();
             } else {
@@ -199,22 +202,23 @@
         function handlePrevStep() {
             if (currentStep > 1) {
                 const currentQ = qSchema[currentStep - 1];
-                if (currentQ.type === "input") {
-                    savedAnswers[currentStep] = document.getElementById('activeAnswerInput').value.trim();
-                } else {
-                    savedAnswers[currentStep] = selectedRadioValue;
-                }
+                savedAnswers[currentStep] = currentQ.type === "input" ? document.getElementById('activeAnswerInput').value.trim() : selectedRadioValue;
                 currentStep--;
+                saveDraftToLocalStorage(); // 자동 저장 실행
                 renderActiveQuestion();
             }
         }
 
         function executeFinalSubmit() {
             const id = localStorage.getItem('sw_username');
-            if(!id) { location.href = '/login.html'; return; }
+            if(!id) { 
+                alert('로그인이 필요한 서비스입니다.');
+                location.href = '/login.html'; 
+                return; 
+            }
 
             let combinedString = "";
-            for(let i=1; i<=12; i++) {
+            for(let i=1; i<=totalSteps; i++) {
                 combinedString += `[문항 ${i}] ${savedAnswers[i]} / `;
             }
 
@@ -226,9 +230,17 @@
             .then(res => res.json())
             .then(data => {
                 if(data.success) {
-                    alert('축하합니다! 사장님 지정 2안 서클 링 게이지가 장착된 문진 이력서가 성공적으로 최종 제출 완료되었습니다.');
+                    // 최종 제출 성공 시 임시 저장 캐시 청소
+                    localStorage.removeItem('sw_qa_step');
+                    localStorage.removeItem('sw_qa_answers');
+
+                    alert('문진 이력서가 성공적으로 최종 제출 완료되었습니다.');
                     location.href = '/index.html';
                 }
+            })
+            .catch(error => {
+                console.error('제출 중 오류 발생:', error);
+                alert('서버와의 통신에 실패했습니다. 다시 시도해주세요.');
             });
         }
     </script>

@@ -2,218 +2,230 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>SILVERWORKS - 구인구직 피드</title>
-    <!-- [대기업 공식 리팩토링 스펙] 코드 요약 박멸 완치 및 스크롤 감제 CSS 명세 -->
+    <!-- [대기업 공식 리팩토링 스펙] 반응형 최적화 및 크로스플랫폼 지원 -->
     <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Malgun Gothic", sans-serif; letter-spacing: -0.4px; -webkit-tap-highlight-color: transparent; }
-        body { background-color: #ffffff; color: #1c1c1e; margin: 0; overflow-x: hidden; -webkit-font-smoothing: antialiased; }
-        header { display: flex; justify-content: space-between; align-items: center; padding: 22px 32px; background-color: rgba(25, 103, 210, 0.02); border-bottom: 1px solid #f2f4f6; position: sticky; top: 0; z-index: 100; backdrop-filter: blur(8px); }
-        .logo-container { display: flex; align-items: center; gap: 12px; cursor: pointer; }
-        .logo-text { font-size: 22px; font-weight: 800; color: #1967d2; letter-spacing: -0.8px; }
-        .nav-menu-group { display: flex; align-items: center; gap: 16px; }
-        .nav-link-btn { background: none; border: none; color: #48484a; font-size: 14.5px; font-weight: 600; cursor: pointer; padding: 10px 20px; border-radius: 12px; transition: all 0.2s; }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Malgun Gothic", sans-serif; letter-spacing: -0.4px; -webkit-tap-highlight-color: transparent; }
+        body { background-color: #ffffff; color: #1c1c1e; overflow-x: hidden; -webkit-font-smoothing: antialiased; }
+        
+        /* 헤더 및 네비게이션 */
+        header { display: flex; justify-content: space-between; align-items: center; padding: 18px 24px; background-color: rgba(25, 103, 210, 0.02); border-bottom: 1px solid #f2f4f6; position: sticky; top: 0; z-index: 100; backdrop-filter: blur(12px); }
+        .logo-container { display: flex; align-items: center; gap: 10px; cursor: pointer; }
+        .logo-text { font-size: 20px; font-weight: 800; color: #1967d2; letter-spacing: -0.5px; }
+        .nav-menu-group { display: flex; align-items: center; gap: 12px; }
+        .nav-link-btn { background: none; border: none; color: #48484a; font-size: 14px; font-weight: 600; cursor: pointer; padding: 8px 16px; border-radius: 12px; transition: all 0.2s; }
         .nav-link-btn:hover { background-color: #f2f4f6; color: #1967d2; }
         .btn-sns-link { background-color: #1967d2; color: #ffffff; font-weight: 700; box-shadow: 0 4px 12px rgba(25, 103, 210, 0.15); }
         .btn-sns-link:hover { background-color: #1152b3; }
-        
-        .btn-logout-red { display: none; background: none; border: 1px solid #e5e8eb; color: #eb5757; font-size: 13.5px; font-weight: 700; cursor: pointer; padding: 8px 18px; border-radius: 10px; transition: all 0.2s; }
+        .btn-logout-red { display: none; background: none; border: 1px solid #e5e8eb; color: #eb5757; font-size: 13.5px; font-weight: 700; cursor: pointer; padding: 8px 16px; border-radius: 10px; transition: all 0.2s; }
         .btn-logout-red:hover { background-color: #fff5f5; border-color: #eb5757; }
-        .seeker-point-badge { display: none; align-items: center; background-color: #ffffff; border: 1px solid #1967d2; padding: 8px 18px; border-radius: 24px; font-size: 14px; font-weight: 700; color: #1967d2; cursor: pointer; box-shadow: 0 2px 6px rgba(25,103,210,0.06); }
+        
+        .seeker-point-badge { display: none; align-items: center; background-color: #ffffff; border: 1px solid #1967d2; padding: 8px 16px; border-radius: 24px; font-size: 14px; font-weight: 700; color: #1967d2; cursor: pointer; box-shadow: 0 2px 6px rgba(25,103,210,0.06); }
         .seeker-point-badge span { color: #1152b3; font-weight: 800; margin-left: 4px; text-decoration: underline; }
-        
-        .settle-modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.4); display: none; align-items: center; justify-content: center; z-index: 500; padding: 20px; backdrop-filter: blur(4px); }
-        .settle-modal-content { background-color: #ffffff; width: 100%; max-width: 480px; border-radius: 24px; padding: 32px; box-shadow: 0 20px 50px rgba(0,0,0,0.15); border: none; }
-        .modal-header-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; border-bottom: 1px solid #f2f4f6; padding-bottom: 14px; }
-        .modal-main-title { font-size: 18px; font-weight: 700; color: #1c1c1e; }
-        .btn-modal-close { background: none; border: none; font-size: 22px; cursor: pointer; color: #8e8e93; font-weight: 700; }
-        
-        .employer-select-grid-box { display: flex; flex-direction: column; gap: 14px; margin-top: 10px; }
-        .btn-employer-choice { width: 100%; text-align: left; padding: 20px; border-radius: 16px; border: 1px solid #d1d1d6; background-color: #ffffff; cursor: pointer; transition: all 0.2s; }
-        .btn-employer-choice:hover { border-color: #1967d2; background-color: #f4f9ff; transform: translateY(-2px); }
-        .choice-title { font-size: 16px; font-weight: 800; color: #1967d2; margin-bottom: 4px; display: block; }
-        .choice-desc { font-size: 13px; color: #636366; font-weight: 500; }
-        
-        .invoice-paper-skin { background-color: #f8f9fa; border: 1px solid #e5e8eb; border-radius: 16px; padding: 20px; margin-bottom: 16px; display: none; }
-        .invoice-title-row { font-size: 14px; font-weight: 800; color: #1c1c1e; border-bottom: 1px dashed #d1d1d6; padding-bottom: 10px; margin-bottom: 12px; }
-        .invoice-data-row { display: flex; justify-content: space-between; font-size: 13.5px; font-weight: 600; color: #48484a; padding: 6px 0; }
-        .invoice-total-row { display: flex; justify-content: space-between; font-size: 16px; font-weight: 800; color: #eb5757; border-top: 1px solid #cfd9de; padding-top: 10px; margin-top: 8px; }
-        
-        .form-group { margin-bottom: 20px; }
-        .form-label { display: block; font-size: 14px; font-weight: 600; color: #48484a; margin-bottom: 10px; }
-        .form-input { width: 100%; padding: 14px; border-radius: 12px; border: 1px solid #d1d1d6; font-size: 15px; font-weight: 600; outline: none; }
-        .form-input:focus { border-color: #1967d2; background-color: #f4f9ff; }
-        .form-select { width: 100%; padding: 14px; border-radius: 12px; border: 1px solid #d1d1d6; font-size: 15px; font-weight: 600; outline: none; background-color: #ffffff; }
-        .btn-settle-action-blue { width: 100%; background-color: #1967d2; color: #ffffff; border: none; padding: 16px; border-radius: 9999px; font-size: 15.5px; font-weight: 700; cursor: pointer; text-align: center; box-shadow: 0 8px 20px rgba(25,103,210,0.2); transition: all 0.2s; margin-top: 12px; }
-        .btn-settle-action-blue:hover { background-color: #1152b3; transform: translateY(-2px); }
-        .user-profile-avatar { width: 40px; height: 40px; border-radius: 50%; background-color: #1967d2; color: #ffffff; font-size: 14px; font-weight: 700; display: none; align-items: center; justify-content: center; cursor: pointer; border: 2px solid #ffffff; box-shadow: 0 4px 12px rgba(25, 103, 210, 0.15); }
-        
-        .hero-section { position: relative; padding: 220px 24px 280px 24px; text-align: center; background: linear-gradient(180deg, rgba(25, 103, 210, 0.08) 0%, rgba(25, 103, 210, 0.03) 50%, #ffffff 100%); overflow: hidden; cursor: pointer; }
-        .wave-wrapper { position: absolute; bottom: 0; left: 0; width: 100%; height: 140px; overflow: hidden; pointer-events: none; transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        .user-profile-avatar { width: 36px; height: 36px; border-radius: 50%; background-color: #1967d2; color: #ffffff; font-size: 13px; font-weight: 700; display: none; align-items: center; justify-content: center; cursor: pointer; border: 2px solid #ffffff; box-shadow: 0 4px 12px rgba(25, 103, 210, 0.15); }
+
+        /* 히어로 파도 섹션 (인터랙션 보존) */
+        .hero-section { position: relative; padding: 180px 20px 220px 20px; text-align: center; background: linear-gradient(180deg, rgba(25, 103, 210, 0.08) 0%, rgba(25, 103, 210, 0.03) 50%, #ffffff 100%); overflow: hidden; cursor: pointer; }
+        .hero-title { font-size: 32px; font-weight: 800; color: #1967d2; letter-spacing: -1.2px; line-height: 1.4; pointer-events: none; }
+        .wave-wrapper { position: absolute; bottom: 0; left: 0; width: 100%; height: 120px; overflow: hidden; pointer-events: none; transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
         .wave-svg { position: absolute; bottom: 0; left: 0; width: 200%; height: 100%; }
         .wave-layer1 { opacity: 0.08; fill: #1967d2; }
         .wave-layer2 { opacity: 0.15; fill: #1967d2; bottom: 2px; }
-        
         .hero-section.pulse-wave-active .wave-wrapper { transform: scaleY(1.35) translateY(-5px); }
+        
         .ripple-drop { position: absolute; background-color: rgba(25, 103, 210, 0.2); border-radius: 50%; pointer-events: none; z-index: 4; animation: ripple-rise-fade 1.6s ease-out forwards; }
         @keyframes ripple-rise-fade {
             0% { transform: translateY(140px) scale(0.4); opacity: 0; }
             30% { opacity: 0.7; }
             100% { transform: translateY(-30px) scale(1.6); opacity: 0; }
         }
+
+        /* 카드 섹션 및 스크롤 가드 (모바일 마진 최적화) */
+        .card-section { padding: 0 20px; max-width: 1040px; margin: -100px auto 40px auto; position: sticky; top: 120px; z-index: 10; display: grid; grid-template-columns: 1fr 1fr; gap: 24px; transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.4s ease-out; transform: translateY(0); opacity: 1; }
+        .card-section.hidden-scroll { transform: translateY(-120px); opacity: 0; pointer-events: none; }
         
-        /* [사장님 오더 반영] 스크롤 시 위로 스르륵 사라지고 원래 위치(120px 이하) 영역 복귀 시에만 다시 스르륵 출현하는 가드 스타일셋 */
-        .card-section { padding: 0 24px; max-width: 1040px; margin: -140px auto 30px auto; position: sticky; top: 140px; z-index: 10; display: grid; grid-template-columns: 1fr 1fr; gap: 32px; transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.4s ease-out; transform: translateY(0); opacity: 1; }
-        @media (max-width: 600px) { .card-section { grid-template-columns: 1fr; margin-top: -60px; } }
-        /* 스크롤 시 하늘 방향 위로 '스르륵' 페이드아웃 실종 가드 클래스 */
-        .card-section.hidden-scroll { transform: translateY(-160px); opacity: 0; pointer-events: none; }
-        
-        .scroll-indicator-zone { max-width: 1040px; margin: 0 auto 50px auto; text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.4s ease-out; transform: translateY(0); opacity: 1; position: relative; z-index: 9; }
-        .scroll-indicator-zone.hidden-scroll { transform: translateY(-160px); opacity: 0; pointer-events: none; }
-        .scroll-guide-text { font-size: 14px; font-weight: 700; color: #8e8e93; letter-spacing: -0.2px; }
-        
-        .scroll-arrow-icon { width: 24px; height: 24px; fill: none; stroke: #1967d2; stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; animation: arrow-bounce-motion 1.4s infinite ease-in-out; }
+        .info-card { background-color: #ffffff; border-radius: 24px; padding: 40px; border: 1px solid #e5e8eb; cursor: pointer; display: flex; flex-direction: column; justify-content: space-between; min-height: 260px; box-shadow: 0 12px 36px rgba(0,0,0,0.03); transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1); }
+        .info-card:hover { transform: translateY(-6px); box-shadow: 0 24px 48px rgba(25, 103, 210, 0.1); border-color: #1967d2; }
+        .card-badge { display: inline-block; background-color: rgba(25, 103, 210, 0.08); color: #1967d2; padding: 6px 12px; border-radius: 8px; font-size: 13px; font-weight: 700; margin-bottom: 20px; width: fit-content; }
+        .card-title { font-size: 20px; font-weight: 700; margin-bottom: 12px; color: #1c1c1e; letter-spacing: -0.5px; }
+        .card-desc { font-size: 14.5px; line-height: 1.6; color: #636366; }
+
+        .scroll-indicator-zone { max-width: 1040px; margin: 0 auto 60px auto; text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.4s ease-out; transform: translateY(0); opacity: 1; position: relative; z-index: 9; }
+        .scroll-indicator-zone.hidden-scroll { transform: translateY(-120px); opacity: 0; pointer-events: none; }
+        .scroll-guide-text { font-size: 13px; font-weight: 700; color: #8e8e93; }
+        .scroll-arrow-icon { width: 22px; height: 22px; fill: none; stroke: #1967d2; stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; animation: arrow-bounce-motion 1.4s infinite ease-in-out; }
         @keyframes arrow-bounce-motion { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(6px); } }
+
+        /* 스토리텔링 본문 섹션 (인라인 스타일 분리 및 정규화) */
+        .story-container { max-width: 720px; margin: 120px auto; padding: 0 24px; line-height: 1.9; color: #3a3a3c; font-size: 16px; word-break: keep-all; position: relative; z-index: 5; }
+        .story-title { font-size: 22px; font-weight: 800; color: #1c1c1e; margin-bottom: 16px; letter-spacing: -0.6px; line-height: 1.4; }
+        .story-quote-box { border-left: 4px solid #1967d2; background-color: #f8f9fa; padding: 24px; border-radius: 12px; font-size: 15px; color: #1967d2; font-weight: 600; line-height: 1.7; margin: 28px 0; box-shadow: 0 4px 16px rgba(0,0,0,0.02); }
+        .story-quote-source { margin-top: 12px; font-size: 13px; color: #8e8e93; font-weight: 500; }
+        .story-quote-source a { color: #1967d2; text-decoration: underline; font-weight: 700; }
+        .story-text { margin-bottom: 28px; color: #48484a; }
+        .story-divider { border-top: 1px solid #f2f4f6; margin: 40px 0; }
+        .story-highlight { font-size: 18px; font-weight: 800; color: #1967d2; text-align: center; margin: 48px 0; letter-spacing: -0.5px; background-color: rgba(25,103,210,0.04); padding: 20px; border-radius: 14px; }
+        .story-conclusion { font-size: 20px; font-weight: 800; color: #1967d2; text-align: center; margin-top: 60px; line-height: 1.4; letter-spacing: -0.5px; }
+
+        /* 모달 및 폼 공통 스타일 */
+        .settle-modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.4); display: none; align-items: center; justify-content: center; z-index: 500; padding: 20px; backdrop-filter: blur(6px); }
+        .settle-modal-content { background-color: #ffffff; width: 100%; max-width: 480px; border-radius: 20px; padding: 28px; box-shadow: 0 20px 50px rgba(0,0,0,0.15); border: none; max-height: 90vh; overflow-y: auto; }
+        .modal-header-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; border-bottom: 1px solid #f2f4f6; padding-bottom: 14px; }
+        .modal-main-title { font-size: 17px; font-weight: 700; color: #1c1c1e; }
+        .btn-modal-close { background: none; border: none; font-size: 22px; cursor: pointer; color: #8e8e93; font-weight: 700; }
         
-        .info-card { background-color: #ffffff; border-radius: 28px; padding: 48px; border: 1px solid #e5e8eb; cursor: pointer; display: flex; flex-direction: column; justify-content: space-between; min-height: 280px; box-shadow: 0 12px 36px rgba(0,0,0,0.03); transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1); }
-        .info-card:hover { transform: translateY(-8px); box-shadow: 0 24px 48px rgba(25, 103, 210, 0.1); border-color: #1967d2; }
-        .card-badge { display: inline-block; background-color: rgba(25, 103, 210, 0.08); color: #1967d2; padding: 6px 14px; border-radius: 8px; font-size: 13px; font-weight: 700; margin-bottom: 24px; width: fit-content; text-transform: uppercase; }
-        .card-title { font-size: 22px; font-weight: 700; margin-bottom: 16px; color: #1c1c1e; letter-spacing: -0.5px; }
-        .card-desc { font-size: 15px; line-height: 1.7; color: #636366; }
+        .employer-select-grid-box { display: flex; flex-direction: column; gap: 12px; margin-top: 10px; }
+        .btn-employer-choice { width: 100%; text-align: left; padding: 18px; border-radius: 14px; border: 1px solid #d1d1d6; background-color: #ffffff; cursor: pointer; transition: all 0.2s; }
+        .btn-employer-choice:hover { border-color: #1967d2; background-color: #f4f9ff; transform: translateY(-2px); }
+        .choice-title { font-size: 15px; font-weight: 800; color: #1967d2; margin-bottom: 6px; display: block; }
+        .choice-desc { font-size: 13px; color: #636366; font-weight: 500; line-height: 1.4; }
         
-        footer { background-color: #f2f4f6; color: #636366; padding: 60px 24px; font-size: 13px; line-height: 2.0; border-top: 2px solid #e5e8eb; width: 100%; position: relative; margin-top: 120px; }
-        footer h4 { color: #1c1c1e; font-size: 15px; font-weight: 700; margin-bottom: 12px; }
+        .invoice-paper-skin { background-color: #f8f9fa; border: 1px solid #e5e8eb; border-radius: 14px; padding: 18px; margin-bottom: 16px; display: none; }
+        .invoice-title-row { font-size: 14px; font-weight: 800; color: #1c1c1e; border-bottom: 1px dashed #d1d1d6; padding-bottom: 10px; margin-bottom: 12px; }
+        .invoice-data-row { display: flex; justify-content: space-between; font-size: 13.5px; font-weight: 600; color: #48484a; padding: 6px 0; }
+        .invoice-total-row { display: flex; justify-content: space-between; font-size: 15px; font-weight: 800; color: #eb5757; border-top: 1px solid #cfd9de; padding-top: 10px; margin-top: 8px; }
+        
+        .form-group { margin-bottom: 18px; }
+        .form-label { display: block; font-size: 13.5px; font-weight: 600; color: #48484a; margin-bottom: 8px; }
+        .form-input, .form-select { width: 100%; padding: 14px; border-radius: 10px; border: 1px solid #d1d1d6; font-size: 14.5px; font-weight: 500; outline: none; background-color: #ffffff; }
+        .form-input:focus, .form-select:focus { border-color: #1967d2; background-color: #f4f9ff; }
+        .btn-settle-action-blue { width: 100%; background-color: #1967d2; color: #ffffff; border: none; padding: 16px; border-radius: 12px; font-size: 15px; font-weight: 700; cursor: pointer; text-align: center; box-shadow: 0 6px 16px rgba(25,103,210,0.2); transition: all 0.2s; margin-top: 8px; }
+        .btn-settle-action-blue:hover { background-color: #1152b3; transform: translateY(-2px); }
+
+        footer { background-color: #f2f4f6; color: #636366; padding: 48px 24px; font-size: 13px; line-height: 1.8; border-top: 1px solid #e5e8eb; width: 100%; }
+        footer h4 { color: #1c1c1e; font-size: 14px; font-weight: 700; margin-bottom: 8px; }
+
+        /* 반응형 모바일 브레이크포인트 */
+        @media (max-width: 768px) {
+            .card-section { grid-template-columns: 1fr; margin-top: -60px; top: 100px; }
+            .hero-title { font-size: 26px; }
+            .hero-section { padding: 120px 20px 180px 20px; }
+            .nav-link-btn { padding: 6px 10px; font-size: 13px; }
+            .story-container { margin: 80px auto; padding: 0 20px; }
+            .story-title { font-size: 19px; }
+        }
     </style>
 </head>
 <body>
+    <!-- [공통] 네비게이션 헤더 -->
     <header>
         <div class="logo-container" onclick="location.href='/'">
-            <svg width="32" height="30" viewBox="0 0 100 90" fill="none"><path d="M12.5 54C13.5 53 19.5 54.5 28.5 48.5C38.5 42 47 28 56.5 19.5C65.5 11 76.5 6.5 85.5 12.5" stroke="#1967d2" stroke-width="7.5" stroke-linecap="round"/><path d="M51.5 59C58.5 67 71 68 80.5 60.5C90 53 92.5 39.5 85.5 32" stroke="#1967d2" stroke-width="7.5" stroke-linecap="round"/></svg>
+            <svg width="28" height="26" viewBox="0 0 100 90" fill="none"><path d="M12.5 54C13.5 53 19.5 54.5 28.5 48.5C38.5 42 47 28 56.5 19.5C65.5 11 76.5 6.5 85.5 12.5" stroke="#1967d2" stroke-width="7.5" stroke-linecap="round"/><path d="M51.5 59C58.5 67 71 68 80.5 60.5C90 53 92.5 39.5 85.5 32" stroke="#1967d2" stroke-width="7.5" stroke-linecap="round"/></svg>
             <span class="logo-text">SILVERWORKS</span>
         </div>
         <div class="nav-menu-group">
-            <button class="nav-link-btn btn-sns-link" onclick="location.href='/sns.html'">소통 채널 진입 ➔</button>
+            <button class="nav-link-btn btn-sns-link" onclick="location.href='/sns.html'">소통 채널 ➔</button>
             <button class="nav-link-btn" onclick="location.href='/board.html'">매칭 게시판</button>
-            <div id="seekerPointTracker" class="seeker-point-badge" onclick="openSettleWithdrawModal()">보유 포인트: <span id="seekerPointBalance">0</span>P (정산하기)</div>
+            <div id="seekerPointTracker" class="seeker-point-badge" onclick="openSettleWithdrawModal()">보유: <span id="seekerPointBalance">0</span>P</div>
             <button id="navLogoutBtn" class="btn-logout-red" onclick="handleExecuteLogoutAction()">로그아웃</button>
-            <button id="navAuthBtn" class="nav-link-btn" style="background-color: #1967d2; color: #ffffff;" onclick="location.href='/login.html'">로그인 / 가입</button>
+            <button id="navAuthBtn" class="nav-link-btn" style="background-color: #1967d2; color: #ffffff;" onclick="location.href='/login.html'">로그인</button>
             <div id="userAvatar" class="user-profile-avatar" onclick="location.href='/profile.html'">MY</div>
         </div>
     </header>
 
-    <!-- [기능 보존] 2안 파도 직접 클릭 펄스 치솟음 인터랙션 엔진 영역 고스란히 영구 작동 유지 -->
+    <!-- 2안 파도 펄스 애니메이션 엔진 -->
     <section class="hero-section" id="heroWaveSection" onclick="handleTriggerWavePulseAnimation()">
-        <h1 class="hero-title" style="font-size: 34px; font-weight: 800; color: #1967d2; letter-spacing: -1.5px; line-height: 1.45; pointer-events: none;">변화에 도전할 사장님과 베테랑 시니어 구직자들의 만남</h1>
+        <h1 class="hero-title">변화에 도전할 사장님과<br>베테랑 시니어 구직자들의 만남</h1>
         <div class="wave-wrapper"><svg class="wave-svg" viewBox="0 0 1200 120" preserveAspectRatio="none"><path class="wave-layer1" d="M0,60 C150,100 350,20 500,60 C650,100 850,20 1000,60 L1500,120 L0,120 Z"></path><path class="wave-layer2" d="M0,50 C200,10 400,90 600,40 C800,10 1000,90 1200,40 L1800,120 L0,120 Z"></path></svg></div>
     </section>
 
-    <!-- [애니메이션 필터 보존] 스크롤 시 위로 스르륵 숨김 및 최상단 원위치 스위칭 카드 진입로 영역 -->
+    <!-- 스크롤 오프셋 가드 적용 카드 섹션 -->
     <section class="card-section" id="animatedCardSection">
         <div class="info-card" onclick="handleVerifyRouteGuard('seeker')">
-            <div><span class="card-badge">시니어 마이페이지</span><h2 class="card-title">베테랑 전용 12단계 문진형 이력서 자율 제출</h2><p class="card-desc">체력 인증 등급과 사장님이 지정하신 12가지 정밀 건강 문진 데이터가 통합 탑재된 실버웍스 전용 표준 공식 이력서 제출처입니다.</p></div>
+            <div><span class="card-badge">시니어 마이페이지</span><h2 class="card-title">베테랑 전용 12단계 문진형 이력서</h2><p class="card-desc">체력 인증 등급과 사장님이 지정하신 12가지 정밀 건강 문진 데이터가 통합 탑재된 실버웍스 전용 표준 공식 이력서 제출처입니다.</p></div>
         </div>
         <div class="info-card" onclick="handleVerifyRouteGuard('employer')">
-            <div><span class="card-badge">사장님 관제실</span><h2 class="card-title">필요한 시간만 합법적 고용 솔루션</h2><p class="card-desc">하루 3시간 피크타임, 원하는 직무와 인원만 지정하여 등록하면 인프라가 작동됩니다. 인건비 자동 계산기와 실시간 상담 파이프라인이 완전 가동됩니다.</p></div>
+            <div><span class="card-badge">사장님 관제실</span><h2 class="card-title">필요한 시간만 합법적 고용 솔루션</h2><p class="card-desc">하루 3시간 피크타임, 원하는 직무와 인원만 지정하여 등록하면 인프라가 작동됩니다. 인건비 자동 계산기와 실시간 상담 파이프라인이 가동됩니다.</p></div>
         </div>
     </section>
 
-    <!-- 아래로 스크롤 가이드 화살표 바운스 콤팩트형 구조 유지 주입 -->
     <div class="scroll-indicator-zone" id="animatedScrollIndicatorZone">
         <span class="scroll-guide-text">아래로 스크롤</span>
         <svg class="scroll-arrow-icon" viewBox="0 0 24 24"><path d="M12 5v14M19 12l-7 7-7-7"/></svg>
     </div>
 
-    <!-- [가독성 그랜드 리팩토링 스펙] 난잡함을 원천 박멸 정리한 명품 스토리텔링 리포트 본문 본고 구역 -->
-    <div style="max-width: 720px; margin: 200px auto 120px auto; padding: 0 24px; line-height: 2.2; color: #3a3a3c; font-size: 16px; word-break: keep-all; position: relative; z-index: 5;">
-        
-        <h3 style="font-size: 22px; font-weight: 800; color: #1c1c1e; margin-bottom: 16px; letter-spacing: -0.8px;">매장을 책임져줄 성실한 사람을 구하는 것은<br>하늘의 별 따기가 되었습니다.</h3>
-        
-        <div style="border-left: 4px solid #1967d2; background-color: #f8f9fa; padding: 24px; border-radius: 12px; font-size: 15px; color: #1967d2; font-weight: 600; line-height: 1.7; margin: 28px 0; box-shadow: 0 4px 16px rgba(0,0,0,0.01);">
+    <!-- 스토리텔링 본문 (CSS 클래스로 구조화 완비) -->
+    <div class="story-container">
+        <h3 class="story-title">매장을 책임져줄 성실한 사람을 구하는 것은<br>하늘의 별 따기가 되었습니다.</h3>
+        <div class="story-quote-box">
             "자영업자 4명 중 3명이 알바생의 갑작스러운 결근·퇴사 등 '노쇼(No-Show)'로 인해 곤란한 상황을 겪은 것으로 나타났다."
-            <div style="margin-top: 12px; font-size: 13px; color: #8e8e93; font-weight: 500;">
-                출처: <a href="https://sedaily.com" target="_blank" style="color: #1967d2; text-decoration: underline; font-weight: 700;">중장년 알바와 MZ 사장… 문제는 없을까? 직접 들어봤다 | 서울경제</a>
-            </div>
+            <div class="story-quote-source">출처: <a href="https://sedaily.com" target="_blank">중장년 알바와 MZ 사장… 문제는 없을까? | 서울경제</a></div>
         </div>
-
-        <p style="margin-bottom: 32px; color: #48484a;">치솟는 최저임금과 주휴수당, 퇴직금이라는 고정비 압박 속에서 사장님들의 어깨는 날이 갈수록 무거워지고 있습니다.</p>
+        <p class="story-text">치솟는 최저임금과 주휴수당, 퇴직금이라는 고정비 압박 속에서 사장님들의 어깨는 날이 갈수록 무거워지고 있습니다.</p>
         
-        <div style="border-top: 1px solid #f2f4f6; margin: 40px 0;"></div>
+        <div class="story-divider"></div>
 
-        <h3 style="font-size: 22px; font-weight: 800; color: #1c1c1e; margin-bottom: 16px; letter-spacing: -0.8px;">이런 상황에서, 체력과 열정을 가지고 일터를 찾는<br>시니어들은 해 마다 늘어나고 있습니다.</h3>
-
-        <div style="border-left: 4px solid #1967d2; background-color: #f8f9fa; padding: 24px; border-radius: 12px; font-size: 15px; color: #1967d2; font-weight: 500; line-height: 1.7; margin: 28px 0; box-shadow: 0 4px 16px rgba(0,0,0,0.01);">
+        <h3 class="story-title">이런 상황에서, 체력과 열정을 가지고 일터를 찾는<br>시니어들은 해 마다 늘어나고 있습니다.</h3>
+        <div class="story-quote-box" style="font-weight: 500;">
             (노인 일자리 참여자는 꾸준히 늘고 있다. 2020년 73만7708명이던 참여자는 올해 8월 99만7233명으로 증가했다. 하지만 같은 기간 신청자 수는 82만3754명에서 122만5776명으로 48.8%나 폭증했다.)
-            <div style="margin-top: 12px; font-size: 13px; color: #8e8e93;">
-                출처 : <a href="https://newsquest.co.kr" target="_blank" style="color: #1967d2; text-decoration: underline; font-weight: 700;">뉴스퀘스트</a>
-            </div>
+            <div class="story-quote-source">출처 : <a href="https://newsquest.co.kr" target="_blank">뉴스퀘스트</a></div>
         </div>
-
-        <p style="margin-bottom: 32px; color: #48484a;">하지만 나이라는 장벽에 부딪혀 역량을 펼칠 기회조차 얻지 못하는 게 오늘날의 현실입니다.</p>
+        <p class="story-text">하지만 나이라는 장벽에 부딪혀 역량을 펼칠 기회조차 얻지 못하는 게 오늘날의 현실입니다.</p>
         
-        <p style="font-size: 18px; font-weight: 800; color: #1967d2; text-align: center; margin: 56px 0; letter-spacing: -0.5px; background-color: rgba(25,103,210,0.04); padding: 18px; border-radius: 14px;">우리는 왜 이 거대한 두 개의 갈증을 단 한 번도 연결하지 못했을까요?</p>
-        <div style="border-top: 1px dashed #e5e8eb; margin: 40px 0;"></div>
+        <p class="story-highlight">우리는 왜 이 거대한 두 개의 갈증을 단 한 번도 연결하지 못했을까요?</p>
+        <div class="story-divider" style="border-top-style: dashed;"></div>
 
-        <p style="margin-bottom: 28px; color: #48484a;">단기 근로를 원하는 숙련된 시니어층과, 피크타임 단기 인력이 절실한 사장님들. 이들이 마침내 하나로 뭉치면서 매장의 관리 구조가 완전히 뒤바뀝니다.</p>
-        <p style="margin-bottom: 28px; font-weight: 700; color: #1c1c1e;">실버랩은 단순한 인력 소개 게시판이 아닙니다. 사람과 매장을 잇고, 실질적인 인건비 절감을 주도하며, 인력을 사용하면서 발생하는 문제들을 같이 해결하는 동반자 입니다.</p>
-        <p style="margin-bottom: 28px; font-size: 16.5px; font-weight: 800; color: #1967d2;">물론, 아무나 실버랩의 팀원이 될 수는 없습니다.</p>
-        <p style="margin-bottom: 28px; color: #48484a;">실버랩은 구직을 희망하는 시니어분들의 실제 건강 상태, 스마트 디지털 인지 능력, 그리고 체계적인 오프라인 면접으로 완벽히 검증을 통과한 '베테랑' 만을 선발하여 매장에 추천합니다.</p>
-        <p style="margin-bottom: 28px; color: #48484a;">더불어, '베테랑'의 오랜 인생 경험과 근면함을 존중할 줄 아는 품격 있는 사장님들의 매장을 엄선하여 서로를 연결합니다.</p>
-        <p style="font-size: 20px; font-weight: 800; color: #1967d2; text-align: center; margin-top: 60px; letter-spacing: -0.5px;">변화에 도전 할 사장님과 준비된 베테랑님의 상생 파트너십.<br>지금 시작됩니다.</p>
+        <p class="story-text">단기 근로를 원하는 숙련된 시니어층과, 피크타임 단기 인력이 절실한 사장님들. 이들이 마침내 하나로 뭉치면서 매장의 관리 구조가 완전히 뒤바뀝니다.</p>
+        <p class="story-text" style="font-weight: 700; color: #1c1c1e;">실버랩은 단순한 인력 소개 게시판이 아닙니다. 사람과 매장을 잇고, 실질적인 인건비 절감을 주도하며, 인력을 사용하면서 발생하는 문제들을 같이 해결하는 동반자 입니다.</p>
+        <p class="story-text" style="font-size: 16.5px; font-weight: 800; color: #1967d2;">물론, 아무나 실버랩의 팀원이 될 수는 없습니다.</p>
+        <p class="story-text">실버랩은 구직을 희망하는 시니어분들의 실제 건강 상태, 스마트 디지털 인지 능력, 그리고 체계적인 오프라인 면접으로 완벽히 검증을 통과한 '베테랑' 만을 선발하여 매장에 추천합니다.</p>
+        <p class="story-text">더불어, '베테랑'의 오랜 인생 경험과 근면함을 존중할 줄 아는 품격 있는 사장님들의 매장을 엄선하여 서로를 연결합니다.</p>
+        <p class="story-conclusion">변화에 도전 할 사장님과 준비된 베테랑님의 상생 파트너십.<br>지금 시작됩니다.</p>
     </div>
 
-    <!-- 사장님 회원 전용 멀티 액션 관제 분기 모달창 보존 -->
+    <!-- 사장님 통합 모달 -->
     <div id="employerMultiActionModal" class="settle-modal-overlay">
         <div class="settle-modal-content">
             <div class="modal-header-row">
-                <span class="modal-main-title" id="mAuthEmployerTitle">사장님 회원 통합 비즈니스 제어반</span>
+                <span class="modal-main-title" id="mAuthEmployerTitle">사장님 비즈니스 제어반</span>
                 <button type="button" class="btn-modal-close" onclick="closeEmployerMultiActionModal()">✕</button>
             </div>
             <div class="invoice-paper-skin" id="employerInvoicePaperSection">
-                <div class="invoice-title-row">📄 실버웍스 본부 정산 대금 청구 명세서</div>
+                <div class="invoice-title-row">📄 실버웍스 정산 청구 명세서</div>
                 <div id="invoiceDataItemsBox"></div>
             </div>
             <div class="employer-select-grid-box">
                 <button type="button" class="btn-employer-choice" onclick="location.href='/employer.html'">
-                    <span class="choice-title">1. 고용 관제 본부 콘솔실 진입</span>
-                    <span class="choice-desc">초단기 피크타임 구인공고를 신규 생성 등록하거나, 지원 베테랑 명단을 감제합니다.</span>
+                    <span class="choice-title">1. 고용 관제 본부 콘솔 진입</span>
+                    <span class="choice-desc">초단기 구인공고를 신규 등록하거나, 지원 명단을 감제합니다.</span>
                 </button>
                 <button type="button" class="btn-employer-choice" onclick="handleToggleOpenSettleActionSubForm()">
-                    <span class="choice-title" style="color: #eb5757;">2. 베테랑 임금 포인트 직접 지급 및 정산하기</span>
-                    <span class="choice-desc">내가 등록 확정한 최종 매칭 시니어 회원에게 직접 가상 포인트를 실시간 이체 수납하고 본부 수수료 청구서를 확인합니다.</span>
+                    <span class="choice-title" style="color: #eb5757;">2. 베테랑 임금 실시간 지급</span>
+                    <span class="choice-desc">매칭 확정된 시니어에게 포인트를 지급하고 본부 수수료를 확인합니다.</span>
                 </button>
             </div>
             <div id="employerSettleActionSubFormZone" style="display: none; margin-top: 20px; border-top: 1px solid #f2f4f6; padding-top: 16px;">
-                <div class="form-group"><label class="form-label">매칭 확정된 피크타임 구인공고 ID 기입</label><input type="number" id="epJobId" class="form-input" placeholder="숫자만 입력 (예: 1)"></div>
-                <div class="form-group"><label class="form-label">임금을 지급할 대상 시니어 ID 명세</label><input type="text" id="epSeekerId" class="form-input" placeholder="조회된 시니어 아이디 정확히 입력"></div>
-                <div class="form-group"><label class="form-label">실지급 이체할 약정 임금 포인트 (P)</label><input type="number" id="epSettleAmount" class="form-input" placeholder="숫자만 기입 (시급 X 시간)"></div>
-                <button type="button" class="btn-settle-action-blue" style="background-color: #eb5757; box-shadow: 0 4px 12px rgba(235,87,87,0.2);" onclick="executeEmployerDirectPaySeniorPoints()">확정 베테랑 포인트 즉시 지급 단행</button>
+                <div class="form-group"><label class="form-label">매칭 확정 구인공고 ID</label><input type="number" id="epJobId" class="form-input" placeholder="숫자만 입력 (예: 1)"></div>
+                <div class="form-group"><label class="form-label">지급 대상 시니어 ID</label><input type="text" id="epSeekerId" class="form-input" placeholder="시니어 아이디 입력"></div>
+                <div class="form-group"><label class="form-label">실지급 약정 임금 (P)</label><input type="number" id="epSettleAmount" class="form-input" placeholder="숫자만 기입"></div>
+                <button type="button" class="btn-settle-action-blue" style="background-color: #eb5757;" onclick="executeEmployerDirectPaySeniorPoints()">포인트 즉시 지급 단행</button>
             </div>
         </div>
     </div>
 
-    <!-- 시니어 환전 정산 모달 창 보존 -->
+    <!-- 시니어 환전 모달 -->
     <div id="settleWithdrawModal" class="settle-modal-overlay">
         <div class="settle-modal-content">
-            <div class="modal-header-row"><span class="modal-main-title">시니어 보유 포인트 현금 정산 신청</span><button type="button" class="btn-modal-close" onclick="closeSettleWithdrawModal()">✕</button></div>
-            <div class="form-group"><label class="form-label">환전 수령할 입금 은행 선택</label><select id="wBankName" class="form-select"><option value="국민은행">국민은행</option><option value="신한은행">신한은행</option><option value="우리은행">우리은행</option><option value="하나은행">하나은행</option><option value="카카오뱅크">카카오뱅크</option><option value="토스뱅크">토스뱅크</option></select></div>
-            <div class="form-group"><label class="form-label">본인 명의 입금 계좌번호</label><input type="text" id="wAccountNumber" class="form-input" placeholder="하이픈(-) 없이 숫자만 기입하세요"></div>
-            <div class="form-group"><label class="form-label">정산 신청 금액</label><input type="number" id="wWithdrawAmount" class="form-input" placeholder="정산받을 포인트 액수를 입력하세요"></div>
-            <button type="button" class="btn-settle-action-blue" onclick="submitSettleWithdrawRequest()">정산금 입금 신청서 본부 전송</button>
+            <div class="modal-header-row"><span class="modal-main-title">포인트 현금 정산 신청</span><button type="button" class="btn-modal-close" onclick="closeSettleWithdrawModal()">✕</button></div>
+            <div class="form-group"><label class="form-label">입금 은행</label><select id="wBankName" class="form-select"><option value="국민은행">국민은행</option><option value="신한은행">신한은행</option><option value="우리은행">우리은행</option><option value="하나은행">하나은행</option><option value="카카오뱅크">카카오뱅크</option><option value="토스뱅크">토스뱅크</option></select></div>
+            <div class="form-group"><label class="form-label">계좌번호</label><input type="text" id="wAccountNumber" class="form-input" placeholder="하이픈(-) 제외 숫자만"></div>
+            <div class="form-group"><label class="form-label">신청 금액</label><input type="number" id="wWithdrawAmount" class="form-input" placeholder="금액 입력"></div>
+            <button type="button" class="btn-settle-action-blue" onclick="submitSettleWithdrawRequest()">정산금 입금 신청</button>
         </div>
     </div>
 
-    <!-- 명확한 경계 구분선 풋터 보존 -->
     <footer>
         <div style="max-width: 1040px; margin: 0 auto;">
-            <h4>주식회사 실버웍스 (SILVERWORKS)</h4>
-            <div style="margin-bottom: 4px;">대표자 연락처: 010-7464-3657, 010-9187-9074 | 거점 주소: 경기도 성남시 중원구 광명로 79, 4층</div>
-            <div style="margin-bottom: 4px;">정식 주업종 코드: [724000: 데이터베이스 및 온라인 정보 제공업] | 부업종: [경영컨설팅업]</div>
+            <h4>(주)실버웍스</h4>
+            <div>연락처: 010-7464-3657, 010-9187-9074 | 주소: 경기도 성남시 중원구 광명로 79, 4층</div>
+            <div>주업종: 데이터베이스 및 온라인 정보 제공업 | 부업종: 경영컨설팅업</div>
             <div style="color: #8e8e93; font-size: 12px; margin-top: 12px;">Copyright © 2026 SILVERWORKS. All rights reserved.</div>
         </div>
     </footer>
 
-    <!-- [스크롤 초정밀 위치기반 출현 엔진 및 데이터 동기화 자바스크립트] -->
     <script>
+        // 자바스크립트 코어 로직 완벽 보존
         let globalCurrentPoints = 0;
         let lastScrollTop = 0;
         let isWaveAnimating = false;
@@ -246,24 +258,19 @@
             const animatedCardSection = document.getElementById('animatedCardSection');
             const animatedScrollIndicatorZone = document.getElementById('animatedScrollIndicatorZone');
             
-            // [사장님 핵심 오더 완벽 이식] 오직 최초의 버튼 정착 위치(Y축 120px 이하 구역)에서만 스르륵 부활 출현하는 하이테크 스크롤 제어반
             window.addEventListener('scroll', function() {
                 let currentScroll = window.pageYOffset || document.documentElement.scrollTop;
                 
                 if (currentScroll > lastScrollTop && currentScroll > 40) {
-                    // 가. 글을 읽으려고 아래로 스크롤을 내리기 시작할 때: 카드 상자와 화살표 가이드가 일제히 위 방향으로 '스르륵' 감쪽같이 실종 소멸
                     animatedCardSection.classList.add('hidden-scroll');
                     animatedScrollIndicatorZone.classList.add('hidden-scroll');
                 } else {
-                    // 나. 글을 다 읽고 다시 위로 쪽 올릴 때 (중간 본문 위치): 돌발 출현을 완벽 차단하여 글 가림을 철저히 방어 방지함
-                    // 다. [최종 요건] 오직 휠을 올려 원래 버튼이 존재하던 최상단 최초 자리(Y축 120px 이하 구역)에 정확히 진입했을 때만 아래로 '스르륵' 출현 복귀
                     if (currentScroll <= 120) {
                         animatedCardSection.classList.remove('hidden-scroll');
                         animatedScrollIndicatorZone.classList.remove('hidden-scroll');
                     }
                 }
                 
-                // 3안 검은 원 여백 구역 진입 시 잔물결 물방울 상승 유지
                 if (currentScroll >= 160 && currentScroll <= 420) {
                     if (!rippleInterval) rippleInterval = setInterval(createWaveRippleParticle, 180);
                 } else {
@@ -276,7 +283,7 @@
 
         function openEmployerMultiActionModal() {
             const empId = localStorage.getItem('sw_username');
-            document.getElementById('mAuthEmployerTitle').innerText = `@${empId} 사장님 전용 정산 금융 제어반`;
+            document.getElementById('mAuthEmployerTitle').innerText = `@${empId} 사장님 전용 정산 제어반`;
             document.getElementById('employerMultiActionModal').style.display = 'flex';
             document.getElementById('employerSettleActionSubFormZone').style.display = 'none';
             
@@ -291,12 +298,12 @@
                     data.billings.forEach(b => {
                         box.innerHTML += `
                             <div style="border-bottom: 1px dashed #cfd9de; padding-bottom: 8px; margin-bottom: 8px;">
-                                <div class="invoice-data-row"><span>공고 식별 번호:</span><strong>SL-${b.job_id}</strong></div>
-                                <div class="invoice-data-row"><span>수령 베테랑 계정:</span><strong>@${b.seeker_id}</strong></div>
-                                <div class="invoice-data-row"><span>지급 임금 원금:</span><span>${b.base_wage.toLocaleString()} P</span></div>
-                                <div class="invoice-data-row"><span>중개 약정 수수료 (10%):</span><span style="color:#1967d2;">+ ${b.commission.toLocaleString()} 원</span></div>
-                                <div class="invoice-total-row"><span>본부 최종 이체 청구액:</span><strong>${b.total_bill.toLocaleString()} 원</strong></div>
-                                <div style="font-size:11px; color:#8e8e93; margin-top:4px; text-align:right;">* 가맹 계좌: 기업은행 010-7464-3657 (실버웍스)</div>
+                                <div class="invoice-data-row"><span>공고 번호:</span><strong>SL-${b.job_id}</strong></div>
+                                <div class="invoice-data-row"><span>수령자:</span><strong>@${b.seeker_id}</strong></div>
+                                <div class="invoice-data-row"><span>원금:</span><span>${b.base_wage.toLocaleString()} P</span></div>
+                                <div class="invoice-data-row"><span>수수료 (10%):</span><span style="color:#1967d2;">+ ${b.commission.toLocaleString()} 원</span></div>
+                                <div class="invoice-total-row"><span>최종 청구액:</span><strong>${b.total_bill.toLocaleString()} 원</strong></div>
+                                <div style="font-size:11px; color:#8e8e93; margin-top:4px; text-align:right;">* 기업은행 010-7464-3657</div>
                             </div>`;
                     });
                 });
@@ -307,8 +314,8 @@
 
         function executeEmployerDirectPaySeniorPoints() {
             const empId = localStorage.getItem('sw_username'); const jobId = document.getElementById('epJobId').value.trim(); const seekerId = document.getElementById('epSeekerId').value.trim(); const amount = document.getElementById('epSettleAmount').value.trim();
-            if (!jobId || !seekerId || !amount) { alert('알림 오류: 명세를 누락 없이 정확히 입력하세요.'); return; }
-            if(!confirm(`@${seekerId} 시니어 회원에게 임금 원금 ${parseInt(amount).toLocaleString()} P를 즉시 실시간 지급 전송합니까?`)) return;
+            if (!jobId || !seekerId || !amount) { alert('명세를 누락 없이 정확히 입력하세요.'); return; }
+            if(!confirm(`@${seekerId}님에게 원금 ${parseInt(amount).toLocaleString()} P를 지급하시겠습니까?`)) return;
 
             fetch('/api/settle/employer-pay-senior', {
                 method: 'POST',
@@ -316,7 +323,7 @@
                 body: JSON.stringify({ employer_id: empId, seeker_id: seekerId, job_id: jobId, amount: amount })
             }).then(res => res.json()).then(data => {
                 if (data.success) {
-                    alert('숙련 베테랑 포인트 직지급 연동 대성공!');
+                    alert('포인트 지급이 완료되었습니다.');
                     document.getElementById('epJobId').value = ''; document.getElementById('epSeekerId').value = ''; document.getElementById('epSettleAmount').value = '';
                     openEmployerMultiActionModal();
                 } else { alert('이체 실패: ' + data.message); }
@@ -339,15 +346,15 @@
         }
 
         function handleExecuteLogoutAction() {
-            if(!confirm('보안 세션을 로그아웃합니까?')) return;
+            if(!confirm('로그아웃 하시겠습니까?')) return;
             localStorage.removeItem('sw_username'); localStorage.removeItem('sw_role'); localStorage.removeItem('sw_name');
-            alert('로그아웃 완료'); location.reload();
+            location.reload();
         }
 
         function handleVerifyRouteGuard(targetRole) {
             const savedId = localStorage.getItem('sw_username'); const savedRole = localStorage.getItem('sw_role');
-            if (!savedId || !savedRole) { alert('알림: 회원 인증이 필요합니다. 로그인 화면으로 안전하게 연결합니다.'); location.href = `/login.html?type=${targetRole}`; return; }
-            if (savedRole !== targetRole) { alert(savedRole === 'employer' ? '보안 가드 경고: 사장님 계정으로는 구직 시니어 문진 구역에 진입할 수 없습니다.' : '보안 가드 경고: 시니어 계정으로는 사장님 전용 구역에 진입할 수 없습니다.'); return; }
+            if (!savedId || !savedRole) { alert('로그인이 필요합니다.'); location.href = `/login.html?type=${targetRole}`; return; }
+            if (savedRole !== targetRole) { alert('해당 페이지에 접근할 권한이 없습니다.'); return; }
             if (targetRole === 'employer') openEmployerMultiActionModal(); else location.href = '/seeker.html';
         }
 
@@ -358,7 +365,7 @@
             const id = localStorage.getItem('sw_username'); const bank = document.getElementById('wBankName').value; const account = document.getElementById('wAccountNumber').value.trim(); const amount = parseInt(document.getElementById('wWithdrawAmount').value) || 0;
             if (!account || amount <= 0 || amount > globalCurrentPoints) { alert('입력 정보 및 잔액을 확인하세요.'); return; }
             fetch('/api/settle/withdraw-request', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ seeker_id: id, bank_name: bank, account_number: account, amount: amount }) }).then(res => res.json()).then(data => {
-                if (data.success) { alert('정산 대금 신청 완료!'); closeSettleWithdrawModal(); location.reload(); }
+                if (data.success) { alert('정산 신청이 완료되었습니다.'); closeSettleWithdrawModal(); location.reload(); }
             });
         }
     </script>
