@@ -4,60 +4,75 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>SILVERWORKS - 구직 시니어 문진표</title>
-    <!-- [사장님 설계 완벽 복원] 오직 파란색과 하얀색만 사용, 라디오 버튼 및 주관식 혼합형 초정밀 CSS 명세 -->
+    <!-- [사장님 지시 2안 반영] 간결하고 단순한 파란색 플로팅 서클 링 게이지 내장 프리미엄 CSS 명세 -->
     <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; -webkit-tap-highlight-color: transparent; }
-        body { background-color: #ffffff; color: #0f1419; padding: 20px; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
-        .qa-wrap-box { width: 100%; max-width: 520px; padding: 32px 24px; border: 1px solid #eff3f4; border-radius: 16px; background-color: #ffffff; box-shadow: 0 4px 16px rgba(0,0,0,0.02); }
-        .main-title { font-size: 18px; font-weight: 800; color: #1967d2; text-align: center; margin-bottom: 12px; }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Malgun Gothic", "맑은 고딕", helvetica, sans-serif; letter-spacing: -0.4px; -webkit-tap-highlight-color: transparent; }
+        body { background-color: #ffffff; color: #0f1419; padding: 20px; display: flex; justify-content: center; align-items: center; min-height: 100vh; -webkit-font-smoothing: antialiased; }
+        .qa-wrap-box { width: 100%; max-width: 520px; padding: 36px 28px; border: 1px solid #eff3f4; border-radius: 24px; background-color: #ffffff; box-shadow: 0 12px 36px rgba(0,0,0,0.03); }
         
-        /* 12단계 실시간 기입 상태 게이지 바 UI */
-        .progress-container { width: 100%; height: 6px; background-color: #f7f9fa; border-radius: 9999px; margin-bottom: 28px; overflow: hidden; border: 1px solid #eff3f4; }
-        .progress-bar-fill { height: 100%; width: 8.33%; background-color: #1967d2; transition: width 0.25s ease-out; }
-        .step-indicator { font-size: 13.5px; font-weight: 700; color: #536471; text-align: center; margin-bottom: 24px; }
+        /* [사장님 오더] 타이틀과 서클 링 게이지를 가로 정렬 결속시키는 모던 세단 레이아웃 */
+        .qa-header-flex-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 32px; padding-bottom: 16px; border-bottom: 1px solid #f2f4f6; }
+        .main-title { font-size: 19px; font-weight: 800; color: #1c1c1e; letter-spacing: -0.5px; }
+        
+        /* [2안 최적화] 단순하고 간결한 서클 링 트래커 그래픽 스킨셋 */
+        .circle-gauge-wrapper { position: relative; width: 46px; height: 46px; display: flex; align-items: center; justify-content: center; }
+        .circle-gauge-svg { transform: rotate(-90deg); width: 100%; height: 100%; }
+        .circle-bg { fill: none; stroke: #f2f4f6; stroke-width: 4; }
+        .circle-progress { fill: none; stroke: #1967d2; stroke-width: 4; stroke-linecap: round; transition: stroke-dashoffset 0.35s ease-in-out; }
+        .circle-step-number { position: absolute; font-size: 13.5px; font-weight: 800; color: #1967d2; text-align: center; }
         
         .q-active-card { display: flex; flex-direction: column; gap: 14px; }
-        .q-title-label { font-size: 16px; font-weight: 800; color: #0f1419; line-height: 1.5; margin-bottom: 6px; letter-spacing: -0.3px; }
-        .q-sub-notice { font-size: 13px; color: #536471; font-weight: 600; line-height: 1.4; margin-bottom: 8px; background-color: #f7f9fa; padding: 10px; border-radius: 8px; }
+        .q-title-label { font-size: 16.5px; font-weight: 800; color: #1c1c1e; line-height: 1.5; margin-bottom: 4px; letter-spacing: -0.3px; }
+        .q-sub-notice { font-size: 13px; color: #1967d2; font-weight: 600; line-height: 1.45; margin-bottom: 8px; background-color: rgba(25,103,210,0.04); padding: 12px 14px; border-radius: 10px; border-left: 3px solid #1967d2; }
         
-        /* 주관식 인풋 스타일 명세 */
-        .form-input { width: 100%; padding: 14px; border-radius: 10px; border: 1px solid #cfd9de; font-size: 15px; font-weight: 600; outline: none; }
+        /* 주관식 인풋 스타일 보존 */
+        .form-input { width: 100%; padding: 14px; border-radius: 12px; border: 1px solid #d1d1d6; font-size: 15px; font-weight: 600; outline: none; }
         .form-input:focus { border-color: #1967d2; background-color: #f4f9ff; }
         
-        /* [사장님 기획 이식] 라디오 객관식 선택형 디자인 명세 */
-        .radio-option-row { display: flex; align-items: center; gap: 12px; padding: 14px; border: 1px solid #cfd9de; border-radius: 10px; cursor: pointer; transition: all 0.15s; }
-        .radio-option-row:hover { background-color: #f7f9fa; border-color: #1967d2; }
+        /* 객관식 라디오 단추 디자인 보존 */
+        .radio-option-row { display: flex; align-items: center; gap: 12px; padding: 14px; border: 1px solid #d1d1d6; border-radius: 12px; cursor: pointer; transition: all 0.15s cubic-bezier(0.25, 1, 0.5, 1); }
+        .radio-option-row:hover { background-color: #f2f4f6; border-color: #1967d2; }
         .radio-option-row.selected { border-color: #1967d2; background-color: #f4f9ff; }
-        .radio-circle { width: 18px; height: 18px; border-radius: 50%; border: 2px solid #cfd9de; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+        .radio-circle { width: 18px; height: 18px; border-radius: 50%; border: 2px solid #d1d1d6; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
         .radio-option-row.selected .radio-circle { border-color: #1967d2; }
         .radio-dot { width: 8px; height: 8px; border-radius: 50%; background-color: #1967d2; display: none; }
         .radio-option-row.selected .radio-dot { display: block; }
-        .radio-label-text { font-size: 14.5px; font-weight: 600; color: #0f1419; }
+        .radio-label-text { font-size: 14.5px; font-weight: 600; color: #1c1c1e; }
         
-        .btn-row-layout { display: flex; gap: 10px; margin-top: 16px; }
-        .btn-action { flex: 1; background-color: #1967d2; color: #ffffff; border: none; padding: 14px; border-radius: 9999px; font-size: 14.5px; font-weight: 700; cursor: pointer; text-align: center; transition: background-color 0.15s; }
-        .btn-action:hover { background-color: #1152b3; }
-        .btn-action.back { background-color: #ffffff; color: #536471; border: 1px solid #cfd9de; }
-        .btn-action.back:hover { background-color: #f7f9fa; }
+        .btn-row-layout { display: flex; gap: 12px; margin-top: 18px; }
+        .btn-action { flex: 1; background-color: #1967d2; color: #ffffff; border: none; padding: 15px; border-radius: 9999px; font-size: 15px; font-weight: 700; cursor: pointer; text-align: center; box-shadow: 0 4px 12px rgba(25,103,210,0.15); transition: all 0.2s; }
+        .btn-action:hover { background-color: #1152b3; transform: translateY(-1px); }
+        .btn-action.back { background-color: #ffffff; color: #48484a; border: 1px solid #d1d1d6; box-shadow: none; }
+        .btn-action.back:hover { background-color: #f2f4f6; }
     </style>
 </head>
 <body>
     <div class="qa-wrap-box">
-        <h2 class="main-title">구직 베테랑 건강 문진 이력서</h2>
-        <div class="step-indicator" id="stepIndicator">문항 1 / 12 단계</div>
-        <div class="progress-container"><div class="progress-bar-fill" id="progressBar"></div></div>
+        <!-- [사장님 지시 2안 반영] 컴팩트 플로팅 서클 링 융합형 고급 헤더 배치 라인 -->
+        <div class="qa-header-flex-row">
+            <h2 class="main-title">구직 베테랑 건강 문진 이력서</h2>
+            
+            <!-- 간결하고 단순한 파란색 서클 링 트래커 그래픽 UI 원장 마운트 -->
+            <div class="circle-gauge-wrapper">
+                <svg class="circle-gauge-svg" viewBox="0 0 36 36">
+                    <circle class="circle-bg" cx="18" cy="18" r="16"/>
+                    <!-- stroke-dasharray 둘레 계수 100 기준 보정 제어선 -->
+                    <circle class="circle-progress" id="circleProgressElement" cx="18" cy="18" r="16" stroke-dasharray="100" stroke-dashoffset="91.66"/>
+                </svg>
+                <div class="circle-step-number" id="circleStepNumberElement">1</div>
+            </div>
+        </div>
         
         <div class="q-active-card">
-            <!-- 안내 문구 출현 인터페이스 구역 -->
             <div class="q-sub-notice" id="questionNotice" style="display:none;"></div>
             <div class="q-title-label" id="questionLabel">로딩 중...</div>
             
-            <!-- 주관식 입력 폼 엔드포인트 -->
+            <!-- 주관식 입력 폼 슬롯 보존 -->
             <div id="inputFormSlot" style="display:none;">
                 <input type="text" id="activeAnswerInput" class="form-input" placeholder="답변을 입력하고 엔터를 누르세요" onkeypress="if(event.keyCode===13) handleNextStep()">
             </div>
             
-            <!-- 사장님 기획 원본 규격: 라디오 객관식 선택 폼 슬롯 -->
+            <!-- 사장님 기획 원본 규격: 라디오 객관식 선택 폼 슬롯 보존 -->
             <div id="radioFormSlot" style="display:none; flex-direction:column; gap:10px;"></div>
             
             <div class="btn-row-layout">
@@ -66,9 +81,8 @@
             </div>
         </div>
     </div>
-    <!-- [사장님 실물 기획서 원본 데이터셋 기반 라디오/인풋 스위칭 구동 엔진] -->
+    <!-- [사장님 지시 2안: 플로팅 서클 링 진행 연동 스위칭 구동 엔진 스크립트] -->
     <script>
-        // 사장님 스크린샷 이미지 속 원문 100% 영전 각인 스키마 명세서
         const qSchema = [
             {
                 type: "radio",
@@ -101,15 +115,19 @@
             renderActiveQuestion();
         });
 
-        // [기획 원본형 퓨전] 라디오 세그먼트와 일반 인풋 폼을 동적으로 판독 선택 분기 출력하는 마스터 엔진
+        // [2안 서클 링 실시간 스트로크 오프셋 계산 주입기 결속 엔진]
         function renderActiveQuestion() {
             const currentQ = qSchema[currentStep - 1];
             
-            document.getElementById('stepIndicator').innerText = `문항 ${currentStep} / 12 단계`;
-            document.getElementById('progressBar').style.width = `${(currentStep / 12) * 100}%`;
+            // 단순하고 간결한 숫자 기제 연동
+            document.getElementById('circleStepNumberElement').innerText = currentStep;
+            
+            // SVG 대기업 정형화 계산선 수식 마운트 (dasharray 100 기준 보정)
+            const strokeOffset = 100 - ((currentStep / 12) * 100);
+            document.getElementById('circleProgressElement').style.strokeDashoffset = strokeOffset;
+            
             document.getElementById('questionLabel').innerText = `Q${currentStep}. ${currentQ.q}`;
             
-            // 안내 서브 텍스트 가드 제어 처리
             const noticeBox = document.getElementById('questionNotice');
             if (currentQ.notice) {
                 noticeBox.style.display = 'block';
@@ -208,7 +226,7 @@
             .then(res => res.json())
             .then(data => {
                 if(data.success) {
-                    alert('축하합니다! 사장님 설계 원본 규격의 라디오 믹싱 건강 문진 이력서가 최종 제출 완료되었습니다.');
+                    alert('축하합니다! 사장님 지정 2안 서클 링 게이지가 장착된 문진 이력서가 성공적으로 최종 제출 완료되었습니다.');
                     location.href = '/index.html';
                 }
             });

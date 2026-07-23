@@ -3,30 +3,32 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>SILVERWORKS 최고관리자 콘솔 - 마스터 전권 제어실</title>
+    <title>SILVERWORKS 최고관리자 콘솔 - 마스터 마스터 제어실</title>
     <!-- [디자인 정화 완벽 적용] 오직 파란색과 하얀색만 사용, 강제삭제 단추만 고급진 프리미엄 레드로 차별화 도출 CSS -->
     <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, sans-serif; }
-        body { background-color: #ffffff; color: #0f1419; padding: 20px; }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Malgun Gothic", sans-serif; letter-spacing: -0.4px; }
+        body { background-color: #ffffff; color: #0f1419; padding: 20px; -webkit-font-smoothing: antialiased; }
         header { display: flex; justify-content: space-between; align-items: center; padding-bottom: 16px; border-bottom: 1px solid #eff3f4; }
         .logo { font-size: 20px; font-weight: 800; color: #1967d2; cursor: pointer; }
-        .card { border: 1px solid #eff3f4; border-radius: 12px; padding: 16px; margin-top: 16px; }
-        h3 { font-size: 14.5px; font-weight: 700; color: #1967d2; margin-bottom: 10px; }
+        .card { border: 1px solid #eff3f4; border-radius: 12px; padding: 16px; margin-top: 16px; box-shadow: 0 4px 12px rgba(0,0,0,0.01); }
+        h3 { font-size: 14.5px; font-weight: 800; color: #1967d2; margin-bottom: 10px; border-left: 4px solid #1967d2; padding-left: 8px; }
         .table-container { width: 100%; overflow-x: auto; margin-top: 10px; }
         table { width: 100%; border-collapse: collapse; font-size: 12.5px; min-width: 800px; }
-        th { background-color: #f7f9fa; color: #536471; padding: 8px; font-weight: 600; border-bottom: 1px solid #eff3f4; }
-        td { padding: 8px; border-bottom: 1px solid #eff3f4; vertical-align: middle; }
+        th { background-color: #f7f9fa; color: #536471; padding: 10px 8px; font-weight: 600; border-bottom: 1px solid #eff3f4; text-align: left; }
+        td { padding: 10px 8px; border-bottom: 1px solid #eff3f4; vertical-align: middle; color: #1c1c1e; }
         .fitness-input { width: 60px; padding: 4px; text-align: center; border: 1px solid #cfd9de; border-radius: 6px; font-weight: 600; color: #0f1419; outline: none; }
         .fitness-input:focus { border-color: #1967d2; background-color: #f4f9ff; }
         
         /* 관제실 전용 오션블루 버튼 및 유해 로그 영구 파쇄 소멸용 프리미엄 레드 단추 스펙 */
-        .btn { background-color: #1967d2; color: #ffffff; border: none; padding: 6px 12px; border-radius: 9999px; cursor: pointer; font-size: 11.5px; font-weight: 700; }
-        .btn-fintech { background-color: #ffffff; color: #1967d2; border: 1px solid #1967d2; padding: 4px 10px; border-radius: 9999px; cursor: pointer; font-size: 11px; font-weight: 700; }
+        .btn { background-color: #1967d2; color: #ffffff; border: none; padding: 6px 12px; border-radius: 9999px; cursor: pointer; font-size: 11.5px; font-weight: 700; transition: background-color 0.2s; }
+        .btn:hover { background-color: #1152b3; }
+        .btn-fintech { background-color: #ffffff; color: #1967d2; border: 1px solid #1967d2; padding: 4px 12px; border-radius: 9999px; cursor: pointer; font-size: 11px; font-weight: 700; transition: all 0.2s; }
+        .btn-fintech:hover { background-color: #f4f9ff; transform: translateY(-1px); }
         .btn-purge { background-color: #ffffff; color: #ed4956; border: 1px solid #cfd9de; padding: 4px 10px; border-radius: 6px; cursor: pointer; font-size: 11px; font-weight: 700; transition: all 0.2s; }
         .btn-purge:hover { background-color: #fff0f1; border-color: #ed4956; }
         
-        .inspect-modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.4); display: none; align-items: center; justify-content: center; z-index: 600; }
-        .inspect-modal-content { background-color: #ffffff; width: 90%; max-width: 500px; border-radius: 12px; padding: 20px; max-height: 80vh; overflow-y: auto; }
+        .inspect-modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.4); display: none; align-items: center; justify-content: center; z-index: 600; backdrop-filter: blur(4px); }
+        .inspect-modal-content { background-color: #ffffff; width: 90%; max-width: 500px; border-radius: 16px; padding: 20px; max-height: 80vh; overflow-y: auto; box-shadow: 0 10px 30px rgba(0,0,0,0.15); }
         .click-id-link { color: #1967d2; font-weight: 700; cursor: pointer; text-decoration: underline; }
     </style>
 </head>
@@ -35,8 +37,17 @@
         <div class="logo" onclick="location.href='/'">SILVERWORKS 최고관제센터</div>
         <button type="button" class="btn" onclick="location.href='/board.html'">매칭 게시판 모니터링</button>
     </header>
+    <!-- [요구사항 4번 신설 반영] 섹션 0: 구인 사장님이 지급 유닛 실행 시 가산 발행된 10% 중개 수수료 실물 수납 검증 제어판 -->
+    <div class="card" style="border-color: #eb5757;">
+        <h3 style="color: #eb5757; border-left-color: #eb5757;">0. 구인 사장님실 10% 중개 수수료 수납 관리 및 0원 영구 리셋 패널</h3>
+        <div class="table-container"><table>
+            <thead><tr><th>청구서 ID</th><th>구인 사장님 ID</th><th>대상 시니어 ID</th><th>공고 번호</th><th>지급 임금</th><th>중개 수수료 (10%)</th><th>최종 청구 대금</th><th>수납 상태</th><th>본부 수납 확정 (0원 리셋)</th></tr></thead>
+            <tbody id="adminBillingInvoiceBody"><tr><td colspan="9" style="text-align:center; color:#536471; padding:15px 0;">본부 대금 영수증 청구 원장을 불러오는 중입니다...</td></tr></tbody>
+        </table></div>
+    </div>
+
     <div class="card" style="border-color: #1967d2;">
-        <h3>0. 시니어 베테랑 계좌 정산 청구 관리 패널</h3>
+        <h3>1. 시니어 베테랑 계좌 환전 및 정산 청구 관리 패널</h3>
         <div class="table-container"><table>
             <thead><tr><th>청구 ID</th><th>시니어 ID</th><th>입금 은행</th><th>환전 계좌번호</th><th>정산 금액</th><th>상태</th><th>행정 처분</th></tr></thead>
             <tbody id="adminWithdrawBody"></tbody>
@@ -44,7 +55,7 @@
     </div>
 
     <div class="card">
-        <h3>1. 회원 가입 승인 및 체력 스펙 제어 패널 (ID 클릭 시 강제 열람)</h3>
+        <h3>2. 회원 가입 승인 및 체력 스펙 제어 패널 (ID 클릭 시 강제 열람)</h3>
         <div class="table-container"><table>
             <thead><tr><th>아이디</th><th>성명/매장명</th><th>연락처</th><th>분류</th><th>상태</th><th>등급</th><th>악력</th><th>유연성</th><th>지구력</th><th>동기화</th></tr></thead>
             <tbody id="userBody"></tbody>
@@ -52,16 +63,16 @@
     </div>
 
     <div class="card">
-        <h3>2. 사장님 구인공고 심사 통제 패널 (승인 즉시 매칭 게시판 라이브 개통)</h3>
+        <h3>3. 사장님 구인공고 심사 통제 패널 (승인 즉시 매칭 게시판 라이브 개통)</h3>
         <div class="table-container"><table>
             <thead><tr><th>공고 ID</th><th>사장님 ID</th><th>매장명</th><th>공고 제목 명세</th><th>근무일</th><th>시급</th><th>심사</th></tr></thead>
             <tbody id="jobAdminBody"></tbody>
         </table></div>
     </div>
 
-    <!-- [요구사항 2번 완벽 이식] 섹션 3: 사장님이 문의 단추를 터치한 실시간 시점 시각 타임스탬프 연동 관제판 -->
+    <!-- 실시간 매장 행정 문의 타임스탬프 관제판 보존 -->
     <div class="card">
-        <h3>3. 실버웍스 원터치 다이렉트 매장 행정 문의 실시간 관제 패널</h3>
+        <h3>4. 실버웍스 원터치 다이렉트 매장 행정 문의 실시간 관제 패널</h3>
         <div class="table-container"><table>
             <thead><tr><th>접수 번호</th><th>문의 매장 상호명 명세</th><th>대표자 전화번호 연락처</th><th>문의 버튼 터치 실시간 시각 (타임스탬프)</th></tr></thead>
             <tbody id="storeConsultBody"></tbody>
@@ -69,7 +80,7 @@
     </div>
 
     <div class="card" style="border-color: #ed4956;">
-        <h3 style="color:#ed4956;">4. 소셜 생태계 감시 및 강제 삭제 통제 패널</h3>
+        <h3 style="color:#ed4956; border-left-color: #ed4956;">5. 소셜 생태계 감시 및 강제 삭제 통제 패널</h3>
         <div class="table-container">
             <table style="margin-bottom:12px;"><thead><tr><th>글 번호</th><th>작성자 ID</th><th>제목</th><th>본문 내용</th><th>운영자 처분</th></tr></thead><tbody id="adminTimelineBody"></tbody></table>
             <table style="margin-bottom:12px;"><thead><tr><th>메시지 ID</th><th>송신자</th><th>수신자</th><th>비밀 DM 내용 명세</th><th>운영자 처분</th></tr></thead><tbody id="adminDmBody"></tbody></table>
@@ -80,7 +91,7 @@
     <div id="inspectUserModal" class="inspect-modal-overlay">
         <div class="inspect-modal-content">
             <div style="display:flex; justify-content:space-between; margin-bottom:12px; border-bottom:1px solid #eff3f4; padding-bottom:6px;">
-                <h3 style="margin:0;">마스터 신원 원장 영구 검출록</h3>
+                <h3 style="margin:0; border:none; padding:0;">마스터 신원 원장 영구 검출록</h3>
                 <button type="button" style="background:none; border:none; font-size:16px; cursor:pointer;" onclick="closeInspectUserModal()">✕</button>
             </div>
             <div id="inspectModalContentBox"></div>
@@ -120,10 +131,31 @@
                     const isP = w.status === 'pending';
                     wBody.innerHTML += `<tr><td>W-${w.id}</td><td class="click-id-link" onclick="openInspectUserModal('${w.seeker_id}')">@${w.seeker_id}</td><td>${w.bank_name}</td><td>${w.account_number}</td>
                         <td style="font-weight:800; color:#1967d2;">${w.amount.toLocaleString()} P</td><td>${isP?'입금대기':'정산완료'}</td>
-                        <td>${isP?`<button class="btn-fintech" onclick="executeCompleteSeekerSettle(${w.id})">정산 완료</button><button class="btn" onclick="executeRequestEmployerSettle(${w.id})">정산완료 (사장님)</button>`:'✓ 종결'}</td></tr>`;
+                        <td>${isP?`<button class="btn-fintech" onclick="executeCompleteSeekerSettle(${w.id})">정산 완료</button>`:'✓ 종결'}</td></tr>`;
                 });
 
-                // [요구사항 2번 완벽 구현] 사장님 매장 페이지에서 전송한 행정 문의 내역 및 실시간 타임스탬프 시각 파싱 출력
+                // [요구사항 4번 신설 반영] 사장님 10% 추가 가산 수수료 청구 명세서 원장 목록 로드 파싱 엔진
+                const billingBody = document.getElementById('adminBillingInvoiceBody'); billingBody.innerHTML = '';
+                if(!data.billings || data.billings.length === 0) {
+                    billingBody.innerHTML = `<tr><td colspan="9" style="text-align:center; color:#536471; padding:15px 0;">본부에 발행 적재된 사장님 대금 청구 내역이 없습니다.</td></tr>`;
+                } else {
+                    data.billings.forEach(b => {
+                        const isPending = b.status === 'pending';
+                        billingBody.innerHTML += `<tr>
+                            <td>INV-${b.id}</td>
+                            <td class="click-id-link" onclick="openInspectUserModal('${b.employer_id}')">@${b.employer_id}</td>
+                            <td class="click-id-link" onclick="openInspectUserModal('${b.seeker_id}')">@${b.seeker_id}</td>
+                            <td>SL-${b.job_id}</td>
+                            <td>${b.base_wage.toLocaleString()} P</td>
+                            <td style="color:#1967d2; font-weight:700;">+ ${b.commission.toLocaleString()} 원</td>
+                            <td style="color:#eb5757; font-weight:800;">${b.total_bill.toLocaleString()} 원</td>
+                            <td style="font-weight:700;">${isPending ? '⚠️ 미수납' : '✓ 완납종결'}</td>
+                            <td>${isPending ? `<button class="btn" style="background-color:#eb5757;" onclick="executeClearEmployerInvoiceBill(${b.id})">실물 현금 입금확정 (0원 리셋)</button>` : '✓ 정산마감'}</td>
+                        </tr>`;
+                    });
+                }
+
+                // 행정 문의 피드 파싱 보존
                 const consultBody = document.getElementById('storeConsultBody'); consultBody.innerHTML = '';
                 if(!data.consults || data.consults.length === 0) {
                     consultBody.innerHTML = `<tr><td colspan="4" style="text-align:center; color:#536471; padding:15px 0;">실시간 매장 행정 문의 피드가 비어있습니다.</td></tr>`;
@@ -149,8 +181,21 @@
             });
         }
 
+        // [요구사항 4번 신설 반영] 사장님이 가산 청구 대금을 이체 완료 시, 본부에서 수납 확인 버튼을 눌러 청구액을 0원으로 완치 클리어 리셋해주는 스크립트 유닛
+        function executeClearEmployerInvoiceBill(bId) {
+            if (confirm('본부 입금 확인 고지:\n\n해당 사장님이 10% 추가 가산 비용을 실물 통장으로 최종 송금 완료한 사실을 확인하셨습니까?\n\n(승인 즉시 사장님 제어반 명세서 대금이 실시간 0원으로 리셋 청정 정화됩니다)')) {
+                fetch('/api/admin/settle/clear-employer-invoice', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ billing_id: bId })
+                }).then(res => res.json()).then(data => {
+                    alert(data.message);
+                    loadAdmin(); // 관리자 명세 테이블 피드 실시간 리로드 리프레시
+                });
+            }
+        }
+
         function executeCompleteSeekerSettle(wId) { if(confirm('시니어 은행 계좌로 정산금을 입금 완료하셨습니까?')) fetch('/api/admin/settle/complete-seeker', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ withdrawal_id: wId }) }).then(() => { alert('정산 처리 완료'); loadAdmin(); }); }
-        function executeRequestEmployerSettle(wId) { if(confirm('구인 사장님에게 수수료 10% 청구 독촉 DM을 발송합니까?')) fetch('/api/admin/settle/request-employer', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ withdrawal_id: wId }) }).then(() => { alert('청구 완료'); loadAdmin(); }); }
         
         function openInspectUserModal(username) {
             document.getElementById('inspectUserModal').style.display = 'flex';
@@ -172,19 +217,38 @@
         function purgeSnsPost(id) { if(confirm('이 게시글을 강제 파쇄 삭제합니까?')) fetch('/api/admin/purge/post', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ id: id }) }).then(() => loadAdmin()); }
         function purgeSnsDm(id) { if(confirm('이 디엠 메시지를 강제 파쇄 삭제합니까?')) fetch('/api/admin/purge/dm', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ id: id }) }).then(() => loadAdmin()); }
         function purgeSnsReview(id) { if(confirm('이 평판 데이터를 강제 파쇄 삭제합니까?')) fetch('/api/admin/purge/review', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ id: id }) }).then(() => loadAdmin()); }
+        
         function saveSpec(user, userRole) {
             let g = "미인증", gp = "-", f = "-", c = "-";
-            if (userRole === 'seeker' && document.getElementById('g_' + user)) {
-                g = document.getElementById('g_' + user).value; gp = document.getElementById('gp_' + user).value;
-                f = document.getElementById('f_' + user).value; c = document.getElementById('c_' + user).value;
+                        if (userRole === 'seeker' && document.getElementById('g_' + user)) {
+                g = document.getElementById('g_' + user).value;
+                gp = document.getElementById('gp_' + user).value;
+                f = document.getElementById('f_' + user).value;
+                c = document.getElementById('c_' + user).value;
             }
-            fetch('/api/admin/update-user', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ target_username: user, status: 'approved', fitness_grade: g, fitness_grip: gp, fitness_flex: f, fitness_cardio: c }) }).then(() => { alert('스펙 반영 완료'); loadAdmin(); });
+            fetch('/api/admin/update-user', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ target_username: user, status: 'approved', fitness_grade: g, fitness_grip: gp, fitness_flex: f, fitness_cardio: c })
+            }).then(() => {
+                alert('스펙 반영 완료');
+                loadAdmin();
+            });
         }
         
-        // [요구사항 3번 반영 완벽 결속] 파란색 공고 승인 단추 터치 즉시 status를 approved로 치환 락을 완전히 해제하여 매칭게시판 기재 연동 가동
-        function approveJob(id) { fetch('/api/admin/approve-job', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ job_id: id, action_status: 'approved' }) }).then(() => { alert('행정 심사 최종 승인 대완공!\n\n해당 매장의 구인공고 락이 정상 해제되었으며 매칭 게시판(board.html) 피드에 정식 라이브 개통 기재되었습니다.'); loadAdmin(); }); }
+        function approveJob(id) {
+            fetch('/api/admin/approve-job', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ job_id: id, action_status: 'approved' })
+            }).then(() => {
+                alert('행정 심사 최종 승인 대완공!\n\n해당 매장의 구인공고 락이 정상 해제되었으며 매칭 게시판(board.html) 피드에 정식 라이브 개통 기재되었습니다.');
+                loadAdmin();
+            });
+        }
 
         loadAdmin();
     </script>
 </body>
 </html>
+
