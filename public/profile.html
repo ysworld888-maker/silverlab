@@ -2,128 +2,150 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>SILVERWORKS - 회원 신원 프로필</title>
-    <!-- [인프라 정화] 오직 파란색과 하얀색 단일 테마 가이드셋 주입 상용 CSS 명세 -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SILVERWORKS - 시니어 일자리 매칭 관제</title>
     <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, sans-serif; }
-        body { background-color: #ffffff; color: #0f1419; padding: 20px; display: flex; justify-content: center; }
-        .profile-wrap-box { width: 100%; max-width: 500px; padding: 24px; border: 1px solid #eff3f4; border-radius: 16px; background-color: #ffffff; }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+        body { background-color: #f9fafb; color: #111827; padding-bottom: 60px; }
+        header { display: flex; justify-content: space-between; align-items: center; padding: 16px 28px; background-color: #ffffff; border-bottom: 1px solid #e5e8eb; position: sticky; top: 0; z-index: 100; }
+        .logo-text { font-size: 20px; font-weight: 800; color: #1967d2; cursor: pointer; }
+        .nav-links { display: flex; gap: 16px; align-items: center; }
+        .nav-btn { background: none; border: none; font-size: 14px; font-weight: 600; color: #4b5563; cursor: pointer; text-decoration: none; }
+        .nav-btn:hover { color: #1967d2; }
         
-        .logo-center { text-align: center; margin-bottom: 16px; cursor: pointer; }
-        .main-title { font-size: 20px; font-weight: 800; text-align: center; color: #1967d2; margin-bottom: 24px; }
+        .container { max-width: 800px; margin: 30px auto; padding: 0 20px; }
+        .welcome-card { background: linear-gradient(135deg, #1967d2 0%, #1152b3 100%); color: white; padding: 30px; border-radius: 16px; margin-bottom: 24px; box-shadow: 0 4px 16px rgba(25,103,210,0.15); }
+        .welcome-title { font-size: 22px; font-weight: 700; margin-bottom: 8px; }
+        .welcome-sub { font-size: 14px; opacity: 0.9; line-height: 1.5; }
         
-        .info-row { display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid #f7f9fa; font-size: 14.5px; }
-        .info-label { font-weight: 700; color: #536471; }
-        .info-value { font-weight: 700; color: #0f1419; }
-        .info-value.blue { color: #1967d2; }
-        .info-value.point { color: #00c73c; }
-
-        /* [요구사항 1번 신설] 시니어 회원인 경우 하단에 투명하게 출력될 12단계 문진표 전용 카드 디자인 */
-        .qa-display-card { margin-top: 24px; border-top: 2px dashed #eff3f4; padding-top: 18px; display: none; }
-        .qa-card-title { font-size: 15px; font-weight: 800; color: #1967d2; margin-bottom: 12px; }
-        .qa-item-box { margin-bottom: 10px; background-color: #f4f9ff; padding: 12px; border-radius: 10px; border: 1px solid #e8f3ff; }
-        .qa-item-q { font-size: 11.5px; font-weight: 700; color: #536471; margin-bottom: 4px; }
-        .qa-item-a { font-size: 13.5px; font-weight: 700; color: #1967d2; }
-
-        .btn-home-blue { width: 100%; background-color: #1967d2; color: #ffffff; border: none; padding: 13px; border-radius: 9999px; font-size: 14.5px; font-weight: 700; cursor: pointer; text-align: center; margin-top: 20px; transition: background-color 0.2s; }
-        .btn-home-blue:hover { background-color: #1152b3; }
+        .section-box { background-color: #ffffff; border-radius: 12px; border: 1px solid #e5e8eb; padding: 24px; margin-bottom: 24px; }
+        .section-title { font-size: 16px; font-weight: 700; margin-bottom: 16px; color: #111827; display: flex; justify-content: space-between; align-items: center; }
+        
+        .job-card { border: 1px solid #e5e8eb; border-radius: 10px; padding: 18px; margin-bottom: 14px; background-color: #ffffff; display: flex; justify-content: space-between; align-items: center; transition: border-color 0.2s; }
+        .job-card:hover { border-color: #1967d2; }
+        .job-info h3 { font-size: 16px; font-weight: 700; color: #111827; margin-bottom: 4px; }
+        .job-info p { font-size: 13.5px; color: #4b5563; margin-bottom: 2px; }
+        .wage-tag { font-size: 15px; font-weight: 800; color: #1967d2; margin-top: 6px; display: inline-block; }
+        
+        .btn-official { background-color: #1967d2; color: white; border: none; padding: 10px 18px; border-radius: 8px; font-size: 13.5px; font-weight: 600; cursor: pointer; transition: background-color 0.2s; }
+        .btn-official:hover { background-color: #1152b3; }
+        
+        .form-group { margin-bottom: 14px; }
+        .form-label { display: block; font-size: 13px; font-weight: 600; color: #4b5563; margin-bottom: 6px; }
+        .form-input { width: 100%; padding: 12px; border-radius: 8px; border: 1px solid #d1d5db; font-size: 14px; outline: none; }
+        .form-input:focus { border-color: #1967d2; background-color: #f4f9ff; }
     </style>
 </head>
 <body>
-    <div class="profile-wrap-box">
-        <div class="logo-center" onclick="location.href='/'">
-            <svg width="36" height="34" viewBox="0 0 100 90" fill="none">
-                <path d="M12.5 54C13.5 53 19.5 54.5 28.5 48.5C38.5 42 47 28 56.5 19.5C65.5 11 76.5 6.5 85.5 12.5" stroke="#1967d2" stroke-width="8.5" stroke-linecap="round" stroke-linejoin="round"/>
-                <path d="M51.5 59C58.5 67 71 68 80.5 60.5C90 53 92.5 39.5 85.5 32" stroke="#1967d2" stroke-width="8.5" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
+
+    <header>
+        <span class="logo-text" onclick="location.href='/index.html'">SILVERWORKS</span>
+        <div class="nav-links">
+            <button class="nav-btn" onclick="location.href='/profile.html'">마이페이지</button>
+            <button class="nav-btn" onclick="location.href='/admin.html'" id="adminLink" style="display:none; color:#1967d2; font-weight:700;">관리자 콘솔</button>
+            <button class="nav-btn" onclick="handleLogout()" style="color:#ef4444;">로그아웃</button>
         </div>
-        
-        <h2 class="main-title">실버웍스 회원 원장 프로필</h2>
-        
-        <div id="profileLoading" style="text-align:center; padding:20px 0; color:#536471; font-weight:700;">전산망 프로필 데이터를 로드 중입니다...</div>
-        
-        <div id="profileMainContent" style="display: none;">
-            <div class="info-row"><span class="info-label">사용자 아이디 (ID)</span><span class="info-value blue" id="pUsername"></span></div>
-            <div class="info-row"><span class="info-label">정식 회원 실명/상호명</span><span class="info-value" id="pName"></span></div>
-            <div class="info-row"><span class="info-label">정식 등록 전화번호 명세</span><span class="info-value blue" id="pPhone"></span></div>
-            <div class="info-row"><span class="info-label">회원 권한 등급 분류</span><span class="info-value" id="pRole"></span></div>
-            <div class="info-row"><span class="info-label">체력 인증 종합 등급</span><span class="info-value" id="pFitnessGrade"></span></div>
-            <div class="info-row"><span class="info-label">전자 포인트 보유 잔액</span><span class="info-value point" id="pPoints"></span></div>
-            
-            <!-- [요구사항 1번] 시니어 회원인 경우에만 동적으로 가동 개방 노출될 12단계 건강 문진 원장 사본 피드 -->
-            <div id="seniorQaSection" class="qa-display-card">
-                <h3 class="qa-card-title">📄 구직 베테랑 12단계 정밀 건강 문진표 이력서 원장</h3>
-                <div id="qaItemsBox"></div>
+    </header>
+
+    <div class="container">
+        <div class="welcome-card">
+            <h1 class="welcome-title" id="welcomeHeading">환영합니다!</h1>
+            <p class="welcome-sub">실버웍스는 검증된 시니어 베테랑과 우수 구인 사업장을 안전하게 연결하고, 투명한 일급 정산 및 출퇴근 관제를 제공하는 전문 일자리 플랫폼입니다.</p>
+        </div>
+
+        <!-- 구인 사업장 전용 공고 등록 섹션 (사장님 로그인 시에만 노출) -->
+        <div id="employerJobRegisterBox" class="section-box" style="display: none;">
+            <div class="section-title">구인 사업장 맞춤 일자리 공고 등록</div>
+            <form onsubmit="handleRegisterJob(event)">
+                <div class="form-group">
+                    <label class="form-label">매장 상호명 또는 기업명</label>
+                    <input type="text" id="jobCompany" class="form-input" required placeholder="예: 강남 프리미엄 실버케어 센터">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">구인 업무 제목 및 내용 요약</label>
+                    <input type="text" id="jobTitle" class="form-input" required placeholder="예: 주말 시설 안전 관리 및 안내 요원 모집">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">근무 일자 안내</label>
+                    <input type="text" id="jobDate" class="form-input" required placeholder="예: 2026-07-25 (토) 09:00 ~ 18:00">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">책정 일급 임금 (원)</label>
+                    <input type="number" id="jobWage" class="form-input" required placeholder="예: 120000">
+                </div>
+                <button type="submit" class="btn-official" style="width:100%; padding:12px; font-size:14.5px;">승인 심사 공고 등록 신청</button>
+            </form>
+        </div>
+
+        <!-- 실시간 구인 공고 리드 피드 -->
+        <div class="section-box">
+            <div class="section-title">실시간 승인 완료된 구인 일자리 피드</div>
+            <div id="jobFeedContainer">
+                <p style="text-align:center; color:#6b7280; padding:20px 0;">등록된 구인 공고를 불러오는 중입니다...</p>
             </div>
         </div>
-        
-        <button type="button" class="btn-home-blue" onclick="location.href='/'">대문 메인 광장 복귀</button>
     </div>
 
-    <!-- [누구나 투명 열람 가능한 시니어 문진 파싱 자바스크립트 엔진] -->
     <script>
         document.addEventListener("DOMContentLoaded", function() {
-            const myId = localStorage.getItem('sw_username');
-            if(!myId) {
-                alert('알림: 정식 회원만 접근 가능한 보안 채널입니다. 로그인 창으로 워프합니다.');
-                location.href = '/login.html';
-                return;
-            }
+            loadMainData();
+        });
 
-            // URL 파라미터에서 조회할 대상 아이디(?username=id)를 추출, 없으면 로그인한 내 계정 자동 바인딩
-            const urlParams = new URLSearchParams(window.location.search);
-            let targetUser = urlParams.get('username');
-            if (!targetUser) targetUser = myId;
-
-            fetch('/api/profile/me?username=' + encodeURIComponent(targetUser))
+        function loadMainData() {
+            fetch('/api/jobs/live-board')
                 .then(res => res.json())
                 .then(data => {
-                    if (!data.success || !data.profile) {
-                        document.getElementById('profileLoading').innerText = "존재하지 않거나 전산이 잠겨있는 계정 원장입니다.";
+                    const container = document.getElementById('jobFeedContainer');
+                    container.innerHTML = '';
+                    if (!data.jobs || data.jobs.length === 0) {
+                        container.innerHTML = '<p style="text-align:center; color:#6b7280; padding:20px 0; font-size:14px;">현재 진행 중인 구인 공고가 없습니다.</p>';
                         return;
                     }
-
-                    const u = data.profile;
-                    document.getElementById('profileLoading').style.display = 'none';
-                    document.getElementById('profileMainContent').style.display = 'block';
-
-                    document.getElementById('pUsername').innerText = `@${u.username}`;
-                    document.getElementById('pName').innerText = u.name;
-                    document.getElementById('pPhone').innerText = u.phone;
-                    document.getElementById('pRole').innerText = u.role === 'employer' ? '구인 사장님 회원 (employer)' : '구직 시니어 회원 (seeker)';
-                    document.getElementById('pFitnessGrade').innerText = u.fitness_grade || '미인증';
-                    document.getElementById('pPoints').innerText = `${(u.points || 0).toLocaleString()} P`;
-
-                    // [핵심 요구 완벽 이식] 누구나 볼 수 있게 권한을 전면 해제하고 시니어 회원인 경우에만 12단계 문진표 동적 출력 가동
-                    if (u.role === 'seeker') {
-                        document.getElementById('seniorQaSection').style.display = 'block';
-                        const box = document.getElementById('qaItemsBox');
-                        box.innerHTML = '';
-
-                        const qLabels = [
-                            "조력자 구분 명세 (자신 작성 또는 대리인)", "구직 베테랑 성함 명세", "생년월일 명세 (예: 1955년생)", 
-                            "휴대폰 번호 연락처 명세", "근무 희망 동네 지역 명세", "3층 계단 보행력 지표 상태", 
-                            "1시간 연속 도보 가능성 여부", "현장 주의가 필요한 지병 데이터", "식당 및 마트 청력 소통도 유무", 
-                            "카카오톡 메시지 원활 활용도", "초단기(하루 3시간) 근로 수용성", "정부 노인일자리 중복참여 이력"
-                        ];
-
-                        const qa = data.senior_answers;
-                        if (qa) {
-                            const answers = [qa.q1, qa.q2, qa.q3, qa.q4, qa.q5, qa.q6, qa.q7, qa.q8, qa.q9, qa.q10, qa.q11, qa.q12];
-                            qLabels.forEach((label, i) => {
-                                box.innerHTML += `
-                                    <div class="qa-item-box">
-                                        <div class="qa-item-q">문항 ${i+1}. ${label}</div>
-                                        <div class="qa-item-a">${answers[i] || '미기입 공백 상태'}</div>
-                                    </div>`;
-                            });
-                        } else {
-                            box.innerHTML = `<p style="font-size:13px; color:#536471; padding:10px 0; text-align:center;">알림: 해당 구직 회원은 아직 12단계 건강 문진서를 기입 제출하지 않은 상태입니다.</p>`;
-                        }
-                    }
+                    data.jobs.forEach(j => {
+                        container.innerHTML += `
+                            <div class="job-card">
+                                <div class="job-info">
+                                    <h3>[${j.company}] ${j.title}</h3>
+                                    <p>근무일자: ${j.work_date}</p>
+                                    <span class="wage-tag">일급: ${j.wage.toLocaleString()}원</span>
+                                </div>
+                                <button class="btn-official" onclick="applyJob(${j.id})">지원 및 매칭 신청</button>
+                            </div>
+                        `;
+                    });
                 });
-        });
+        }
+
+        function handleRegisterJob(e) {
+            e.preventDefault();
+            const company = document.getElementById('jobCompany').value.trim();
+            const title = document.getElementById('jobTitle').value.trim();
+            const work_date = document.getElementById('jobDate').value.trim();
+            const wage = document.getElementById('jobWage').value.trim();
+
+            fetch('/api/jobs/create', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ company, title, work_date, wage })
+            }).then(res => res.json()).then(data => {
+                alert('구인 공고가 등록되었습니다. 관리자 승인 후 실시간 피드에 노출됩니다.');
+                document.getElementById('jobCompany').value = '';
+                document.getElementById('jobTitle').value = '';
+                document.getElementById('jobDate').value = '';
+                document.getElementById('jobWage').value = '';
+                loadMainData();
+            });
+        }
+
+        function applyJob(jobId) {
+            alert(`매칭 신청 완료! 공고 번호 #${jobId}에 대한 지원서가 접수되었습니다.`);
+        }
+
+        function handleLogout() {
+            fetch('/api/auth/login', { method: 'POST' }).then(() => {
+                location.href = '/login.html';
+            });
+        }
     </script>
 </body>
 </html>

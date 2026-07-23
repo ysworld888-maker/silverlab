@@ -3,156 +3,128 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>SILVERWORKS - 로그인</title>
-    <!-- [인프라 정화] 사장님 지정 요건: 오직 파란색과 하얀색 단일 테마 가이드셋 주입 상용 CSS 명세 -->
+    <title>SILVERWORKS - 통합 로그인</title>
     <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, sans-serif; }
-        body { background-color: #ffffff; color: #0f1419; display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 20px; }
-        .login-wrap-box { width: 100%; max-width: 400px; padding: 32px 24px; border: 1px solid #eff3f4; border-radius: 16px; background-color: #ffffff; }
-        .logo-center { text-align: center; margin-bottom: 16px; cursor: pointer; }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+        body { background-color: #f9fafb; color: #111827; display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 20px; }
+        .auth-container { width: 100%; max-width: 420px; padding: 36px 28px; background-color: #ffffff; border: 1px solid #e5e8eb; border-radius: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.02); }
+        .logo-box { text-align: center; margin-bottom: 24px; cursor: pointer; }
+        .logo-text { font-size: 22px; font-weight: 800; color: #1967d2; letter-spacing: -0.5px; }
         
-        /* [사장님 오더 명품 복원] 과거 찬사를 받았던 직관적인 시니어/사장님 선택 전환 세그먼트 단추 복원 */
-        .role-tab-group { display: flex; background-color: #f7f9fa; border-radius: 30px; padding: 4px; margin-bottom: 24px; border: 1px solid #eff3f4; }
-        .role-tab-btn { flex: 1; border: none; background: none; padding: 10px 0; font-size: 14px; font-weight: 700; color: #536471; cursor: pointer; border-radius: 25px; transition: all 0.15s; }
-        .role-tab-btn.active { background-color: #1967d2; color: #ffffff; box-shadow: 0 2px 8px rgba(25,103,210,0.2); }
+        .role-switch-tabs { display: flex; background-color: #f3f4f6; border-radius: 9999px; padding: 4px; margin-bottom: 24px; }
+        .tab-btn { flex: 1; border: none; background: none; padding: 10px 0; font-size: 14px; font-weight: 700; color: #6b7280; cursor: pointer; border-radius: 9999px; transition: all 0.2s; }
+        .tab-btn.active { background-color: #ffffff; color: #1967d2; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
         
-        .main-title { font-size: 20px; font-weight: 800; text-align: center; color: #1967d2; margin-bottom: 20px; }
+        .page-heading { font-size: 20px; font-weight: 700; color: #111827; margin-bottom: 20px; text-align: center; }
         .form-group { margin-bottom: 16px; }
-        .form-label { display: block; font-size: 13px; font-weight: 700; color: #536471; margin-bottom: 6px; }
-        .form-input { width: 100%; padding: 12px; border-radius: 8px; border: 1px solid #cfd9de; font-size: 14.5px; font-weight: 600; outline: none; }
+        .form-label { display: block; font-size: 13px; font-weight: 600; color: #4b5563; margin-bottom: 6px; }
+        .form-input { width: 100%; padding: 13px 14px; border-radius: 10px; border: 1px solid #d1d5db; font-size: 14.5px; outline: none; transition: border-color 0.2s; }
         .form-input:focus { border-color: #1967d2; background-color: #f4f9ff; }
-        .btn-submit-blue { width: 100%; background-color: #1967d2; color: #ffffff; border: none; padding: 13px; border-radius: 9999px; font-size: 14.5px; font-weight: 700; cursor: pointer; margin-top: 10px; }
-        .switch-link-zone { text-align: center; margin-top: 18px; font-size: 13.5px; color: #536471; }
-        .switch-link-zone span { color: #1967d2; font-weight: 700; cursor: pointer; text-decoration: underline; margin-left: 4px; }
+        
+        .btn-primary { width: 100%; background-color: #1967d2; color: #ffffff; border: none; padding: 14px; border-radius: 10px; font-size: 15px; font-weight: 700; cursor: pointer; margin-top: 10px; transition: background-color 0.2s; }
+        .btn-primary:hover { background-color: #1152b3; }
+        
+        .footer-link { text-align: center; margin-top: 20px; font-size: 13.5px; color: #6b7280; }
+        .footer-link span { color: #1967d2; font-weight: 700; cursor: pointer; text-decoration: underline; margin-left: 4px; }
     </style>
 </head>
 <body>
-    <div class="login-wrap-box">
-        <div class="logo-center" onclick="location.href='/'">
-            <svg width="36" height="34" viewBox="0 0 100 90" fill="none">
-                <path d="M12.5 54C13.5 53 19.5 54.5 28.5 48.5C38.5 42 47 28 56.5 19.5C65.5 11 76.5 6.5 85.5 12.5" stroke="#1967d2" stroke-width="8.5" stroke-linecap="round" stroke-linejoin="round"/>
-                <path d="M51.5 59C58.5 67 71 68 80.5 60.5C90 53 92.5 39.5 85.5 32" stroke="#1967d2" stroke-width="8.5" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
+    <div class="auth-container">
+        <div class="logo-box" onclick="location.href='/'">
+            <span class="logo-text">SILVERWORKS</span>
         </div>
         
-        <!-- [사장님 지정 규격] 과거 호평을 받았던 직관적인 선택 버튼 레이아웃 구조 전격 마운트 복원 -->
-        <div class="role-tab-group">
-            <button type="button" id="tabSeeker" class="role-tab-btn active" onclick="selectRoleMode('seeker')">구직 시니어 회원</button>
-            <button type="button" id="tabEmployer" class="role-tab-btn" onclick="selectRoleMode('employer')">구인 사업장 사장님</button>
+        <div class="role-switch-tabs">
+            <button type="button" id="tabSeeker" class="tab-btn active" onclick="setRole('seeker')">구직 시니어 회원</button>
+            <button type="button" id="tabEmployer" class="tab-btn" onclick="setRole('employer')">구인 사업장 사장님</button>
         </div>
         
-        <h2 class="main-title" id="pageTitle">시니어 회원 로그인</h2>
+        <h2 class="page-heading" id="formTitle">시니어 회원 로그인</h2>
         
-        <form id="authForm" onsubmit="return false;">
+        <form onsubmit="handleAuthSubmit(event)">
             <div class="form-group">
-                <label class="form-label">사용자 아이디 (ID)</label>
-                <input type="text" id="mUsername" class="form-input" required>
+                <label class="form-label">아이디 (ID)</label>
+                <input type="text" id="username" class="form-input" required placeholder="아이디를 입력하세요">
             </div>
             <div class="form-group">
                 <label class="form-label">비밀번호 (Password)</label>
-                <input type="password" id="mPassword" class="form-input" required>
+                <input type="password" id="password" class="form-input" required placeholder="비밀번호를 입력하세요">
             </div>
             
-            <div id="registerOnlyFields" style="display: none;">
+            <div id="registerFields" style="display: none;">
                 <div class="form-group">
-                    <label class="form-label">정식 성함 또는 매장 상호명</label>
-                    <input type="text" id="mName" class="form-input">
+                    <label class="form-label">성함 또는 상호명</label>
+                    <input type="text" id="name" class="form-input" placeholder="정식 명칭을 입력하세요">
                 </div>
                 <div class="form-group">
-                    <label class="form-label">실물 연락처 전화번호</label>
-                    <input type="text" id="mPhone" class="form-input" placeholder="숫자만 입력">
+                    <label class="form-label">연락처 전화번호</label>
+                    <input type="text" id="phone" class="form-input" placeholder="010-0000-0000">
                 </div>
             </div>
             
-            <button type="button" class="btn-submit-blue" id="submitBtn" onclick="handleExecuteAuthAction()">보안망 검증 로그인</button>
+            <button type="submit" class="btn-primary" id="submitBtn">로그인하기</button>
         </form>
         
-        <div class="switch-link-zone" id="toggleLinkZone">
-            아직 실버웍스 회원이 아니십니까?<span onclick="switchAuthMode('register')">회원가입 신청 ➔</span>
+        <div class="footer-link" id="toggleLink">
+            아직 실버웍스 회원이 아니십니까?<span onclick="toggleMode('register')">회원가입 신청 ➔</span>
         </div>
     </div>
-    <!-- [선택 탭 동적 스위칭 및 대문 메인 리다이렉트 완전체 구동 스크립트 엔진] -->
+
     <script>
-        let currentMode = 'login'; 
-        let requestedRole = 'seeker';
+        let currentRole = 'seeker';
+        let isRegisterMode = false;
 
-        document.addEventListener("DOMContentLoaded", function() {
-            const urlParams = new URLSearchParams(window.location.search); 
-            const type = urlParams.get('type');
-            if (type === 'employer') { selectRoleMode('employer'); }
-        });
-
-        // 사장님 선호 탭 단추 클릭 시 동적으로 권한 모드를 보정 갱신해 주는 특화 연동 함수
-        function selectRoleMode(role) {
-            requestedRole = role; 
-            document.querySelectorAll('.role-tab-btn').forEach(b => b.classList.remove('active'));
-            
+        function setRole(role) {
+            currentRole = role;
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
             if(role === 'employer') {
                 document.getElementById('tabEmployer').classList.add('active');
-                document.getElementById('pageTitle').innerText = currentMode === 'login' ? '사장님 회원 로그인' : '구인 사장님 회원가입 신청';
+                document.getElementById('formTitle').innerText = isRegisterMode ? '구인 사장님 회원가입 신청' : '구인 사장님 회원 로그인';
             } else {
                 document.getElementById('tabSeeker').classList.add('active');
-                document.getElementById('pageTitle').innerText = currentMode === 'login' ? '시니어 회원 로그인' : '구직 시니어 회원가입 신청';
+                document.getElementById('formTitle').innerText = isRegisterMode ? '구직 시니어 회원가입 신청' : '시니어 회원 로그인';
             }
         }
 
-        function switchAuthMode(mode) {
-            currentMode = mode;
-            if (mode === 'register') {
-                document.getElementById('registerOnlyFields').style.display = 'block'; 
-                document.getElementById('submitBtn').innerText = '회원가입 전산 신청서 제출';
-                document.getElementById('toggleLinkZone').innerHTML = `이미 계정이 있으십니까?<span onclick="switchAuthMode('login')">로그인 화면 전환 ➔</span>`;
-                selectRoleMode(requestedRole);
-            } else {
-                document.getElementById('registerOnlyFields').style.display = 'none'; 
-                document.getElementById('submitBtn').innerText = '보안망 검증 로그인';
-                document.getElementById('toggleLinkZone').innerHTML = `아직 회원이 아니십니까?<span onclick="switchAuthMode('register')">회원가입 신청 ➔</span>`;
-                selectRoleMode(requestedRole);
-            }
+        function toggleMode(mode) {
+            isRegisterMode = (mode === 'register');
+            document.getElementById('registerFields').style.display = isRegisterMode ? 'block' : 'none';
+            document.getElementById('submitBtn').innerText = isRegisterMode ? '회원가입 전산 승인 요청' : '로그인하기';
+            document.getElementById('toggleLink').innerHTML = isRegisterMode ? 
+                `이미 계정이 있으십니까?<span onclick="toggleMode('login')">로그인 화면 전환 ➔</span>` : 
+                `아직 실버웍스 회원이 아니십니까?<span onclick="toggleMode('register')">회원가입 신청 ➔</span>`;
+            setRole(currentRole);
         }
 
-        // 보안 검증 완료 즉시 대문 메인 화면(index.html)으로 정밀 안착 자동 렌더링 스위칭 실행 함수
-        function handleExecuteAuthAction() {
-            const username = document.getElementById('mUsername').value.trim(); 
-            const password = document.getElementById('mPassword').value.trim();
-            if(!username || !password) { alert('아이디와 패스워드를 입력하세요.'); return; }
+        function handleAuthSubmit(e) {
+            e.preventDefault();
+            const username = document.getElementById('username').value.trim();
+            const password = document.getElementById('password').value.trim();
 
-            if (currentMode === 'register') {
-                const name = document.getElementById('mName').value.trim(); 
-                const phone = document.getElementById('mPhone').value.trim();
-                if(!name || !phone) { alert('성함 혹은 상호명과 연락처 번호를 정확히 기입하세요.'); return; }
+            if (isRegisterMode) {
+                const name = document.getElementById('name').value.trim();
+                const phone = document.getElementById('phone').value.trim();
+                if(!name || !phone) { alert('성함(상호명)과 연락처를 입력하세요.'); return; }
 
-                fetch('/api/auth/register', { 
-                    method: 'POST', 
-                    headers: { 'Content-Type': 'application/json' }, 
-                    body: JSON.stringify({ username: username, password: password, name: name, phone: phone, role: requestedRole }) 
-                })
-                .then(res => res.json())
-                .then(data => {
-                    if (data.success) { alert('회원가입 전산 신청 완료! 최고 관리자실 승인을 대기하세요.'); switchAuthMode('login'); }
+                fetch('/api/auth/register', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username, password, name, phone, role: currentRole })
+                }).then(res => res.json()).then(data => {
+                    alert(data.message);
+                    if(data.success) toggleMode('login');
                 });
             } else {
-                fetch('/api/auth/login', { 
-                    method: 'POST', 
-                    headers: { 'Content-Type': 'application/json' }, 
-                    body: JSON.stringify({ username: username, password: password, requested_role: requestedRole }) 
-                })
-                .then(res => {
-                    if(res.status === 403){ alert('진입 제한: 현재 관리자 인증 심사가 진행 중이거나 채널 유형 권한이 불일치합니다.'); throw new Error('403'); }
-                    if(!res.ok){ alert('로그인 실패: 계정 명세 정보가 불일치합니다.'); throw new Error('Fail'); } 
-                    return res.json();
-                })
-                .then(data => {
-                    if (data.success) {
-                        localStorage.setItem('sw_username', data.user.username); 
-                        localStorage.setItem('sw_role', data.user.role); 
-                        localStorage.setItem('sw_name', data.user.name);
-                        
-                        alert(`보안망 검증 성공! @${data.user.username} 자동 로그인 프리패스 세션이 가동되었습니다.`);
-                        // [지시 수칙 완벽 충족] 투박한 프로필이 아닌 대문 메인 홈페이지로 즉각 리다이렉트 안착 처리
-                        location.href = '/index.html'; 
-                    }
-                }).catch(()=>{});
+                fetch('/api/auth/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username, password, requested_role: currentRole })
+                }).then(async res => {
+                    const data = await res.json();
+                    if(!res.ok) { alert(data.message || '로그인 실패'); return; }
+                    alert(`로그인 성공! @${data.user.name} 환영합니다.`);
+                    location.href = '/index.html';
+                });
             }
         }
     </script>
