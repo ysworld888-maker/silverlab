@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>SILVERWORKS - 구인구직 피드</title>
-    <!-- [대기업 공식 웹사옥 스펙] 기존 모든 미학/기능 100% 보존 유지 + 사장님 멀티 정산 모달 레이아웃 추가 누적 CSS 명세 -->
+    <!-- [대기업 공식 웹사옥 스펙] 누적 빌드업 4단계 - 전체 기능/디자인 100% 통합 수립 CSS 명세 -->
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Malgun Gothic", "맑은 고딕", helvetica, sans-serif; letter-spacing: -0.4px; -webkit-tap-highlight-color: transparent; }
         body { background-color: #ffffff; color: #1c1c1e; margin: 0; overflow-x: hidden; -webkit-font-smoothing: antialiased; }
@@ -29,16 +29,15 @@
         .modal-main-title { font-size: 18px; font-weight: 700; color: #1c1c1e; }
         .btn-modal-close { background: none; border: none; font-size: 22px; cursor: pointer; color: #8e8e93; font-weight: 700; }
         
-        /* [요구사항 4번 신설] 사장님 회원 로그인 시 표출될 멀티 분기 선택용 단추 디자인 세단 */
+        /* 사장님 회원 로그인 시 표출될 멀티 분기 선택용 단추 디자인 세단 */
         .employer-select-grid-box { display: flex; flex-direction: column; gap: 14px; margin-top: 10px; }
         .btn-employer-choice { width: 100%; text-align: left; padding: 20px; border-radius: 16px; border: 1px solid #d1d1d6; background-color: #ffffff; cursor: pointer; transition: all 0.2s cubic-bezier(0.25, 1, 0.5, 1); }
         .btn-employer-choice:hover { border-color: #1967d2; background-color: #f4f9ff; transform: translateY(-2px); }
         .choice-title { font-size: 16px; font-weight: 800; color: #1967d2; margin-bottom: 4px; display: block; }
         .choice-desc { font-size: 13px; color: #636366; font-weight: 500; }
         
-        /* [요구사항 4번 신설] 정산하기 패널 내부 금융 원장 명세서 카드 보드 양식 */
+        /* 정산하기 패널 내부 금융 원장 명세서 카드 보드 양식 */
         .invoice-paper-skin { background-color: #f8f9fa; border: 1px solid #e5e8eb; border-radius: 16px; padding: 20px; margin-bottom: 16px; display: none; }
-        .invoice-paper-skin.active { display: block; }
         .invoice-title-row { font-size: 14px; font-weight: 800; color: #1c1c1e; border-bottom: 1px dashed #d1d1d6; padding-bottom: 10px; margin-bottom: 12px; }
         .invoice-data-row { display: flex; justify-content: space-between; font-size: 13.5px; font-weight: 600; color: #48484a; padding: 6px 0; }
         .invoice-total-row { display: flex; justify-content: space-between; font-size: 16px; font-weight: 800; color: #eb5757; border-top: 1px solid #cfd9de; padding-top: 10px; margin-top: 8px; }
@@ -67,10 +66,12 @@
             100% { transform: translateY(-30px) scale(1.6); opacity: 0; }
         }
         
+        /* 스크롤 연동 위로 스르륵 숨김/출현 바인딩 가드 */
         .card-section { padding: 0 24px; max-width: 1040px; margin: -140px auto 30px auto; position: sticky; top: 140px; z-index: 10; display: grid; grid-template-columns: 1fr 1fr; gap: 32px; transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.4s ease-out; transform: translateY(0); opacity: 1; }
         @media (max-width: 600px) { .card-section { grid-template-columns: 1fr; margin-top: -60px; } }
         .card-section.hidden-scroll { transform: translateY(-160px); opacity: 0; pointer-events: none; }
         
+        /* 아래로 스크롤 화살표 가이드 구역 명세 */
         .scroll-indicator-zone { max-width: 1040px; margin: 0 auto 50px auto; text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.4s ease-out; transform: translateY(0); opacity: 1; position: relative; z-index: 9; }
         .scroll-indicator-zone.hidden-scroll { transform: translateY(-160px); opacity: 0; pointer-events: none; }
         .scroll-guide-text { font-size: 14px; font-weight: 700; color: #8e8e93; letter-spacing: -0.2px; }
@@ -107,12 +108,13 @@
         </div>
     </header>
 
+    <!-- 파도 직접 클릭 펄스 치솟음 인터랙션 엔진 본고 결속 -->
     <section class="hero-section" id="heroWaveSection" onclick="handleTriggerWavePulseAnimation()">
         <h1 class="hero-title" style="font-size: 34px; font-weight: 800; color: #1967d2; letter-spacing: -1.5px; line-height: 1.45; pointer-events: none;">변화에 도전할 사장님과 베테랑 시니어 구직자들의 만남</h1>
         <div class="wave-wrapper"><svg class="wave-svg" viewBox="0 0 1200 120" preserveAspectRatio="none"><path class="wave-layer1" d="M0,60 C150,100 350,20 500,60 C650,100 850,20 1000,60 L1500,120 L0,120 Z"></path><path class="wave-layer2" d="M0,50 C200,10 400,90 600,40 C800,10 1000,90 1200,40 L1800,120 L0,120 Z"></path></svg></div>
     </section>
 
-    <!-- 카드 진입로 섹션 영역 -->
+    <!-- 스크롤 스르륵 숨김/복귀 연동형 카드 진입로 섹션 영역 -->
     <section class="card-section" id="animatedCardSection">
         <div class="info-card" onclick="handleVerifyRouteGuard('seeker')">
             <div><span class="card-badge">시니어 마이페이지</span><h2 class="card-title">베테랑 전용 12단계 문진형 이력서 자율 제출</h2><p class="card-desc">체력 인증 등급과 사장님이 지정하신 12가지 정밀 건강 문진 데이터가 통합 탑재된 실버웍스 전용 표준 공식 이력서 제출처입니다.</p></div>
@@ -122,29 +124,39 @@
         </div>
     </section>
 
-    <!-- 아래로 스크롤 화살표 컴포넌트 보존 -->
+    <!-- 아래로 스크롤 화살표 바운스 가이드 배치 -->
     <div class="scroll-indicator-zone" id="animatedScrollIndicatorZone">
         <span class="scroll-guide-text">아래로 스크롤</span>
         <svg class="scroll-arrow-icon" viewBox="0 0 24 24"><path d="M12 5v14M19 12l-7 7-7-7"/></svg>
     </div>
 
-    <!-- 미니멀리즘 스토리텔링 리포트 섹션 보존 -->
+    <!-- 미니멀리즘 스토리텔링 리포트 섹션 -->
     <div style="max-width: 720px; margin: 200px auto 120px auto; padding: 0 24px; line-height: 2.2; color: #3a3a3c; font-size: 16px; word-break: keep-all; position: relative; z-index: 5;">
+        
         <h3 style="font-size: 22px; font-weight: 800; color: #1c1c1e; margin-bottom: 16px; letter-spacing: -0.8px;">매장을 책임져줄 성실한 사람을 구하는 것은<br>하늘의 별 따기가 되었습니다.</h3>
+        
         <div style="border-left: 4px solid #1967d2; background-color: #f8f9fa; padding: 24px; border-radius: 12px; font-size: 15px; color: #1967d2; font-weight: 600; line-height: 1.7; margin: 28px 0; box-shadow: 0 4px 16px rgba(0,0,0,0.01);">
             "자영업자 4명 중 3명이 알바생의 갑작스러운 결근·퇴사 등 '노쇼(No-Show)'로 인해 곤란한 상황을 겪은 것으로 나타났다."
             <div style="margin-top: 12px; font-size: 13px; color: #8e8e93; font-weight: 500;">
                 출처: <a href="https://sedaily.com" target="_blank" style="color: #1967d2; text-decoration: underline; font-weight: 700;">중장년 알바와 MZ 사장… 문제는 없을까? 직접 들어봤다 | 서울경제</a>
             </div>
         </div>
+
         <p style="margin-bottom: 32px; color: #48484a;">치솟는 최저임금과 주휴수당, 퇴직금이라는 고정비 압박 속에서 사장님들의 어깨는 날이 갈수록 무거워지고 있습니다.</p>
+        
         <div style="border-top: 1px solid #f2f4f6; margin: 40px 0;"></div>
+
         <h3 style="font-size: 22px; font-weight: 800; color: #1c1c1e; margin-bottom: 16px; letter-spacing: -0.8px;">이런 상황에서, 체력과 열정을 가지고 일터를 찾는<br>시니어들은 해 마다 늘어나고 있습니다.</h3>
+
         <div style="border-left: 4px solid #1967d2; background-color: #f8f9fa; padding: 24px; border-radius: 12px; font-size: 15px; color: #1967d2; font-weight: 500; line-height: 1.7; margin: 28px 0; box-shadow: 0 4px 16px rgba(0,0,0,0.01);">
             (노인 일자리 참여자는 꾸준히 늘고 있다. 2020년 73만7708명이던 참여자는 올해 8월 99만7233명으로 증가했다. 하지만 같은 기간 신청자 수는 82만3754명에서 122만5776명으로 48.8%나 폭증했다.)
-            <div style="margin-top: 12px; font-size: 13px; color: #8e8e93;">출처 : <a href="https://newsquest.co.kr" target="_blank" style="color: #1967d2; text-decoration: underline; font-weight: 700;">뉴스퀘스트</a></div>
+            <div style="margin-top: 12px; font-size: 13px; color: #8e8e93;">
+                출처 : <a href="https://newsquest.co.kr" target="_blank" style="color: #1967d2; text-decoration: underline; font-weight: 700;">뉴스퀘스트</a>
+            </div>
         </div>
+
         <p style="margin-bottom: 32px; color: #48484a;">하지만 나이라는 장벽에 부딪혀 역량을 펼칠 기회조차 얻지 못하는 게 오늘날의 현실입니다.</p>
+        
         <p style="font-size: 18px; font-weight: 800; color: #1967d2; text-align: center; margin: 56px 0; letter-spacing: -0.5px; background-color: rgba(25,103,210,0.04); padding: 18px; border-radius: 14px;">우리는 왜 이 거대한 두 개의 갈증을 단 한 번도 연결하지 못했을까요?</p>
         <div style="border-top: 1px dashed #e5e8eb; margin: 40px 0;"></div>
 
@@ -156,7 +168,7 @@
         <p style="font-size: 20px; font-weight: 800; color: #1967d2; text-align: center; margin-top: 60px; letter-spacing: -0.5px;">변화에 도전 할 사장님과 준비된 베테랑님의 상생 파트너십.<br>지금 시작됩니다.</p>
     </div>
 
-    <!-- [요구사항 4번 신설 반영] 구인 사장님 전용 멀티 액션 관제 분기 모달창 -->
+    <!-- [기능 보존] 사장님 회원 전용 멀티 액션 관제 분기 모달창 -->
     <div id="employerMultiActionModal" class="settle-modal-overlay">
         <div class="settle-modal-content">
             <div class="modal-header-row">
@@ -164,20 +176,17 @@
                 <button type="button" class="btn-modal-close" onclick="closeEmployerMultiActionModal()">✕</button>
             </div>
             
-            <!-- [요구사항 4번 수기안 완벽 이식] 실버웍스 오피셜 대금 정산 10% 추가 가산 명세서 영수증 레이어 -->
+            <!-- [기능 보존] 실버웍스 오피셜 대금 정산 10% 추가 가산 명세서 영수증 레이어 -->
             <div class="invoice-paper-skin" id="employerInvoicePaperSection">
                 <div class="invoice-title-row">📄 실버웍스 본부 정산 대금 청구 명세서</div>
                 <div id="invoiceDataItemsBox"></div>
             </div>
 
             <div class="employer-select-grid-box">
-                <!-- 1번 단추: 기존 고용 콘솔 관제실 프리패스 직결 이동 -->
                 <button type="button" class="btn-employer-choice" onclick="location.href='/employer.html'">
                     <span class="choice-title">1. 고용 관제 본부 콘솔실 진입</span>
                     <span class="choice-desc">초단기 피크타임 구인공고를 신규 생성 등록하거나, 내 매장 공고에 지원한 시니어 지원 베테랑 명단을 파싱 감제합니다.</span>
                 </button>
-                
-                <!-- 2번 단추: 이번에 신설 부착하는 포인트 직접 지급 트랙 진입 패널 토글 -->
                 <button type="button" class="btn-employer-choice" onclick="handleToggleOpenSettleActionSubForm()">
                     <span class="choice-title" style="color: #eb5757;">2. 베테랑 임금 포인트 직접 지급 및 정산하기</span>
                     <span class="choice-desc">내가 등록 확정한 최종 매칭 시니어 회원에게 직접 가상 포인트를 실시간 이체 수납하고 본부 수수료 청구서를 확인합니다.</span>
@@ -243,7 +252,7 @@
         </div>
     </footer>
 
-    <!-- [4대 그랜드 금융 정산 멀티 가드 추적 엔진 스크립트 결속] -->
+    <!-- [완벽 통합 상호작용 자바스크립트 제어 엔진] -->
     <script>
         let globalCurrentPoints = 0;
         let lastScrollTop = 0;
@@ -279,19 +288,23 @@
             const animatedScrollIndicatorZone = document.getElementById('animatedScrollIndicatorZone');
             const heroWaveSection = document.getElementById('heroWaveSection');
             
+            // [오더 완벽 수립] 스크롤 방향 트래킹 위로 스르륵 실종 및 최상단 원위치(60px 이하) 진입 시 동시 부활 제어 모듈
             window.addEventListener('scroll', function() {
                 let currentScroll = window.pageYOffset || document.documentElement.scrollTop;
                 
                 if (currentScroll > lastScrollTop && currentScroll > 50) {
+                    // 아래로 스크롤할 때는 카드 영역과 아래로스크롤 화살표 인디케이터가 위 방향으로 일제히 스르륵 숨김 실종
                     animatedCardSection.classList.add('hidden-scroll');
                     animatedScrollIndicatorZone.classList.add('hidden-scroll');
                 } else {
+                    // 마우스 휠을 위로 복귀하여 오직 최상단 원래 자리(60px 이하)에 도달했을 때만 정교하게 출현
                     if (currentScroll <= 60) {
                         animatedCardSection.remove('hidden-scroll');
                         animatedScrollIndicatorZone.remove('hidden-scroll');
                     }
                 }
                 
+                // 3안 검은 원 여백 구역 진입 시 잔물결 물방울 자동 상승 가동
                 if (currentScroll >= 160 && currentScroll <= 420) {
                     if (!rippleInterval) {
                         rippleInterval = setInterval(createWaveRippleParticle, 180);
@@ -307,14 +320,12 @@
             }, { passive: true });
         });
 
-        // [요구사항 4번 신설 적용] 사장님 회원 전용 멀티 제어 모달 열기 및 본부 청구 명세서 실시간 동적 파싱 로드
         function openEmployerMultiActionModal() {
             const empId = localStorage.getItem('sw_username');
             document.getElementById('mAuthEmployerTitle').innerText = `@${empId} 사장님 전용 정산 금융 제어반`;
             document.getElementById('employerMultiActionModal').style.display = 'flex';
             document.getElementById('employerSettleActionSubFormZone').style.display = 'none';
             
-            // 본부 청구서 명세 영수증 파이프라인 실시간 비동기 연동 호출 가동
             fetch('/api/settle/employer-billing-invoice?employer_id=' + encodeURIComponent(empId))
                 .then(res => res.json())
                 .then(data => {
@@ -359,7 +370,7 @@
                 return;
             }
 
-            if(!confirm(`베테랑 임금 강제 직지급 고지:\n\n@${seekerId} 시니어 회원에게 임금 원금 ${parseInt(amount).toLocaleString()} P를 즉시 실시간 지급 전송합니까?\n\n(본부 중개 약정 수수료 10% 가산 청구서 영수증 원장이 사장님 계정 앞으로 실시간 동시 발행 적재됩니다)`)) return;
+            if(!confirm(`@${seekerId} 시니어 회원에게 임금 원금 ${parseInt(amount).toLocaleString()} P를 즉시 실시간 지급 전송합니까?`)) return;
 
             fetch('/api/settle/employer-pay-senior', {
                 method: 'POST',
@@ -373,21 +384,24 @@
                     document.getElementById('epJobId').value = '';
                     document.getElementById('epSeekerId').value = '';
                     document.getElementById('epSettleAmount').value = '';
-                    openEmployerMultiActionModal(); // 명세 청구서판 실시간 동적 릴로드 리프레시
+                    openEmployerMultiActionModal();
                 } else {
                     alert('이체 실패 알림: ' + data.message);
                 }
             });
         }
 
+        // 2안 파도 클릭 시 맥박 펄스 치솟음 함수 보존
         function handleTriggerWavePulseAnimation() {
-            if (isWaveAnimating) return; isWaveAnimating = true;
+            if (isWaveAnimating) return;
+            isWaveAnimating = true;
             const section = document.getElementById('heroWaveSection');
             section.classList.add('pulse-wave-active');
             for(let i=0; i<8; i++) { setTimeout(createWaveRippleParticle, i * 60); }
             setTimeout(() => { section.classList.remove('pulse-wave-active'); isWaveAnimating = false; }, 450);
         }
 
+        // 3안 물방울 상승 생성 엔진 보존
         function createWaveRippleParticle() {
             const section = document.getElementById('heroWaveSection'); if (!section) return;
             const drop = document.createElement('div'); drop.className = 'ripple-drop';
@@ -402,25 +416,22 @@
             alert('로그아웃 완료'); location.reload();
         }
 
-        // [사장님 대특명 수칙 100% 반영] 비로그인 시 기존 방식대로 로그인 워프, 로그인 사장님 터치 시 2대 분기 멀티 제어 모달 오픈 가동
+        // 비로그인 시 로그인 워프 가드 및 로그인 사장님 터치 시 2대 멀티 액션 모달 가동
         function handleVerifyRouteGuard(targetRole) {
             const savedId = localStorage.getItem('sw_username');
             const savedRole = localStorage.getItem('sw_role');
 
-            // A. 세션 정보가 없는 로그아웃(비로그인) 상태일 경우, 기존 방식 규격 그대로 로그인 가입 창 유형 리다이렉트 자동 이동
             if (!savedId || !savedRole) {
                 alert('알림: 회원 인증이 필요합니다. 로그인 화면으로 안전하게 연결합니다.');
                 location.href = `/login.html?type=${targetRole}`;
                 return;
             }
 
-            // B. 교차 권한 침범 방어 가드
             if (savedRole !== targetRole) {
                 alert(savedRole === 'employer' ? '보안 가드 경고: 사장님 계정으로는 구직 시니어 문진 구역에 진입할 수 없습니다.' : '보안 가드 경고: 시니어 계정으로는 사장님 전용 구역에 진입할 수 없습니다.');
                 return;
             }
 
-            // C. [사장님 오더 핵심] 로그인이 완료되어 있을 경우, 사장님 페이지 버튼 클릭 즉시 2선택 멀티 팝업 제어반 오픈 분기 가동
             if (targetRole === 'employer') {
                 openEmployerMultiActionModal();
             } else {
