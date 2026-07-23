@@ -2,9 +2,9 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scalable=no">
     <title>SILVERWORKS - 구인구직 피드</title>
-    <!-- [대기업 공식 웹사옥 스펙] 누적 빌드업 4단계 - 전체 기능/디자인 100% 통합 수립 CSS 명세 -->
+    <!-- [대기업 공식 웹사옥 스펙] 생략되었던 스크롤 스르륵 모션 완전 부활 + 4단계 정산 멀티 가드 통합 CSS 명세 -->
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Malgun Gothic", "맑은 고딕", helvetica, sans-serif; letter-spacing: -0.4px; -webkit-tap-highlight-color: transparent; }
         body { background-color: #ffffff; color: #1c1c1e; margin: 0; overflow-x: hidden; -webkit-font-smoothing: antialiased; }
@@ -29,7 +29,6 @@
         .modal-main-title { font-size: 18px; font-weight: 700; color: #1c1c1e; }
         .btn-modal-close { background: none; border: none; font-size: 22px; cursor: pointer; color: #8e8e93; font-weight: 700; }
         
-        /* 사장님 회원 로그인 시 표출될 멀티 분기 선택용 단추 디자인 세단 */
         .employer-select-grid-box { display: flex; flex-direction: column; gap: 14px; margin-top: 10px; }
         .btn-employer-choice { width: 100%; text-align: left; padding: 20px; border-radius: 16px; border: 1px solid #d1d1d6; background-color: #ffffff; cursor: pointer; transition: all 0.2s cubic-bezier(0.25, 1, 0.5, 1); }
         .btn-employer-choice:hover { border-color: #1967d2; background-color: #f4f9ff; transform: translateY(-2px); }
@@ -66,9 +65,10 @@
             100% { transform: translateY(-30px) scale(1.6); opacity: 0; }
         }
         
-        /* 스크롤 연동 위로 스르륵 숨김/출현 바인딩 가드 */
+        /* [생략 결함 완벽 치유] 스크롤 위/아래 방향과 최상단 도달 시점을 칼날같이 트래킹 제어하는 고정 스티키 스킨 명세 */
         .card-section { padding: 0 24px; max-width: 1040px; margin: -140px auto 30px auto; position: sticky; top: 140px; z-index: 10; display: grid; grid-template-columns: 1fr 1fr; gap: 32px; transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.4s ease-out; transform: translateY(0); opacity: 1; }
         @media (max-width: 600px) { .card-section { grid-template-columns: 1fr; margin-top: -60px; } }
+        /* 스크롤 다운 시 위방향으로 '스르륵' 감쪽같이 실종 처리 가드 클래스 */
         .card-section.hidden-scroll { transform: translateY(-160px); opacity: 0; pointer-events: none; }
         
         /* 아래로 스크롤 화살표 가이드 구역 명세 */
@@ -168,7 +168,7 @@
         <p style="font-size: 20px; font-weight: 800; color: #1967d2; text-align: center; margin-top: 60px; letter-spacing: -0.5px;">변화에 도전 할 사장님과 준비된 베테랑님의 상생 파트너십.<br>지금 시작됩니다.</p>
     </div>
 
-    <!-- [기능 보존] 사장님 회원 전용 멀티 액션 관제 분기 모달창 -->
+    <!-- 사장님 회원 전용 멀티 액션 관제 분기 모달창 -->
     <div id="employerMultiActionModal" class="settle-modal-overlay">
         <div class="settle-modal-content">
             <div class="modal-header-row">
@@ -176,7 +176,7 @@
                 <button type="button" class="btn-modal-close" onclick="closeEmployerMultiActionModal()">✕</button>
             </div>
             
-            <!-- [기능 보존] 실버웍스 오피셜 대금 정산 10% 추가 가산 명세서 영수증 레이어 -->
+            <!-- 실버웍스 오피셜 대금 정산 10% 추가 가산 명세서 영수증 레이어 -->
             <div class="invoice-paper-skin" id="employerInvoicePaperSection">
                 <div class="invoice-title-row">📄 실버웍스 본부 정산 대금 청구 명세서</div>
                 <div id="invoiceDataItemsBox"></div>
@@ -252,7 +252,7 @@
         </div>
     </footer>
 
-    <!-- [완벽 통합 상호작용 자바스크립트 제어 엔진] -->
+    <!-- [4대 그랜드 금융 정산 멀티 가드 추적 엔진 스크립트 결속] -->
     <script>
         let globalCurrentPoints = 0;
         let lastScrollTop = 0;
@@ -304,7 +304,6 @@
                     }
                 }
                 
-                // 3안 검은 원 여백 구역 진입 시 잔물결 물방울 자동 상승 가동
                 if (currentScroll >= 160 && currentScroll <= 420) {
                     if (!rippleInterval) {
                         rippleInterval = setInterval(createWaveRippleParticle, 180);
@@ -320,6 +319,7 @@
             }, { passive: true });
         });
 
+        // 사장님 회원 전용 멀티 제어 모달 열기 및 본부 청구 명세서 실시간 동적 파싱 로드
         function openEmployerMultiActionModal() {
             const empId = localStorage.getItem('sw_username');
             document.getElementById('mAuthEmployerTitle').innerText = `@${empId} 사장님 전용 정산 금융 제어반`;
@@ -333,8 +333,7 @@
                     const box = document.getElementById('invoiceDataItemsBox');
                     box.innerHTML = '';
 
-                    if (!data.billings || data.billings.length === 0) {
-                        paper.style.display = 'none';
+                    if (!data.billings || data.billings.length === 0) {                        paper.style.display = 'none';
                         return;
                     }
 
@@ -452,3 +451,4 @@
     </script>
 </body>
 </html>
+
