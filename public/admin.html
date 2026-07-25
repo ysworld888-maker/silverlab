@@ -4,43 +4,36 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>silverworks - 관리자 HQ</title>
-    <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css');
-        
         :root {
             --toss-blue: #3182f6;
             --toss-blue-hover: #1b64da;
             --toss-bg: #f9fafb;
         }
-
-        body { 
+        body {
             font-family: "Pretendard", -apple-system, BlinkMacSystemFont, system-ui, Roboto, sans-serif;
             background-color: var(--toss-bg);
             color: #191f28;
             word-break: keep-all;
         }
-
         .btn-toss {
             background-color: var(--toss-blue);
             color: #ffffff;
             transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
         }
-
         .btn-toss:hover {
             background-color: var(--toss-blue-hover);
             transform: translateY(-1px);
             box-shadow: 0 4px 14px rgba(49, 130, 246, 0.35);
         }
-
         .input-toss {
             background-color: #f2f4f6;
             border: 1px solid transparent;
             transition: all 0.2s ease;
         }
-
         .input-toss:focus {
             background-color: #ffffff;
             border-color: #3182f6;
@@ -50,11 +43,8 @@
     </style>
 </head>
 <body class="min-h-screen flex flex-col justify-between antialiased selection:bg-blue-100 selection:text-blue-600">
-
-    <!-- Header Navigation -->
     <header class="sticky top-0 z-50 bg-slate-900 text-white shadow-md">
         <div class="max-w-7xl mx-auto px-5 h-16 flex items-center justify-between">
-            <!-- Brand Logo (Wave Mark SVG) -->
             <a href="/index.html" class="flex items-center gap-2.5 group">
                 <div class="p-1.5 rounded-xl bg-blue-500/20 text-blue-400 group-hover:bg-blue-500/30 transition">
                     <svg class="w-8 h-8" viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="8" stroke-linecap="round" stroke-linejoin="round">
@@ -66,57 +56,45 @@
                     silverworks <span class="text-xs font-bold px-2 py-0.5 rounded bg-blue-600 text-white ml-1">HQ</span>
                 </span>
             </a>
-
-            <!-- Navigation Links -->
             <nav class="hidden md:flex items-center gap-8 text-sm font-semibold text-slate-300">
                 <a href="/jobs.html" class="hover:text-blue-400 transition">피크타임 공고</a>
                 <a href="/senior-apply.html" class="hover:text-blue-400 transition">시니어 일자리센터</a>
                 <a href="/employer.html" class="hover:text-blue-400 transition">사장님 센터</a>
                 <a href="/admin.html" class="text-blue-400 font-extrabold transition">관리자 HQ</a>
             </nav>
-
-            <!-- Status Indicator -->
             <div class="flex items-center gap-3">
                 <span class="inline-flex items-center gap-1.5 text-xs font-bold px-3 py-1.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
-                    <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span> 시스템 정상 가동 중
+                    <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                    시스템 정상 가동 중
                 </span>
             </div>
         </div>
     </header>
 
-    <!-- Main Content -->
     <main class="max-w-7xl mx-auto px-5 py-8 flex-1 w-full space-y-8">
-
-        <!-- Admin Overview Header Cards -->
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            
             <div class="bg-white p-5 rounded-3xl border border-slate-200/80 shadow-sm space-y-1">
                 <span class="text-xs font-bold text-slate-400">누적 매칭 거래액</span>
                 <p class="text-2xl font-black text-slate-900" id="stat-total-volume">1,840,000원</p>
                 <p class="text-[11px] text-blue-600 font-semibold">당일 예상 수수료 수익: 92,000원</p>
             </div>
-
             <div class="bg-white p-5 rounded-3xl border border-slate-200/80 shadow-sm space-y-1">
                 <span class="text-xs font-bold text-slate-400">등록 피크타임 공고</span>
                 <p class="text-2xl font-black text-slate-900" id="stat-job-count">0건</p>
                 <p class="text-[11px] text-emerald-600 font-semibold">매칭 성공률 98.2%</p>
             </div>
-
             <div class="bg-white p-5 rounded-3xl border border-slate-200/80 shadow-sm space-y-1">
                 <span class="text-xs font-bold text-slate-400">체력검증 대기건</span>
                 <p class="text-2xl font-black text-amber-600" id="stat-pending-verify">2건</p>
                 <p class="text-[11px] text-slate-500">24시간 내 심사 처리 필요</p>
             </div>
-
             <div class="bg-white p-5 rounded-3xl border border-slate-200/80 shadow-sm space-y-1">
                 <span class="text-xs font-bold text-slate-400">구독 무통장 입금 승인 대기</span>
                 <p class="text-2xl font-black text-blue-600" id="stat-pending-sub">1건</p>
                 <p class="text-[11px] text-slate-500">KB국민 812701-04-182934 내역 확인</p>
             </div>
-
         </div>
 
-        <!-- Section 1: Employer Subscription Approval (Bank Transfer Verification) -->
         <div class="bg-white rounded-3xl p-6 md:p-8 border border-slate-200/80 shadow-sm space-y-4">
             <div class="flex justify-between items-center border-b border-slate-100 pb-4">
                 <div>
@@ -126,27 +104,23 @@
                     <p class="text-xs text-slate-500 mt-0.5">지정 계좌 입금 확인 시 승인 버튼을 클릭하여 수수료 5% 감면 혜택을 활성화합니다.</p>
                 </div>
             </div>
-
             <div class="overflow-x-auto">
                 <table class="w-full text-left border-collapse text-xs">
                     <thead>
                         <tr class="bg-slate-50 border-y border-slate-200 text-slate-600 font-bold">
                             <th class="p-3">신청일시</th>
-                            <th class="p-3">사장님 / 매장명</th>
+                            <th class="p-3">사장님/매장명</th>
                             <th class="p-3">입금 금액</th>
                             <th class="p-3">입금자명</th>
                             <th class="p-3">처리 상태</th>
                             <th class="p-3 text-right">관리 Action</th>
                         </tr>
                     </thead>
-                    <tbody id="sub-table-body" class="divide-y divide-slate-100 text-slate-700">
-                        <!-- Populated by JS -->
-                    </tbody>
+                    <tbody id="sub-table-body" class="divide-y divide-slate-100 text-slate-700"></tbody>
                 </table>
             </div>
         </div>
 
-        <!-- Section 2: Senior Fitness Verification Approval -->
         <div class="bg-white rounded-3xl p-6 md:p-8 border border-slate-200/80 shadow-sm space-y-4">
             <div class="flex justify-between items-center border-b border-slate-100 pb-4">
                 <div>
@@ -156,7 +130,6 @@
                     <p class="text-xs text-slate-500 mt-0.5">국민체력100 및 보건증 서류를 검토하고 [체력 베테랑] 배지를 부여하세요.</p>
                 </div>
             </div>
-
             <div class="overflow-x-auto">
                 <table class="w-full text-left border-collapse text-xs">
                     <thead>
@@ -169,14 +142,11 @@
                             <th class="p-3 text-right">관리 Action</th>
                         </tr>
                     </thead>
-                    <tbody id="verify-table-body" class="divide-y divide-slate-100 text-slate-700">
-                        <!-- Populated by JS -->
-                    </tbody>
+                    <tbody id="verify-table-body" class="divide-y divide-slate-100 text-slate-700"></tbody>
                 </table>
             </div>
         </div>
 
-        <!-- Section 3: Job Monitoring & No-Show Tracking -->
         <div class="bg-white rounded-3xl p-6 md:p-8 border border-slate-200/80 shadow-sm space-y-4">
             <div class="flex justify-between items-center border-b border-slate-100 pb-4">
                 <div>
@@ -186,34 +156,26 @@
                     <p class="text-xs text-slate-500 mt-0.5">노쇼 발생 시 2순위 자동 승계 및 대기 가산금(+5,000원) 정산 현황을 실시간 관리합니다.</p>
                 </div>
             </div>
-
-            <div id="admin-job-monitor" class="space-y-4">
-                <!-- Populated by JS -->
-            </div>
+            <div id="admin-job-monitor" class="space-y-4"></div>
         </div>
-
     </main>
 
-    <!-- Footer -->
     <footer class="bg-slate-900 text-slate-400 text-xs py-8 border-t border-slate-800 text-center">
-        <p><strong class="text-white">silverworks (실버웍스)</strong> | 대표: 유연성, 민 혁 | 고객센터: 010-7464-3657</p>
+        <p><strong class="text-white">silverworks (실버웍스)</strong> | 대표: 유연성, 민혁 | 고객센터: 010-7464-3657</p>
         <p class="text-slate-500 text-[11px] mt-1">경기도 성남시 중원구 광명로 79, 4층 404호 (성남동, 상산빌딩)</p>
     </footer>
 
     <script>
-        // Mock Admin Data Storage
         let mockSubscriptions = [
             { id: 'sub-1', date: '2026-07-26 09:30', name: '김대박 (대박식당)', amount: 120000, depositor: '김대박', status: '입금대기' },
             { id: 'sub-2', date: '2026-07-25 14:10', name: '이즐거운 (즐거운카페)', amount: 120000, depositor: '이즐거운', status: '승인완료' }
         ];
-
         let mockVerifications = [
             { id: 'ver-1', senior: '김철수 (68세)', type: '국민체력100', detail: '성남 체력인증센터 1등급', date: '2026-07-26 10:15', status: '심사대기' },
             { id: 'ver-2', senior: '박영희 (66세)', type: '보건증', detail: '중원구 보건소 (유효기간 ~2027)', date: '2026-07-26 11:00', status: '심사대기' }
         ];
 
         function renderAdminDashboard() {
-            // Render Subscription Table
             const subBody = document.getElementById('sub-table-body');
             subBody.innerHTML = mockSubscriptions.map(sub => `
                 <tr>
@@ -227,16 +189,11 @@
                         </span>
                     </td>
                     <td class="p-3 text-right">
-                        ${sub.status === '입금대기' ? `
-                            <button onclick="approveSub('${sub.id}')" class="btn-toss text-[11px] font-bold px-3 py-1 rounded-xl">
-                                입금 승인 (수수료 5% 적용)
-                            </button>
-                        ` : '<span class="text-slate-400">처리 완료</span>'}
+                        ${sub.status === '입금대기' ? `<button onclick="approveSub('${sub.id}')" class="btn-toss text-[11px] font-bold px-3 py-1 rounded-xl">입금 승인(수수료 5% 적용)</button>` : '<span class="text-slate-400">처리 완료</span>'}
                     </td>
                 </tr>
             `).join('');
 
-            // Render Verification Table
             const verBody = document.getElementById('verify-table-body');
             verBody.innerHTML = mockVerifications.map(ver => `
                 <tr>
@@ -250,25 +207,18 @@
                         </span>
                     </td>
                     <td class="p-3 text-right">
-                        ${ver.status === '심사대기' ? `
-                            <button onclick="approveVerification('${ver.id}')" class="btn-toss text-[11px] font-bold px-3 py-1 rounded-xl">
-                                승인 및 배지 부여
-                            </button>
-                        ` : '<span class="text-slate-400">발급 완료</span>'}
+                        ${ver.status === '심사대기' ? `<button onclick="approveVerification('${ver.id}')" class="btn-toss text-[11px] font-bold px-3 py-1 rounded-xl">승인 및 배지 부여</button>` : '<span class="text-slate-400">발급 완료</span>'}
                     </td>
                 </tr>
             `).join('');
 
-            // Render Jobs Monitor
             const jobs = JSON.parse(localStorage.getItem('sw_jobs')) || [];
             document.getElementById('stat-job-count').innerText = jobs.length + '건';
-
             const monitorContainer = document.getElementById('admin-job-monitor');
             if (jobs.length === 0) {
-                monitorContainer.innerHTML = `<p class="text-xs text-slate-400 text-center py-6">등록된 공고가 없습니다.</p>`;
+                monitorContainer.innerHTML = '<p class="text-xs text-slate-400 text-center py-6">등록된 공고가 없습니다.</p>';
                 return;
             }
-
             monitorContainer.innerHTML = jobs.map(job => `
                 <div class="p-4 rounded-2xl bg-slate-50 border border-slate-200/80 flex flex-col md:flex-row justify-between items-start md:items-center gap-3 text-xs">
                     <div>

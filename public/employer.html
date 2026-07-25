@@ -4,43 +4,36 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>silverworks - 사장님 센터</title>
-    <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css');
-        
         :root {
             --toss-blue: #3182f6;
             --toss-blue-hover: #1b64da;
             --toss-bg: #f9fafb;
         }
-
-        body { 
+        body {
             font-family: "Pretendard", -apple-system, BlinkMacSystemFont, system-ui, Roboto, sans-serif;
             background-color: var(--toss-bg);
             color: #191f28;
             word-break: keep-all;
         }
-
         .btn-toss {
             background-color: var(--toss-blue);
             color: #ffffff;
             transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
         }
-
         .btn-toss:hover {
             background-color: var(--toss-blue-hover);
             transform: translateY(-1px);
             box-shadow: 0 4px 14px rgba(49, 130, 246, 0.35);
         }
-
         .input-toss {
             background-color: #f2f4f6;
             border: 1px solid transparent;
             transition: all 0.2s ease;
         }
-
         .input-toss:focus {
             background-color: #ffffff;
             border-color: #3182f6;
@@ -50,11 +43,8 @@
     </style>
 </head>
 <body class="min-h-screen flex flex-col justify-between antialiased selection:bg-blue-100 selection:text-blue-600">
-
-    <!-- Header Navigation -->
     <header class="sticky top-0 z-50 bg-white/90 backdrop-blur-md border-b border-slate-100 shadow-sm">
         <div class="max-w-6xl mx-auto px-5 h-16 flex items-center justify-between">
-            <!-- Brand Logo (Wave Mark SVG) -->
             <a href="/index.html" class="flex items-center gap-2.5 group">
                 <div class="p-1.5 rounded-xl bg-blue-50 text-blue-600 group-hover:bg-blue-100 transition">
                     <svg class="w-8 h-8" viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="8" stroke-linecap="round" stroke-linejoin="round">
@@ -66,20 +56,16 @@
                     silverworks
                 </span>
             </a>
-
-            <!-- Navigation Links -->
             <nav class="hidden md:flex items-center gap-8 text-sm font-semibold text-slate-600">
                 <a href="/jobs.html" class="hover:text-blue-600 transition">피크타임 공고</a>
                 <a href="/senior-apply.html" class="hover:text-blue-600 transition">시니어 일자리센터</a>
                 <a href="/employer.html" class="text-blue-600 font-extrabold transition">사장님 센터</a>
                 <a href="/admin.html" class="hover:text-blue-600 transition">관리자 HQ</a>
             </nav>
-
-            <!-- User Actions & Notification Bell SVG -->
             <div class="flex items-center gap-3">
                 <a href="/notifications.html" class="relative p-2 text-slate-500 hover:text-blue-600 hover:bg-slate-100 rounded-full transition">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path>
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0.538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path>
                     </svg>
                     <span class="absolute top-1 right-1 w-2 h-2 bg-blue-600 rounded-full"></span>
                 </a>
@@ -90,13 +76,8 @@
         </div>
     </header>
 
-    <!-- Main Content -->
     <main class="max-w-6xl mx-auto px-5 py-10 flex-1 w-full space-y-8">
-
-        <!-- Dashboard Top Cards Grid -->
         <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
-            
-            <!-- Card 1: Subscription Status -->
             <div class="bg-white rounded-3xl p-6 border border-slate-200/80 shadow-sm space-y-3 relative overflow-hidden">
                 <div class="flex items-center justify-between">
                     <span class="text-xs font-bold text-slate-500">1년 정기 구독 혜택</span>
@@ -104,14 +85,12 @@
                 </div>
                 <div>
                     <h3 class="text-xl font-black text-slate-900">구독 진행 중</h3>
-                    <p class="text-xs text-slate-500 mt-1">일반 수수료 10% → 5% 할인 적용 완료</p>
+                    <p class="text-xs text-slate-500 mt-1">일반 수수료 10%→5% 할인 적용 완료</p>
                 </div>
                 <button onclick="openSubModal()" class="text-xs font-bold text-blue-600 hover:underline pt-2 inline-block">
-                    구독 기간 연장 / 무통장 입금 안내 <i class="fa-solid fa-chevron-right text-[10px]"></i>
+                    구독 기간 연장/무통장 입금 안내 <i class="fa-solid fa-chevron-right text-[10px]"></i>
                 </button>
             </div>
-
-            <!-- Card 2: Active Job Listings -->
             <div class="bg-white rounded-3xl p-6 border border-slate-200/80 shadow-sm space-y-3">
                 <div class="flex items-center justify-between">
                     <span class="text-xs font-bold text-slate-500">등록한 피크 공고</span>
@@ -125,8 +104,6 @@
                     + 피크타임 공고 등록
                 </button>
             </div>
-
-            <!-- Card 3: Direct Bank Deposit Info -->
             <div class="bg-slate-900 text-white rounded-3xl p-6 shadow-md space-y-3">
                 <div class="flex items-center justify-between text-slate-400">
                     <span class="text-xs font-bold">지정 정산 무통장 계좌</span>
@@ -142,7 +119,6 @@
             </div>
         </div>
 
-        <!-- Job Management Section -->
         <div class="bg-white rounded-3xl p-6 md:p-8 border border-slate-200/80 shadow-sm space-y-6">
             <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 border-b border-slate-100 pb-4">
                 <div>
@@ -153,16 +129,10 @@
                     + 신규 공고 작성
                 </button>
             </div>
-
-            <!-- List of Employer's Jobs -->
-            <div class="space-y-6" id="employer-job-list">
-                <!-- Dynamically populated -->
-            </div>
+            <div class="space-y-6" id="employer-job-list"></div>
         </div>
-
     </main>
 
-    <!-- Modal: Create Job Posting -->
     <div id="createJobModal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm hidden z-50 flex items-center justify-center p-4">
         <div class="bg-white rounded-3xl max-w-lg w-full p-7 space-y-5 shadow-2xl">
             <div class="flex justify-between items-center border-b border-slate-100 pb-3">
@@ -171,18 +141,15 @@
                     <i class="fa-solid fa-xmark text-lg"></i>
                 </button>
             </div>
-
             <form onsubmit="handleCreateJob(event)" class="space-y-4 text-xs">
                 <div>
                     <label class="block font-bold text-slate-700 mb-1">매장명</label>
                     <input type="text" id="job-store" value="대박식당" required class="w-full p-3.5 rounded-xl input-toss font-medium">
                 </div>
-
                 <div>
                     <label class="block font-bold text-slate-700 mb-1">공고 제목</label>
                     <input type="text" id="job-title" placeholder="예: [대박식당] 주말 점심 피크 홀 서빙" required class="w-full p-3.5 rounded-xl input-toss font-medium">
                 </div>
-
                 <div class="grid grid-cols-2 gap-3">
                     <div>
                         <label class="block font-bold text-slate-700 mb-1">업종 카테고리</label>
@@ -201,7 +168,6 @@
                         </select>
                     </div>
                 </div>
-
                 <div class="grid grid-cols-2 gap-3">
                     <div>
                         <label class="block font-bold text-slate-700 mb-1">근무 날짜</label>
@@ -209,20 +175,17 @@
                     </div>
                     <div>
                         <label class="block font-bold text-slate-700 mb-1">근무 시간대</label>
-                        <input type="text" id="job-time" value="12:00 ~ 15:00 (3시간)" required class="w-full p-3.5 rounded-xl input-toss font-medium">
+                        <input type="text" id="job-time" value="12:00~15:00 (3시간)" required class="w-full p-3.5 rounded-xl input-toss font-medium">
                     </div>
                 </div>
-
                 <div>
                     <label class="block font-bold text-slate-700 mb-1">지급 일당 (원)</label>
                     <input type="number" id="job-pay" value="35000" required class="w-full p-3.5 rounded-xl input-toss font-bold text-blue-600">
                 </div>
-
                 <div class="p-3.5 rounded-xl bg-blue-50 text-blue-900 text-[11px] space-y-1">
                     <p class="font-bold">1년 정기 구독 사장님 우대 혜택 적용</p>
                     <p class="text-blue-700">플랫폼 이용 수수료 5%가 정산 금액 산정 시 자동 감면됩니다.</p>
                 </div>
-
                 <div class="pt-2 flex gap-2">
                     <button type="button" onclick="closeCreateJobModal()" class="flex-1 py-3.5 border border-slate-200 font-bold rounded-xl text-slate-600">취소</button>
                     <button type="submit" class="flex-1 py-3.5 btn-toss font-bold rounded-xl shadow">공고 등록 완료</button>
@@ -231,7 +194,6 @@
         </div>
     </div>
 
-    <!-- Modal: Subscription & Bank Info -->
     <div id="subModal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm hidden z-50 flex items-center justify-center p-4">
         <div class="bg-white rounded-3xl max-w-md w-full p-7 space-y-5 shadow-2xl">
             <div class="flex justify-between items-center border-b border-slate-100 pb-3">
@@ -240,14 +202,12 @@
                     <i class="fa-solid fa-xmark text-lg"></i>
                 </button>
             </div>
-
             <div class="space-y-4 text-xs">
                 <div class="p-4 rounded-2xl bg-slate-50 border border-slate-200/80 space-y-2">
                     <span class="text-slate-500 font-bold block">1년 연간 구독료</span>
                     <strong class="text-2xl font-black text-slate-900 block">120,000원 <span class="text-xs font-normal text-slate-500">(월 1만원 꼴)</span></strong>
                     <p class="text-[11px] text-blue-600 font-semibold">모든 공고 매칭 수수료 10% → 5% 감면 포함</p>
                 </div>
-
                 <div class="p-4 rounded-2xl bg-blue-50 border border-blue-100 space-y-2">
                     <span class="text-xs font-bold text-blue-900 block">입금 지정 전용 계좌</span>
                     <div class="text-slate-800 space-y-1">
@@ -256,21 +216,16 @@
                         <p><strong>예금주:</strong> 주식회사 실버웍스</p>
                     </div>
                 </div>
-
                 <p class="text-[11px] text-slate-400">
                     입금 완료 후 관리자 확인 시 즉시 1년 구독 혜택 연장 승인이 완료됩니다.
                 </p>
-
-                <button onclick="closeSubModal()" class="w-full py-3.5 btn-toss font-bold rounded-xl shadow">
-                    확인 완료
-                </button>
+                <button onclick="closeSubModal()" class="w-full py-3.5 btn-toss font-bold rounded-xl shadow">확인 완료</button>
             </div>
         </div>
     </div>
 
-    <!-- Footer -->
     <footer class="bg-slate-900 text-slate-400 text-xs py-8 border-t border-slate-800 text-center">
-        <p><strong class="text-white">silverworks (실버웍스)</strong> | 대표: 유연성, 민 혁 | 고객센터: 010-7464-3657</p>
+        <p><strong class="text-white">silverworks (실버웍스)</strong> | 대표: 유연성, 민혁 | 고객센터: 010-7464-3657</p>
         <p class="text-slate-500 text-[11px] mt-1">경기도 성남시 중원구 광명로 79, 4층 404호 (성남동, 상산빌딩)</p>
     </footer>
 
@@ -278,20 +233,16 @@
         function loadEmployerJobs() {
             const jobs = JSON.parse(localStorage.getItem('sw_jobs')) || [];
             document.getElementById('emp-active-count').innerText = jobs.length + '건';
-
             const container = document.getElementById('employer-job-list');
-
             if (jobs.length === 0) {
-                container.innerHTML = `<p class="text-xs text-slate-400 text-center py-8">등록된 구인 공고가 없습니다.</p>`;
+                container.innerHTML = '<p class="text-xs text-slate-400 text-center py-8">등록된 구인 공고가 없습니다.</p>';
                 return;
             }
-
             container.innerHTML = jobs.map(job => {
                 const candidates = job.candidates || [];
                 const c1 = candidates.find(c => c.rank === 1);
                 const c2 = candidates.find(c => c.rank === 2);
                 const c3 = candidates.find(c => c.rank === 3);
-
                 return `
                     <div class="p-6 rounded-3xl bg-slate-50 border border-slate-200/80 space-y-4">
                         <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 border-b border-slate-200/60 pb-3">
@@ -300,42 +251,28 @@
                                 <h3 class="text-base font-extrabold text-slate-900 mt-1">${job.title}</h3>
                                 <p class="text-xs text-slate-500">일시: ${job.date} ${job.time} | 일당: ${job.pay.toLocaleString()}원</p>
                             </div>
-                            <span class="text-xs font-bold text-emerald-600 bg-emerald-50 px-3 py-1 rounded-full">
-                                ${job.status}
-                            </span>
+                            <span class="text-xs font-bold text-emerald-600 bg-emerald-50 px-3 py-1 rounded-full">${job.status}</span>
                         </div>
-
-                        <!-- Candidates Management Rows -->
                         <div class="space-y-2 text-xs">
                             <span class="font-bold text-slate-700 text-[11px] block">지원자 순위 현황</span>
-
-                            <!-- Rank 1 -->
                             <div class="p-3 rounded-2xl bg-white border border-slate-200/80 flex items-center justify-between">
                                 <div>
-                                    <span class="font-bold text-blue-600">1순위:</span> 
-                                    ${c1 ? `<strong class="text-slate-900">${c1.name}</strong> (${c1.badge}) - <span class="text-emerald-600">${c1.status}</span>` : `<span class="text-slate-400">지원자 없음</span>`}
+                                    <span class="font-bold text-blue-600">1순위:</span>
+                                    ${c1 ? `<strong class="text-slate-900">${c1.name}</strong> (${c1.badge}) - <span class="text-emerald-600">${c1.status}</span>` : '<span class="text-slate-400">지원자 없음</span>'}
                                 </div>
-                                ${c1 ? `
-                                    <button onclick="triggerNoShow('${job.id}')" class="text-[11px] font-bold px-3 py-1.5 rounded-xl bg-rose-50 text-rose-600 hover:bg-rose-100 transition">
-                                        노쇼 발생 처리 (2순위 승계)
-                                    </button>
-                                ` : ''}
+                                ${c1 ? `<button onclick="triggerNoShow('${job.id}')" class="text-[11px] font-bold px-3 py-1.5 rounded-xl bg-rose-50 text-rose-600 hover:bg-rose-100 transition">노쇼 발생 처리 (2순위 승계)</button>` : ''}
                             </div>
-
-                            <!-- Rank 2 -->
                             <div class="p-3 rounded-2xl bg-white border border-slate-200/80 flex items-center justify-between">
                                 <div>
-                                    <span class="font-bold text-slate-600">2순위 (대기):</span> 
-                                    ${c2 ? `<strong class="text-slate-900">${c2.name}</strong> (${c2.badge}) - <span class="text-blue-600">${c2.status}</span>` : `<span class="text-slate-400">대기자 없음</span>`}
+                                    <span class="font-bold text-slate-600">2순위 (대기):</span>
+                                    ${c2 ? `<strong class="text-slate-900">${c2.name}</strong> (${c2.badge}) - <span class="text-blue-600">${c2.status}</span>` : '<span class="text-slate-400">대기자 없음</span>'}
                                 </div>
-                                ${c2 ? `<span class="text-[10px] text-amber-600 font-bold bg-amber-50 px-2 py-0.5 rounded">+5,000원 가산 대상</span>` : ''}
+                                ${c2 ? '<span class="text-[10px] text-amber-600 font-bold bg-amber-50 px-2 py-0.5 rounded">+5,000원 가산 대상</span>' : ''}
                             </div>
-
-                            <!-- Rank 3 -->
                             <div class="p-3 rounded-2xl bg-white border border-slate-200/80 flex items-center justify-between">
                                 <div>
-                                    <span class="font-bold text-slate-400">3순위 (대기):</span> 
-                                    ${c3 ? `<strong class="text-slate-900">${c3.name}</strong> (${c3.badge})` : `<span class="text-slate-400">대기자 없음</span>`}
+                                    <span class="font-bold text-slate-400">3순위 (대기):</span>
+                                    ${c3 ? `<strong class="text-slate-900">${c3.name}</strong> (${c3.badge})` : '<span class="text-slate-400">대기자 없음</span>'}
                                 </div>
                             </div>
                         </div>
@@ -346,23 +283,15 @@
 
         function triggerNoShow(jobId) {
             if (!confirm('1순위 지원자의 노쇼를 확정하시겠습니까?\n즉시 2순위 대기자에게 승계 및 가산금(+5,000원)이 부여됩니다.')) return;
-
             const jobs = JSON.parse(localStorage.getItem('sw_jobs')) || [];
             const job = jobs.find(j => j.id === jobId);
-
             if (job && job.candidates && job.candidates.length > 1) {
-                // Remove Rank 1 (No-show), promote Rank 2 -> Rank 1
-                job.candidates.shift(); // Remove rank 1
+                job.candidates.shift();
                 job.candidates.forEach((c, idx) => {
                     c.rank = idx + 1;
-                    if (c.rank === 1) {
-                        c.status = '2순위 승계 출근확정 (가산금 적용)';
-                    } else {
-                        c.status = `${c.rank}순위 대기`;
-                    }
+                    c.status = c.rank === 1 ? '2순위 승계 출근확정 (가산금 적용)' : `${c.rank}순위 대기`;
                 });
                 job.status = '2순위 자동 승계 완료';
-
                 localStorage.setItem('sw_jobs', JSON.stringify(jobs));
                 alert('[노쇼 승계 성공]\n\n2순위 대기자에게 긴급 알림이 발송되었으며 승계 출근이 확정되었습니다.');
                 loadEmployerJobs();
@@ -371,13 +300,8 @@
             }
         }
 
-        function openCreateJobModal() {
-            document.getElementById('createJobModal').classList.remove('hidden');
-        }
-
-        function closeCreateJobModal() {
-            document.getElementById('createJobModal').classList.add('hidden');
-        }
+        function openCreateJobModal() { document.getElementById('createJobModal').classList.remove('hidden'); }
+        function closeCreateJobModal() { document.getElementById('createJobModal').classList.add('hidden'); }
 
         function handleCreateJob(e) {
             e.preventDefault();
@@ -388,7 +312,6 @@
             const date = document.getElementById('job-date').value;
             const time = document.getElementById('job-time').value;
             const pay = parseInt(document.getElementById('job-pay').value, 10);
-
             const newJob = {
                 id: 'job-' + Date.now(),
                 storeName: store,
@@ -402,23 +325,16 @@
                 badgeReq: badgeReq,
                 candidates: []
             };
-
             const jobs = JSON.parse(localStorage.getItem('sw_jobs')) || [];
             jobs.unshift(newJob);
             localStorage.setItem('sw_jobs', JSON.stringify(jobs));
-
             alert('[공고 등록 완료]\n\n피크타임 구인 공고가 실시간으로 등록되었습니다.');
             closeCreateJobModal();
             loadEmployerJobs();
         }
 
-        function openSubModal() {
-            document.getElementById('subModal').classList.remove('hidden');
-        }
-
-        function closeSubModal() {
-            document.getElementById('subModal').classList.add('hidden');
-        }
+        function openSubModal() { document.getElementById('subModal').classList.remove('hidden'); }
+        function closeSubModal() { document.getElementById('subModal').classList.add('hidden'); }
 
         document.addEventListener('DOMContentLoaded', loadEmployerJobs);
     </script>

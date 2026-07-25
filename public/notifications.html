@@ -4,31 +4,26 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>silverworks - 알림 센터</title>
-    <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css');
-        
         :root {
             --toss-blue: #3182f6;
             --toss-blue-hover: #1b64da;
             --toss-bg: #f9fafb;
         }
-
-        body { 
+        body {
             font-family: "Pretendard", -apple-system, BlinkMacSystemFont, system-ui, Roboto, sans-serif;
             background-color: var(--toss-bg);
             color: #191f28;
             word-break: keep-all;
         }
-
         .btn-toss {
             background-color: var(--toss-blue);
             color: #ffffff;
             transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
         }
-
         .btn-toss:hover {
             background-color: var(--toss-blue-hover);
             transform: translateY(-1px);
@@ -37,11 +32,8 @@
     </style>
 </head>
 <body class="min-h-screen flex flex-col justify-between antialiased selection:bg-blue-100 selection:text-blue-600">
-
-    <!-- Header Navigation -->
     <header class="sticky top-0 z-50 bg-white/90 backdrop-blur-md border-b border-slate-100 shadow-sm">
         <div class="max-w-6xl mx-auto px-5 h-16 flex items-center justify-between">
-            <!-- Brand Logo (Wave Mark SVG) -->
             <a href="/index.html" class="flex items-center gap-2.5 group">
                 <div class="p-1.5 rounded-xl bg-blue-50 text-blue-600 group-hover:bg-blue-100 transition">
                     <svg class="w-8 h-8" viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="8" stroke-linecap="round" stroke-linejoin="round">
@@ -53,20 +45,16 @@
                     silverworks
                 </span>
             </a>
-
-            <!-- Navigation Links -->
             <nav class="hidden md:flex items-center gap-8 text-sm font-semibold text-slate-600">
                 <a href="/jobs.html" class="hover:text-blue-600 transition">피크타임 공고</a>
                 <a href="/senior-apply.html" class="hover:text-blue-600 transition">시니어 일자리센터</a>
                 <a href="/employer.html" class="hover:text-blue-600 transition">사장님 센터</a>
                 <a href="/admin.html" class="hover:text-blue-600 transition">관리자 HQ</a>
             </nav>
-
-            <!-- User Actions -->
             <div class="flex items-center gap-3">
                 <a href="/notifications.html" class="relative p-2 text-blue-600 bg-blue-50 rounded-full transition">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path>
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0.538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path>
                     </svg>
                     <span class="absolute top-1 right-1 w-2 h-2 bg-blue-600 rounded-full"></span>
                 </a>
@@ -74,10 +62,7 @@
         </div>
     </header>
 
-    <!-- Main Content -->
     <main class="max-w-3xl mx-auto px-5 py-10 flex-1 w-full space-y-6">
-
-        <!-- Page Header -->
         <div class="flex items-center justify-between border-b border-slate-200 pb-5">
             <div>
                 <h1 class="text-2xl font-black text-slate-900 tracking-tight">알림 센터</h1>
@@ -88,26 +73,14 @@
             </button>
         </div>
 
-        <!-- Filter Tabs -->
         <div class="flex items-center gap-2 overflow-x-auto pb-1 text-xs font-bold">
-            <button onclick="filterNoti('all')" id="tab-all" class="px-4 py-2 rounded-xl bg-slate-900 text-white transition">
-                전체 <span id="count-all" class="ml-1 opacity-80">4</span>
-            </button>
-            <button onclick="filterNoti('match')" id="tab-match" class="px-4 py-2 rounded-xl bg-white text-slate-600 border border-slate-200 hover:bg-slate-50 transition">
-                매칭·승계
-            </button>
-            <button onclick="filterNoti('verify')" id="tab-verify" class="px-4 py-2 rounded-xl bg-white text-slate-600 border border-slate-200 hover:bg-slate-50 transition">
-                체력검증
-            </button>
-            <button onclick="filterNoti('pay')" id="tab-pay" class="px-4 py-2 rounded-xl bg-white text-slate-600 border border-slate-200 hover:bg-slate-50 transition">
-                정산·구독
-            </button>
+            <button onclick="filterNoti('all')" id="tab-all" class="px-4 py-2 rounded-xl bg-slate-900 text-white transition">전체 <span id="count-all" class="ml-1 opacity-80">4</span></button>
+            <button onclick="filterNoti('match')" id="tab-match" class="px-4 py-2 rounded-xl bg-white text-slate-600 border border-slate-200 hover:bg-slate-50 transition">매칭·승계</button>
+            <button onclick="filterNoti('verify')" id="tab-verify" class="px-4 py-2 rounded-xl bg-white text-slate-600 border border-slate-200 hover:bg-slate-50 transition">체력검증</button>
+            <button onclick="filterNoti('pay')" id="tab-pay" class="px-4 py-2 rounded-xl bg-white text-slate-600 border border-slate-200 hover:bg-slate-50 transition">정산·구독</button>
         </div>
 
-        <!-- Notifications List Container -->
         <div class="space-y-3" id="notification-list">
-
-            <!-- Item 1: Urgent 2nd-rank Promotion Notification -->
             <div class="noti-item type-match bg-blue-50/70 border border-blue-200/80 rounded-3xl p-5 space-y-2 relative transition hover:shadow-md">
                 <div class="flex items-center justify-between">
                     <span class="inline-flex items-center gap-1.5 text-[11px] font-extrabold text-blue-700 bg-blue-100 px-2.5 py-0.5 rounded-md">
@@ -115,9 +88,7 @@
                     </span>
                     <span class="text-[11px] font-medium text-slate-400">10분 전</span>
                 </div>
-                <h3 class="text-sm font-black text-slate-900">
-                    [대박식당] 피크타임 근무 2순위 승계 출근 확정!
-                </h3>
+                <h3 class="text-sm font-black text-slate-900">[대박식당] 피크타임 근무 2순위 승계 출근 확정!</h3>
                 <p class="text-xs text-slate-600 leading-relaxed">
                     1순위 지원자의 노쇼 발생으로 대기자(2순위) 지원님의 출근이 승계 확정되었습니다.<br>
                     <strong>대기 가산금 +5,000원</strong>이 정산액에 추가 합산됩니다. 늦지 않게 도착해 주세요!
@@ -128,7 +99,6 @@
                 </div>
             </div>
 
-            <!-- Item 2: Senior Fitness Badge Approved -->
             <div class="noti-item type-verify bg-white border border-slate-200/80 rounded-3xl p-5 space-y-2 relative transition hover:shadow-md">
                 <div class="flex items-center justify-between">
                     <span class="inline-flex items-center gap-1.5 text-[11px] font-extrabold text-emerald-700 bg-emerald-50 px-2.5 py-0.5 rounded-md">
@@ -136,9 +106,7 @@
                     </span>
                     <span class="text-[11px] font-medium text-slate-400">1시간 전</span>
                 </div>
-                <h3 class="text-sm font-black text-slate-900">
-                    국민체력100 1등급 검증 서류 승인 완료
-                </h3>
+                <h3 class="text-sm font-black text-slate-900">국민체력100 1등급 검증 서류 승인 완료</h3>
                 <p class="text-xs text-slate-600 leading-relaxed">
                     제출하신 국민체력100 인증서 심사가 완료되어 프로필에 <strong>[체력 베테랑]</strong> 배지가 정상 부여되었습니다. 피크타임 구인 공고 지원 시 우선 순위가 반영됩니다.
                 </p>
@@ -148,7 +116,6 @@
                 </div>
             </div>
 
-            <!-- Item 3: Employer Subscription Approved -->
             <div class="noti-item type-pay bg-white border border-slate-200/80 rounded-3xl p-5 space-y-2 relative transition hover:shadow-md">
                 <div class="flex items-center justify-between">
                     <span class="inline-flex items-center gap-1.5 text-[11px] font-extrabold text-slate-700 bg-slate-100 px-2.5 py-0.5 rounded-md">
@@ -156,9 +123,7 @@
                     </span>
                     <span class="text-[11px] font-medium text-slate-400">어제</span>
                 </div>
-                <h3 class="text-sm font-black text-slate-900">
-                    1년 연간 구독(120,000원) 무통장 입금 확인 완료
-                </h3>
+                <h3 class="text-sm font-black text-slate-900">1년 연간 구독(120,000원) 무통장 입금 확인 완료</h3>
                 <p class="text-xs text-slate-600 leading-relaxed">
                     KB국민 812701-04-182934 계좌 입금이 확인되어 1년간 피크타임 구인 수수료 5% 감면 혜택이 적용되었습니다.
                 </p>
@@ -168,7 +133,6 @@
                 </div>
             </div>
 
-            <!-- Item 4: General Work Reminder -->
             <div class="noti-item type-match bg-white border border-slate-200/80 rounded-3xl p-5 space-y-2 relative transition hover:shadow-md">
                 <div class="flex items-center justify-between">
                     <span class="inline-flex items-center gap-1.5 text-[11px] font-extrabold text-slate-700 bg-slate-100 px-2.5 py-0.5 rounded-md">
@@ -176,21 +140,16 @@
                     </span>
                     <span class="text-[11px] font-medium text-slate-400">2일 전</span>
                 </div>
-                <h3 class="text-sm font-black text-slate-900">
-                    [대박식당] 피크타임 홀 서빙 알바 사전 리마인드
-                </h3>
+                <h3 class="text-sm font-black text-slate-900">[대박식당] 피크타임 홀 서빙 알바 사전 리마인드</h3>
                 <p class="text-xs text-slate-600 leading-relaxed">
                     근무 시작 1시간 전입니다. 위치: 경기도 성남시 중원구 광명로 79. 무단 지각 시 2순위 대기자에게 승계될 수 있습니다.
                 </p>
             </div>
-
         </div>
-
     </main>
 
-    <!-- Footer -->
     <footer class="bg-slate-900 text-slate-400 text-xs py-8 border-t border-slate-800 text-center">
-        <p><strong class="text-white">silverworks (실버웍스)</strong> | 대표: 유연성, 민 혁 | 고객센터: 010-7464-3657</p>
+        <p><strong class="text-white">silverworks (실버웍스)</strong> | 대표: 유연성, 민혁 | 고객센터: 010-7464-3657</p>
         <p class="text-slate-500 text-[11px] mt-1">경기도 성남시 중원구 광명로 79, 4층 404호 (성남동, 상산빌딩)</p>
     </footer>
 
@@ -206,26 +165,15 @@
 
         function filterNoti(type) {
             const allItems = document.querySelectorAll('.noti-item');
-            
-            // Reset Tab Styles
             ['all', 'match', 'verify', 'pay'].forEach(t => {
                 const btn = document.getElementById(`tab-${t}`);
-                if (btn) {
-                    btn.className = "px-4 py-2 rounded-xl bg-white text-slate-600 border border-slate-200 hover:bg-slate-50 transition";
-                }
+                if (btn) btn.className = "px-4 py-2 rounded-xl bg-white text-slate-600 border border-slate-200 hover:bg-slate-50 transition";
             });
-
-            // Active Tab Style
             const activeBtn = document.getElementById(`tab-${type}`);
-            if (activeBtn) {
-                activeBtn.className = "px-4 py-2 rounded-xl bg-slate-900 text-white transition";
-            }
+            if (activeBtn) activeBtn.className = "px-4 py-2 rounded-xl bg-slate-900 text-white transition";
 
-            // Show / Hide Items
             allItems.forEach(item => {
-                if (type === 'all') {
-                    item.style.display = 'block';
-                } else if (item.classList.contains(`type-${type}`)) {
+                if (type === 'all' || item.classList.contains(`type-${type}`)) {
                     item.style.display = 'block';
                 } else {
                     item.style.display = 'none';
