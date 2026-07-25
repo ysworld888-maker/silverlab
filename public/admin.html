@@ -8,57 +8,61 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css');
-        body { font-family: "Pretendard", sans-serif; background-color: #f8fafc; color: #191f28; word-break: keep-all; }
-        .btn-toss { background-color: #3182f6; color: #fff; transition: all 0.2s; }
-        .btn-toss:hover { background-color: #1b64da; }
+        body { font-family: "Pretendard", sans-serif; background-color: #f8fafc; color: #1e293b; word-break: keep-all; }
+        .btn-sky { background-color: #0284c7; color: #ffffff; transition: all 0.2s; }
+        .btn-sky:hover { background-color: #0369a1; }
     </style>
 </head>
 <body class="min-h-screen flex flex-col justify-between antialiased">
-    <header class="sticky top-0 z-50 bg-slate-900 text-white shadow-md">
+    <!-- Header: Light Pastel Theme -->
+    <header class="sticky top-0 z-50 bg-white/90 backdrop-blur-md border-b border-sky-100 shadow-sm">
         <div class="max-w-7xl mx-auto px-5 h-16 flex items-center justify-between">
             <a href="/index.html" class="flex items-center gap-2.5">
-                <div class="p-1.5 rounded-xl bg-blue-500/20 text-blue-400">
+                <div class="p-1.5 rounded-xl bg-sky-100 text-sky-600">
                     <svg class="w-8 h-8" viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="8" stroke-linecap="round" stroke-linejoin="round">
                         <path d="M 14 58 C 28 72 44 72 58 48 C 72 24 88 18 95 35" />
                         <path d="M 48 70 C 62 82 78 78 86 60" />
                     </svg>
                 </div>
-                <span class="text-xl font-extrabold text-white">silverworks <span class="text-xs px-2 py-0.5 rounded bg-blue-600">HQ</span></span>
+                <span class="text-xl font-extrabold text-slate-800 tracking-tight">silverworks <span class="text-xs px-2 py-0.5 rounded bg-sky-500 text-white">HQ</span></span>
             </a>
-            <span class="text-xs font-bold px-3 py-1.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
-                <span class="w-2 h-2 rounded-full bg-emerald-400 inline-block animate-pulse mr-1"></span> 관리자 보안 접속 모드
+            <span class="text-xs font-bold px-3 py-1.5 rounded-full bg-sky-50 text-sky-600 border border-sky-200 flex items-center gap-1.5">
+                <span class="w-2 h-2 rounded-full bg-sky-500 animate-pulse"></span> 관리자 보안 전용
             </span>
         </div>
     </header>
 
     <main class="max-w-7xl mx-auto px-5 py-8 flex-1 w-full space-y-8">
+        <!-- Stat Cards -->
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            <div class="bg-white p-5 rounded-3xl border border-slate-200/80 shadow-sm space-y-1">
-                <span class="text-xs font-bold text-slate-400">누적 등록 공고</span>
-                <p class="text-2xl font-black text-slate-900" id="stat-jobs-count">0건</p>
+            <div class="bg-white p-5 rounded-3xl border border-sky-100 shadow-sm space-y-1">
+                <span class="text-xs font-bold text-slate-400">등록된 전체 공고</span>
+                <p class="text-2xl font-black text-slate-800" id="stat-jobs">0건</p>
             </div>
-            <div class="bg-white p-5 rounded-3xl border border-slate-200/80 shadow-sm space-y-1">
-                <span class="text-xs font-bold text-slate-400">제출된 문진 이력서</span>
-                <p class="text-2xl font-black text-blue-600" id="stat-surveys-count">0건</p>
+            <div class="bg-white p-5 rounded-3xl border border-sky-100 shadow-sm space-y-1">
+                <span class="text-xs font-bold text-slate-400">접수된 건강 문진 이력서</span>
+                <p class="text-2xl font-black text-sky-600" id="stat-surveys">0건</p>
             </div>
-            <div class="bg-white p-5 rounded-3xl border border-slate-200/80 shadow-sm space-y-1">
-                <span class="text-xs font-bold text-slate-400">정산 신청 건수</span>
-                <p class="text-2xl font-black text-amber-600" id="stat-settles-count">0건</p>
+            <div class="bg-white p-5 rounded-3xl border border-sky-100 shadow-sm space-y-1">
+                <span class="text-xs font-bold text-slate-400">정산 신청 내역</span>
+                <p class="text-2xl font-black text-amber-500" id="stat-settles">0건</p>
             </div>
-            <div class="bg-white p-5 rounded-3xl border border-slate-200/80 shadow-sm space-y-1">
-                <span class="text-xs font-bold text-slate-400">시스템 데이터 상태</span>
-                <p class="text-sm font-black text-emerald-600 pt-1">실시간 동기화 완료</p>
+            <div class="bg-white p-5 rounded-3xl border border-sky-100 shadow-sm space-y-1">
+                <span class="text-xs font-bold text-slate-400">실시간 연동 상태</span>
+                <p class="text-sm font-bold text-emerald-500 pt-1">정상동작 (Real-time)</p>
             </div>
         </div>
 
-        <!-- 실시간 시니어 문진표 현황 -->
-        <div class="bg-white rounded-3xl p-6 md:p-8 border border-slate-200/80 shadow-sm space-y-4">
-            <h2 class="text-base font-black text-slate-900"><i class="fa-solid fa-file-medical text-blue-600 mr-2"></i>최근 접수된 시니어 건강 문진 이력서</h2>
+        <!-- Surveys -->
+        <div class="bg-white rounded-3xl p-6 md:p-8 border border-sky-100 shadow-sm space-y-4">
+            <h2 class="text-base font-black text-slate-800 flex items-center gap-2">
+                <i class="fa-solid fa-clipboard-user text-sky-500"></i> 접수된 시니어 건강 문진 이력서
+            </h2>
             <div class="overflow-x-auto">
                 <table class="w-full text-left border-collapse text-xs">
                     <thead>
-                        <tr class="bg-slate-50 border-y border-slate-200 text-slate-600 font-bold">
-                            <th class="p-3">접수 일시</th>
+                        <tr class="bg-sky-50/50 border-y border-sky-100 text-slate-600 font-bold">
+                            <th class="p-3">접수일시</th>
                             <th class="p-3">성함</th>
                             <th class="p-3">연락처</th>
                             <th class="p-3">희망 근무지</th>
@@ -70,10 +74,12 @@
             </div>
         </div>
 
-        <!-- 실시간 등록 공고 현황 -->
-        <div class="bg-white rounded-3xl p-6 md:p-8 border border-slate-200/80 shadow-sm space-y-4">
-            <h2 class="text-base font-black text-slate-900"><i class="fa-solid fa-list-check text-emerald-600 mr-2"></i>실시간 전체 구인 공고 모니터링</h2>
-            <div class="space-y-3" id="jobs-monitor-container"></div>
+        <!-- Jobs -->
+        <div class="bg-white rounded-3xl p-6 md:p-8 border border-sky-100 shadow-sm space-y-4">
+            <h2 class="text-base font-black text-slate-800 flex items-center gap-2">
+                <i class="fa-solid fa-store text-sky-500"></i> 실시간 구인 공고 현황
+            </h2>
+            <div id="jobs-container" class="space-y-3"></div>
         </div>
     </main>
 
@@ -83,38 +89,36 @@
             const jobs = JSON.parse(localStorage.getItem('sw_jobs') || '[]');
             const settles = JSON.parse(localStorage.getItem('sw_settlements') || '[]');
 
-            document.getElementById('stat-jobs-count').innerText = jobs.length + '건';
-            document.getElementById('stat-surveys-count').innerText = surveys.length + '건';
-            document.getElementById('stat-settles-count').innerText = settles.length + '건';
+            document.getElementById('stat-jobs').innerText = jobs.length + '건';
+            document.getElementById('stat-surveys').innerText = surveys.length + '건';
+            document.getElementById('stat-settles').innerText = settles.length + '건';
 
-            // Render Surveys
             const surveyBody = document.getElementById('survey-table-body');
             if (surveys.length === 0) {
-                surveyBody.innerHTML = `<tr><td colspan="5" class="p-6 text-center text-slate-400">접수된 문진 이력서가 없습니다.</td></tr>`;
+                surveyBody.innerHTML = `<tr><td colspan="5" class="p-6 text-center text-slate-400">접수된 이력서가 없습니다.</td></tr>`;
             } else {
                 surveyBody.innerHTML = surveys.map(s => `
                     <tr>
                         <td class="p-3 text-slate-400">${s.date}</td>
-                        <td class="p-3 font-bold text-slate-900">${s.name || '미입력'}</td>
+                        <td class="p-3 font-bold text-slate-800">${s.name || '미입력'}</td>
                         <td class="p-3 font-mono">${s.phone || '미입력'}</td>
                         <td class="p-3">${s.location || '미입력'}</td>
-                        <td class="p-3"><span class="bg-blue-50 text-blue-600 font-bold px-2 py-0.5 rounded">${s.stairs || '문진 완료'}</span></td>
+                        <td class="p-3"><span class="bg-sky-50 text-sky-600 font-bold px-2 py-0.5 rounded-lg border border-sky-100">${s.stairs || '문진 완료'}</span></td>
                     </tr>
                 `).join('');
             }
 
-            // Render Jobs
-            const jobContainer = document.getElementById('jobs-monitor-container');
+            const jobsContainer = document.getElementById('jobs-container');
             if (jobs.length === 0) {
-                jobContainer.innerHTML = `<p class="text-xs text-slate-400 text-center py-6">등록된 공고가 없습니다.</p>`;
+                jobsContainer.innerHTML = `<p class="text-xs text-slate-400 text-center py-6">등록된 공고가 없습니다.</p>`;
             } else {
-                jobContainer.innerHTML = jobs.map(j => `
-                    <div class="p-4 rounded-2xl bg-slate-50 border border-slate-200/80 flex justify-between items-center text-xs">
+                jobsContainer.innerHTML = jobs.map(j => `
+                    <div class="p-4 rounded-2xl bg-sky-50/30 border border-sky-100 flex justify-between items-center text-xs">
                         <div>
-                            <strong class="text-sm font-bold text-slate-900">${j.title}</strong>
+                            <strong class="text-sm font-bold text-slate-800">${j.title}</strong>
                             <p class="text-slate-500 mt-0.5">매장: ${j.storeName} | 일시: ${j.date} ${j.time} | 일당: ${parseInt(j.pay).toLocaleString()}원</p>
                         </div>
-                        <span class="font-bold text-blue-600 bg-blue-50 px-3 py-1 rounded-full">${j.status}</span>
+                        <span class="font-bold text-sky-600 bg-sky-100/60 px-3 py-1 rounded-full">${j.status}</span>
                     </div>
                 `).join('');
             }
