@@ -52,7 +52,6 @@
             const freshUser = usersRes.users.find(u => u.id === user.id) || user;
             localStorage.setItem('sw_user', JSON.stringify(freshUser));
 
-            // Mark notifications as read
             await fetch(`/api/notifications/${user.id}/read`, { method: 'POST' });
 
             let html = `
@@ -113,7 +112,7 @@
                             <p class="text-slate-600 mt-1">${n.content}</p>
                             <span class="text-[10px] text-slate-400 block pt-1">${n.date}</span>
                         </div>
-                        <button onclick="deleteNotification('${n.id}')" class="text-[11px] text-slate-400 hover:text-rose-500 font-bold px-2 py-0.5 rounded border border-slate-200">
+                        <button onclick="deleteNotification('${n.id}')" class="text-[10px] text-slate-400 hover:text-rose-500 font-bold px-2 py-0.5 rounded border border-slate-200">
                             삭제
                         </button>
                     </div>

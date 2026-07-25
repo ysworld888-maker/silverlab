@@ -67,6 +67,15 @@ app.post('/api/users/:id/approve', (req, res) => {
   res.json({ success: true });
 });
 
+app.post('/api/users/:id/update-points', (req, res) => {
+  const { points } = req.body;
+  const user = usersData.find(u => u.id === req.params.id);
+  if (user) {
+    user.points = parseInt(points, 10) || 0;
+  }
+  res.json({ success: true });
+});
+
 app.post('/api/users/:id/subscribe-request', (req, res) => {
   const user = usersData.find(u => u.id === req.params.id);
   if (user) user.subRequested = true;
@@ -100,7 +109,6 @@ app.post('/api/jobs', (req, res) => {
   const { employerId, storeName, title, category, date, time, pay, isPeak } = req.body;
   const employer = usersData.find(u => u.id === employerId);
 
-  // Peak Job Subscription Restriction
   if (isPeak && (!employer || !employer.isSubscribed)) {
     return res.status(403).json({ success: false, message: '피크 상단 고정 공고는 구독 회원 사장님만 이용 가능합니다.' });
   }
@@ -205,7 +213,6 @@ app.post('/api/jobs/:id/hire', (req, res) => {
   res.json({ success: true });
 });
 
-// Cancel Hire & Auto Promotion with Bonus Pay Logic
 app.post('/api/jobs/:id/cancel-hire', (req, res) => {
   const { seniorId } = req.body;
   const job = jobsData.find(j => j.id === req.params.id);
@@ -215,7 +222,6 @@ app.post('/api/jobs/:id/cancel-hire', (req, res) => {
   if (cancelledCand) {
     cancelledCand.status = '채용 취소됨';
     
-    // Notify Cancelled Senior
     notificationsData.unshift({
       id: 'noti-' + Date.now(),
       targetUserId: seniorId,
@@ -226,7 +232,6 @@ app.post('/api/jobs/:id/cancel-hire', (req, res) => {
     });
   }
 
-  // Find next candidate in order (2nd rank -> 3rd rank)
   const candidate2 = job.candidates.find(c => c.rank === '2순위' && c.status !== '채용 취소됨');
   const candidate3 = job.candidates.find(c => c.rank === '3순위' && c.status !== '채용 취소됨');
 
@@ -238,7 +243,6 @@ app.post('/api/jobs/:id/cancel-hire', (req, res) => {
     promotedCand.status = `${promotedCand.rank} 승계 채용 확정 (시급 +${bonusPerHour.toLocaleString()}원 가산)`;
     promotedCand.bonusPayPerHour = bonusPerHour;
 
-    // Notifications
     notificationsData.unshift({
       id: 'noti-' + Date.now(),
       targetUserId: promotedCand.seniorId,
@@ -261,7 +265,6 @@ app.post('/api/jobs/:id/cancel-hire', (req, res) => {
   res.json({ success: true, promoted: promotedCand ? promotedCand.name : null });
 });
 
-// Pay Points to Senior with Hourly Bonus Calculation
 app.post('/api/jobs/:id/pay-points', (req, res) => {
   const { seniorId, basePay } = req.body;
   const job = jobsData.find(j => j.id === req.params.id);
@@ -271,9 +274,8 @@ app.post('/api/jobs/:id/pay-points', (req, res) => {
     const cand = job.candidates.find(c => c.seniorId === seniorId);
     let bonusTotal = 0;
 
-    // Calculate 2~3 hours bonus if applicable
     if (cand && cand.bonusPayPerHour > 0) {
-      const hours = 3; // Standard 3 hour shift calculation
+      const hours = 3;
       bonusTotal = cand.bonusPayPerHour * hours;
     }
 
@@ -332,6 +334,16 @@ app.post('/api/settlements/:id/complete', (req, res) => {
     const user = usersData.find(u => u.id === settle.userId);
     if (user) {
       user.points = Math.max(0, user.points - settle.amount);
+
+      // Automated Settlement Completion Notification
+      notificationsData.unshift({
+        id: 'noti-' + Date.now(),
+        targetUserId: user.id,
+        title: '[정산 완료 알림]',
+        content: `요청하신 정산 금액 ${settle.amount.toLocaleString()}P의 계좌 입금이 완료되었습니다.`,
+        date: new Date().toLocaleString(),
+        isRead: false
+      });
     }
   }
   res.json({ success: true });
@@ -357,7 +369,6 @@ app.delete('/api/notifications/item/:id', (req, res) => {
   res.json({ success: true });
 });
 
-// Explicit Page Routing
 const pages = ['index', 'jobs', 'job-detail', 'senior-apply', 'employer', 'admin', 'notifications', 'login', 'profile'];
 pages.forEach(page => {
   app.get(`/${page}`, (req, res) => res.sendFile(path.join(__dirname, 'public', `${page}.html`)));

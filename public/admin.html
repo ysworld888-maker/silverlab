@@ -34,10 +34,10 @@
     </header>
 
     <main class="max-w-7xl mx-auto px-5 py-8 flex-1 w-full space-y-8">
-        <!-- 1. 회원 관리 및 구독 승인 -->
+        <!-- 1. 회원 관리 (시니어 포인트 표시/수정 지원) -->
         <div class="bg-white rounded-3xl p-6 md:p-8 border border-sky-100 shadow-sm space-y-4">
             <h2 class="text-base font-black text-slate-800 flex items-center gap-2">
-                <i class="fa-solid fa-users-gear text-sky-500"></i> 회원 관리 (아이디 클릭 시 상세정보 / 가입 및 구독 승인)
+                <i class="fa-solid fa-users-gear text-sky-500"></i> 회원 관리 (아이디 클릭 시 상세정보 / 시니어 포인트 클릭 시 수작업 수정)
             </h2>
             <div class="overflow-x-auto">
                 <table class="w-full text-left border-collapse text-xs">
@@ -46,6 +46,7 @@
                             <th class="p-3">아이디 (클릭)</th>
                             <th class="p-3">성함/대표명</th>
                             <th class="p-3">회원 유형</th>
+                            <th class="p-3">보유 포인트 (수정)</th>
                             <th class="p-3">가입 승인</th>
                             <th class="p-3">구독 상태</th>
                             <th class="p-3 text-right">관리 통제</th>
@@ -56,10 +57,10 @@
             </div>
         </div>
 
-        <!-- 2. 시니어 포인트 정산 완료 승인 -->
+        <!-- 2. 시니어 포인트 정산 완료 승인 (알림 자동 발송 및 포인트 차감) -->
         <div class="bg-white rounded-3xl p-6 md:p-8 border border-sky-100 shadow-sm space-y-4">
             <h2 class="text-base font-black text-slate-800 flex items-center gap-2">
-                <i class="fa-solid fa-hand-holding-dollar text-amber-500"></i> 시니어 포인트 정산 요청 통제 (승인 시 포인트 자동 차감)
+                <i class="fa-solid fa-hand-holding-dollar text-amber-500"></i> 시니어 포인트 정산 요청 통제 (정산 완료 클릭 시 정산 알림 발송 & 포인트 차감)
             </h2>
             <div id="admin-settlement-list" class="space-y-3"></div>
         </div>
@@ -143,13 +144,16 @@
             // 1. User Approval Table
             const userTable = document.getElementById('user-approval-table');
             if (users.length === 0) {
-                userTable.innerHTML = `<tr><td colspan="6" class="p-6 text-center text-slate-400">가입된 회원이 없습니다.</td></tr>`;
+                userTable.innerHTML = `<tr><td colspan="7" class="p-6 text-center text-slate-400">가입된 회원이 없습니다.</td></tr>`;
             } else {
                 userTable.innerHTML = users.map(u => `
                     <tr>
                         <td class="p-3 font-mono font-bold text-sky-600 cursor-pointer hover:underline" onclick="viewUserDetail('${u.id}')">${u.id}</td>
                         <td class="p-3 font-bold">${u.name}</td>
                         <td class="p-3"><span class="px-2 py-0.5 rounded text-[11px] font-bold ${u.role === 'senior' ? 'bg-sky-100 text-sky-700' : 'bg-indigo-100 text-indigo-700'}">${u.role === 'senior' ? '시니어' : '사장님'}</span></td>
+                        <td class="p-3">
+                            ${u.role === 'senior' ? `<button onclick="editSeniorPoints('${u.id}', ${u.points || 0})" class="bg-sky-50 text-sky-600 font-extrabold px-2 py-1 rounded border border-sky-100 hover:bg-sky-100 text-[11px]">${(u.points || 0).toLocaleString()}P <i class="fa-solid fa-pen text-[9px] ml-0.5"></i></button>` : '<span class="text-slate-300">-</span>'}
+                        </td>
                         <td class="p-3"><span class="font-bold ${u.approved ? 'text-emerald-500' : 'text-amber-500'}">${u.approved ? '승인완료' : '승인대기'}</span></td>
                         <td class="p-3"><span class="font-bold ${u.isSubscribed ? 'text-sky-600' : 'text-slate-400'}">${u.isSubscribed ? '구독회원' : (u.subRequested ? '구독신청중' : '일반')}</span></td>
                         <td class="p-3 text-right space-x-1">
@@ -173,7 +177,7 @@
                             <p class="text-slate-500 mt-0.5">입금계좌: ${s.bank} ${s.account} | 요청금액: ${s.amount.toLocaleString()}P</p>
                         </div>
                         <button onclick="completeSettlement('${s.id}')" class="bg-amber-500 text-white font-bold px-4 py-2 rounded-xl shadow-sm hover:bg-amber-600">
-                            정산 완료 (포인트 차감)
+                            정산 완료 (알림 발송 & 포인트 차감)
                         </button>
                     </div>
                 `).join('');
@@ -196,6 +200,19 @@
                         </div>
                     </div>
                 `).join('');
+            }
+        }
+
+        async function editSeniorPoints(userId, currentP) {
+            const newP = prompt('수정할 보유 포인트 액수를 입력하세요:', currentP);
+            if (newP !== null && !isNaN(newP)) {
+                await fetch(`/api/users/${userId}/update-points`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ points: parseInt(newP, 10) })
+                });
+                alert('시니어 회원의 보유 포인트가 변경되었습니다.');
+                loadAdminControl();
             }
         }
 
@@ -231,9 +248,9 @@
         }
 
         async function completeSettlement(settleId) {
-            if (confirm('정산을 완료하고 해당 시니어 회원의 포인트를 차감하시겠습니까?')) {
+            if (confirm('정산을 완료하고 해당 시니어 회원의 포인트를 차감하시겠습니까? 완료 알림도 전송됩니다.')) {
                 await fetch(`/api/settlements/${settleId}/complete`, { method: 'POST' });
-                alert('정산 완료 처리되었으며 시니어 회원의 포인트가 차감되었습니다.');
+                alert('정산 완료 처리되었으며 정산 완료 알림이 전송되고 포인트가 차감되었습니다.');
                 loadAdminControl();
             }
         }

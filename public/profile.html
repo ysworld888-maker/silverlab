@@ -47,7 +47,6 @@
                 </div>
             </div>
             
-            <!-- Points Display ONLY for Senior -->
             <div id="senior-points-box" class="hidden bg-sky-50/80 p-4 rounded-2xl border border-sky-100 flex items-center gap-4 w-full sm:w-auto justify-between">
                 <div>
                     <span class="text-[11px] font-bold text-slate-400 block">보유 포인트</span>
@@ -60,7 +59,7 @@
         <div id="role-dashboard" class="space-y-6"></div>
     </main>
 
-    <!-- Cancel Hire Modal with Agreement Checkbox -->
+    <!-- Cancel Hire Modal -->
     <div id="cancelHireModal" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm hidden z-50 flex items-center justify-center p-4">
         <div class="bg-white rounded-3xl max-w-md w-full p-7 space-y-4 shadow-2xl">
             <div class="flex justify-between items-center border-b border-sky-100 pb-3">
@@ -70,7 +69,7 @@
             <input type="hidden" id="cancel-job-id">
             <input type="hidden" id="cancel-senior-id">
             <p class="text-xs text-slate-600 leading-relaxed">
-                채용 취소를 실행하시면 1순위 지원자의 채용이 취소되며, <strong>2순위(3순위) 지원자에게 승계 채용 알림이 발송</strong>됩니다. (2순위 시급당 +1,000원, 3순위 +2,000원 차등 가산)
+                채용 취소를 실행하시면 1순위 지원자의 채용이 취소되며, <strong>2순위(3순위) 지원자에게 자동 승계 알림이 발송</strong>됩니다. (2순위 시급당 +1,000원, 3순위 +2,000원 추가 가산)
             </p>
             <div class="p-3.5 bg-rose-50 rounded-xl border border-rose-100 flex items-start gap-2 text-xs">
                 <input type="checkbox" id="cancel-agree-check" class="mt-0.5 rounded text-rose-600">
@@ -80,6 +79,31 @@
             </div>
             <button onclick="confirmCancelHire()" class="w-full py-3.5 bg-rose-500 hover:bg-rose-600 text-white font-bold rounded-xl text-xs shadow">
                 채용 취소 및 승계 실행
+            </button>
+        </div>
+    </div>
+
+    <!-- Soft Blue Point Pay Agreement Modal (Accidental Transfer Prevention) -->
+    <div id="payPointModal" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm hidden z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl max-w-md w-full p-7 space-y-4 shadow-2xl">
+            <div class="flex justify-between items-center border-b border-sky-100 pb-3">
+                <h3 class="text-lg font-black text-slate-800">시니어 근무 대가 포인트 지급</h3>
+                <button onclick="closePayModal()" class="text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark text-lg"></i></button>
+            </div>
+            <input type="hidden" id="pay-job-id">
+            <input type="hidden" id="pay-senior-id">
+            <input type="hidden" id="pay-amount">
+            <p class="text-xs text-slate-600 leading-relaxed">
+                시니어 회원의 실제 근무 확인 후 포인트를 지급합니다. 실수 지급 방지를 위해 아래 동의란을 체크해 주세요.
+            </p>
+            <div class="p-3.5 bg-sky-50 rounded-xl border border-sky-100 flex items-start gap-2 text-xs">
+                <input type="checkbox" id="pay-agree-check" class="mt-0.5 rounded text-sky-600">
+                <label for="pay-agree-check" class="text-sky-800 font-bold cursor-pointer">
+                    시니어 회원의 근무 수행을 확인하였으며 포인트 지급에 동의합니다.
+                </label>
+            </div>
+            <button onclick="confirmPayPoint()" class="w-full py-3.5 bg-sky-400 hover:bg-sky-500 text-white font-bold rounded-xl text-xs shadow">
+                지급하기
             </button>
         </div>
     </div>
@@ -234,7 +258,8 @@
                                                 </select>
                                                 <button onclick="hireCandidate('${j.id}', '${c.seniorId}')" class="btn-sky px-2.5 py-1.5 rounded-lg font-bold text-[11px]">채용확정</button>
                                                 <button onclick="openCancelModal('${j.id}', '${c.seniorId}')" class="bg-rose-100 text-rose-600 px-2.5 py-1.5 rounded-lg font-bold text-[11px] hover:bg-rose-200">채용취소</button>
-                                                <button onclick="payPointToSenior('${j.id}', '${c.seniorId}', ${j.pay})" class="bg-emerald-500 text-white px-2.5 py-1.5 rounded-lg font-bold text-[11px] hover:bg-emerald-600">포인트지급</button>
+                                                <!-- Light Blue Point Pay Button -->
+                                                <button onclick="openPayModal('${j.id}', '${c.seniorId}', ${j.pay})" class="bg-sky-400 text-white px-2.5 py-1.5 rounded-lg font-bold text-[11px] hover:bg-sky-500">포인트지급</button>
                                             </div>
                                         </div>
                                     `).join('')
@@ -266,7 +291,7 @@
             const jobId = document.getElementById('cancel-job-id').value;
             const seniorId = document.getElementById('cancel-senior-id').value;
 
-            const res = await fetch(`/api/jobs/${jobId}/cancel-hire`, {
+            await fetch(`/api/jobs/${jobId}/cancel-hire`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ seniorId })
@@ -274,8 +299,38 @@
 
             closeCancelModal();
 
-            // Screenshot 5 Style System Alert Modal
             alert('회사에 신고(노쇼 접수)가 정상 처리되었습니다.\n다음 순위 지원자에게 자동 승계 채용 알림이 발송되었습니다.');
+            renderProfile();
+        }
+
+        function openPayModal(jobId, seniorId, amount) {
+            document.getElementById('pay-job-id').value = jobId;
+            document.getElementById('pay-senior-id').value = seniorId;
+            document.getElementById('pay-amount').value = amount;
+            document.getElementById('pay-agree-check').checked = false;
+            document.getElementById('payPointModal').classList.remove('hidden');
+        }
+        function closePayModal() { document.getElementById('payPointModal').classList.add('hidden'); }
+
+        async function confirmPayPoint() {
+            const isAgreed = document.getElementById('pay-agree-check').checked;
+            if (!isAgreed) {
+                alert('시니어 회원의 근무 확인 동의란을 체크해 주셔야 포인트 지급이 가능합니다.');
+                return;
+            }
+
+            const jobId = document.getElementById('pay-job-id').value;
+            const seniorId = document.getElementById('pay-senior-id').value;
+            const basePay = document.getElementById('pay-amount').value;
+
+            await fetch(`/api/jobs/${jobId}/pay-points`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ seniorId, basePay })
+            });
+
+            closePayModal();
+            alert('시니어 회원에게 포인트 지급이 정상 완료되었습니다.');
             renderProfile();
         }
 
@@ -297,16 +352,6 @@
                 body: JSON.stringify({ seniorId })
             });
             alert('채용 확정 및 시니어 회원에게 알림이 발송되었습니다.');
-            renderProfile();
-        }
-
-        async function payPointToSenior(jobId, seniorId, pay) {
-            await fetch(`/api/jobs/${jobId}/pay-points`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ seniorId, basePay: pay })
-            });
-            alert(`시니어 회원에게 포인트 지급이 완료되었습니다. (승계 채용 시 시급 가산금 자동 합산)`);
             renderProfile();
         }
 
