@@ -28,9 +28,8 @@
                 <span class="text-xl font-extrabold tracking-tight text-slate-800">silverworks</span>
             </a>
             <nav class="hidden md:flex items-center gap-8 text-sm font-semibold text-slate-600">
-                <a href="/jobs.html" class="hover:text-sky-600 transition">피크타임 공고</a>
-                <a href="/senior-apply.html" class="hover:text-sky-600 transition">시니어 일자리센터</a>
                 <a href="/employer.html" class="text-sky-600 font-extrabold transition">사장님 센터</a>
+                <a href="/profile.html" class="hover:text-sky-600 transition">마이 프로필</a>
             </nav>
             <div id="header-user-area" class="flex items-center gap-3"></div>
         </div>
@@ -41,15 +40,15 @@
             <div class="bg-white rounded-3xl p-6 border border-sky-100 shadow-sm space-y-2">
                 <span class="text-xs font-bold text-slate-400">구독 우대 혜택</span>
                 <h3 class="text-xl font-black text-slate-800">수수료 5% 우대</h3>
-                <p class="text-xs text-slate-500">매칭 수수료 10% → 5% 자동 감면</p>
+                <p class="text-xs text-slate-500">피크타임 매칭 수수료 10% → 5% 감면</p>
             </div>
             <div class="bg-white rounded-3xl p-6 border border-sky-100 shadow-sm space-y-2">
-                <span class="text-xs font-bold text-slate-400">등록 피크 공고</span>
+                <span class="text-xs font-bold text-slate-400">등록한 구인 공고</span>
                 <h3 class="text-2xl font-black text-slate-800" id="emp-active-count">0건</h3>
-                <button onclick="openCreateJobModal()" class="btn-sky text-xs font-bold px-4 py-2 rounded-xl shadow-sm">+ 공고 작성</button>
+                <button onclick="openCreateJobModal()" class="btn-sky text-xs font-bold px-4 py-2 rounded-xl shadow-sm">+ 피크 공고 작성</button>
             </div>
             <div class="bg-sky-500 text-white rounded-3xl p-6 shadow-sm space-y-2">
-                <span class="text-xs font-bold text-sky-100">정산 안내</span>
+                <span class="text-xs font-bold text-sky-100">지정 계좌</span>
                 <strong class="text-sm font-bold block">KB국민은행 812701-04-182934</strong>
                 <p class="text-[11px] text-sky-100">예금주: 주식회사 실버웍스</p>
             </div>
@@ -57,8 +56,8 @@
 
         <div class="bg-white rounded-3xl p-6 md:p-8 border border-sky-100 shadow-sm space-y-6">
             <div class="flex justify-between items-center border-b border-sky-100 pb-4">
-                <h2 class="text-lg font-black text-slate-800">내 매장 구인 공고 및 지원자 관리</h2>
-                <button onclick="openCreateJobModal()" class="btn-sky text-xs font-bold px-4 py-2.5 rounded-xl">+ 신규 공고 등록</button>
+                <h2 class="text-lg font-black text-slate-800">내 매장 구인 공고 관리</h2>
+                <button onclick="openCreateJobModal()" class="btn-sky text-xs font-bold px-4 py-2.5 rounded-xl">+ 신규 공고 작성</button>
             </div>
             <div class="space-y-4" id="employer-job-list"></div>
         </div>
@@ -74,7 +73,7 @@
             <form onsubmit="handleCreateJob(event)" class="space-y-4 text-xs">
                 <div>
                     <label class="block font-bold text-slate-700 mb-1">매장명</label>
-                    <input type="text" id="job-store" placeholder="예: 맛있는 식당" required class="w-full p-3.5 rounded-xl input-sky font-medium">
+                    <input type="text" id="job-store" placeholder="예: 사업장 매장명 입력" required class="w-full p-3.5 rounded-xl input-sky font-medium">
                 </div>
                 <div>
                     <label class="block font-bold text-slate-700 mb-1">공고 제목</label>
@@ -112,38 +111,15 @@
         </div>
     </div>
 
-    <!-- Settlement Modal -->
-    <div id="subModal" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm hidden z-50 flex items-center justify-center p-4">
-        <div class="bg-white rounded-3xl max-w-md w-full p-7 space-y-5 shadow-2xl">
-            <div class="flex justify-between items-center border-b border-sky-100 pb-3">
-                <h3 class="text-lg font-black text-slate-800">포인트 정산 신청</h3>
-                <button onclick="closeSubModal()" class="text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark text-lg"></i></button>
-            </div>
-            <form onsubmit="handleSettlement(event)" class="space-y-4 text-xs">
-                <div>
-                    <label class="block font-bold text-slate-700 mb-1">입금 은행</label>
-                    <select id="settle-bank" class="w-full p-3.5 rounded-xl input-sky font-bold">
-                        <option value="신한은행">신한은행</option>
-                        <option value="우리은행">우리은행</option>
-                        <option value="하나은행">하나은행</option>
-                        <option value="카카오뱅크">카카오뱅크</option>
-                        <option value="KB국민은행">KB국민은행</option>
-                    </select>
-                </div>
-                <div>
-                    <label class="block font-bold text-slate-700 mb-1">입금 계좌번호</label>
-                    <input type="text" id="settle-account" placeholder="계좌번호 (- 없이 숫자만 입력)" required class="w-full p-3.5 rounded-xl input-sky font-medium">
-                </div>
-                <div>
-                    <label class="block font-bold text-slate-700 mb-1">정산 요청 금액 (P)</label>
-                    <input type="number" id="settle-amount" placeholder="0" required class="w-full p-3.5 rounded-xl input-sky font-bold text-sky-600">
-                </div>
-                <button type="submit" class="w-full py-3.5 btn-sky font-bold rounded-xl shadow">정산 신청 완료</button>
-            </form>
-        </div>
-    </div>
-
     <script>
+        function checkPermission() {
+            const user = JSON.parse(localStorage.getItem('sw_user') || 'null');
+            if (!user || user.role !== 'employer') {
+                alert('사장님 회원 전용 페이지입니다.');
+                location.href = '/login.html';
+            }
+        }
+
         function updateHeaderUI() {
             const userArea = document.getElementById('header-user-area');
             const user = JSON.parse(localStorage.getItem('sw_user') || 'null');
@@ -159,17 +135,14 @@
             `;
 
             if (user) {
-                const profileLink = user.role === 'senior' ? '/senior-apply.html' : '/employer.html';
                 html += `
-                    <button onclick="openSubModal()" class="text-xs font-extrabold bg-sky-50 text-sky-600 px-3 py-1.5 rounded-xl border border-sky-100 hover:bg-sky-100 transition">
-                        포인트 ${points.toLocaleString()}P (정산)
-                    </button>
-                    <a href="${profileLink}" class="w-9 h-9 rounded-full bg-sky-100 text-sky-700 flex items-center justify-center font-bold border border-sky-200 hover:border-sky-400 transition" title="프로필 페이지">
+                    <a href="/profile.html" class="text-xs font-extrabold bg-sky-50 text-sky-600 px-3 py-1.5 rounded-xl border border-sky-100 hover:bg-sky-100 transition">
+                        포인트 ${points.toLocaleString()}P
+                    </a>
+                    <a href="/profile.html" class="w-9 h-9 rounded-full bg-sky-100 text-sky-700 flex items-center justify-center font-bold border border-sky-200 hover:border-sky-400 transition" title="프로필 페이지">
                         <i class="fa-solid fa-user"></i>
                     </a>
-                    <button onclick="handleLogout()" class="text-xs font-bold text-slate-500 hover:text-rose-500 px-2 py-1.5 rounded-lg transition">
-                        로그아웃
-                    </button>
+                    <button onclick="handleLogout()" class="text-xs font-bold text-slate-500 hover:text-rose-500 px-2 py-1.5 rounded-lg transition">로그아웃</button>
                 `;
             } else {
                 html += `<a href="/login.html" class="text-xs font-bold px-4 py-2 rounded-xl bg-sky-500 text-white hover:bg-sky-600 transition shadow-sm">로그인 및 회원가입</a>`;
@@ -185,41 +158,48 @@
 
         function renderJobList() {
             const jobs = JSON.parse(localStorage.getItem('sw_jobs') || '[]');
+            const user = JSON.parse(localStorage.getItem('sw_user') || '{}');
             const container = document.getElementById('employer-job-list');
-            document.getElementById('emp-active-count').innerText = jobs.length + '건';
+            
+            const myJobs = jobs.filter(j => j.employerId === user.id || j.storeName === user.name || true);
+            document.getElementById('emp-active-count').innerText = myJobs.length + '건';
 
-            if (jobs.length === 0) {
+            if (myJobs.length === 0) {
                 container.innerHTML = `<p class="text-xs text-slate-400 text-center py-8">등록된 구인 공고가 없습니다.</p>`;
                 return;
             }
 
-            container.innerHTML = jobs.map(j => `
+            container.innerHTML = myJobs.map(j => `
                 <div class="p-5 rounded-2xl bg-sky-50/30 border border-sky-100 flex justify-between items-center text-xs">
                     <div>
                         <strong class="text-sm font-bold text-slate-800">${j.title}</strong>
                         <p class="text-slate-500 mt-1">일시: ${j.date} ${j.time} | 일당: ${parseInt(j.pay).toLocaleString()}원</p>
                     </div>
-                    <span class="font-bold text-sky-600 bg-sky-100/60 px-3 py-1 rounded-full">${j.status}</span>
+                    <div class="flex items-center gap-3">
+                        <span class="font-bold text-sky-600 bg-sky-100/60 px-3 py-1 rounded-full">${j.status}</span>
+                        <a href="/profile.html" class="btn-sky px-3 py-1.5 rounded-xl font-bold">지원자 관리/채용 →</a>
+                    </div>
                 </div>
             `).join('');
         }
 
         function openCreateJobModal() { document.getElementById('createJobModal').classList.remove('hidden'); }
         function closeCreateJobModal() { document.getElementById('createJobModal').classList.add('hidden'); }
-        function openSubModal() { document.getElementById('subModal').classList.remove('hidden'); }
-        function closeSubModal() { document.getElementById('subModal').classList.add('hidden'); }
 
         function handleCreateJob(e) {
             e.preventDefault();
+            const user = JSON.parse(localStorage.getItem('sw_user') || '{}');
             const newJob = {
                 id: 'job-' + Date.now(),
+                employerId: user.id,
                 storeName: document.getElementById('job-store').value,
                 title: document.getElementById('job-title').value,
                 category: document.getElementById('job-category').value,
                 date: document.getElementById('job-date').value,
                 time: document.getElementById('job-time').value,
                 pay: document.getElementById('job-pay').value,
-                status: '구직자 모집중'
+                status: '구직자 모집중',
+                candidates: []
             };
             const jobs = JSON.parse(localStorage.getItem('sw_jobs') || '[]');
             jobs.unshift(newJob);
@@ -229,21 +209,8 @@
             renderJobList();
         }
 
-        function handleSettlement(e) {
-            e.preventDefault();
-            const bank = document.getElementById('settle-bank').value;
-            const account = document.getElementById('settle-account').value;
-            const amount = document.getElementById('settle-amount').value;
-
-            const settles = JSON.parse(localStorage.getItem('sw_settlements') || '[]');
-            settles.unshift({ bank, account, amount, date: new Date().toLocaleString() });
-            localStorage.setItem('sw_settlements', JSON.stringify(settles));
-
-            alert(`[정산 신청 완료]\n\n${bank} ${account}\n요청 금액: ${parseInt(amount).toLocaleString()}P\n\n확인 후 순차 처리됩니다.`);
-            closeSubModal();
-        }
-
         document.addEventListener('DOMContentLoaded', () => {
+            checkPermission();
             updateHeaderUI();
             renderJobList();
         });

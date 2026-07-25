@@ -15,7 +15,8 @@ const pages = [
   'employer',
   'admin',
   'notifications',
-  'login'
+  'login',
+  'profile'
 ];
 
 pages.forEach(page => {

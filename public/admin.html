@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>silverworks - 관리자 HQ</title>
+    <title>silverworks - 관리자 HQ통제센터</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
@@ -14,7 +14,6 @@
     </style>
 </head>
 <body class="min-h-screen flex flex-col justify-between antialiased">
-    <!-- Header: Light Pastel Theme -->
     <header class="sticky top-0 z-50 bg-white/90 backdrop-blur-md border-b border-sky-100 shadow-sm">
         <div class="max-w-7xl mx-auto px-5 h-16 flex items-center justify-between">
             <a href="/index.html" class="flex items-center gap-2.5">
@@ -24,107 +23,151 @@
                         <path d="M 48 70 C 62 82 78 78 86 60" />
                     </svg>
                 </div>
-                <span class="text-xl font-extrabold text-slate-800 tracking-tight">silverworks <span class="text-xs px-2 py-0.5 rounded bg-sky-500 text-white">HQ</span></span>
+                <span class="text-xl font-extrabold text-slate-800 tracking-tight">silverworks <span class="text-xs px-2 py-0.5 rounded bg-sky-500 text-white">최고관리자</span></span>
             </a>
-            <span class="text-xs font-bold px-3 py-1.5 rounded-full bg-sky-50 text-sky-600 border border-sky-200 flex items-center gap-1.5">
-                <span class="w-2 h-2 rounded-full bg-sky-500 animate-pulse"></span> 관리자 보안 전용
+            <span class="text-xs font-bold px-3 py-1.5 rounded-full bg-sky-50 text-sky-600 border border-sky-200">
+                <i class="fa-solid fa-shield-halved mr-1"></i> 최고 통제 모드
             </span>
         </div>
     </header>
 
     <main class="max-w-7xl mx-auto px-5 py-8 flex-1 w-full space-y-8">
-        <!-- Stat Cards -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            <div class="bg-white p-5 rounded-3xl border border-sky-100 shadow-sm space-y-1">
-                <span class="text-xs font-bold text-slate-400">등록된 전체 공고</span>
-                <p class="text-2xl font-black text-slate-800" id="stat-jobs">0건</p>
-            </div>
-            <div class="bg-white p-5 rounded-3xl border border-sky-100 shadow-sm space-y-1">
-                <span class="text-xs font-bold text-slate-400">접수된 건강 문진 이력서</span>
-                <p class="text-2xl font-black text-sky-600" id="stat-surveys">0건</p>
-            </div>
-            <div class="bg-white p-5 rounded-3xl border border-sky-100 shadow-sm space-y-1">
-                <span class="text-xs font-bold text-slate-400">정산 신청 내역</span>
-                <p class="text-2xl font-black text-amber-500" id="stat-settles">0건</p>
-            </div>
-            <div class="bg-white p-5 rounded-3xl border border-sky-100 shadow-sm space-y-1">
-                <span class="text-xs font-bold text-slate-400">실시간 연동 상태</span>
-                <p class="text-sm font-bold text-emerald-500 pt-1">정상동작 (Real-time)</p>
-            </div>
-        </div>
-
-        <!-- Surveys -->
+        <!-- 1. 회원 가입 승인 대기 목록 -->
         <div class="bg-white rounded-3xl p-6 md:p-8 border border-sky-100 shadow-sm space-y-4">
             <h2 class="text-base font-black text-slate-800 flex items-center gap-2">
-                <i class="fa-solid fa-clipboard-user text-sky-500"></i> 접수된 시니어 건강 문진 이력서
+                <i class="fa-solid fa-user-check text-sky-500"></i> 신규 회원 가입 승인 관리 (승인 후 로그인 가능)
             </h2>
             <div class="overflow-x-auto">
                 <table class="w-full text-left border-collapse text-xs">
                     <thead>
                         <tr class="bg-sky-50/50 border-y border-sky-100 text-slate-600 font-bold">
-                            <th class="p-3">접수일시</th>
-                            <th class="p-3">성함</th>
-                            <th class="p-3">연락처</th>
-                            <th class="p-3">희망 근무지</th>
-                            <th class="p-3">건강/보행 상태</th>
+                            <th class="p-3">아이디</th>
+                            <th class="p-3">성함/대표명</th>
+                            <th class="p-3">회원 유형</th>
+                            <th class="p-3">승인 상태</th>
+                            <th class="p-3 text-right">관리 통제</th>
                         </tr>
                     </thead>
-                    <tbody id="survey-table-body" class="divide-y divide-slate-100 text-slate-700"></tbody>
+                    <tbody id="user-approval-table" class="divide-y divide-slate-100 text-slate-700"></tbody>
                 </table>
             </div>
         </div>
 
-        <!-- Jobs -->
+        <!-- 2. 구인 공고 수정 및 삭제 통제 -->
         <div class="bg-white rounded-3xl p-6 md:p-8 border border-sky-100 shadow-sm space-y-4">
             <h2 class="text-base font-black text-slate-800 flex items-center gap-2">
-                <i class="fa-solid fa-store text-sky-500"></i> 실시간 구인 공고 현황
+                <i class="fa-solid fa-list-check text-sky-500"></i> 전체 등록 공고 직접 수정 및 삭제
             </h2>
-            <div id="jobs-container" class="space-y-3"></div>
+            <div id="admin-jobs-list" class="space-y-3"></div>
+        </div>
+
+        <!-- 3. 포인트 정산 요청 처리 -->
+        <div class="bg-white rounded-3xl p-6 md:p-8 border border-sky-100 shadow-sm space-y-4">
+            <h2 class="text-base font-black text-slate-800 flex items-center gap-2">
+                <i class="fa-solid fa-money-bill-transfer text-amber-500"></i> 포인트 정산 요청 통제
+            </h2>
+            <div id="admin-settlements-list" class="space-y-3"></div>
         </div>
     </main>
 
     <script>
-        function loadAdminData() {
-            const surveys = JSON.parse(localStorage.getItem('sw_surveys') || '[]');
+        function loadAdminControl() {
+            const users = JSON.parse(localStorage.getItem('sw_users') || '[]');
             const jobs = JSON.parse(localStorage.getItem('sw_jobs') || '[]');
-            const settles = JSON.parse(localStorage.getItem('sw_settlements') || '[]');
+            const settlements = JSON.parse(localStorage.getItem('sw_settlements') || '[]');
 
-            document.getElementById('stat-jobs').innerText = jobs.length + '건';
-            document.getElementById('stat-surveys').innerText = surveys.length + '건';
-            document.getElementById('stat-settles').innerText = settles.length + '건';
-
-            const surveyBody = document.getElementById('survey-table-body');
-            if (surveys.length === 0) {
-                surveyBody.innerHTML = `<tr><td colspan="5" class="p-6 text-center text-slate-400">접수된 이력서가 없습니다.</td></tr>`;
+            // 1. User Approval
+            const userTable = document.getElementById('user-approval-table');
+            if (users.length === 0) {
+                userTable.innerHTML = `<tr><td colspan="5" class="p-6 text-center text-slate-400">가입된 회원이 없습니다.</td></tr>`;
             } else {
-                surveyBody.innerHTML = surveys.map(s => `
+                userTable.innerHTML = users.map((u, idx) => `
                     <tr>
-                        <td class="p-3 text-slate-400">${s.date}</td>
-                        <td class="p-3 font-bold text-slate-800">${s.name || '미입력'}</td>
-                        <td class="p-3 font-mono">${s.phone || '미입력'}</td>
-                        <td class="p-3">${s.location || '미입력'}</td>
-                        <td class="p-3"><span class="bg-sky-50 text-sky-600 font-bold px-2 py-0.5 rounded-lg border border-sky-100">${s.stairs || '문진 완료'}</span></td>
+                        <td class="p-3 font-mono font-bold">${u.id}</td>
+                        <td class="p-3 font-bold">${u.name}</td>
+                        <td class="p-3"><span class="px-2 py-0.5 rounded text-[11px] font-bold ${u.role === 'senior' ? 'bg-sky-100 text-sky-700' : 'bg-indigo-100 text-indigo-700'}">${u.role === 'senior' ? '시니어' : '사장님'}</span></td>
+                        <td class="p-3"><span class="font-bold ${u.approved ? 'text-emerald-500' : 'text-amber-500'}">${u.approved ? '승인완료' : '승인대기중'}</span></td>
+                        <td class="p-3 text-right">
+                            ${!u.approved ? `<button onclick="approveUser(${idx})" class="btn-sky text-[11px] px-3 py-1 rounded-lg font-bold">회원가입 승인</button>` : '<span class="text-slate-400">정상회원</span>'}
+                        </td>
                     </tr>
                 `).join('');
             }
 
-            const jobsContainer = document.getElementById('jobs-container');
+            // 2. Job Modify/Delete Control
+            const jobsList = document.getElementById('admin-jobs-list');
             if (jobs.length === 0) {
-                jobsContainer.innerHTML = `<p class="text-xs text-slate-400 text-center py-6">등록된 공고가 없습니다.</p>`;
+                jobsList.innerHTML = `<p class="text-xs text-slate-400 text-center py-6">등록된 공고가 없습니다.</p>`;
             } else {
-                jobsContainer.innerHTML = jobs.map(j => `
+                jobsList.innerHTML = jobs.map((j, idx) => `
                     <div class="p-4 rounded-2xl bg-sky-50/30 border border-sky-100 flex justify-between items-center text-xs">
                         <div>
                             <strong class="text-sm font-bold text-slate-800">${j.title}</strong>
-                            <p class="text-slate-500 mt-0.5">매장: ${j.storeName} | 일시: ${j.date} ${j.time} | 일당: ${parseInt(j.pay).toLocaleString()}원</p>
+                            <p class="text-slate-500">매장: ${j.storeName} | 일시: ${j.date} ${j.time} | 일당: ${parseInt(j.pay).toLocaleString()}원</p>
                         </div>
-                        <span class="font-bold text-sky-600 bg-sky-100/60 px-3 py-1 rounded-full">${j.status}</span>
+                        <div class="flex gap-2">
+                            <button onclick="editJobPrompt(${idx})" class="px-3 py-1.5 rounded-lg bg-sky-100 text-sky-700 font-bold hover:bg-sky-200">수정</button>
+                            <button onclick="deleteJob(${idx})" class="px-3 py-1.5 rounded-lg bg-rose-100 text-rose-600 font-bold hover:bg-rose-200">삭제</button>
+                        </div>
+                    </div>
+                `).join('');
+            }
+
+            // 3. Settlement
+            const setList = document.getElementById('admin-settlements-list');
+            if (settlements.length === 0) {
+                setList.innerHTML = `<p class="text-xs text-slate-400 text-center py-6">신청된 정산 내역이 없습니다.</p>`;
+            } else {
+                setList.innerHTML = settlements.map((s, idx) => `
+                    <div class="p-4 rounded-2xl bg-amber-50/40 border border-amber-100 flex justify-between items-center text-xs">
+                        <div>
+                            <strong class="text-sm font-bold text-slate-800">${s.userName || '회원'} (계좌: ${s.bank} ${s.account})</strong>
+                            <p class="text-slate-500">신청금액: ${parseInt(s.amount).toLocaleString()}P | 일시: ${s.date}</p>
+                        </div>
+                        <button onclick="completeSettlement(${idx})" class="px-3 py-1.5 rounded-lg bg-amber-500 text-white font-bold hover:bg-amber-600">지급 완료 처리</button>
                     </div>
                 `).join('');
             }
         }
 
-        document.addEventListener('DOMContentLoaded', loadAdminData);
+        function approveUser(idx) {
+            const users = JSON.parse(localStorage.getItem('sw_users') || '[]');
+            users[idx].approved = true;
+            localStorage.setItem('sw_users', JSON.stringify(users));
+            alert('회원가입 승인이 완료되었습니다. 이제 해당 회원은 로그인할 수 있습니다.');
+            loadAdminControl();
+        }
+
+        function editJobPrompt(idx) {
+            const jobs = JSON.parse(localStorage.getItem('sw_jobs') || '[]');
+            const newTitle = prompt('수정할 공고 제목을 입력하세요:', jobs[idx].title);
+            if (newTitle) {
+                jobs[idx].title = newTitle;
+                localStorage.setItem('sw_jobs', JSON.stringify(jobs));
+                alert('공고 내용이 수정되었습니다.');
+                loadAdminControl();
+            }
+        }
+
+        function deleteJob(idx) {
+            if (confirm('해당 공고를 강제 삭제하시겠습니까?')) {
+                const jobs = JSON.parse(localStorage.getItem('sw_jobs') || '[]');
+                jobs.splice(idx, 1);
+                localStorage.setItem('sw_jobs', JSON.stringify(jobs));
+                alert('공고가 삭제되었습니다.');
+                loadAdminControl();
+            }
+        }
+
+        function completeSettlement(idx) {
+            const settlements = JSON.parse(localStorage.getItem('sw_settlements') || '[]');
+            settlements.splice(idx, 1);
+            localStorage.setItem('sw_settlements', JSON.stringify(settlements));
+            alert('정산 지급 완료 처리되었습니다.');
+            loadAdminControl();
+        }
+
+        document.addEventListener('DOMContentLoaded', loadAdminControl);
     </script>
 </body>
 </html>
