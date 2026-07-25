@@ -8,11 +8,9 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css');
-        body { font-family: "Pretendard", sans-serif; background-color: #f9fafb; color: #191f28; word-break: keep-all; }
+        body { font-family: "Pretendard", sans-serif; background-color: #f8fafc; color: #191f28; word-break: keep-all; }
         .btn-toss { background-color: #3182f6; color: #ffffff; transition: all 0.2s; }
         .btn-toss:hover { background-color: #1b64da; }
-        .input-toss { background-color: #f2f4f6; border: 1px solid transparent; }
-        .input-toss:focus { background-color: #ffffff; border-color: #3182f6; outline: none; }
     </style>
 </head>
 <body class="min-h-screen flex flex-col justify-between antialiased">
@@ -42,72 +40,9 @@
         </a>
 
         <div class="bg-white rounded-3xl p-6 md:p-8 border border-slate-200/80 shadow-sm space-y-6">
-            <div class="flex flex-wrap items-center justify-between gap-3 border-b border-slate-100 pb-5">
-                <div class="flex items-center gap-2">
-                    <span id="detail-category" class="bg-blue-50 text-blue-600 text-xs font-bold px-3 py-1 rounded-xl">카테고리</span>
-                    <span id="detail-badge-req" class="bg-slate-100 text-slate-600 text-xs font-bold px-3 py-1 rounded-xl">자격 요건</span>
-                </div>
-                <span id="detail-status" class="text-xs font-extrabold text-blue-600 bg-blue-50 px-3 py-1 rounded-full">모집중</span>
-            </div>
-            <div class="space-y-3">
-                <span id="detail-store" class="text-xs font-extrabold text-slate-400 block tracking-wider uppercase">매장명</span>
-                <h1 id="detail-title" class="text-2xl md:text-3xl font-black text-slate-900 leading-snug">공고 제목</h1>
-            </div>
-            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-4">
-                <div class="bg-slate-50 p-4 rounded-2xl border border-slate-100 space-y-1">
-                    <span class="text-[11px] text-slate-400 font-semibold block">근무 일자</span>
-                    <strong id="detail-date" class="text-sm font-bold text-slate-800">-</strong>
-                </div>
-                <div class="bg-slate-50 p-4 rounded-2xl border border-slate-100 space-y-1">
-                    <span class="text-[11px] text-slate-400 font-semibold block">근무 시간</span>
-                    <strong id="detail-time" class="text-sm font-bold text-slate-800">-</strong>
-                </div>
-                <div class="bg-blue-50/60 p-4 rounded-2xl border border-blue-100/60 space-y-1">
-                    <span class="text-[11px] text-blue-600 font-semibold block">지급 일당</span>
-                    <strong id="detail-pay" class="text-lg font-black text-blue-600">0원</strong>
-                </div>
-            </div>
-        </div>
-
-        <div class="bg-white rounded-3xl p-6 md:p-8 border border-slate-200/80 shadow-sm space-y-6">
-            <h2 class="text-lg font-black text-slate-900 border-b border-slate-100 pb-4">1·2·3순위 대기 매칭 현황</h2>
-            <div class="space-y-3" id="candidate-list-container"></div>
-        </div>
-
-        <div class="pt-2 flex justify-end">
-            <button onclick="openApplyModal()" class="btn-toss text-sm font-extrabold px-8 py-4 rounded-2xl shadow-lg w-full sm:w-auto">
-                피크타임 일자리 지원하기
-            </button>
+            <div id="job-detail-card" class="space-y-3"></div>
         </div>
     </main>
-
-    <!-- Apply Modal -->
-    <div id="applyModal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm hidden z-50 flex items-center justify-center p-4">
-        <div class="bg-white rounded-3xl max-w-md w-full p-7 space-y-5 shadow-2xl">
-            <div class="flex justify-between items-center border-b border-slate-100 pb-3">
-                <h3 class="text-lg font-black text-slate-900">피크타임 일자리 구직 지원</h3>
-                <button onclick="closeApplyModal()" class="text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark text-lg"></i></button>
-            </div>
-            <form onsubmit="submitApplication(event)" class="space-y-4 text-xs">
-                <div>
-                    <label class="block font-bold text-slate-700 mb-1">지원자 성함</label>
-                    <input type="text" id="app-name" placeholder="성함을 입력하세요" required class="w-full p-3.5 rounded-xl input-toss font-medium">
-                </div>
-                <div>
-                    <label class="block font-bold text-slate-700 mb-1">연락처</label>
-                    <input type="tel" id="app-phone" placeholder="010-0000-0000" required class="w-full p-3.5 rounded-xl input-toss font-medium">
-                </div>
-                <div class="pt-2 flex gap-2">
-                    <button type="button" onclick="closeApplyModal()" class="flex-1 py-3.5 border border-slate-200 font-bold rounded-xl text-slate-600">취소</button>
-                    <button type="submit" class="flex-1 py-3.5 btn-toss font-bold rounded-xl shadow">지원 확정하기</button>
-                </div>
-            </form>
-        </div>
-    </div>
-
-    <footer class="bg-slate-900 text-slate-400 text-xs py-8 border-t border-slate-800 text-center px-5">
-        <p>실버웍스 (silverworks), 대표 유연성 010-7464-3657, 대표 민 혁 010-9187-9074, 주소: 경기도 성남시 중원구 광명로 79, 4층 404호 (성남동, 상산빌딩), 사업자등록 번호 : 726-19-02892, 주업종: 경영컨설팅업 (전문, 과학 및 기술서비스업) (업종코드 : 741400) | 부업종: 데이터베이스 및 온라인 정보 제공업 (업종코드 : 724000)</p>
-    </footer>
 
     <script>
         function updateHeaderUI() {
@@ -126,7 +61,7 @@
 
             if (user) {
                 html += `
-                    <button onclick="alert('정산 페이지로 이동합니다.')" class="text-xs font-extrabold bg-blue-50 text-blue-600 px-3 py-1.5 rounded-xl border border-blue-100 hover:bg-blue-100 transition">
+                    <button onclick="alert('사장님 센터 또는 마이페이지에서 정산 신청이 가능합니다.')" class="text-xs font-extrabold bg-blue-50 text-blue-600 px-3 py-1.5 rounded-xl border border-blue-100 hover:bg-blue-100 transition">
                         포인트 ${points.toLocaleString()}P (정산)
                     </button>
                     <a href="/senior-apply.html" class="w-9 h-9 rounded-full bg-slate-200 flex items-center justify-center text-slate-700 font-bold border border-slate-300 hover:border-blue-500 transition" title="프로필 페이지">
@@ -134,18 +69,9 @@
                     </a>
                 `;
             } else {
-                html += `<a href="/login.html" class="text-xs font-bold px-4 py-2 rounded-xl bg-slate-100 text-slate-700 hover:bg-slate-200 transition">로그인</a>`;
+                html += `<a href="/login.html" class="text-xs font-bold px-4 py-2 rounded-xl btn-toss shadow-sm">로그인 및 회원가입</a>`;
             }
             userArea.innerHTML = html;
-        }
-
-        function openApplyModal() { document.getElementById('applyModal').classList.remove('hidden'); }
-        function closeApplyModal() { document.getElementById('applyModal').classList.add('hidden'); }
-
-        function submitApplication(e) {
-            e.preventDefault();
-            alert('지원이 완료되었습니다.');
-            closeApplyModal();
         }
 
         document.addEventListener('DOMContentLoaded', () => { updateHeaderUI(); });

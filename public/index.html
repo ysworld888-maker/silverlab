@@ -8,11 +8,14 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css');
-        body { font-family: "Pretendard", sans-serif; background-color: #f9fafb; color: #191f28; word-break: keep-all; }
+        body { font-family: "Pretendard", sans-serif; background-color: #f8fafc; color: #191f28; word-break: keep-all; }
         .btn-toss { background-color: #3182f6; color: #ffffff; transition: all 0.2s; }
         .btn-toss:hover { background-color: #1b64da; }
-        .input-toss { background-color: #f2f4f6; border: 1px solid transparent; }
-        .input-toss:focus { background-color: #ffffff; border-color: #3182f6; outline: none; }
+        .wave-banner {
+            background: linear-gradient(135deg, #0066FF 0%, #0040A8 100%);
+            position: relative;
+            overflow: hidden;
+        }
     </style>
 </head>
 <body class="min-h-screen flex flex-col justify-between antialiased">
@@ -38,38 +41,45 @@
     </header>
 
     <main class="flex-1 space-y-12 pb-16">
-        <!-- Hero Visual Matching IMG_0874 -->
-        <section class="py-16 px-5 text-center space-y-8 bg-gradient-to-b from-blue-50/50 to-transparent">
-            <div class="space-y-2">
-                <h1 class="text-2xl md:text-4xl font-black text-blue-600 tracking-tight leading-tight">
-                    변화에 도전할 사장님과<br>베테랑 시니어 구직자들의 만남
+        <!-- Hero Wave Identity Banner -->
+        <section class="wave-banner text-white py-16 px-5 rounded-b-3xl shadow-lg relative">
+            <div class="max-w-4xl mx-auto text-center space-y-4 relative z-10">
+                <span class="inline-block px-3 py-1 rounded-full bg-white/10 text-blue-100 text-xs font-bold border border-white/20">
+                    초단기 피크타임 인력 매칭 플랫폼
+                </span>
+                <h1 class="text-2xl md:text-4xl font-black leading-tight">
+                    변화에 도전할 사장님과<br>
+                    <span class="text-sky-300">파도처럼 시원한</span> 베테랑 시니어의 만남
                 </h1>
-                <p class="text-xs md:text-sm text-slate-500 font-medium">세상을 은빛 지혜로 채우다.</p>
+                <p class="text-xs md:text-sm text-blue-100 opacity-90 max-w-xl mx-auto">
+                    세상을 은빛 지혜로 채우다. 2~3시간 피크타임 맞춤 매칭부터 1·2·3순위 자동 승계까지.
+                </p>
+                <div class="flex justify-center gap-3 pt-2">
+                    <a href="/senior-apply.html" class="px-5 py-3 rounded-2xl bg-white text-blue-600 font-extrabold text-xs shadow-md hover:bg-blue-50 transition">
+                        시니어 문진 이력서 작성 →
+                    </a>
+                    <a href="/employer.html" class="px-5 py-3 rounded-2xl bg-blue-700/60 text-white font-extrabold text-xs border border-white/30 hover:bg-blue-700 transition">
+                        사장님 구인 공고 등록 →
+                    </a>
+                </div>
             </div>
 
-            <!-- Two Cards Layout Matching IMG_0874 -->
-            <div class="max-w-3xl mx-auto grid grid-cols-1 sm:grid-cols-2 gap-5 pt-2">
-                <a href="/senior-apply.html" class="bg-white p-7 rounded-3xl border border-slate-200/80 shadow-sm hover:shadow-md transition text-left space-y-3 block">
-                    <span class="text-[11px] font-bold text-blue-600 bg-blue-50 px-2.5 py-1 rounded-lg">구직 시니어 회원</span>
-                    <h3 class="text-lg font-bold text-slate-900">베테랑 전용 문진성 이력서</h3>
-                    <p class="text-xs text-slate-500 leading-relaxed">디지털 인지 능력, 오프라인 검증 및 건강 문진표를 통한 신뢰 이력서 작성</p>
-                </a>
-                <a href="/employer.html" class="bg-white p-7 rounded-3xl border border-slate-200/80 shadow-sm hover:shadow-md transition text-left space-y-3 block">
-                    <span class="text-[11px] font-bold text-blue-600 bg-blue-50 px-2.5 py-1 rounded-lg">구인 사업장 사장님</span>
-                    <h3 class="text-lg font-bold text-slate-900">필요한 시간만 맞춤형 고용 솔루션</h3>
-                    <p class="text-xs text-slate-500 leading-relaxed">2~3시간 초단기 피크타임 인력 연결 및 1·2·3순위 노쇼 자동 승계 시스템</p>
-                </a>
+            <!-- Wave Dynamic SVG Graphics -->
+            <div class="absolute bottom-0 left-0 right-0 opacity-20 pointer-events-none">
+                <svg viewBox="0 0 1440 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M0 60C240 100 480 20 720 60C960 100 1200 20 1440 60V120H0V60Z" fill="white"/>
+                </svg>
             </div>
         </section>
 
-        <!-- Original Main Content Text Section -->
-        <section class="max-w-4xl mx-auto px-5 space-y-6 text-slate-800 leading-relaxed text-sm md:text-base">
-            <div class="bg-white rounded-3xl p-8 border border-slate-200/80 shadow-sm space-y-6">
-                <h2 class="text-xl md:text-2xl font-black text-slate-900 leading-snug">
+        <!-- Main Body Article (Original Texts Laid Out Elegantly) -->
+        <section class="max-w-3xl mx-auto px-5 space-y-6 text-slate-700 text-xs md:text-sm leading-relaxed">
+            <div class="bg-white rounded-3xl p-7 md:p-9 border border-slate-200/80 shadow-sm space-y-5">
+                <h2 class="text-base md:text-lg font-black text-slate-900 leading-snug">
                     매장을 책임져줄 성실한 사람을 구하는 것은 하늘의 별 따기가 되었습니다.
                 </h2>
                 
-                <div class="p-4 rounded-2xl bg-slate-50 border-l-4 border-blue-600 text-xs md:text-sm text-slate-700 space-y-1">
+                <div class="p-4 rounded-2xl bg-slate-50 border-l-4 border-blue-600 text-slate-600 space-y-1">
                     <p class="font-bold">[자영업자 4명 중 3명이 알바생의 갑작스러운 결근·퇴사 등 '노쇼'로 인해 곤란한 상황을 겪은 것으로 나타났다.]</p>
                     <p class="text-[11px] text-slate-400">출처: 중장년 알바와 MZ 사장... 문제는 없을까? 직접 들어봤다 | 서울경제</p>
                 </div>
@@ -77,43 +87,44 @@
                 <p>치솟는 최저임금과 주휴수당, 퇴직금이라는 고정비 압박 속에서 사장님들의 어깨는 날이 갈수록 무거워지고 있습니다.</p>
                 <p>이런 상황에서, <strong>체력과 열정</strong>을 가지고 일터를 찾는 <strong>시니어들은 해마다 늘어나고 있습니다.</strong></p>
 
-                <div class="p-4 rounded-2xl bg-slate-50 border-l-4 border-blue-600 text-xs md:text-sm text-slate-700 space-y-1">
+                <div class="p-4 rounded-2xl bg-slate-50 border-l-4 border-blue-600 text-slate-600 space-y-1">
                     <p>(노인 일자리 참여자는 꾸준히 늘고 있다. 2020년 73만7708명이던 참여자는 올해 8월 99만7233명으로 증가했다. 하지만 같은 기간 신청자 수는 82만3754명에서 122만5776명으로 48.8%나 폭증했다.)</p>
                     <p class="text-[11px] text-slate-400">출처 : 뉴스퀘스트(https://www.newsquest.co.kr)</p>
                 </div>
 
                 <p>하지만 나이라는 장벽에 부딪혀 역량을 펼칠 기회조차 얻지 못하는 게 오늘날의 현실입니다.</p>
-                <h3 class="text-lg font-extrabold text-blue-600 pt-2">우리는 왜 이 거대한 두 개의 갈증을 단 한 번도 연결하지 못했을까요?</h3>
-                <p>
-                    단기 근로를 원하는 숙련된 시니어층과, 피크타임 단기 인력이 절실한 사장님들. 이들이 마침내 하나로 뭉치면서 매장의 관리 구조가 완전히 뒤바뀝니다.
-                </p>
+                
+                <div class="p-5 rounded-2xl bg-blue-50/60 border border-blue-100 space-y-2">
+                    <h3 class="font-extrabold text-blue-600 text-sm md:text-base">우리는 왜 이 거대한 두 개의 갈증을 단 한 번도 연결하지 못했을까요?</h3>
+                    <p class="text-slate-700">
+                        단기 근로를 원하는 숙련된 시니어층과, 피크타임 단기 인력이 절실한 사장님들. 이들이 마침내 하나로 뭉치면서 매장의 관리 구조가 완전히 뒤바뀝니다.
+                    </p>
+                </div>
+
                 <p>
                     실버웍스는 단순한 인력 소개 게시판이 아닙니다. 사람과 매장을 잇고, 실질적인 인건비 절감을 주도하며, 인력을 사용하면서 발생하는 문제들을 같이 해결하는 동반자 입니다.
                 </p>
                 <p>
-                    물론, 아무나 실버웍스의 팀원이 될 수는 없습니다. 실버웍스는 구직을 희망하는 시니어분들의 실제 건강 상태, 스마트 디지털 인지 능력, 그리고 체계적인 오프라인 면접으로 완벽히 검증을 통과한 <strong>'베테랑'</strong> 만을 선발하여 매장에 추천합니다.
+                    실버웍스는 구직을 희망하는 시니어분들의 실제 건강 상태, 스마트 디지털 인지 능력, 그리고 체계적인 오프라인 면접으로 완벽히 검증을 통과한 <strong>'베테랑'</strong> 만을 선발하여 매장에 추천합니다.
                 </p>
-                <p>
-                    더불어, '베테랑'의 오랜 인생 경험과 근면함을 존중할 줄 아는 품격 있는 사장님들의 매장을 엄선하여 서로를 연결합니다.
-                </p>
-                <div class="pt-4 font-black text-blue-600 text-base md:text-lg border-t border-slate-100">
-                    변화에 도전 할 사장님과 준비된 베테랑님의 상생 파트너십. 지금 시작됩니다.
+                <div class="pt-4 font-extrabold text-blue-600 border-t border-slate-100">
+                    변화에 도전 할 사장님과 준비된 베테랑님의 상생 파트너십, 지금 시작됩니다.
                 </div>
             </div>
         </section>
     </main>
 
-    <!-- Point Settlement Modal Matching IMG_0872 / IMG_0876 -->
+    <!-- Blue Settlement Modal -->
     <div id="subModal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm hidden z-50 flex items-center justify-center p-4">
         <div class="bg-white rounded-3xl max-w-md w-full p-7 space-y-5 shadow-2xl">
             <div class="flex justify-between items-center border-b border-slate-100 pb-3">
-                <h3 class="text-lg font-black text-slate-900">포인트 현금 정산 신청</h3>
+                <h3 class="text-lg font-black text-slate-900">포인트 정산 신청</h3>
                 <button onclick="closeSubModal()" class="text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark text-lg"></i></button>
             </div>
             <form onsubmit="handleSettlement(event)" class="space-y-4 text-xs">
                 <div>
                     <label class="block font-bold text-slate-700 mb-1">입금 은행 선택</label>
-                    <select id="settle-bank" class="w-full p-3.5 rounded-xl input-toss font-bold text-slate-800">
+                    <select id="settle-bank" class="w-full p-3.5 rounded-xl input-toss font-bold">
                         <option value="신한은행">신한은행</option>
                         <option value="우리은행">우리은행</option>
                         <option value="하나은행">하나은행</option>
@@ -122,17 +133,24 @@
                     </select>
                 </div>
                 <div>
-                    <label class="block font-bold text-slate-700 mb-1">정산 요청 금액 (원)</label>
+                    <label class="block font-bold text-slate-700 mb-1">입금 계좌번호</label>
+                    <input type="text" id="settle-account" placeholder="계좌번호 (- 없이 숫자만 입력)" required class="w-full p-3.5 rounded-xl input-toss font-medium">
+                </div>
+                <div>
+                    <label class="block font-bold text-slate-700 mb-1">정산 요청 금액 (P)</label>
                     <input type="number" id="settle-amount" placeholder="0" required class="w-full p-3.5 rounded-xl input-toss font-bold text-blue-600">
                 </div>
-                <button type="submit" class="w-full py-3.5 bg-rose-500 hover:bg-rose-600 text-white font-bold rounded-xl shadow">정산서 즉시 지급신청</button>
+                <button type="submit" class="w-full py-3.5 btn-toss font-bold rounded-xl shadow">정산 신청하기</button>
             </form>
         </div>
     </div>
 
-    <!-- Footer -->
-    <footer class="bg-slate-900 text-slate-400 text-xs py-8 border-t border-slate-800 text-center px-5">
-        <p>실버웍스 (silverworks), 대표 유연성 010-7464-3657, 대표 민 혁 010-9187-9074, 주소: 경기도 성남시 중원구 광명로 79, 4층 404호 (성남동, 상산빌딩), 사업자등록 번호 : 726-19-02892, 주업종: 경영컨설팅업 (전문, 과학 및 기술서비스업) (업종코드 : 741400) | 부업종: 데이터베이스 및 온라인 정보 제공업 (업종코드 : 724000)</p>
+    <!-- Official Business Footer ONLY on Main Page -->
+    <footer class="bg-slate-900 text-slate-400 text-xs py-10 border-t border-slate-800">
+        <div class="max-w-6xl mx-auto px-5 text-center leading-relaxed">
+            <p>실버웍스 (silverworks), 대표 유연성 010-7464-3657, 대표 민 혁 010-9187-9074, 주소: 경기도 성남시 중원구 광명로 79, 4층 404호 (성남동, 상산빌딩), 사업자등록 번호 : 726-19-02892, 주업종: 경영컨설팅업 (전문, 과학 및 기술서비스업) (업종코드 : 741400) | 부업종: 데이터베이스 및 온라인 정보 제공업 (업종코드 : 724000)</p>
+            <p class="text-[10px] text-slate-600 pt-3">© 2026 silverworks. All rights reserved.</p>
+        </div>
     </footer>
 
     <script>
@@ -160,7 +178,7 @@
                     </a>
                 `;
             } else {
-                html += `<a href="/login.html" class="text-xs font-bold px-4 py-2 rounded-xl bg-slate-100 text-slate-700 hover:bg-slate-200 transition">로그인</a>`;
+                html += `<a href="/login.html" class="text-xs font-bold px-4 py-2 rounded-xl btn-toss shadow-sm">로그인 및 회원가입</a>`;
             }
             userArea.innerHTML = html;
         }
@@ -170,7 +188,15 @@
 
         function handleSettlement(e) {
             e.preventDefault();
-            alert('정산 지급 신청이 접수되었습니다.');
+            const bank = document.getElementById('settle-bank').value;
+            const account = document.getElementById('settle-account').value;
+            const amount = document.getElementById('settle-amount').value;
+
+            const settles = JSON.parse(localStorage.getItem('sw_settlements') || '[]');
+            settles.unshift({ bank, account, amount, date: new Date().toLocaleString() });
+            localStorage.setItem('sw_settlements', JSON.stringify(settles));
+
+            alert(`[정산 신청 완료]\n\n${bank} ${account}\n요청 금액: ${parseInt(amount).toLocaleString()}P\n\n확인 후 순차 지급 처리됩니다.`);
             closeSubModal();
         }
 

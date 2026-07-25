@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css');
-        body { font-family: "Pretendard", sans-serif; background-color: #f9fafb; color: #191f28; word-break: keep-all; }
+        body { font-family: "Pretendard", sans-serif; background-color: #f8fafc; color: #191f28; word-break: keep-all; }
         .btn-toss { background-color: #3182f6; color: #fff; transition: all 0.2s; }
         .btn-toss:hover { background-color: #1b64da; }
     </style>
@@ -34,69 +34,93 @@
     <main class="max-w-7xl mx-auto px-5 py-8 flex-1 w-full space-y-8">
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             <div class="bg-white p-5 rounded-3xl border border-slate-200/80 shadow-sm space-y-1">
-                <span class="text-xs font-bold text-slate-400">누적 매칭 거래액</span>
-                <p class="text-2xl font-black text-slate-900" id="stat-total-volume">0원</p>
-                <p class="text-[11px] text-blue-600 font-semibold">실시간 정산 관리중</p>
+                <span class="text-xs font-bold text-slate-400">누적 등록 공고</span>
+                <p class="text-2xl font-black text-slate-900" id="stat-jobs-count">0건</p>
             </div>
             <div class="bg-white p-5 rounded-3xl border border-slate-200/80 shadow-sm space-y-1">
-                <span class="text-xs font-bold text-slate-400">등록 피크타임 공고</span>
-                <p class="text-2xl font-black text-slate-900" id="stat-job-count">0건</p>
+                <span class="text-xs font-bold text-slate-400">제출된 문진 이력서</span>
+                <p class="text-2xl font-black text-blue-600" id="stat-surveys-count">0건</p>
             </div>
             <div class="bg-white p-5 rounded-3xl border border-slate-200/80 shadow-sm space-y-1">
-                <span class="text-xs font-bold text-slate-400">체력검증 대기건</span>
-                <p class="text-2xl font-black text-amber-600" id="stat-pending-verify">0건</p>
+                <span class="text-xs font-bold text-slate-400">정산 신청 건수</span>
+                <p class="text-2xl font-black text-amber-600" id="stat-settles-count">0건</p>
             </div>
             <div class="bg-white p-5 rounded-3xl border border-slate-200/80 shadow-sm space-y-1">
-                <span class="text-xs font-bold text-slate-400">구독 무통장 입금 승인 대기</span>
-                <p class="text-2xl font-black text-blue-600" id="stat-pending-sub">0건</p>
+                <span class="text-xs font-bold text-slate-400">시스템 데이터 상태</span>
+                <p class="text-sm font-black text-emerald-600 pt-1">실시간 동기화 완료</p>
             </div>
         </div>
 
+        <!-- 실시간 시니어 문진표 현황 -->
         <div class="bg-white rounded-3xl p-6 md:p-8 border border-slate-200/80 shadow-sm space-y-4">
-            <h2 class="text-base font-black text-slate-900"><i class="fa-solid fa-file-invoice-dollar text-blue-600"></i> 사장님 연간 구독 무통장 입금 승인 관리</h2>
+            <h2 class="text-base font-black text-slate-900"><i class="fa-solid fa-file-medical text-blue-600 mr-2"></i>최근 접수된 시니어 건강 문진 이력서</h2>
             <div class="overflow-x-auto">
                 <table class="w-full text-left border-collapse text-xs">
                     <thead>
                         <tr class="bg-slate-50 border-y border-slate-200 text-slate-600 font-bold">
-                            <th class="p-3">신청일시</th>
-                            <th class="p-3">사장님/매장명</th>
-                            <th class="p-3">입금 금액</th>
-                            <th class="p-3">입금자명</th>
-                            <th class="p-3">처리 상태</th>
-                            <th class="p-3 text-right">관리 Action</th>
+                            <th class="p-3">접수 일시</th>
+                            <th class="p-3">성함</th>
+                            <th class="p-3">연락처</th>
+                            <th class="p-3">희망 근무지</th>
+                            <th class="p-3">건강/보행 상태</th>
                         </tr>
                     </thead>
-                    <tbody id="sub-table-body" class="divide-y divide-slate-100 text-slate-700">
-                        <tr><td colspan="6" class="p-6 text-center text-slate-400">현재 대기 중인 신청 내역이 없습니다.</td></tr>
-                    </tbody>
+                    <tbody id="survey-table-body" class="divide-y divide-slate-100 text-slate-700"></tbody>
                 </table>
             </div>
         </div>
 
+        <!-- 실시간 등록 공고 현황 -->
         <div class="bg-white rounded-3xl p-6 md:p-8 border border-slate-200/80 shadow-sm space-y-4">
-            <h2 class="text-base font-black text-slate-900"><i class="fa-solid fa-id-card text-emerald-600"></i> 시니어 체력 검증 & 보건증 심사</h2>
-            <div class="overflow-x-auto">
-                <table class="w-full text-left border-collapse text-xs">
-                    <thead>
-                        <tr class="bg-slate-50 border-y border-slate-200 text-slate-600 font-bold">
-                            <th class="p-3">신청 시니어</th>
-                            <th class="p-3">제출 서류 구분</th>
-                            <th class="p-3">발급 기관 및 등급</th>
-                            <th class="p-3">제출 일시</th>
-                            <th class="p-3">심사 상태</th>
-                            <th class="p-3 text-right">관리 Action</th>
-                        </tr>
-                    </thead>
-                    <tbody id="verify-table-body" class="divide-y divide-slate-100 text-slate-700">
-                        <tr><td colspan="6" class="p-6 text-center text-slate-400">현재 대기 중인 심사 내역이 없습니다.</td></tr>
-                    </tbody>
-                </table>
-            </div>
+            <h2 class="text-base font-black text-slate-900"><i class="fa-solid fa-list-check text-emerald-600 mr-2"></i>실시간 전체 구인 공고 모니터링</h2>
+            <div class="space-y-3" id="jobs-monitor-container"></div>
         </div>
     </main>
 
-    <footer class="bg-slate-900 text-slate-400 text-xs py-8 border-t border-slate-800 text-center px-5">
-        <p>실버웍스 (silverworks), 대표 유연성 010-7464-3657, 대표 민 혁 010-9187-9074, 주소: 경기도 성남시 중원구 광명로 79, 4층 404호 (성남동, 상산빌딩), 사업자등록 번호 : 726-19-02892, 주업종: 경영컨설팅업 (전문, 과학 및 기술서비스업) (업종코드 : 741400) | 부업종: 데이터베이스 및 온라인 정보 제공업 (업종코드 : 724000)</p>
-    </footer>
+    <script>
+        function loadAdminData() {
+            const surveys = JSON.parse(localStorage.getItem('sw_surveys') || '[]');
+            const jobs = JSON.parse(localStorage.getItem('sw_jobs') || '[]');
+            const settles = JSON.parse(localStorage.getItem('sw_settlements') || '[]');
+
+            document.getElementById('stat-jobs-count').innerText = jobs.length + '건';
+            document.getElementById('stat-surveys-count').innerText = surveys.length + '건';
+            document.getElementById('stat-settles-count').innerText = settles.length + '건';
+
+            // Render Surveys
+            const surveyBody = document.getElementById('survey-table-body');
+            if (surveys.length === 0) {
+                surveyBody.innerHTML = `<tr><td colspan="5" class="p-6 text-center text-slate-400">접수된 문진 이력서가 없습니다.</td></tr>`;
+            } else {
+                surveyBody.innerHTML = surveys.map(s => `
+                    <tr>
+                        <td class="p-3 text-slate-400">${s.date}</td>
+                        <td class="p-3 font-bold text-slate-900">${s.name || '미입력'}</td>
+                        <td class="p-3 font-mono">${s.phone || '미입력'}</td>
+                        <td class="p-3">${s.location || '미입력'}</td>
+                        <td class="p-3"><span class="bg-blue-50 text-blue-600 font-bold px-2 py-0.5 rounded">${s.stairs || '문진 완료'}</span></td>
+                    </tr>
+                `).join('');
+            }
+
+            // Render Jobs
+            const jobContainer = document.getElementById('jobs-monitor-container');
+            if (jobs.length === 0) {
+                jobContainer.innerHTML = `<p class="text-xs text-slate-400 text-center py-6">등록된 공고가 없습니다.</p>`;
+            } else {
+                jobContainer.innerHTML = jobs.map(j => `
+                    <div class="p-4 rounded-2xl bg-slate-50 border border-slate-200/80 flex justify-between items-center text-xs">
+                        <div>
+                            <strong class="text-sm font-bold text-slate-900">${j.title}</strong>
+                            <p class="text-slate-500 mt-0.5">매장: ${j.storeName} | 일시: ${j.date} ${j.time} | 일당: ${parseInt(j.pay).toLocaleString()}원</p>
+                        </div>
+                        <span class="font-bold text-blue-600 bg-blue-50 px-3 py-1 rounded-full">${j.status}</span>
+                    </div>
+                `).join('');
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', loadAdminData);
+    </script>
 </body>
 </html>

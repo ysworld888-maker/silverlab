@@ -16,7 +16,6 @@
     </style>
 </head>
 <body class="min-h-screen flex flex-col justify-between antialiased">
-    <!-- Header -->
     <header class="bg-white/80 backdrop-blur-md border-b border-slate-100">
         <div class="max-w-6xl mx-auto px-5 h-16 flex items-center justify-between">
             <a href="/index.html" class="flex items-center gap-2.5">
@@ -32,28 +31,29 @@
         </div>
     </header>
 
-    <!-- Step Wizard UI Matching IMG_0873 -->
-    <main class="flex-1 flex items-center justify-center py-12 px-5">
-        <div class="w-full max-w-lg bg-white rounded-3xl p-8 border border-slate-200/80 shadow-xl space-y-6 relative text-center">
+    <main class="flex-1 flex items-center justify-center py-10 px-5">
+        <div class="w-full max-w-lg bg-white rounded-3xl p-8 border border-slate-200/80 shadow-xl space-y-6 text-center">
             
-            <!-- Step Badge Header -->
-            <div class="space-y-1">
-                <div class="inline-flex items-center justify-center w-8 h-8 rounded-full bg-blue-50 text-blue-600 font-extrabold text-sm mb-1" id="step-badge">
-                    1
+            <!-- Visual Progress Gauge Bar -->
+            <div class="space-y-2">
+                <div class="flex justify-between items-center text-xs font-bold text-slate-500">
+                    <span>문진 진행률</span>
+                    <span id="step-indicator" class="text-blue-600">1 / 12</span>
                 </div>
-                <h2 class="text-xl font-bold text-slate-900">구직 베테랑 건강 문진 이력서</h2>
-                <p class="text-xs text-slate-400">답변하신 정보를 바탕으로 최적의 일자리를 매칭해 드립니다.</p>
+                <div class="w-full bg-slate-100 h-2.5 rounded-full overflow-hidden">
+                    <div id="progress-bar" class="bg-blue-600 h-full transition-all duration-300 rounded-full" style="width: 8.33%;"></div>
+                </div>
             </div>
 
-            <!-- Question Card Body -->
-            <div id="wizard-content" class="text-left space-y-4 pt-2">
-                <!-- Dynamically Populated by JS -->
-            </div>
+            <h2 class="text-xl font-bold text-slate-900">구직 베테랑 건강 문진 이력서</h2>
 
-            <!-- Navigation Buttons Matching IMG_0873 -->
+            <!-- Question Body -->
+            <div id="wizard-content" class="text-left space-y-4 pt-1"></div>
+
+            <!-- Navigation Buttons -->
             <div class="pt-4 flex gap-3">
                 <button type="button" onclick="prevStep()" id="prev-btn" class="flex-1 py-3.5 border border-slate-200 font-bold text-xs rounded-xl text-slate-600 hover:bg-slate-50 transition hidden">
-                    이전
+                    이전 질문
                 </button>
                 <button type="button" onclick="nextStep()" id="next-btn" class="flex-1 py-3.5 btn-toss font-bold text-xs rounded-xl shadow-md">
                     다음 단계
@@ -62,110 +62,66 @@
         </div>
     </main>
 
-    <footer class="bg-slate-900 text-slate-400 text-xs py-8 border-t border-slate-800 text-center px-5">
-        <p>실버웍스 (silverworks), 대표 유연성 010-7464-3657, 대표 민 혁 010-9187-9074, 주소: 경기도 성남시 중원구 광명로 79, 4층 404호 (성남동, 상산빌딩), 사업자등록 번호 : 726-19-02892, 주업종: 경영컨설팅업 (전문, 과학 및 기술서비스업) (업종코드 : 741400) | 부업종: 데이터베이스 및 온라인 정보 제공업 (업종코드 : 724000)</p>
-    </footer>
-
     <script>
-        // Full Original 1~13 Questions Data
         const questions = [
-            {
-                q: "1. 오늘 이 일자리 신청은 누가 도와주고 계시나요?",
-                type: "radio",
-                options: ["어르신 본인이 직접 스마트폰을 보고 있어요.", "아들, 딸, 손주 등 가족이 대신 눌러주고 있어요.", "주변 사람의 도움을 받고 있어요."]
-            },
-            {
-                q: "2. 성함이 어떻게 되시나요?",
-                type: "text",
-                placeholder: "성함 입력"
-            },
-            {
-                q: "3. 생년월일을 입력해 주세요.",
-                type: "text",
-                placeholder: "예: 19580101"
-            },
-            {
-                q: "4. 휴대전화 번호를 적어주세요.",
-                type: "tel",
-                placeholder: "010-0000-0000"
-            },
-            {
-                q: "5. 근무를 희망하는 동네 이름을 적어주세요. (ex. 성남시 분당구)",
-                type: "text",
-                placeholder: "희망 지역 입력"
-            },
-            {
-                q: "7. 아파트나 지하철 계단을 이용할 때, 쉬지 않고 3층 높이까지 걸어서 올라가실 수 있습니까?",
-                type: "radio",
-                options: ["네, 숨차지 않고 잘 올라갑니다.", "무릎이나 허리가 조금 쑤시지만 올라갑니다.", "관절이 아파서 계단 이용이 힘듭니다."]
-            },
-            {
-                q: "8. 가볍게 1시간 걸을 수 있습니까?",
-                type: "radio",
-                options: ["네", "아니요"]
-            },
-            {
-                q: "8-2. 현장에서 조심해야 할 지병이 있으십니까?",
-                type: "radio",
-                options: ["아주 건강합니다.", "네, 하지만 일 하는데 문제 없습니다.", "주기적으로 통증이 오거나 병원 치료 중입니다."]
-            },
-            {
-                q: "9. 시끄러운 식당이나 마트 안에서도 사장님의 지시 사항이나 손님의 주문 소리를 잘 들으실 수 있습니까?",
-                type: "radio",
-                options: ["네, 귀가 밝아서 잘 들립니다.", "가끔 안 들릴 때가 있지만 소통에 문제없습니다.", "귀가 조금 어두워 큰 소리로 말씀해 주셔야 합니다."]
-            },
-            {
-                q: "10. 평소 스마트폰으로 자녀분들과 카카오톡 메시지를 주고 받으실 때 어려움을 겪습니까?",
-                type: "radio",
-                options: ["아니요, 문제 없습니다.", "네, 조금 어렵습니다."]
-            },
-            {
-                q: "11. 실버웍스는 하루에 2~3시간씩 일하는 초단기 일자리를 주로 연결해 드립니다.",
-                type: "radio",
-                options: ["네, 이해했습니다.", "되도록이면 더 길게 일하고 싶습니다."]
-            },
-            {
-                q: "13. 올해 (2026) 정부에서 제공하는 노인 일자리 사업에 참여하신 적이 있습니까?",
-                type: "radio",
-                options: ["없습니다. (잘 모르겠습니다.)", "있습니다."]
-            }
+            { id: "q1", q: "1. 오늘 이 일자리 신청은 누가 도와주고 계시나요?", type: "radio", options: ["어르신 본인이 직접 스마트폰을 보고 있어요.", "아들, 딸, 손주 등 가족이 대신 눌러주고 있어요.", "주변 사람의 도움을 받고 있어요."] },
+            { id: "name", q: "2. 성함이 어떻게 되시나요?", type: "text", placeholder: "성함 입력" },
+            { id: "birth", q: "3. 생년월일을 입력해 주세요.", type: "text", placeholder: "예: 19580101" },
+            { id: "phone", q: "4. 휴대전화 번호를 적어주세요.", type: "tel", placeholder: "010-0000-0000" },
+            { id: "location", q: "5. 근무를 희망하는 동네 이름을 적어주세요. (ex. 성남시 분당구)", type: "text", placeholder: "희망 지역 입력" },
+            { id: "stairs", q: "7. 아파트나 지하철 계단을 이용할 때, 쉬지 않고 3층 높이까지 걸어서 올라가실 수 있습니까?", type: "radio", options: ["네, 숨차지 않고 잘 올라갑니다.", "무릎이나 허리가 조금 쑤시지만 올라갑니다.", "관절이 아파서 계단 이용이 힘듭니다."] },
+            { id: "walk", q: "8. 가볍게 1시간 걸을 수 있습니까?", type: "radio", options: ["네", "아니요"] },
+            { id: "disease", q: "8-2. 현장에서 조심해야 할 지병이 있으십니까?", type: "radio", options: ["아주 건강합니다.", "네, 하지만 일 하는데 문제 없습니다.", "주기적으로 통증이 오거나 병원 치료 중입니다."] },
+            { id: "hearing", q: "9. 시끄러운 식당이나 마트 안에서도 지시 사항이나 주문 소리를 잘 들으실 수 있습니까?", type: "radio", options: ["네, 귀가 밝아서 잘 들립니다.", "가끔 안 들릴 때가 있지만 소통에 문제없습니다.", "귀가 조금 어두워 큰 소리로 말씀해 주셔야 합니다."] },
+            { id: "kakao", q: "10. 평소 스마트폰으로 자녀분들과 카카오톡 메시지를 주고 받으실 때 어려움을 겪습니까?", type: "radio", options: ["아니요, 문제 없습니다.", "네, 조금 어렵습니다."] },
+            { id: "worktime", q: "11. 실버웍스는 하루에 2~3시간씩 일하는 초단기 일자리를 주로 연결해 드립니다.", type: "radio", options: ["네, 이해했습니다.", "되도록이면 더 길게 일하고 싶습니다."] },
+            { id: "govJob", q: "13. 올해 (2026) 정부에서 제공하는 노인 일자리 사업에 참여하신 적이 있습니까?", type: "radio", options: ["없습니다. (잘 모르겠습니다.)", "있습니다."] }
         ];
 
         let currentStep = 0;
         const answers = {};
 
         function renderStep() {
-            document.getElementById('step-badge').innerText = currentStep + 1;
             const item = questions[currentStep];
             const container = document.getElementById('wizard-content');
             
+            // Gauge Bar Update
+            const total = questions.length;
+            const pct = ((currentStep + 1) / total) * 100;
+            document.getElementById('step-indicator').innerText = `${currentStep + 1} / ${total}`;
+            document.getElementById('progress-bar').style.width = `${pct}%`;
+
             let html = `<label class="block font-bold text-slate-800 text-sm mb-3">${item.q}</label>`;
 
             if (item.type === "radio") {
                 html += `<div class="space-y-2">`;
-                item.options.forEach((opt, idx) => {
-                    const isSelected = answers[currentStep] === opt;
+                item.options.forEach((opt) => {
+                    const isSelected = answers[item.id] === opt;
                     html += `
-                        <div onclick="selectRadio('${opt}')" class="p-3.5 rounded-xl border border-slate-200 text-xs font-medium cursor-pointer hover:border-blue-500 transition ${isSelected ? 'border-blue-600 bg-blue-50/60 text-blue-600 font-bold' : 'bg-white text-slate-700'}">
+                        <div onclick="selectRadio('${item.id}', '${opt}')" class="p-3.5 rounded-xl border border-slate-200 text-xs font-medium cursor-pointer hover:border-blue-500 transition ${isSelected ? 'border-blue-600 bg-blue-50/60 text-blue-600 font-bold' : 'bg-white text-slate-700'}">
                             ${opt}
                         </div>
                     `;
                 });
                 html += `</div>`;
+                document.getElementById('next-btn').classList.add('hidden');
             } else {
-                const val = answers[currentStep] || '';
-                html += `<input type="${item.type}" id="step-input" value="${val}" placeholder="${item.placeholder}" oninput="answers[${currentStep}] = this.value" class="w-full p-3.5 rounded-xl input-toss text-xs font-medium">`;
+                const val = answers[item.id] || '';
+                html += `<input type="${item.type}" id="step-input" value="${val}" placeholder="${item.placeholder}" oninput="answers['${item.id}'] = this.value" class="w-full p-3.5 rounded-xl input-toss text-xs font-medium">`;
+                document.getElementById('next-btn').classList.remove('hidden');
             }
 
             container.innerHTML = html;
-
             document.getElementById('prev-btn').classList.toggle('hidden', currentStep === 0);
             document.getElementById('next-btn').innerText = currentStep === questions.length - 1 ? "제출 완료" : "다음 단계";
         }
 
-        function selectRadio(val) {
-            answers[currentStep] = val;
+        function selectRadio(key, val) {
+            answers[key] = val;
             renderStep();
+            setTimeout(() => {
+                nextStep();
+            }, 200);
         }
 
         function nextStep() {
@@ -173,7 +129,12 @@
                 currentStep++;
                 renderStep();
             } else {
-                alert('문진표 작성이 완료되었습니다. 검증 처리 후 연락드리겠습니다.');
+                // Save to localStorage for Admin Sync
+                const surveys = JSON.parse(localStorage.getItem('sw_surveys') || '[]');
+                surveys.unshift({ ...answers, date: new Date().toLocaleString() });
+                localStorage.setItem('sw_surveys', JSON.stringify(surveys));
+
+                alert('건강 문진 이력서 작성이 완료되었습니다. 검증 후 순차 연락드리겠습니다.');
                 window.location.href = '/index.html';
             }
         }
@@ -209,7 +170,7 @@
                     </a>
                 `;
             } else {
-                html += `<a href="/login.html" class="text-xs font-bold px-4 py-2 rounded-xl bg-slate-100 text-slate-700 hover:bg-slate-200 transition">로그인</a>`;
+                html += `<a href="/login.html" class="text-xs font-bold px-4 py-2 rounded-xl bg-blue-600 text-white shadow-sm">로그인 및 회원가입</a>`;
             }
             userArea.innerHTML = html;
         }

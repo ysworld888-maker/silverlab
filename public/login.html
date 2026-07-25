@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>silverworks - 회원가입 및 로그인</title>
+    <title>silverworks - 로그인 및 회원가입</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
@@ -16,7 +16,6 @@
     </style>
 </head>
 <body class="min-h-screen flex flex-col justify-between antialiased">
-    <!-- Header -->
     <header class="bg-white/80 backdrop-blur-md border-b border-slate-100">
         <div class="max-w-6xl mx-auto px-5 h-16 flex items-center justify-between">
             <a href="/index.html" class="flex items-center gap-2">
@@ -31,11 +30,8 @@
         </div>
     </header>
 
-    <!-- Main Pill Switcher Component Matching IMG_0870 & IMG_0871 -->
     <main class="flex-1 flex items-center justify-center py-12 px-5">
         <div class="w-full max-w-md bg-white rounded-3xl p-8 border border-slate-200/80 shadow-xl space-y-6 text-center">
-            
-            <!-- Logo Icon -->
             <div class="inline-flex p-2.5 rounded-2xl bg-blue-50 text-blue-600 mb-1">
                 <svg class="w-8 h-8" viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="8" stroke-linecap="round" stroke-linejoin="round">
                     <path d="M 14 58 C 28 72 44 72 58 48 C 72 24 88 18 95 35" />
@@ -43,19 +39,18 @@
                 </svg>
             </div>
 
-            <!-- Pill Segmented Control Switcher -->
+            <!-- Segmented Pill Control -->
             <div class="bg-slate-100 p-1.5 rounded-full flex text-xs font-bold">
                 <button type="button" onclick="switchTab('senior')" id="tab-btn-senior" class="flex-1 py-2.5 rounded-full bg-blue-600 text-white shadow-sm transition">
-                    구직 시니어 회원
+                    시니어 회원
                 </button>
                 <button type="button" onclick="switchTab('employer')" id="tab-btn-employer" class="flex-1 py-2.5 rounded-full text-slate-500 hover:text-slate-800 transition">
-                    구인 사업장 사장님
+                    사장님 회원
                 </button>
             </div>
 
-            <h2 id="form-title" class="text-xl font-bold text-slate-900 pt-1">구직 시니어 회원가입 신청</h2>
+            <h2 id="form-title" class="text-xl font-bold text-slate-900 pt-1">시니어 회원 로그인</h2>
 
-            <!-- Form -->
             <form onsubmit="handleSubmit(event)" class="space-y-4 text-xs text-left">
                 <div>
                     <label class="block font-bold text-slate-700 mb-1">사용자 아이디 (ID)</label>
@@ -65,30 +60,26 @@
                     <label class="block font-bold text-slate-700 mb-1">비밀번호 (Password)</label>
                     <input type="password" id="user-pw" placeholder="비밀번호 입력" required class="w-full p-3.5 rounded-xl input-toss">
                 </div>
-                <div id="extra-field">
-                    <label class="block font-bold text-slate-700 mb-1">정식 성함 또는 대표 성함</label>
-                    <input type="text" id="user-name" placeholder="성함 입력" required class="w-full p-3.5 rounded-xl input-toss">
+                <div id="extra-field" class="hidden">
+                    <label class="block font-bold text-slate-700 mb-1">성함 / 대표자명</label>
+                    <input type="text" id="user-name" placeholder="성함 입력" class="w-full p-3.5 rounded-xl input-toss">
                 </div>
 
                 <button type="submit" id="submit-btn" class="w-full py-3.5 btn-toss font-bold text-sm rounded-xl shadow-md mt-2">
-                    회원가입 전산 신청서 제출
+                    보안 인증 로그인
                 </button>
             </form>
 
             <div class="pt-2 text-xs text-slate-500">
-                <span id="toggle-desc">이미 계정이 있으십니까?</span>
-                <button onclick="toggleMode()" id="toggle-link" class="text-blue-600 font-bold hover:underline ml-1">로그인 화면 전환 →</button>
+                <span id="toggle-desc">아직 회원이 아니십니까?</span>
+                <button onclick="toggleMode()" id="toggle-link" class="text-blue-600 font-bold hover:underline ml-1">회원가입 신청 →</button>
             </div>
         </div>
     </main>
 
-    <footer class="bg-slate-900 text-slate-400 text-xs py-8 border-t border-slate-800 text-center px-5">
-        <p>실버웍스 (silverworks), 대표 유연성 010-7464-3657, 대표 민 혁 010-9187-9074, 주소: 경기도 성남시 중원구 광명로 79, 4층 404호 (성남동, 상산빌딩), 사업자등록 번호 : 726-19-02892, 주업종: 경영컨설팅업 (전문, 과학 및 기술서비스업) (업종코드 : 741400) | 부업종: 데이터베이스 및 온라인 정보 제공업 (업종코드 : 724000)</p>
-    </footer>
-
     <script>
         let currentRole = 'senior';
-        let isLoginMode = false;
+        let isSignUpMode = false;
 
         function switchTab(role) {
             currentRole = role;
@@ -106,7 +97,7 @@
         }
 
         function toggleMode() {
-            isLoginMode = !isLoginMode;
+            isSignUpMode = !isSignUpMode;
             updateFormState();
         }
 
@@ -117,36 +108,33 @@
             const toggleDesc = document.getElementById('toggle-desc');
             const toggleLink = document.getElementById('toggle-link');
 
-            const roleName = currentRole === 'senior' ? '구직 시니어' : '사장님';
+            const roleName = currentRole === 'senior' ? '시니어' : '사장님';
 
-            if (isLoginMode) {
-                title.innerText = `${roleName} 회원 보안 로그인`;
+            if (isSignUpMode) {
+                title.innerText = `${roleName} 회원가입 신청`;
+                extra.classList.remove('hidden');
+                submitBtn.innerText = "회원가입 신청서 제출";
+                toggleDesc.innerText = "이미 계정이 있으십니까?";
+                toggleLink.innerText = "로그인 화면 전환 →";
+            } else {
+                title.innerText = `${roleName} 회원 로그인`;
                 extra.classList.add('hidden');
                 submitBtn.innerText = "보안 인증 로그인";
                 toggleDesc.innerText = "아직 회원이 아니십니까?";
                 toggleLink.innerText = "회원가입 신청 →";
-            } else {
-                title.innerText = `${roleName} 회원가입 신청`;
-                extra.classList.remove('hidden');
-                submitBtn.innerText = "회원가입 전산 신청서 제출";
-                toggleDesc.innerText = "이미 계정이 있으십니까?";
-                toggleLink.innerText = "로그인 화면 전환 →";
             }
         }
 
         function handleSubmit(e) {
             e.preventDefault();
             const id = document.getElementById('user-id').value;
-            const name = document.getElementById('user-name') ? document.getElementById('user-name').value : '회원';
+            const nameEl = document.getElementById('user-name');
+            const name = (nameEl && nameEl.value) ? nameEl.value : (currentRole === 'senior' ? '시니어 회원' : '사장님 회원');
 
             localStorage.setItem('sw_user', JSON.stringify({ role: currentRole, id: id, name: name }));
             localStorage.setItem('sw_points', '0');
 
-            if (isLoginMode) {
-                alert(`${name}님, 로그인되었습니다.`);
-            } else {
-                alert(`${name}님, 회원가입 신청이 완료되었습니다.`);
-            }
+            alert(`${name}님, 정상적으로 ${isSignUpMode ? '가입' : '로그인'}되었습니다.`);
 
             if (currentRole === 'senior') {
                 window.location.href = '/senior-apply.html';
