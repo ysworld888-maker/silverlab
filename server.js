@@ -27,6 +27,17 @@ app.post('/api/signup', (req, res) => {
   }
   const newUser = { id, pw, name, phone, role, approved: false, points: 0, isSubscribed: false, subRequested: false, hasSurvey: false };
   usersData.push(newUser);
+
+  // Auto Welcome Notification
+  notificationsData.unshift({
+    id: 'noti-' + Date.now(),
+    targetUserId: id,
+    title: '[회원가입 축하]',
+    content: `${name}님, silverworks 회원가입을 진심으로 축하합니다! 세상을 은빛 지혜로 채우는 여정에 함께해주셔서 감사합니다.`,
+    date: new Date().toLocaleString(),
+    isRead: false
+  });
+
   res.json({ success: true, user: newUser });
 });
 
@@ -68,12 +79,11 @@ app.post('/api/users/:id/approve-subscription', (req, res) => {
     user.isSubscribed = true;
     user.subRequested = false;
     
-    // Send Notification to Employer
     notificationsData.unshift({
       id: 'noti-' + Date.now(),
       targetUserId: user.id,
       title: '[구독 승인 완료]',
-      content: '사장님, 1년 정기 구독이 승인되어 [구독 회원] 배지 부여 및 피크 공고 작성 권한이 활성화되었습니다.',
+      content: '사장님, 1년 정기 구독이 승인되어 [구독 회원] 배지 부여 및 피크 상단 고정 공고 작성 권한이 활성화되었습니다.',
       date: new Date().toLocaleString(),
       isRead: false
     });
@@ -87,22 +97,24 @@ app.get('/api/jobs', (req, res) => {
 });
 
 app.post('/api/jobs', (req, res) => {
-  const { employerId, storeName, title, category, date, time, pay } = req.body;
+  const { employerId, storeName, title, category, date, time, pay, isPeak } = req.body;
   const employer = usersData.find(u => u.id === employerId);
-  
-  if (!employer || !employer.isSubscribed) {
-    return res.status(403).json({ success: false, message: '구독 사장님 회원만 공고를 등록할 수 있습니다.' });
+
+  // Peak Job Subscription Restriction
+  if (isPeak && (!employer || !employer.isSubscribed)) {
+    return res.status(403).json({ success: false, message: '피크 상단 고정 공고는 구독 회원 사장님만 이용 가능합니다.' });
   }
 
   const newJob = {
     id: 'job-' + Date.now(),
     employerId,
     storeName,
-    title,
+    title: isPeak ? `[피크 상단고정] ${title}` : title,
     category,
     date,
     time,
     pay: parseInt(pay, 10),
+    isPeak: !!isPeak,
     status: '구직자 모집중',
     candidates: []
   };
@@ -122,7 +134,6 @@ app.delete('/api/jobs/:id', (req, res) => {
   const jobIdx = jobsData.findIndex(j => j.id === req.params.id);
   if (jobIdx !== -1) {
     const job = jobsData[jobIdx];
-    // Notify seniors
     if (job.candidates) {
       job.candidates.forEach(c => {
         notificationsData.unshift({
@@ -149,7 +160,7 @@ app.post('/api/jobs/:id/apply', (req, res) => {
   const already = job.candidates.find(c => c.seniorId === seniorId);
   if (already) return res.status(400).json({ success: false, message: '이미 지원한 공고입니다.' });
 
-  job.candidates.push({ seniorId, name, phone, status: '지원 완료 (사장님 검토 중)' });
+  job.candidates.push({ seniorId, name, phone, status: '지원 완료 (사장님 검토 중)', rank: null, bonusPayPerHour: 0 });
   res.json({ success: true });
 });
 
@@ -158,7 +169,10 @@ app.post('/api/jobs/:id/rank', (req, res) => {
   const job = jobsData.find(j => j.id === req.params.id);
   if (job) {
     const cand = job.candidates.find(c => c.seniorId === seniorId);
-    if (cand) cand.status = `${rank} 지정 완료`;
+    if (cand) {
+      cand.rank = rank;
+      cand.status = `${rank} 지정 완료`;
+    }
 
     notificationsData.unshift({
       id: 'noti-' + Date.now(),
@@ -183,7 +197,7 @@ app.post('/api/jobs/:id/hire', (req, res) => {
       id: 'noti-' + Date.now(),
       targetUserId: seniorId,
       title: '[채용 확정 알림]',
-      content: `'${job.title}' 공고에 최종 채용되었습니다! 출근을 준비해 주세요.`,
+      content: `'${job.title}' 공고에 최종 채용되었습니다! 출근 준비를 시작해 주세요.`,
       date: new Date().toLocaleString(),
       isRead: false
     });
@@ -191,17 +205,86 @@ app.post('/api/jobs/:id/hire', (req, res) => {
   res.json({ success: true });
 });
 
-app.post('/api/jobs/:id/pay-points', (req, res) => {
-  const { seniorId, amount } = req.body;
-  const senior = usersData.find(u => u.id === seniorId);
-  if (senior) {
-    senior.points = (senior.points || 0) + parseInt(amount, 10);
+// Cancel Hire & Auto Promotion with Bonus Pay Logic
+app.post('/api/jobs/:id/cancel-hire', (req, res) => {
+  const { seniorId } = req.body;
+  const job = jobsData.find(j => j.id === req.params.id);
+  if (!job) return res.status(404).json({ success: false, message: '공고를 찾을 수 없습니다.' });
+
+  const cancelledCand = job.candidates.find(c => c.seniorId === seniorId);
+  if (cancelledCand) {
+    cancelledCand.status = '채용 취소됨';
     
+    // Notify Cancelled Senior
+    notificationsData.unshift({
+      id: 'noti-' + Date.now(),
+      targetUserId: seniorId,
+      title: '[채용 취소 알림]',
+      content: `'${job.title}' 공고의 채용이 취소되었습니다.`,
+      date: new Date().toLocaleString(),
+      isRead: false
+    });
+  }
+
+  // Find next candidate in order (2nd rank -> 3rd rank)
+  const candidate2 = job.candidates.find(c => c.rank === '2순위' && c.status !== '채용 취소됨');
+  const candidate3 = job.candidates.find(c => c.rank === '3순위' && c.status !== '채용 취소됨');
+
+  let promotedCand = candidate2 || candidate3;
+
+  if (promotedCand) {
+    const isSecond = promotedCand.rank === '2순위';
+    const bonusPerHour = isSecond ? 1000 : 2000;
+    promotedCand.status = `${promotedCand.rank} 승계 채용 확정 (시급 +${bonusPerHour.toLocaleString()}원 가산)`;
+    promotedCand.bonusPayPerHour = bonusPerHour;
+
+    // Notifications
+    notificationsData.unshift({
+      id: 'noti-' + Date.now(),
+      targetUserId: promotedCand.seniorId,
+      title: '[자동 승계 채용 알림]',
+      content: `'${job.title}' 공고에 1순위 취소로 인해 ${promotedCand.rank} 승계 채용되었습니다! (시급 당 +${bonusPerHour.toLocaleString()}원 추가 가산)`,
+      date: new Date().toLocaleString(),
+      isRead: false
+    });
+
+    notificationsData.unshift({
+      id: 'noti-' + Date.now(),
+      targetUserId: job.employerId,
+      title: '[승계 채용 처리 알림]',
+      content: `'${job.title}' 공고의 1순위 채용 취소로 인해 ${promotedCand.name}님(${promotedCand.rank})이 자동 승계 채용되었습니다.`,
+      date: new Date().toLocaleString(),
+      isRead: false
+    });
+  }
+
+  res.json({ success: true, promoted: promotedCand ? promotedCand.name : null });
+});
+
+// Pay Points to Senior with Hourly Bonus Calculation
+app.post('/api/jobs/:id/pay-points', (req, res) => {
+  const { seniorId, basePay } = req.body;
+  const job = jobsData.find(j => j.id === req.params.id);
+  const senior = usersData.find(u => u.id === seniorId);
+
+  if (job && senior) {
+    const cand = job.candidates.find(c => c.seniorId === seniorId);
+    let bonusTotal = 0;
+
+    // Calculate 2~3 hours bonus if applicable
+    if (cand && cand.bonusPayPerHour > 0) {
+      const hours = 3; // Standard 3 hour shift calculation
+      bonusTotal = cand.bonusPayPerHour * hours;
+    }
+
+    const totalPay = parseInt(basePay, 10) + bonusTotal;
+    senior.points = (senior.points || 0) + totalPay;
+
     notificationsData.unshift({
       id: 'noti-' + Date.now(),
       targetUserId: seniorId,
       title: '[포인트 지급 완료]',
-      content: `근무 대가로 ${parseInt(amount, 10).toLocaleString()}P가 지급되었습니다.`,
+      content: `'${job.title}' 근무 대가로 ${totalPay.toLocaleString()}P (가산금 ${bonusTotal.toLocaleString()}P 포함)가 지급되었습니다.`,
       date: new Date().toLocaleString(),
       isRead: false
     });
@@ -265,6 +348,12 @@ app.post('/api/notifications/:userId/read', (req, res) => {
   notificationsData.forEach(n => {
     if (n.targetUserId === req.params.userId) n.isRead = true;
   });
+  res.json({ success: true });
+});
+
+app.delete('/api/notifications/item/:id', (req, res) => {
+  const idx = notificationsData.findIndex(n => n.id === req.params.id);
+  if (idx !== -1) notificationsData.splice(idx, 1);
   res.json({ success: true });
 });
 

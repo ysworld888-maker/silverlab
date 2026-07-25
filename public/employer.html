@@ -42,14 +42,14 @@
                     <span class="text-xs font-bold text-slate-400">구독 회원 우대 혜택</span>
                     <span id="sub-badge-area"></span>
                 </div>
-                <h3 class="text-xl font-black text-slate-800">공고 등록 권한</h3>
-                <p class="text-xs text-slate-500">구독 회원만 피크 공고 작성이 가능합니다.</p>
+                <h3 class="text-xl font-black text-slate-800">피크 고고 작성 권한</h3>
+                <p class="text-xs text-slate-500">구독 회원만 상단 고정 피크 공고 등록이 가능합니다.</p>
                 <button onclick="openSubscribeModal()" class="btn-sky text-xs font-bold px-4 py-2 rounded-xl shadow-sm mt-2">구독하기</button>
             </div>
             <div class="bg-white rounded-3xl p-6 border border-sky-100 shadow-sm space-y-2">
-                <span class="text-xs font-bold text-slate-400">등록한 피크 공고</span>
+                <span class="text-xs font-bold text-slate-400">등록한 구인 공고</span>
                 <h3 class="text-2xl font-black text-slate-800" id="emp-active-count">0건</h3>
-                <button onclick="tryOpenCreateJobModal()" class="btn-sky text-xs font-bold px-4 py-2 rounded-xl shadow-sm">+ 피크 공고 작성</button>
+                <button onclick="openCreateJobModal()" class="btn-sky text-xs font-bold px-4 py-2 rounded-xl shadow-sm">+ 신규 공고 작성</button>
             </div>
             <div class="bg-sky-500 text-white rounded-3xl p-6 shadow-sm space-y-2">
                 <span class="text-xs font-bold text-sky-100">사업용 지정 계좌</span>
@@ -61,7 +61,7 @@
         <div class="bg-white rounded-3xl p-6 md:p-8 border border-sky-100 shadow-sm space-y-6">
             <div class="flex justify-between items-center border-b border-sky-100 pb-4">
                 <h2 class="text-lg font-black text-slate-800">내 매장 구인 공고 관리</h2>
-                <button onclick="tryOpenCreateJobModal()" class="btn-sky text-xs font-bold px-4 py-2.5 rounded-xl">+ 신규 공고 등록</button>
+                <button onclick="openCreateJobModal()" class="btn-sky text-xs font-bold px-4 py-2.5 rounded-xl">+ 신규 공고 작성</button>
             </div>
             <div class="space-y-4" id="employer-job-list"></div>
         </div>
@@ -81,7 +81,7 @@
                     <p><strong>계좌번호:</strong> 812701-04-182934</p>
                     <p><strong>예금주:</strong> 주식회사 실버웍스</p>
                 </div>
-                <p class="text-slate-500">입금 후 아래 신청 버튼을 누르시면, 관리자 확인 후 프로필에 [구독 회원] 배지가 부여되며 공고 등록 권한이 활성화됩니다.</p>
+                <p class="text-slate-500">입금 후 신청하시면 관리자 승인 후 프로필에 [구독 회원] 배지 부여 및 피크 상단 고정 공고 작성 권한이 부여됩니다.</p>
                 <button onclick="requestSubscription()" class="w-full py-3.5 btn-sky font-bold rounded-xl shadow">입금 완료 및 구독 신청</button>
             </div>
         </div>
@@ -91,13 +91,13 @@
     <div id="createJobModal" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm hidden z-50 flex items-center justify-center p-4">
         <div class="bg-white rounded-3xl max-w-lg w-full p-7 space-y-5 shadow-2xl">
             <div class="flex justify-between items-center border-b border-sky-100 pb-3">
-                <h3 class="text-lg font-black text-slate-800">피크타임 구인 공고 등록</h3>
+                <h3 class="text-lg font-black text-slate-800">구인 공고 작성</h3>
                 <button onclick="closeCreateJobModal()" class="text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark text-lg"></i></button>
             </div>
             <form onsubmit="handleCreateJob(event)" class="space-y-4 text-xs">
                 <div>
                     <label class="block font-bold text-slate-700 mb-1">매장명</label>
-                    <input type="text" id="job-store" placeholder="예: 맛있는 식당" required class="w-full p-3.5 rounded-xl input-sky font-medium">
+                    <input type="text" id="job-store" placeholder="예: 사업장 매장명 입력" required class="w-full p-3.5 rounded-xl input-sky font-medium">
                 </div>
                 <div>
                     <label class="block font-bold text-slate-700 mb-1">공고 제목</label>
@@ -127,6 +127,16 @@
                         <input type="number" id="job-pay" placeholder="30000" required class="w-full p-3.5 rounded-xl input-sky font-bold text-sky-600">
                     </div>
                 </div>
+
+                <!-- Peak Job Option Only for Subscribed Employers -->
+                <div class="p-3.5 bg-sky-50 rounded-xl border border-sky-100 flex items-center justify-between">
+                    <div>
+                        <strong class="block text-slate-800 font-bold">피크 상단 고정 등록</strong>
+                        <span class="text-[11px] text-slate-500">구독 회원 사장님 전용 혜택</span>
+                    </div>
+                    <input type="checkbox" id="job-is-peak" class="w-4 h-4 text-sky-600 rounded">
+                </div>
+
                 <div class="pt-2 flex gap-2">
                     <button type="button" onclick="closeCreateJobModal()" class="flex-1 py-3.5 border border-slate-200 font-bold rounded-xl text-slate-600">취소</button>
                     <button type="submit" class="flex-1 py-3.5 btn-sky font-bold rounded-xl shadow">공고 등록 완료</button>
@@ -153,12 +163,10 @@
                 return;
             }
 
-            // Sync User data from server
             const usersRes = await fetch('/api/users').then(r => r.json());
             const freshUser = usersRes.users.find(u => u.id === user.id) || user;
             localStorage.setItem('sw_user', JSON.stringify(freshUser));
 
-            // Check Notifications
             const notiRes = await fetch(`/api/notifications/${user.id}`).then(r => r.json());
             const hasUnread = notiRes.hasUnread;
 
@@ -215,28 +223,27 @@
 
         function openSubscribeModal() { document.getElementById('subscribeModal').classList.remove('hidden'); }
         function closeSubscribeModal() { document.getElementById('subscribeModal').classList.add('hidden'); }
-        
-        function tryOpenCreateJobModal() {
-            const user = JSON.parse(localStorage.getItem('sw_user') || '{}');
-            if (!user.isSubscribed) {
-                alert('구독 회원만 피크 공고를 등록할 수 있습니다. 먼저 [구독하기] 버튼을 눌러 승인을 받아주세요.');
-                openSubscribeModal();
-                return;
-            }
-            document.getElementById('createJobModal').classList.remove('hidden');
-        }
+        function openCreateJobModal() { document.getElementById('createJobModal').classList.remove('hidden'); }
         function closeCreateJobModal() { document.getElementById('createJobModal').classList.add('hidden'); }
 
         async function requestSubscription() {
             const user = JSON.parse(localStorage.getItem('sw_user') || '{}');
             await fetch(`/api/users/${user.id}/subscribe-request`, { method: 'POST' });
-            alert('구독 신청이 접수되었습니다. 관리자 확인 후 구독 회원 배지가 부여됩니다.');
+            alert('구독 신청이 접수되었습니다. 관리자 승인 후 구독 회원 배지가 부여됩니다.');
             closeSubscribeModal();
         }
 
         async function handleCreateJob(e) {
             e.preventDefault();
             const user = JSON.parse(localStorage.getItem('sw_user') || '{}');
+            const isPeak = document.getElementById('job-is-peak').checked;
+
+            if (isPeak && !user.isSubscribed) {
+                alert('피크 상단 고정 공고는 구독 회원 사장님만 등록할 수 있습니다. 먼저 [구독하기]를 신청해주세요.');
+                openSubscribeModal();
+                return;
+            }
+
             const jobData = {
                 employerId: user.id,
                 storeName: document.getElementById('job-store').value,
@@ -244,7 +251,8 @@
                 category: document.getElementById('job-category').value,
                 date: document.getElementById('job-date').value,
                 time: document.getElementById('job-time').value,
-                pay: document.getElementById('job-pay').value
+                pay: document.getElementById('job-pay').value,
+                isPeak: isPeak
             };
 
             const res = await fetch('/api/jobs', {
@@ -254,7 +262,7 @@
             }).then(r => r.json());
 
             if (res.success) {
-                alert('피크타임 구인 공고가 실시간 등록되었습니다.');
+                alert('구인 공고가 등록되었습니다.');
                 closeCreateJobModal();
                 renderJobList();
             } else {

@@ -57,9 +57,32 @@
             </div>
         </div>
 
-        <!-- Role Specific Dashboard -->
         <div id="role-dashboard" class="space-y-6"></div>
     </main>
+
+    <!-- Cancel Hire Modal with Agreement Checkbox -->
+    <div id="cancelHireModal" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm hidden z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl max-w-md w-full p-7 space-y-4 shadow-2xl">
+            <div class="flex justify-between items-center border-b border-sky-100 pb-3">
+                <h3 class="text-lg font-black text-slate-800">채용 취소 및 본사 신고</h3>
+                <button onclick="closeCancelModal()" class="text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark text-lg"></i></button>
+            </div>
+            <input type="hidden" id="cancel-job-id">
+            <input type="hidden" id="cancel-senior-id">
+            <p class="text-xs text-slate-600 leading-relaxed">
+                채용 취소를 실행하시면 1순위 지원자의 채용이 취소되며, <strong>2순위(3순위) 지원자에게 승계 채용 알림이 발송</strong>됩니다. (2순위 시급당 +1,000원, 3순위 +2,000원 차등 가산)
+            </p>
+            <div class="p-3.5 bg-rose-50 rounded-xl border border-rose-100 flex items-start gap-2 text-xs">
+                <input type="checkbox" id="cancel-agree-check" class="mt-0.5 rounded text-rose-600">
+                <label for="cancel-agree-check" class="text-rose-700 font-bold cursor-pointer">
+                    지원자 노쇼/근무 불가에 따른 채용 취소에 동의하며 본사 신고를 접수합니다.
+                </label>
+            </div>
+            <button onclick="confirmCancelHire()" class="w-full py-3.5 bg-rose-500 hover:bg-rose-600 text-white font-bold rounded-xl text-xs shadow">
+                채용 취소 및 승계 실행
+            </button>
+        </div>
+    </div>
 
     <!-- Settlement Modal -->
     <div id="subModal" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm hidden z-50 flex items-center justify-center p-4">
@@ -120,7 +143,7 @@
             const dashboard = document.getElementById('role-dashboard');
 
             if (freshUser.role === 'senior') {
-                // Senior Dashboard
+                // Senior Profile
                 const surveysRes = await fetch('/api/surveys').then(r => r.json());
                 const mySurvey = (surveysRes.surveys || []).find(s => s.seniorId === freshUser.id);
 
@@ -129,36 +152,27 @@
 
                 let html = '';
 
-                // 1. Survey Format Card
                 if (mySurvey) {
                     html += `
                         <div class="bg-white rounded-3xl p-6 md:p-8 border border-sky-100 shadow-sm space-y-4">
                             <h2 class="text-base font-black text-slate-800 border-b border-sky-100 pb-3 flex items-center justify-between">
-                                <span><i class="fa-solid fa-file-medical text-sky-500 mr-2"></i>내 제출 건강 문진표 양식</span>
-                                <span class="text-xs text-slate-400 font-normal">작성일시: ${mySurvey.date}</span>
+                                <span><i class="fa-solid fa-file-medical text-sky-500 mr-2"></i>내 건강 문진표 양식</span>
+                                <span class="text-xs text-slate-400 font-normal">${mySurvey.date}</span>
                             </h2>
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs">
-                                <div class="p-3 bg-sky-50/50 rounded-xl"><strong>신청 도우미:</strong> ${mySurvey.answers.q1 || '본인'}</div>
+                                <div class="p-3 bg-sky-50/50 rounded-xl"><strong>도우미:</strong> ${mySurvey.answers.q1 || '본인'}</div>
                                 <div class="p-3 bg-sky-50/50 rounded-xl"><strong>생년월일:</strong> ${mySurvey.answers.birth || '미입력'}</div>
                                 <div class="p-3 bg-sky-50/50 rounded-xl"><strong>연락처:</strong> ${mySurvey.phone || '미입력'}</div>
                                 <div class="p-3 bg-sky-50/50 rounded-xl"><strong>희망 동네:</strong> ${mySurvey.location || '미입력'}</div>
-                                <div class="p-3 bg-sky-50/50 rounded-xl"><strong>3층 계단 이용:</strong> ${mySurvey.stairs || '보통'}</div>
+                                <div class="p-3 bg-sky-50/50 rounded-xl"><strong>3층 계단:</strong> ${mySurvey.stairs || '보통'}</div>
                                 <div class="p-3 bg-sky-50/50 rounded-xl"><strong>1시간 보행:</strong> ${mySurvey.answers.walk || '가능'}</div>
                                 <div class="p-3 bg-sky-50/50 rounded-xl"><strong>지병 여부:</strong> ${mySurvey.answers.disease || '건강함'}</div>
                                 <div class="p-3 bg-sky-50/50 rounded-xl"><strong>식당 소음 청력:</strong> ${mySurvey.answers.hearing || '양호'}</div>
                             </div>
                         </div>
                     `;
-                } else {
-                    html += `
-                        <div class="bg-white rounded-3xl p-6 border border-sky-100 shadow-sm text-center space-y-3">
-                            <p class="text-xs text-slate-500">아직 제출된 건강 문진 이력서가 없습니다.</p>
-                            <a href="/senior-apply.html" class="inline-block btn-sky text-xs font-bold px-4 py-2 rounded-xl">문진 이력서 작성하기 →</a>
-                        </div>
-                    `;
                 }
 
-                // 2. Applied Jobs
                 html += `
                     <div class="bg-white rounded-3xl p-6 md:p-8 border border-sky-100 shadow-sm space-y-4">
                         <h2 class="text-base font-black text-slate-800 border-b border-sky-100 pb-3"><i class="fa-solid fa-briefcase text-sky-500 mr-2"></i>내 구직 신청 및 채용 현황</h2>
@@ -184,13 +198,13 @@
                 dashboard.innerHTML = html;
 
             } else {
-                // Employer Dashboard
+                // Employer Profile
                 const jobsRes = await fetch('/api/jobs').then(r => r.json());
                 const myJobs = (jobsRes.jobs || []).filter(j => j.employerId === freshUser.id);
 
                 let html = `
                     <div class="bg-white rounded-3xl p-6 md:p-8 border border-sky-100 shadow-sm space-y-6">
-                        <h2 class="text-base font-black text-slate-800 border-b border-sky-100 pb-3"><i class="fa-solid fa-users text-sky-500 mr-2"></i>공고별 지원자 1·2·3순위 지정 / 채용 및 포인트 지급</h2>
+                        <h2 class="text-base font-black text-slate-800 border-b border-sky-100 pb-3"><i class="fa-solid fa-users text-sky-500 mr-2"></i>공고별 지원자 1·2·3순위 지정 / 채용 / 채용취소 / 포인트 지급</h2>
                 `;
 
                 if (myJobs.length === 0) {
@@ -219,6 +233,7 @@
                                                     <option value="3순위">3순위</option>
                                                 </select>
                                                 <button onclick="hireCandidate('${j.id}', '${c.seniorId}')" class="btn-sky px-2.5 py-1.5 rounded-lg font-bold text-[11px]">채용확정</button>
+                                                <button onclick="openCancelModal('${j.id}', '${c.seniorId}')" class="bg-rose-100 text-rose-600 px-2.5 py-1.5 rounded-lg font-bold text-[11px] hover:bg-rose-200">채용취소</button>
                                                 <button onclick="payPointToSenior('${j.id}', '${c.seniorId}', ${j.pay})" class="bg-emerald-500 text-white px-2.5 py-1.5 rounded-lg font-bold text-[11px] hover:bg-emerald-600">포인트지급</button>
                                             </div>
                                         </div>
@@ -233,6 +248,37 @@
             }
         }
 
+        function openCancelModal(jobId, seniorId) {
+            document.getElementById('cancel-job-id').value = jobId;
+            document.getElementById('cancel-senior-id').value = seniorId;
+            document.getElementById('cancel-agree-check').checked = false;
+            document.getElementById('cancelHireModal').classList.remove('hidden');
+        }
+        function closeCancelModal() { document.getElementById('cancelHireModal').classList.add('hidden'); }
+
+        async function confirmCancelHire() {
+            const isAgreed = document.getElementById('cancel-agree-check').checked;
+            if (!isAgreed) {
+                alert('본사 접수 동의 체크박스에 동의해 주셔야 채용 취소 및 승계가 진행됩니다.');
+                return;
+            }
+
+            const jobId = document.getElementById('cancel-job-id').value;
+            const seniorId = document.getElementById('cancel-senior-id').value;
+
+            const res = await fetch(`/api/jobs/${jobId}/cancel-hire`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ seniorId })
+            }).then(r => r.json());
+
+            closeCancelModal();
+
+            // Screenshot 5 Style System Alert Modal
+            alert('회사에 신고(노쇼 접수)가 정상 처리되었습니다.\n다음 순위 지원자에게 자동 승계 채용 알림이 발송되었습니다.');
+            renderProfile();
+        }
+
         async function assignRank(jobId, seniorId, rank) {
             if (!rank) return;
             await fetch(`/api/jobs/${jobId}/rank`, {
@@ -240,7 +286,7 @@
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ seniorId, rank })
             });
-            alert(`${rank} 지정 완료 및 알림 발송되었습니다.`);
+            alert(`${rank} 지정 완료 및 시니어에게 알림이 발송되었습니다.`);
             renderProfile();
         }
 
@@ -258,9 +304,9 @@
             await fetch(`/api/jobs/${jobId}/pay-points`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ seniorId, amount: pay })
+                body: JSON.stringify({ seniorId, basePay: pay })
             });
-            alert(`시니어 회원에게 근무 대가 (${parseInt(pay).toLocaleString()}P) 포인트가 정상 지급되었습니다.`);
+            alert(`시니어 회원에게 포인트 지급이 완료되었습니다. (승계 채용 시 시급 가산금 자동 합산)`);
             renderProfile();
         }
 
@@ -330,7 +376,7 @@
             }).then(r => r.json());
 
             if (res.success) {
-                alert(`[정산 신청 완료]\n\n${bank} ${account}\n요청 금액: ${amount.toLocaleString()}P\n\n관리자 확인 후 정산 처리됩니다.`);
+                alert(`[정산 신청 완료]\n\n${bank} ${account}\n요청 금액: ${amount.toLocaleString()}P\n\n관리자 승인 후 포인트가 최종 차감됩니다.`);
                 closeSubModal();
                 renderProfile();
             } else {

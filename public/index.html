@@ -43,7 +43,7 @@
         </div>
     </header>
 
-    <main class="flex-1 space-y-12 pb-16">
+    <main class="flex-1 pb-16">
         <!-- Hero Section -->
         <section class="sky-hero py-16 px-5 relative overflow-hidden text-center">
             <div class="max-w-4xl mx-auto space-y-3 relative z-10">
@@ -65,7 +65,7 @@
                 </svg>
             </div>
 
-            <!-- Scroll Animated Prominent CTA Cards -->
+            <!-- Prominent Scroll Animated CTA Cards -->
             <div id="cta-card-container" class="max-w-3xl mx-auto grid grid-cols-1 sm:grid-cols-2 gap-5 pt-4 cta-transition opacity-100 translate-y-0">
                 <a href="/senior-apply.html" class="bg-white p-7 rounded-3xl border border-sky-200/80 shadow-md hover:shadow-lg transition text-left space-y-3 block group">
                     <div class="flex justify-between items-center">
@@ -73,7 +73,7 @@
                         <i class="fa-solid fa-arrow-right text-sky-500 group-hover:translate-x-1 transition"></i>
                     </div>
                     <h3 class="text-lg font-extrabold text-slate-900">시니어 건강 문진 이력서 작성</h3>
-                    <p class="text-xs text-slate-500 leading-relaxed">스마트 디지털 인지 능력, 오프라인 체력 검증으로 준비된 신뢰 구직 활동</p>
+                    <p class="text-xs text-slate-500 leading-relaxed">디지털 인지 능력, 오프라인 체력 검증으로 안전하고 검증된 구직 활동</p>
                 </a>
                 <a href="/employer.html" class="bg-white p-7 rounded-3xl border border-sky-200/80 shadow-md hover:shadow-lg transition text-left space-y-3 block group">
                     <div class="flex justify-between items-center">
@@ -84,10 +84,16 @@
                     <p class="text-xs text-slate-500 leading-relaxed">2~3시간 피크타임 인력 채용 및 1·2·3순위 노쇼 자동 승계 안전망 시스템</p>
                 </a>
             </div>
+
+            <!-- Scroll Indicator Component -->
+            <div class="pt-12 pb-6 flex flex-col items-center gap-2 text-sky-700 font-bold text-xs animate-bounce">
+                <span>아래로 스크롤</span>
+                <i class="fa-solid fa-chevron-down text-base"></i>
+            </div>
         </section>
 
-        <!-- Main Body Articles -->
-        <section class="max-w-3xl mx-auto px-5 space-y-6 text-slate-700 text-xs md:text-sm leading-relaxed">
+        <!-- Main Body Articles: Moved Further Down (mt-48) So Text is Hidden Upon Entry -->
+        <section class="max-w-3xl mx-auto px-5 mt-48 space-y-6 text-slate-700 text-xs md:text-sm leading-relaxed">
             <div class="bg-white rounded-3xl p-7 md:p-9 border border-sky-100 shadow-sm space-y-5">
                 <h2 class="text-base md:text-xl font-black text-slate-900 leading-snug">
                     매장을 책임져줄 성실한 사람을 구하는 것은 하늘의 별 따기가 되었습니다.
@@ -128,7 +134,7 @@
         </section>
     </main>
 
-    <!-- Official Gray Footer -->
+    <!-- Official Gray Footer ONLY on Main Page -->
     <footer class="bg-slate-100 text-slate-500 text-xs py-10 border-t border-slate-200">
         <div class="max-w-6xl mx-auto px-5 space-y-2 leading-relaxed">
             <p class="font-bold text-slate-700 text-sm">실버웍스 (silverworks)</p>

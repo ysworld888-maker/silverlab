@@ -56,7 +56,7 @@
             </div>
         </div>
 
-        <!-- 2. 시니어 포인트 정산 완료 승인 (여기서 완료를 눌러야 포인트 차감!) -->
+        <!-- 2. 시니어 포인트 정산 완료 승인 -->
         <div class="bg-white rounded-3xl p-6 md:p-8 border border-sky-100 shadow-sm space-y-4">
             <h2 class="text-base font-black text-slate-800 flex items-center gap-2">
                 <i class="fa-solid fa-hand-holding-dollar text-amber-500"></i> 시니어 포인트 정산 요청 통제 (승인 시 포인트 자동 차감)
@@ -210,7 +210,7 @@
                 <p><strong>연락처:</strong> ${u.phone || '미입력'}</p>
                 <p><strong>회원 유형:</strong> ${u.role === 'senior' ? '시니어 구직자' : '구인 사장님'}</p>
                 <p><strong>가입 승인 상태:</strong> ${u.approved ? '승인 완료' : '승인 대기중'}</p>
-                <p><strong>구독 회원 여부:</strong> ${u.isSubscribed ? '구독 회원 (공고 작성 가능)' : '일반 회원'}</p>
+                <p><strong>구독 회원 여부:</strong> ${u.isSubscribed ? '구독 회원 (피크 공고 작성 가능)' : '일반 회원'}</p>
                 <p><strong>보유 포인트:</strong> ${(u.points || 0).toLocaleString()}P</p>
                 <p><strong>문진 이력서 작성 여부:</strong> ${u.hasSurvey ? '작성 완료' : '미작성'}</p>
             `;

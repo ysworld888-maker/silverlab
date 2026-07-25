@@ -32,7 +32,7 @@
     <main class="max-w-3xl mx-auto px-5 py-10 flex-1 w-full space-y-6">
         <div class="border-b border-sky-100 pb-5">
             <h1 class="text-2xl font-black text-slate-800 tracking-tight">알림 센터</h1>
-            <p class="text-xs text-slate-500 mt-1">순위 지정, 채용 및 공고 변경 안내 내역</p>
+            <p class="text-xs text-slate-500 mt-1">순위 지정, 승계 및 채용/포인트 지급 알림 내역</p>
         </div>
 
         <div id="notification-list" class="space-y-3"></div>
@@ -52,7 +52,7 @@
             const freshUser = usersRes.users.find(u => u.id === user.id) || user;
             localStorage.setItem('sw_user', JSON.stringify(freshUser));
 
-            // Mark all notifications as read when entering this page
+            // Mark notifications as read
             await fetch(`/api/notifications/${user.id}/read`, { method: 'POST' });
 
             let html = `
@@ -107,13 +107,23 @@
                     </div>`;
             } else {
                 notiContainer.innerHTML = myNotis.map(n => `
-                    <div class="p-5 rounded-2xl bg-sky-50/50 border border-sky-100 space-y-1 text-xs">
-                        <strong class="text-slate-800 font-bold block">${n.title}</strong>
-                        <p class="text-slate-600">${n.content}</p>
-                        <span class="text-[10px] text-slate-400 block pt-1">${n.date}</span>
+                    <div class="p-5 rounded-2xl bg-sky-50/50 border border-sky-100 flex justify-between items-start text-xs space-y-1">
+                        <div>
+                            <strong class="text-slate-800 font-bold block text-sm">${n.title}</strong>
+                            <p class="text-slate-600 mt-1">${n.content}</p>
+                            <span class="text-[10px] text-slate-400 block pt-1">${n.date}</span>
+                        </div>
+                        <button onclick="deleteNotification('${n.id}')" class="text-[11px] text-slate-400 hover:text-rose-500 font-bold px-2 py-0.5 rounded border border-slate-200">
+                            삭제
+                        </button>
                     </div>
                 `).join('');
             }
+        }
+
+        async function deleteNotification(id) {
+            await fetch(`/api/notifications/item/${id}`, { method: 'DELETE' });
+            loadNotifications();
         }
 
         document.addEventListener('DOMContentLoaded', () => {
