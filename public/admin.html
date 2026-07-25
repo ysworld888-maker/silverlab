@@ -34,7 +34,7 @@
     </header>
 
     <main class="max-w-7xl mx-auto px-5 py-8 flex-1 w-full space-y-8">
-        <!-- 1. 회원 가입 및 구독 승인 관리 -->
+        <!-- 1. 회원 관리 및 구독 승인 -->
         <div class="bg-white rounded-3xl p-6 md:p-8 border border-sky-100 shadow-sm space-y-4">
             <h2 class="text-base font-black text-slate-800 flex items-center gap-2">
                 <i class="fa-solid fa-users-gear text-sky-500"></i> 회원 관리 (아이디 클릭 시 상세정보 / 가입 및 구독 승인)
@@ -56,7 +56,15 @@
             </div>
         </div>
 
-        <!-- 2. 구인 공고 전체 수정 및 삭제 통제 -->
+        <!-- 2. 시니어 포인트 정산 완료 승인 (여기서 완료를 눌러야 포인트 차감!) -->
+        <div class="bg-white rounded-3xl p-6 md:p-8 border border-sky-100 shadow-sm space-y-4">
+            <h2 class="text-base font-black text-slate-800 flex items-center gap-2">
+                <i class="fa-solid fa-hand-holding-dollar text-amber-500"></i> 시니어 포인트 정산 요청 통제 (승인 시 포인트 자동 차감)
+            </h2>
+            <div id="admin-settlement-list" class="space-y-3"></div>
+        </div>
+
+        <!-- 3. 구인 공고 전체 수정 및 삭제 통제 -->
         <div class="bg-white rounded-3xl p-6 md:p-8 border border-sky-100 shadow-sm space-y-4">
             <h2 class="text-base font-black text-slate-800 flex items-center gap-2">
                 <i class="fa-solid fa-list-check text-sky-500"></i> 전체 공고 관리 (내용 전체 수정 / 삭제 시 시니어 자동 알림)
@@ -84,7 +92,7 @@
                 <button onclick="closeEditModal()" class="text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark text-lg"></i></button>
             </div>
             <form onsubmit="saveJobEdit(event)" class="space-y-3 text-xs">
-                <input type="hidden" id="edit-job-idx">
+                <input type="hidden" id="edit-job-id">
                 <div>
                     <label class="block font-bold mb-1">매장명</label>
                     <input type="text" id="edit-store" required class="w-full p-3 rounded-xl input-sky">
@@ -123,53 +131,77 @@
     </div>
 
     <script>
-        function loadAdminControl() {
-            const users = JSON.parse(localStorage.getItem('sw_users') || '[]');
-            const jobs = JSON.parse(localStorage.getItem('sw_jobs') || '[]');
+        async function loadAdminControl() {
+            const usersRes = await fetch('/api/users').then(r => r.json());
+            const jobsRes = await fetch('/api/jobs').then(r => r.json());
+            const setRes = await fetch('/api/settlements').then(r => r.json());
 
-            // 1. Users & Subscription Table
+            const users = usersRes.users || [];
+            const jobs = jobsRes.jobs || [];
+            const settlements = setRes.settlements || [];
+
+            // 1. User Approval Table
             const userTable = document.getElementById('user-approval-table');
             if (users.length === 0) {
                 userTable.innerHTML = `<tr><td colspan="6" class="p-6 text-center text-slate-400">가입된 회원이 없습니다.</td></tr>`;
             } else {
-                userTable.innerHTML = users.map((u, idx) => `
+                userTable.innerHTML = users.map(u => `
                     <tr>
-                        <td class="p-3 font-mono font-bold text-sky-600 cursor-pointer hover:underline" onclick="viewUserDetail(${idx})">${u.id}</td>
+                        <td class="p-3 font-mono font-bold text-sky-600 cursor-pointer hover:underline" onclick="viewUserDetail('${u.id}')">${u.id}</td>
                         <td class="p-3 font-bold">${u.name}</td>
                         <td class="p-3"><span class="px-2 py-0.5 rounded text-[11px] font-bold ${u.role === 'senior' ? 'bg-sky-100 text-sky-700' : 'bg-indigo-100 text-indigo-700'}">${u.role === 'senior' ? '시니어' : '사장님'}</span></td>
                         <td class="p-3"><span class="font-bold ${u.approved ? 'text-emerald-500' : 'text-amber-500'}">${u.approved ? '승인완료' : '승인대기'}</span></td>
                         <td class="p-3"><span class="font-bold ${u.isSubscribed ? 'text-sky-600' : 'text-slate-400'}">${u.isSubscribed ? '구독회원' : (u.subRequested ? '구독신청중' : '일반')}</span></td>
                         <td class="p-3 text-right space-x-1">
-                            ${!u.approved ? `<button onclick="approveUser(${idx})" class="btn-sky text-[11px] px-2.5 py-1 rounded-lg font-bold">가입승인</button>` : ''}
-                            ${u.role === 'employer' && u.subRequested && !u.isSubscribed ? `<button onclick="approveSub(${idx})" class="bg-emerald-500 text-white text-[11px] px-2.5 py-1 rounded-lg font-bold hover:bg-emerald-600">구독승인</button>` : ''}
+                            ${!u.approved ? `<button onclick="approveUser('${u.id}')" class="btn-sky text-[11px] px-2.5 py-1 rounded-lg font-bold">가입승인</button>` : ''}
+                            ${u.role === 'employer' && u.subRequested && !u.isSubscribed ? `<button onclick="approveSub('${u.id}')" class="bg-emerald-500 text-white text-[11px] px-2.5 py-1 rounded-lg font-bold hover:bg-emerald-600">구독승인</button>` : ''}
                         </td>
                     </tr>
                 `).join('');
             }
 
-            // 2. Jobs List
+            // 2. Settlements Table
+            const setList = document.getElementById('admin-settlement-list');
+            const pendingSettles = settlements.filter(s => s.status === 'PENDING');
+            if (pendingSettles.length === 0) {
+                setList.innerHTML = `<p class="text-xs text-slate-400 text-center py-6">대기 중인 정산 요청이 없습니다.</p>`;
+            } else {
+                setList.innerHTML = pendingSettles.map(s => `
+                    <div class="p-4 rounded-2xl bg-amber-50/50 border border-amber-100 flex justify-between items-center text-xs">
+                        <div>
+                            <strong class="text-sm font-bold text-slate-800">${s.userName} (${s.userId})</strong>
+                            <p class="text-slate-500 mt-0.5">입금계좌: ${s.bank} ${s.account} | 요청금액: ${s.amount.toLocaleString()}P</p>
+                        </div>
+                        <button onclick="completeSettlement('${s.id}')" class="bg-amber-500 text-white font-bold px-4 py-2 rounded-xl shadow-sm hover:bg-amber-600">
+                            정산 완료 (포인트 차감)
+                        </button>
+                    </div>
+                `).join('');
+            }
+
+            // 3. Jobs List
             const jobsList = document.getElementById('admin-jobs-list');
             if (jobs.length === 0) {
                 jobsList.innerHTML = `<p class="text-xs text-slate-400 text-center py-6">등록된 공고가 없습니다.</p>`;
             } else {
-                jobsList.innerHTML = jobs.map((j, idx) => `
+                jobsList.innerHTML = jobs.map(j => `
                     <div class="p-4 rounded-2xl bg-sky-50/30 border border-sky-100 flex justify-between items-center text-xs">
                         <div>
                             <strong class="text-sm font-bold text-slate-800">${j.title}</strong>
                             <p class="text-slate-500">매장: ${j.storeName} | 일시: ${j.date} (${j.time}) | 일당: ${parseInt(j.pay).toLocaleString()}원</p>
                         </div>
                         <div class="flex gap-2">
-                            <button onclick="openEditModal(${idx})" class="px-3 py-1.5 rounded-lg bg-sky-100 text-sky-700 font-bold hover:bg-sky-200">수정</button>
-                            <button onclick="deleteJob(${idx})" class="px-3 py-1.5 rounded-lg bg-rose-100 text-rose-600 font-bold hover:bg-rose-200">삭제</button>
+                            <button onclick="openEditModal('${j.id}')" class="px-3 py-1.5 rounded-lg bg-sky-100 text-sky-700 font-bold hover:bg-sky-200">수정</button>
+                            <button onclick="deleteJob('${j.id}')" class="px-3 py-1.5 rounded-lg bg-rose-100 text-rose-600 font-bold hover:bg-rose-200">삭제</button>
                         </div>
                     </div>
                 `).join('');
             }
         }
 
-        function viewUserDetail(idx) {
-            const users = JSON.parse(localStorage.getItem('sw_users') || '[]');
-            const u = users[idx];
+        async function viewUserDetail(id) {
+            const usersRes = await fetch('/api/users').then(r => r.json());
+            const u = usersRes.users.find(user => user.id === id);
             const modalBody = document.getElementById('user-modal-body');
             
             modalBody.innerHTML = `
@@ -178,7 +210,7 @@
                 <p><strong>연락처:</strong> ${u.phone || '미입력'}</p>
                 <p><strong>회원 유형:</strong> ${u.role === 'senior' ? '시니어 구직자' : '구인 사장님'}</p>
                 <p><strong>가입 승인 상태:</strong> ${u.approved ? '승인 완료' : '승인 대기중'}</p>
-                <p><strong>구독 회원 여부:</strong> ${u.isSubscribed ? '구독 회원 (수수료 5% 우대)' : '일반 회원'}</p>
+                <p><strong>구독 회원 여부:</strong> ${u.isSubscribed ? '구독 회원 (공고 작성 가능)' : '일반 회원'}</p>
                 <p><strong>보유 포인트:</strong> ${(u.points || 0).toLocaleString()}P</p>
                 <p><strong>문진 이력서 작성 여부:</strong> ${u.hasSurvey ? '작성 완료' : '미작성'}</p>
             `;
@@ -186,27 +218,31 @@
         }
         function closeUserModal() { document.getElementById('userDetailModal').classList.add('hidden'); }
 
-        function approveUser(idx) {
-            const users = JSON.parse(localStorage.getItem('sw_users') || '[]');
-            users[idx].approved = true;
-            localStorage.setItem('sw_users', JSON.stringify(users));
+        async function approveUser(id) {
+            await fetch(`/api/users/${id}/approve`, { method: 'POST' });
             alert('가입 승인이 완료되었습니다.');
             loadAdminControl();
         }
 
-        function approveSub(idx) {
-            const users = JSON.parse(localStorage.getItem('sw_users') || '[]');
-            users[idx].isSubscribed = true;
-            users[idx].subRequested = false;
-            localStorage.setItem('sw_users', JSON.stringify(users));
-            alert('사장님의 구독이 승인되어 [구독 회원] 배지가 부여되었습니다.');
+        async function approveSub(id) {
+            await fetch(`/api/users/${id}/approve-subscription`, { method: 'POST' });
+            alert('사장님의 구독이 승인되어 [구독 회원] 배지가 부여되었으며 알림이 발송되었습니다.');
             loadAdminControl();
         }
 
-        function openEditModal(idx) {
-            const jobs = JSON.parse(localStorage.getItem('sw_jobs') || '[]');
-            const j = jobs[idx];
-            document.getElementById('edit-job-idx').value = idx;
+        async function completeSettlement(settleId) {
+            if (confirm('정산을 완료하고 해당 시니어 회원의 포인트를 차감하시겠습니까?')) {
+                await fetch(`/api/settlements/${settleId}/complete`, { method: 'POST' });
+                alert('정산 완료 처리되었으며 시니어 회원의 포인트가 차감되었습니다.');
+                loadAdminControl();
+            }
+        }
+
+        async function openEditModal(jobId) {
+            const jobsRes = await fetch('/api/jobs').then(r => r.json());
+            const j = jobsRes.jobs.find(job => job.id === jobId);
+            
+            document.getElementById('edit-job-id').value = j.id;
             document.getElementById('edit-store').value = j.storeName;
             document.getElementById('edit-title').value = j.title;
             document.getElementById('edit-category').value = j.category || '식당·서빙';
@@ -217,45 +253,33 @@
         }
         function closeEditModal() { document.getElementById('jobEditModal').classList.add('hidden'); }
 
-        function saveJobEdit(e) {
+        async function saveJobEdit(e) {
             e.preventDefault();
-            const idx = document.getElementById('edit-job-idx').value;
-            const jobs = JSON.parse(localStorage.getItem('sw_jobs') || '[]');
-            
-            jobs[idx].storeName = document.getElementById('edit-store').value;
-            jobs[idx].title = document.getElementById('edit-title').value;
-            jobs[idx].category = document.getElementById('edit-category').value;
-            jobs[idx].date = document.getElementById('edit-date').value;
-            jobs[idx].time = document.getElementById('edit-time').value;
-            jobs[idx].pay = document.getElementById('edit-pay').value;
+            const id = document.getElementById('edit-job-id').value;
+            const updated = {
+                storeName: document.getElementById('edit-store').value,
+                title: document.getElementById('edit-title').value,
+                category: document.getElementById('edit-category').value,
+                date: document.getElementById('edit-date').value,
+                time: document.getElementById('edit-time').value,
+                pay: document.getElementById('edit-pay').value
+            };
 
-            localStorage.setItem('sw_jobs', JSON.stringify(jobs));
-            alert('공고 수정이 저장되었습니다.');
+            await fetch(`/api/jobs/${id}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(updated)
+            });
+
+            alert('공고 전체 내용이 수정되었습니다.');
             closeEditModal();
             loadAdminControl();
         }
 
-        function deleteJob(idx) {
-            if (confirm('해당 공고를 삭제하시겠습니까? 지원 및 채용된 시니어 회원들의 프로필 내역도 함께 자동 정리됩니다.')) {
-                const jobs = JSON.parse(localStorage.getItem('sw_jobs') || '[]');
-                const targetJob = jobs[idx];
-
-                if (targetJob.candidates) {
-                    const notis = JSON.parse(localStorage.getItem('sw_notifications') || '[]');
-                    targetJob.candidates.forEach(c => {
-                        notis.unshift({
-                            targetUserId: c.seniorId,
-                            title: '[공고 삭제 알림]',
-                            content: `지원/채용되었던 '${targetJob.title}' 공고가 삭제되었습니다.`,
-                            date: new Date().toLocaleString()
-                        });
-                    });
-                    localStorage.setItem('sw_notifications', JSON.stringify(notis));
-                }
-
-                jobs.splice(idx, 1);
-                localStorage.setItem('sw_jobs', JSON.stringify(jobs));
-                alert('공고가 삭제되었으며 지원 시니어들에게 알림이 발송되었습니다.');
+        async function deleteJob(id) {
+            if (confirm('공고를 삭제하시겠습니까? 지원된 시니어 회원에게 알림이 발송됩니다.')) {
+                await fetch(`/api/jobs/${id}`, { method: 'DELETE' });
+                alert('공고가 삭제되었습니다.');
                 loadAdminControl();
             }
         }

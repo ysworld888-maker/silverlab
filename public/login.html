@@ -131,48 +131,49 @@
             }
         }
 
-        function handleSubmit(e) {
+        async function handleSubmit(e) {
             e.preventDefault();
             const id = document.getElementById('user-id').value;
-            const users = JSON.parse(localStorage.getItem('sw_users') || '[]');
+            const pw = document.getElementById('user-pw').value;
 
             if (isSignUpMode) {
                 const name = document.getElementById('user-name').value || '회원';
                 const phone = document.getElementById('user-phone').value || '';
                 
-                users.push({ id, name, phone, role: currentRole, approved: false, points: 0, hasSurvey: false });
-                localStorage.setItem('sw_users', JSON.stringify(users));
+                const res = await fetch('/api/signup', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ id, pw, name, phone, role: currentRole })
+                }).then(r => r.json());
 
-                alert('회원가입 신청이 접수되었습니다. 관리자 승인 완료 후 로그인할 수 있습니다.');
-                toggleMode();
+                if (res.success) {
+                    alert('회원가입 신청이 접수되었습니다. 관리자 승인 완료 후 어느 기기에서나 로그인할 수 있습니다.');
+                    toggleMode();
+                } else {
+                    alert(res.message);
+                }
             } else {
-                const target = users.find(u => u.id === id && u.role === currentRole);
-                
-                if (!target) {
-                    alert('등록되지 않았거나 회원 유형이 일치하지 않습니다. 회원가입을 먼저 해주세요.');
-                    return;
-                }
-                if (!target.approved) {
-                    alert('관리자 가입 승인 대기 중입니다. 관리자 승인 후 로그인할 수 있습니다.');
-                    return;
-                }
+                const res = await fetch('/api/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ id, pw, role: currentRole })
+                }).then(r => r.json());
 
-                localStorage.setItem('sw_user', JSON.stringify(target));
-                localStorage.setItem('sw_points', (target.points || 0).toString());
-                alert(`${target.name}님, 로그인되었습니다.`);
+                if (res.success) {
+                    localStorage.setItem('sw_user', JSON.stringify(res.user));
+                    alert(`${res.user.name}님, 로그인되었습니다.`);
 
-                if (currentRole === 'senior') {
-                    // Check if health survey completed
-                    const surveys = JSON.parse(localStorage.getItem('sw_surveys') || '[]');
-                    const mySurvey = surveys.find(s => s.seniorId === target.id);
-
-                    if (!target.hasSurvey && !mySurvey) {
-                        window.location.href = '/senior-apply.html';
+                    if (currentRole === 'senior') {
+                        if (!res.user.hasSurvey) {
+                            window.location.href = '/senior-apply.html';
+                        } else {
+                            window.location.href = '/index.html';
+                        }
                     } else {
-                        window.location.href = '/index.html';
+                        window.location.href = '/employer.html';
                     }
                 } else {
-                    window.location.href = '/employer.html';
+                    alert(res.message);
                 }
             }
         }

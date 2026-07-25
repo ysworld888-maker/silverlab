@@ -32,7 +32,7 @@
     </header>
 
     <main class="max-w-4xl mx-auto px-5 py-10 flex-1 w-full space-y-8">
-        <!-- User Header Profile Card -->
+        <!-- User Header Card -->
         <div class="bg-white rounded-3xl p-6 md:p-8 border border-sky-100 shadow-sm flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
             <div class="flex items-center gap-4">
                 <div class="w-16 h-16 rounded-full bg-sky-100 text-sky-600 flex items-center justify-center text-2xl font-black border border-sky-200">
@@ -46,7 +46,9 @@
                     <span id="profile-role" class="text-xs font-bold text-sky-600 bg-sky-50 px-2.5 py-0.5 rounded-lg border border-sky-100">회원 유형</span>
                 </div>
             </div>
-            <div class="bg-sky-50/80 p-4 rounded-2xl border border-sky-100 flex items-center gap-4 w-full sm:w-auto justify-between">
+            
+            <!-- Points Display ONLY for Senior -->
+            <div id="senior-points-box" class="hidden bg-sky-50/80 p-4 rounded-2xl border border-sky-100 flex items-center gap-4 w-full sm:w-auto justify-between">
                 <div>
                     <span class="text-[11px] font-bold text-slate-400 block">보유 포인트</span>
                     <strong id="profile-points" class="text-lg font-black text-sky-600">0P</strong>
@@ -85,13 +87,13 @@
                     <label class="block font-bold text-slate-700 mb-1">정산 요청 금액 (P)</label>
                     <input type="number" id="settle-amount" placeholder="0" required class="w-full p-3.5 rounded-xl input-sky font-bold text-sky-600">
                 </div>
-                <button type="submit" class="w-full py-3.5 btn-sky font-bold rounded-xl shadow">정산 신청하기</button>
+                <button type="submit" class="w-full py-3.5 btn-sky font-bold rounded-xl shadow">정산 신청 제출</button>
             </form>
         </div>
     </div>
 
     <script>
-        function renderProfile() {
+        async function renderProfile() {
             const user = JSON.parse(localStorage.getItem('sw_user') || 'null');
             if (!user) {
                 alert('로그인이 필요한 페이지입니다.');
@@ -99,33 +101,35 @@
                 return;
             }
 
-            document.getElementById('profile-name').innerText = user.name;
-            document.getElementById('profile-role').innerText = user.role === 'senior' ? '시니어 구직자 회원' : '구인 사업장 사장님';
+            const usersRes = await fetch('/api/users').then(r => r.json());
+            const freshUser = usersRes.users.find(u => u.id === user.id) || user;
+            localStorage.setItem('sw_user', JSON.stringify(freshUser));
+
+            document.getElementById('profile-name').innerText = freshUser.name;
+            document.getElementById('profile-role').innerText = freshUser.role === 'senior' ? '시니어 구직자 회원' : '구인 사업장 사장님';
             
-            if (user.isSubscribed) {
+            if (freshUser.isSubscribed) {
                 document.getElementById('sub-badge-display').innerHTML = `<span class="bg-amber-100 text-amber-700 text-[10px] font-bold px-2 py-0.5 rounded-md border border-amber-200">구독 회원</span>`;
             }
 
-            const users = JSON.parse(localStorage.getItem('sw_users') || '[]');
-            const freshUser = users.find(u => u.id === user.id);
-            const currentPoints = freshUser ? (freshUser.points || 0) : parseInt(localStorage.getItem('sw_points') || '0', 10);
-            
-            localStorage.setItem('sw_points', currentPoints.toString());
-            document.getElementById('profile-points').innerText = currentPoints.toLocaleString() + 'P';
+            if (freshUser.role === 'senior') {
+                document.getElementById('senior-points-box').classList.remove('hidden');
+                document.getElementById('profile-points').innerText = (freshUser.points || 0).toLocaleString() + 'P';
+            }
 
             const dashboard = document.getElementById('role-dashboard');
 
-            if (user.role === 'senior') {
+            if (freshUser.role === 'senior') {
                 // Senior Dashboard
-                const surveys = JSON.parse(localStorage.getItem('sw_surveys') || '[]');
-                const mySurvey = surveys.find(s => s.seniorId === user.id);
+                const surveysRes = await fetch('/api/surveys').then(r => r.json());
+                const mySurvey = (surveysRes.surveys || []).find(s => s.seniorId === freshUser.id);
 
-                const jobs = JSON.parse(localStorage.getItem('sw_jobs') || '[]');
-                const applied = jobs.filter(j => j.candidates && j.candidates.some(c => c.seniorId === user.id));
+                const jobsRes = await fetch('/api/jobs').then(r => r.json());
+                const applied = (jobsRes.jobs || []).filter(j => j.candidates && j.candidates.some(c => c.seniorId === freshUser.id));
 
                 let html = '';
 
-                // 1. Health Survey Section
+                // 1. Survey Format Card
                 if (mySurvey) {
                     html += `
                         <div class="bg-white rounded-3xl p-6 md:p-8 border border-sky-100 shadow-sm space-y-4">
@@ -154,7 +158,7 @@
                     `;
                 }
 
-                // 2. Applied Jobs Status Section
+                // 2. Applied Jobs
                 html += `
                     <div class="bg-white rounded-3xl p-6 md:p-8 border border-sky-100 shadow-sm space-y-4">
                         <h2 class="text-base font-black text-slate-800 border-b border-sky-100 pb-3"><i class="fa-solid fa-briefcase text-sky-500 mr-2"></i>내 구직 신청 및 채용 현황</h2>
@@ -164,7 +168,7 @@
                     html += `<p class="text-xs text-slate-400 text-center py-8">아직 지원하신 피크타임 일자리가 없습니다.</p>`;
                 } else {
                     html += applied.map(j => {
-                        const myCand = j.candidates.find(c => c.seniorId === user.id);
+                        const myCand = j.candidates.find(c => c.seniorId === freshUser.id);
                         return `
                             <div class="p-4 rounded-2xl bg-sky-50/40 border border-sky-100 flex justify-between items-center text-xs">
                                 <div>
@@ -181,8 +185,8 @@
 
             } else {
                 // Employer Dashboard
-                const jobs = JSON.parse(localStorage.getItem('sw_jobs') || '[]');
-                const myJobs = jobs.filter(j => j.employerId === user.id || j.storeName === user.name);
+                const jobsRes = await fetch('/api/jobs').then(r => r.json());
+                const myJobs = (jobsRes.jobs || []).filter(j => j.employerId === freshUser.id);
 
                 let html = `
                     <div class="bg-white rounded-3xl p-6 md:p-8 border border-sky-100 shadow-sm space-y-6">
@@ -192,129 +196,114 @@
                 if (myJobs.length === 0) {
                     html += `<p class="text-xs text-slate-400 text-center py-8">등록하신 구인 공고가 없습니다.</p>`;
                 } else {
-                    html += myJobs.map((j, jIdx) => {
-                        const originalIdx = jobs.findIndex(job => job.id === j.id);
-                        return `
-                            <div class="p-5 rounded-2xl bg-sky-50/30 border border-sky-100 space-y-3 text-xs">
-                                <div class="flex justify-between items-center border-b border-sky-100 pb-2">
-                                    <strong class="text-sm font-bold text-slate-800">${j.title} (${j.storeName})</strong>
-                                    <span class="font-bold text-sky-600 bg-sky-100 px-3 py-0.5 rounded-full">${j.status}</span>
-                                </div>
-                                <div class="space-y-2">
-                                    <span class="font-bold text-slate-500">지원자 명단 (${(j.candidates || []).length}명)</span>
-                                    ${(j.candidates || []).length === 0 ? '<p class="text-slate-400 py-2">지원자가 아직 없습니다.</p>' : 
-                                        j.candidates.map((c, cIdx) => `
-                                            <div class="p-3 rounded-xl bg-white border border-slate-200 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
-                                                <div>
-                                                    <strong class="text-slate-800 font-bold">${c.name}</strong> (${c.phone})
-                                                    <span class="text-[11px] text-sky-600 block pt-0.5">${c.status}</span>
-                                                </div>
-                                                <div class="flex items-center gap-1.5 flex-wrap">
-                                                    <select onchange="assignRank(${originalIdx}, ${cIdx}, this.value, '${c.seniorId}', '${j.title}')" class="p-1.5 rounded border border-slate-200 text-[11px]">
-                                                        <option value="">순위 선택</option>
-                                                        <option value="1순위">1순위</option>
-                                                        <option value="2순위">2순위</option>
-                                                        <option value="3순위">3순위</option>
-                                                    </select>
-                                                    <button onclick="hireCandidate('${c.seniorId}', '${j.title}')" class="btn-sky px-2.5 py-1.5 rounded-lg font-bold text-[11px]">채용확정</button>
-                                                    <button onclick="payPointToSenior('${c.seniorId}', ${j.pay})" class="bg-emerald-500 text-white px-2.5 py-1.5 rounded-lg font-bold text-[11px] hover:bg-emerald-600">포인트지급</button>
-                                                </div>
-                                            </div>
-                                        `).join('')
-                                    }
-                                </div>
+                    html += myJobs.map(j => `
+                        <div class="p-5 rounded-2xl bg-sky-50/30 border border-sky-100 space-y-3 text-xs">
+                            <div class="flex justify-between items-center border-b border-sky-100 pb-2">
+                                <strong class="text-sm font-bold text-slate-800">${j.title} (${j.storeName})</strong>
+                                <span class="font-bold text-sky-600 bg-sky-100 px-3 py-0.5 rounded-full">${j.status}</span>
                             </div>
-                        `;
-                    }).join('');
+                            <div class="space-y-2">
+                                <span class="font-bold text-slate-500">지원자 명단 (${(j.candidates || []).length}명)</span>
+                                ${(j.candidates || []).length === 0 ? '<p class="text-slate-400 py-2">지원자가 아직 없습니다.</p>' : 
+                                    j.candidates.map(c => `
+                                        <div class="p-3 rounded-xl bg-white border border-slate-200 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
+                                            <div>
+                                                <strong class="text-slate-800 font-bold">${c.name}</strong> (${c.phone})
+                                                <span class="text-[11px] text-sky-600 block pt-0.5">${c.status}</span>
+                                            </div>
+                                            <div class="flex items-center gap-1.5 flex-wrap">
+                                                <select onchange="assignRank('${j.id}', '${c.seniorId}', this.value)" class="p-1.5 rounded border border-slate-200 text-[11px]">
+                                                    <option value="">순위 선택</option>
+                                                    <option value="1순위">1순위</option>
+                                                    <option value="2순위">2순위</option>
+                                                    <option value="3순위">3순위</option>
+                                                </select>
+                                                <button onclick="hireCandidate('${j.id}', '${c.seniorId}')" class="btn-sky px-2.5 py-1.5 rounded-lg font-bold text-[11px]">채용확정</button>
+                                                <button onclick="payPointToSenior('${j.id}', '${c.seniorId}', ${j.pay})" class="bg-emerald-500 text-white px-2.5 py-1.5 rounded-lg font-bold text-[11px] hover:bg-emerald-600">포인트지급</button>
+                                            </div>
+                                        </div>
+                                    `).join('')
+                                }
+                            </div>
+                        </div>
+                    `).join('');
                 }
                 html += `</div>`;
                 dashboard.innerHTML = html;
             }
         }
 
-        function assignRank(jIdx, cIdx, rank, seniorId, jobTitle) {
+        async function assignRank(jobId, seniorId, rank) {
             if (!rank) return;
-            const jobs = JSON.parse(localStorage.getItem('sw_jobs') || '[]');
-            jobs[jIdx].candidates[cIdx].status = `${rank} 지정 완료`;
-            localStorage.setItem('sw_jobs', JSON.stringify(jobs));
-
-            // Send notification to senior
-            const notis = JSON.parse(localStorage.getItem('sw_notifications') || '[]');
-            notis.unshift({
-                targetUserId: seniorId,
-                title: '[순위 지정 알림]',
-                content: `'${jobTitle}' 공고에서 ${rank}로 지정되었습니다.`,
-                date: new Date().toLocaleString()
+            await fetch(`/api/jobs/${jobId}/rank`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ seniorId, rank })
             });
-            localStorage.setItem('sw_notifications', JSON.stringify(notis));
-
-            alert(`${rank} 지정이 완료되었으며 시니어 회원에게 알림이 발송되었습니다.`);
+            alert(`${rank} 지정 완료 및 알림 발송되었습니다.`);
             renderProfile();
         }
 
-        function hireCandidate(seniorId, jobTitle) {
-            const notis = JSON.parse(localStorage.getItem('sw_notifications') || '[]');
-            notis.unshift({
-                targetUserId: seniorId,
-                title: '[채용 확정 알림]',
-                content: `'${jobTitle}' 공고에 최종 채용되었습니다! 출근 준비를 시작해 주세요.`,
-                date: new Date().toLocaleString()
+        async function hireCandidate(jobId, seniorId) {
+            await fetch(`/api/jobs/${jobId}/hire`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ seniorId })
             });
-            localStorage.setItem('sw_notifications', JSON.stringify(notis));
-
-            alert('채용이 확정되었으며 시니어 회원에게 알림이 발송되었습니다.');
+            alert('채용 확정 및 시니어 회원에게 알림이 발송되었습니다.');
             renderProfile();
         }
 
-        function payPointToSenior(seniorId, pay) {
-            const users = JSON.parse(localStorage.getItem('sw_users') || '[]');
-            const idx = users.findIndex(u => u.id === seniorId);
-
-            if (idx !== -1) {
-                const addPay = parseInt(pay, 10);
-                users[idx].points = (users[idx].points || 0) + addPay;
-                localStorage.setItem('sw_users', JSON.stringify(users));
-
-                // Sync if active user matches
-                const active = JSON.parse(localStorage.getItem('sw_user') || '{}');
-                if (active.id === seniorId) {
-                    localStorage.setItem('sw_points', users[idx].points.toString());
-                }
-
-                alert(`시니어 회원에게 포인트 (${addPay.toLocaleString()}P) 지급이 완료되었습니다!`);
-                renderProfile();
-            } else {
-                alert('해당 시니어 회원을 찾을 수 없습니다.');
-            }
+        async function payPointToSenior(jobId, seniorId, pay) {
+            await fetch(`/api/jobs/${jobId}/pay-points`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ seniorId, amount: pay })
+            });
+            alert(`시니어 회원에게 근무 대가 (${parseInt(pay).toLocaleString()}P) 포인트가 정상 지급되었습니다.`);
+            renderProfile();
         }
 
-        function updateHeaderUI() {
+        async function updateHeaderUI() {
             const userArea = document.getElementById('header-user-area');
             const user = JSON.parse(localStorage.getItem('sw_user') || 'null');
-            const points = parseInt(localStorage.getItem('sw_points') || '0', 10);
+
+            if (!user) {
+                userArea.innerHTML = `<a href="/login.html" class="text-xs font-bold px-4 py-2 rounded-xl bg-sky-500 text-white hover:bg-sky-600 transition shadow-sm">로그인 및 회원가입</a>`;
+                return;
+            }
+
+            const usersRes = await fetch('/api/users').then(r => r.json());
+            const freshUser = usersRes.users.find(u => u.id === user.id) || user;
+            localStorage.setItem('sw_user', JSON.stringify(freshUser));
+
+            const notiRes = await fetch(`/api/notifications/${user.id}`).then(r => r.json());
+            const hasUnread = notiRes.hasUnread;
 
             let html = `
-                <a href="/notifications.html" class="p-2 text-slate-500 hover:text-sky-600 transition" title="알림 센터">
+                <a href="/notifications.html" class="relative p-2 text-slate-500 hover:text-sky-600 transition" title="알림 센터">
                     <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                         <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
                         <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
                     </svg>
+                    ${hasUnread ? `<span class="absolute top-1 right-1 w-2.5 h-2.5 bg-sky-500 rounded-full ring-2 ring-white"></span>` : ''}
                 </a>
             `;
 
-            if (user) {
+            if (freshUser.role === 'senior') {
                 html += `
                     <button onclick="openSubModal()" class="text-xs font-extrabold bg-sky-50 text-sky-600 px-3 py-1.5 rounded-xl border border-sky-100 hover:bg-sky-100 transition">
-                        포인트 ${points.toLocaleString()}P (정산)
+                        포인트 ${(freshUser.points || 0).toLocaleString()}P (정산)
                     </button>
-                    <a href="/profile.html" class="w-9 h-9 rounded-full bg-sky-100 text-sky-700 flex items-center justify-center font-bold border border-sky-200 hover:border-sky-400 transition" title="프로필 페이지">
-                        <i class="fa-solid fa-user"></i>
-                    </a>
-                    <button onclick="handleLogout()" class="text-xs font-bold text-slate-500 hover:text-rose-500 px-2 py-1.5 rounded-lg transition">로그아웃</button>
                 `;
-            } else {
-                html += `<a href="/login.html" class="text-xs font-bold px-4 py-2 rounded-xl bg-sky-500 text-white hover:bg-sky-600 transition shadow-sm">로그인 및 회원가입</a>`;
             }
+
+            html += `
+                <a href="/profile.html" class="w-9 h-9 rounded-full bg-sky-100 text-sky-700 flex items-center justify-center font-bold border border-sky-200 hover:border-sky-400 transition" title="프로필 페이지">
+                    <i class="fa-solid fa-user"></i>
+                </a>
+                <button onclick="handleLogout()" class="text-xs font-bold text-slate-500 hover:text-rose-500 px-2 py-1.5 rounded-lg transition">로그아웃</button>
+            `;
             userArea.innerHTML = html;
         }
 
@@ -327,37 +316,26 @@
         function openSubModal() { document.getElementById('subModal').classList.remove('hidden'); }
         function closeSubModal() { document.getElementById('subModal').classList.add('hidden'); }
 
-        function handleSettlement(e) {
+        async function handleSettlement(e) {
             e.preventDefault();
             const user = JSON.parse(localStorage.getItem('sw_user') || '{}');
             const bank = document.getElementById('settle-bank').value;
             const account = document.getElementById('settle-account').value;
             const amount = parseInt(document.getElementById('settle-amount').value, 10);
 
-            const curP = parseInt(localStorage.getItem('sw_points') || '0', 10);
-            if (amount > curP) {
-                alert('보유하신 포인트보다 많은 금액을 정산 신청할 수 없습니다.');
-                return;
+            const res = await fetch('/api/settlements', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ userId: user.id, userName: user.name, bank, account, amount })
+            }).then(r => r.json());
+
+            if (res.success) {
+                alert(`[정산 신청 완료]\n\n${bank} ${account}\n요청 금액: ${amount.toLocaleString()}P\n\n관리자 확인 후 정산 처리됩니다.`);
+                closeSubModal();
+                renderProfile();
+            } else {
+                alert(res.message);
             }
-
-            const settles = JSON.parse(localStorage.getItem('sw_settlements') || '[]');
-            settles.unshift({ userId: user.id, userName: user.name, bank, account, amount, date: new Date().toLocaleString() });
-            localStorage.setItem('sw_settlements', JSON.stringify(settles));
-
-            // Subtract points
-            const newPoints = curP - amount;
-            localStorage.setItem('sw_points', newPoints.toString());
-
-            const users = JSON.parse(localStorage.getItem('sw_users') || '[]');
-            const idx = users.findIndex(u => u.id === user.id);
-            if (idx !== -1) {
-                users[idx].points = newPoints;
-                localStorage.setItem('sw_users', JSON.stringify(users));
-            }
-
-            alert(`[정산 신청 완료]\n\n${bank} ${account}\n요청 금액: ${amount.toLocaleString()}P\n\n확인 후 순차 처리됩니다.`);
-            closeSubModal();
-            renderProfile();
         }
 
         document.addEventListener('DOMContentLoaded', () => {

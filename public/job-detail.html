@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>silverworks - 공고 상세 및 지원</title>
+    <title>silverworks - 공고 상세 및 구직 지원</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
@@ -44,11 +44,11 @@
     <script>
         let currentJob = null;
 
-        function loadJobDetail() {
+        async function loadJobDetail() {
             const params = new URLSearchParams(window.location.search);
             const jobId = params.get('id');
-            const jobs = JSON.parse(localStorage.getItem('sw_jobs') || '[]');
-            currentJob = jobs.find(j => j.id === jobId);
+            const jobsRes = await fetch('/api/jobs').then(r => r.json());
+            currentJob = (jobsRes.jobs || []).find(j => j.id === jobId);
 
             const container = document.getElementById('job-detail-card');
 
@@ -89,7 +89,7 @@
             `;
         }
 
-        function applyJob() {
+        async function applyJob() {
             const user = JSON.parse(localStorage.getItem('sw_user') || 'null');
             if (!user) {
                 alert('로그인이 필요한 서비스입니다.');
@@ -101,59 +101,64 @@
                 return;
             }
 
-            const jobs = JSON.parse(localStorage.getItem('sw_jobs') || '[]');
-            const idx = jobs.findIndex(j => j.id === currentJob.id);
-            
-            if (idx !== -1) {
-                if (!jobs[idx].candidates) jobs[idx].candidates = [];
-                
-                const already = jobs[idx].candidates.find(c => c.seniorId === user.id);
-                if (already) {
-                    alert('이미 지원하신 공고입니다.');
-                    return;
-                }
-
-                jobs[idx].candidates.push({
+            const res = await fetch(`/api/jobs/${currentJob.id}/apply`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
                     seniorId: user.id,
                     name: user.name,
-                    phone: user.phone || '010-0000-0000',
-                    appliedAt: new Date().toLocaleString(),
-                    status: '지원 완료 (사장님 검토 중)'
-                });
+                    phone: user.phone || '010-0000-0000'
+                })
+            }).then(r => r.json());
 
-                localStorage.setItem('sw_jobs', JSON.stringify(jobs));
+            if (res.success) {
                 alert('지원이 완료되었습니다! 지원 현황 및 채용 상태는 내 프로필 페이지에서 확인하실 수 있습니다.');
                 location.href = '/profile.html';
+            } else {
+                alert(res.message);
             }
         }
 
-        function updateHeaderUI() {
+        async function updateHeaderUI() {
             const userArea = document.getElementById('header-user-area');
             const user = JSON.parse(localStorage.getItem('sw_user') || 'null');
-            const points = parseInt(localStorage.getItem('sw_points') || '0', 10);
+
+            if (!user) {
+                userArea.innerHTML = `<a href="/login.html" class="text-xs font-bold px-4 py-2 rounded-xl bg-sky-500 text-white hover:bg-sky-600 transition shadow-sm">로그인 및 회원가입</a>`;
+                return;
+            }
+
+            const usersRes = await fetch('/api/users').then(r => r.json());
+            const freshUser = usersRes.users.find(u => u.id === user.id) || user;
+            localStorage.setItem('sw_user', JSON.stringify(freshUser));
+
+            const notiRes = await fetch(`/api/notifications/${user.id}`).then(r => r.json());
+            const hasUnread = notiRes.hasUnread;
 
             let html = `
-                <a href="/notifications.html" class="p-2 text-slate-500 hover:text-sky-600 transition" title="알림 센터">
+                <a href="/notifications.html" class="relative p-2 text-slate-500 hover:text-sky-600 transition" title="알림 센터">
                     <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                         <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
                         <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
                     </svg>
+                    ${hasUnread ? `<span class="absolute top-1 right-1 w-2.5 h-2.5 bg-sky-500 rounded-full ring-2 ring-white"></span>` : ''}
                 </a>
             `;
 
-            if (user) {
+            if (freshUser.role === 'senior') {
                 html += `
                     <a href="/profile.html" class="text-xs font-extrabold bg-sky-50 text-sky-600 px-3 py-1.5 rounded-xl border border-sky-100 hover:bg-sky-100 transition">
-                        포인트 ${points.toLocaleString()}P (정산)
+                        포인트 ${(freshUser.points || 0).toLocaleString()}P (정산)
                     </a>
-                    <a href="/profile.html" class="w-9 h-9 rounded-full bg-sky-100 text-sky-700 flex items-center justify-center font-bold border border-sky-200 hover:border-sky-400 transition" title="프로필 페이지">
-                        <i class="fa-solid fa-user"></i>
-                    </a>
-                    <button onclick="handleLogout()" class="text-xs font-bold text-slate-500 hover:text-rose-500 px-2 py-1.5 rounded-lg transition">로그아웃</button>
                 `;
-            } else {
-                html += `<a href="/login.html" class="text-xs font-bold px-4 py-2 rounded-xl bg-sky-500 text-white hover:bg-sky-600 transition shadow-sm">로그인 및 회원가입</a>`;
             }
+
+            html += `
+                <a href="/profile.html" class="w-9 h-9 rounded-full bg-sky-100 text-sky-700 flex items-center justify-center font-bold border border-sky-200 hover:border-sky-400 transition" title="프로필 페이지">
+                    <i class="fa-solid fa-user"></i>
+                </a>
+                <button onclick="handleLogout()" class="text-xs font-bold text-slate-500 hover:text-rose-500 px-2 py-1.5 rounded-lg transition">로그아웃</button>
+            `;
             userArea.innerHTML = html;
         }
 

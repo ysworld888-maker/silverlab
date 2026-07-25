@@ -9,6 +9,8 @@
     <style>
         @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css');
         body { font-family: "Pretendard", sans-serif; background-color: #f8fafc; color: #1e293b; word-break: keep-all; }
+        .btn-sky { background-color: #0284c7; color: #ffffff; transition: all 0.2s; }
+        .btn-sky:hover { background-color: #0369a1; }
     </style>
 </head>
 <body class="min-h-screen flex flex-col justify-between antialiased">
@@ -37,13 +39,24 @@
     </main>
 
     <script>
-        function updateHeaderUI() {
+        async function updateHeaderUI() {
             const userArea = document.getElementById('header-user-area');
             const user = JSON.parse(localStorage.getItem('sw_user') || 'null');
-            const points = parseInt(localStorage.getItem('sw_points') || '0', 10);
+
+            if (!user) {
+                userArea.innerHTML = `<a href="/login.html" class="text-xs font-bold px-4 py-2 rounded-xl bg-sky-500 text-white hover:bg-sky-600 transition shadow-sm">로그인 및 회원가입</a>`;
+                return;
+            }
+
+            const usersRes = await fetch('/api/users').then(r => r.json());
+            const freshUser = usersRes.users.find(u => u.id === user.id) || user;
+            localStorage.setItem('sw_user', JSON.stringify(freshUser));
+
+            // Mark all notifications as read when entering this page
+            await fetch(`/api/notifications/${user.id}/read`, { method: 'POST' });
 
             let html = `
-                <a href="/notifications.html" class="p-2 text-sky-600 bg-sky-50 rounded-full transition" title="알림 센터">
+                <a href="/notifications.html" class="relative p-2 text-sky-600 bg-sky-50 rounded-full transition" title="알림 센터">
                     <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                         <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
                         <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
@@ -51,19 +64,20 @@
                 </a>
             `;
 
-            if (user) {
+            if (freshUser.role === 'senior') {
                 html += `
                     <a href="/profile.html" class="text-xs font-extrabold bg-sky-50 text-sky-600 px-3 py-1.5 rounded-xl border border-sky-100 hover:bg-sky-100 transition">
-                        포인트 ${points.toLocaleString()}P (정산)
+                        포인트 ${(freshUser.points || 0).toLocaleString()}P (정산)
                     </a>
-                    <a href="/profile.html" class="w-9 h-9 rounded-full bg-sky-100 text-sky-700 flex items-center justify-center font-bold border border-sky-200 hover:border-sky-400 transition" title="프로필 페이지">
-                        <i class="fa-solid fa-user"></i>
-                    </a>
-                    <button onclick="handleLogout()" class="text-xs font-bold text-slate-500 hover:text-rose-500 px-2 py-1.5 rounded-lg transition">로그아웃</button>
                 `;
-            } else {
-                html += `<a href="/login.html" class="text-xs font-bold px-4 py-2 rounded-xl bg-sky-500 text-white hover:bg-sky-600 transition shadow-sm">로그인 및 회원가입</a>`;
             }
+
+            html += `
+                <a href="/profile.html" class="w-9 h-9 rounded-full bg-sky-100 text-sky-700 flex items-center justify-center font-bold border border-sky-200 hover:border-sky-400 transition" title="프로필 페이지">
+                    <i class="fa-solid fa-user"></i>
+                </a>
+                <button onclick="handleLogout()" class="text-xs font-bold text-slate-500 hover:text-rose-500 px-2 py-1.5 rounded-lg transition">로그아웃</button>
+            `;
             userArea.innerHTML = html;
         }
 
@@ -73,17 +87,18 @@
             location.href = '/index.html';
         }
 
-        function loadNotifications() {
+        async function loadNotifications() {
             const user = JSON.parse(localStorage.getItem('sw_user') || 'null');
             const notiContainer = document.getElementById('notification-list');
-            const allNotis = JSON.parse(localStorage.getItem('sw_notifications') || '[]');
 
             if (!user) {
                 notiContainer.innerHTML = `<p class="text-xs text-slate-400 text-center py-8">로그인이 필요합니다.</p>`;
                 return;
             }
 
-            const myNotis = allNotis.filter(n => n.targetUserId === user.id);
+            const notiRes = await fetch(`/api/notifications/${user.id}`).then(r => r.json());
+            const myNotis = notiRes.notifications || [];
+
             if (myNotis.length === 0) {
                 notiContainer.innerHTML = `
                     <div class="p-8 text-center text-slate-400 bg-white rounded-3xl border border-sky-100">
