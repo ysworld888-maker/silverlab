@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>silverworks - 공고 상세 및 지원</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css');
+        
+        :root {
+            --toss-blue: #3182f6;
+            --toss-blue-hover: #1b64da;
+            --toss-bg: #f9fafb;
+        }
+
+        body { 
+            font-family: "Pretendard", -apple-system, BlinkMacSystemFont, system-ui, Roboto, sans-serif;
+            background-color: var(--toss-bg);
+            color: #191f28;
+            word-break: keep-all;
+        }
+
+        .btn-toss {
+            background-color: var(--toss-blue);
+            color: #ffffff;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .btn-toss:hover {
+            background-color: var(--toss-blue-hover);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 14px rgba(49, 130, 246, 0.35);
+        }
+
+        .input-toss {
+            background-color: #f2f4f6;
+            border: 1px solid transparent;
+            transition: all 0.2s ease;
+        }
+
+        .input-toss:focus {
+            background-color: #ffffff;
+            border-color: #3182f6;
+            box-shadow: 0 0 0 3px rgba(49, 130, 246, 0.15);
+            outline: none;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between antialiased selection:bg-blue-100 selection:text-blue-600">
+
+    <!-- Header Navigation -->
+    <header class="sticky top-0 z-50 bg-white/90 backdrop-blur-md border-b border-slate-100 shadow-sm">
+        <div class="max-w-6xl mx-auto px-5 h-16 flex items-center justify-between">
+            <!-- Brand Logo (Wave Mark SVG) -->
+            <a href="/index.html" class="flex items-center gap-2.5 group">
+                <div class="p-1.5 rounded-xl bg-blue-50 text-blue-600 group-hover:bg-blue-100 transition">
+                    <svg class="w-8 h-8" viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="8" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M 14 58 C 28 72 44 72 58 48 C 72 24 88 18 95 35" />
+                        <path d="M 48 70 C 62 82 78 78 86 60" />
+                    </svg>
+                </div>
+                <span class="text-xl font-extrabold tracking-tight text-slate-900 group-hover:text-blue-600 transition">
+                    silverworks
+                </span>
+            </a>
+
+            <!-- Navigation Links -->
+            <nav class="hidden md:flex items-center gap-8 text-sm font-semibold text-slate-600">
+                <a href="/jobs.html" class="text-blue-600 font-extrabold transition">피크타임 공고</a>
+                <a href="/senior-apply.html" class="hover:text-blue-600 transition">시니어 일자리센터</a>
+                <a href="/employer.html" class="hover:text-blue-600 transition">사장님 센터</a>
+                <a href="/admin.html" class="hover:text-blue-600 transition">관리자 HQ</a>
+            </nav>
+
+            <!-- User Actions & Notification Bell SVG -->
+            <div class="flex items-center gap-3">
+                <a href="/notifications.html" class="relative p-2 text-slate-500 hover:text-blue-600 hover:bg-slate-100 rounded-full transition">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path>
+                    </svg>
+                    <span class="absolute top-1 right-1 w-2 h-2 bg-blue-600 rounded-full"></span>
+                </a>
+                <a href="/login.html" class="text-xs font-bold px-4 py-2 rounded-xl bg-slate-100 text-slate-700 hover:bg-slate-200 transition">
+                    로그인
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Detail Content -->
+    <main class="max-w-4xl mx-auto px-5 py-10 flex-1 w-full space-y-8">
+        
+        <!-- Back Button Link -->
+        <a href="/jobs.html" class="inline-flex items-center gap-2 text-xs font-bold text-slate-500 hover:text-blue-600 transition">
+            <i class="fa-solid fa-arrow-left"></i> 공고 목록으로 돌아가기
+        </a>
+
+        <!-- Job Header Banner Card -->
+        <div class="bg-white rounded-3xl p-6 md:p-8 border border-slate-200/80 shadow-sm space-y-6">
+            <div class="flex flex-wrap items-center justify-between gap-3 border-b border-slate-100 pb-5">
+                <div class="flex items-center gap-2">
+                    <span id="detail-category" class="bg-blue-50 text-blue-600 text-xs font-bold px-3 py-1 rounded-xl">식당·서빙</span>
+                    <span id="detail-badge-req" class="bg-slate-100 text-slate-600 text-xs font-bold px-3 py-1 rounded-xl">체력검증 우대</span>
+                </div>
+                <span id="detail-status" class="text-xs font-extrabold text-blue-600 bg-blue-50 px-3 py-1 rounded-full">
+                    1순위 매칭 완료
+                </span>
+            </div>
+
+            <div class="space-y-3">
+                <span id="detail-store" class="text-xs font-extrabold text-slate-400 block tracking-wider uppercase">대박식당</span>
+                <h1 id="detail-title" class="text-2xl md:text-3xl font-black text-slate-900 leading-snug">
+                    [대박식당] 점심 피크시간 홀 서빙 & 보조
+                </h1>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-4">
+                <div class="bg-slate-50 p-4 rounded-2xl border border-slate-100 space-y-1">
+                    <span class="text-[11px] text-slate-400 font-semibold block">근무 일자</span>
+                    <strong id="detail-date" class="text-sm font-bold text-slate-800">2026-07-26</strong>
+                </div>
+                <div class="bg-slate-50 p-4 rounded-2xl border border-slate-100 space-y-1">
+                    <span class="text-[11px] text-slate-400 font-semibold block">근무 시간</span>
+                    <strong id="detail-time" class="text-sm font-bold text-slate-800">12:00 ~ 14:00 (2시간)</strong>
+                </div>
+                <div class="bg-blue-50/60 p-4 rounded-2xl border border-blue-100/60 space-y-1">
+                    <span class="text-[11px] text-blue-600 font-semibold block">지급 일당</span>
+                    <strong id="detail-pay" class="text-lg font-black text-blue-600">30,000원</strong>
+                </div>
+            </div>
+        </div>
+
+        <!-- Candidate Ranking Status (1, 2, 3 순위 대기 현황) -->
+        <div class="bg-white rounded-3xl p-6 md:p-8 border border-slate-200/80 shadow-sm space-y-6">
+            <div class="flex justify-between items-center border-b border-slate-100 pb-4">
+                <div>
+                    <h2 class="text-lg font-black text-slate-900">1·2·3순위 대기 매칭 현황</h2>
+                    <p class="text-xs text-slate-500 mt-0.5">노쇼 발생 시 순번대로 자동 승계 및 지원 수당이 지급됩니다.</p>
+                </div>
+                <span class="text-xs font-bold text-blue-600 bg-blue-50 px-2.5 py-1 rounded-lg">실시간 대기열</span>
+            </div>
+
+            <!-- List of Ranks -->
+            <div class="space-y-3" id="candidate-list-container">
+                <!-- Dynamically rendered -->
+            </div>
+
+            <!-- No-Show Takeover Bonus Notice Box -->
+            <div class="p-4 rounded-2xl bg-amber-50 border border-amber-100 text-amber-900 text-xs space-y-1">
+                <p class="font-bold flex items-center gap-1.5">
+                    <i class="fa-solid fa-circle-info text-amber-600"></i>
+                    노쇼 자동 승계 정책 및 가산금 안내
+                </p>
+                <p class="text-amber-800 text-[11px] leading-relaxed">
+                    1순위 지원자가 근무 시작 30분 전까지 미출근 처리될 경우, 2순위 대기자에게 즉시 알림 발송 및 승계됩니다. 승계 출근 시 <strong>+5,000원 대기 가산금</strong>이 합산 지급됩니다.
+                </p>
+            </div>
+        </div>
+
+        <!-- Qualification & Senior Fitness Requirements -->
+        <div class="bg-white rounded-3xl p-6 md:p-8 border border-slate-200/80 shadow-sm space-y-4">
+            <h2 class="text-lg font-black text-slate-900">시니어 우대 및 체력 검증 가이드</h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
+                <div class="p-4 rounded-2xl bg-slate-50 border border-slate-100 space-y-2">
+                    <div class="flex items-center gap-2 font-bold text-slate-800">
+                        <i class="fa-solid fa-award text-blue-600 text-sm"></i>
+                        <span>국민체력100 및 검증 배지 보유자</span>
+                    </div>
+                    <p class="text-slate-500 leading-relaxed">
+                        국민체력100 인증서 또는 오프라인 센터에서 체력 측정 검증을 완료한 65세 이상 시니어 구직자는 매칭 우선 순위가 적용됩니다.
+                    </p>
+                </div>
+
+                <div class="p-4 rounded-2xl bg-slate-50 border border-slate-100 space-y-2">
+                    <div class="flex items-center gap-2 font-bold text-slate-800">
+                        <i class="fa-solid fa-file-medical text-blue-600 text-sm"></i>
+                        <span>보건증 및 건강 질문지 제출</span>
+                    </div>
+                    <p class="text-slate-500 leading-relaxed">
+                        식품위생업종 근무 시 유효한 보건증이 필수로 요구됩니다. 마이페이지에서 보건증 사진을 등록해 주세요.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Floating Apply Action Button Area -->
+        <div class="pt-2 flex justify-end">
+            <button onclick="openApplyModal()" class="btn-toss text-sm font-extrabold px-8 py-4 rounded-2xl shadow-lg w-full sm:w-auto">
+                피크타임 일자리 지원하기
+            </button>
+        </div>
+
+    </main>
+
+    <!-- Modal: Job Application -->
+    <div id="applyModal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm hidden z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl max-w-md w-full p-7 space-y-5 shadow-2xl">
+            <div class="flex justify-between items-center border-b border-slate-100 pb-3">
+                <h3 class="text-lg font-black text-slate-900">피크타임 일자리 구직 지원</h3>
+                <button onclick="closeApplyModal()" class="text-slate-400 hover:text-slate-600">
+                    <i class="fa-solid fa-xmark text-lg"></i>
+                </button>
+            </div>
+
+            <form onsubmit="submitApplication(event)" class="space-y-4 text-xs">
+                <div>
+                    <label class="block font-bold text-slate-700 mb-1">지원자 이름</label>
+                    <input type="text" id="app-name" value="박철수" required class="w-full p-3.5 rounded-xl input-toss font-medium">
+                </div>
+
+                <div>
+                    <label class="block font-bold text-slate-700 mb-1">연령대</label>
+                    <input type="text" id="app-age" value="66세 (시니어 우대 대상)" readonly class="w-full p-3.5 rounded-xl bg-slate-100 font-semibold text-slate-600">
+                </div>
+
+                <div>
+                    <label class="block font-bold text-slate-700 mb-1">보유 체력 검증 배지 선택</label>
+                    <select id="app-badge" class="w-full p-3.5 rounded-xl input-toss font-bold text-slate-800">
+                        <option value="체력100 1등급">국민체력100 1등급 보유</option>
+                        <option value="보건증 유효">유효한 보건증 등록 완료</option>
+                        <option value="질문지 완료">건강 상태 질문지 작성 완료</option>
+                    </select>
+                </div>
+
+                <div class="p-3 rounded-xl bg-blue-50 text-blue-900 text-[11px] space-y-1">
+                    <p class="font-bold">지원 순위 자동 배정 안내</p>
+                    <p class="text-blue-700">현재 빈 자리에 따라 1순위, 2순위, 3순위 대기열로 즉시 자동 등록됩니다.</p>
+                </div>
+
+                <div class="pt-2 flex gap-2">
+                    <button type="button" onclick="closeApplyModal()" class="flex-1 py-3.5 border border-slate-200 font-bold rounded-xl text-slate-600">취소</button>
+                    <button type="submit" class="flex-1 py-3.5 btn-toss font-bold rounded-xl shadow">지원 확정하기</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-slate-900 text-slate-400 text-xs py-8 border-t border-slate-800 text-center">
+        <p><strong class="text-white">silverworks (실버웍스)</strong> | 대표: 유연성, 민 혁 | 고객센터: 010-7464-3657</p>
+        <p class="text-slate-500 text-[11px] mt-1">경기도 성남시 중원구 광명로 79, 4층 404호 (성남동, 상산빌딩)</p>
+    </footer>
+
+    <script>
+        let currentJob = null;
+
+        function getJobIdFromUrl() {
+            const params = new URLSearchParams(window.location.search);
+            return params.get('id') || 'job-1';
+        }
+
+        function loadJobDetail() {
+            const jobId = getJobIdFromUrl();
+            const jobs = JSON.parse(localStorage.getItem('sw_jobs')) || [];
+            currentJob = jobs.find(j => j.id === jobId);
+
+            if (!currentJob) {
+                alert('존재하지 않는 공고입니다.');
+                window.location.href = '/jobs.html';
+                return;
+            }
+
+            // Populate UI Elements
+            document.getElementById('detail-category').innerText = currentJob.category;
+            document.getElementById('detail-badge-req').innerText = currentJob.badgeReq;
+            document.getElementById('detail-status').innerText = currentJob.status;
+            document.getElementById('detail-store').innerText = currentJob.storeName;
+            document.getElementById('detail-title').innerText = currentJob.title;
+            document.getElementById('detail-date').innerText = currentJob.date;
+            document.getElementById('detail-time').innerText = currentJob.time;
+            document.getElementById('detail-pay').innerText = currentJob.pay.toLocaleString() + '원';
+
+            renderCandidates(currentJob.candidates || []);
+        }
+
+        function renderCandidates(candidates) {
+            const container = document.getElementById('candidate-list-container');
+            const ranks = [1, 2, 3];
+
+            container.innerHTML = ranks.map(rank => {
+                const candidate = candidates.find(c => c.rank === rank);
+
+                if (candidate) {
+                    return `
+                        <div class="flex items-center justify-between p-4 rounded-2xl bg-blue-50/50 border border-blue-100/80">
+                            <div class="flex items-center gap-3">
+                                <span class="w-8 h-8 rounded-xl bg-blue-600 text-white font-extrabold text-xs flex items-center justify-center">${rank}순위</span>
+                                <div>
+                                    <strong class="text-xs text-slate-900 font-extrabold block">${candidate.name} (${candidate.age}세)</strong>
+                                    <span class="text-[11px] text-slate-500">배지: ${candidate.badge} | 신청시간 ${candidate.time}</span>
+                                </div>
+                            </div>
+                            <span class="text-xs font-bold text-blue-600 bg-white px-3 py-1 rounded-lg border border-blue-200">
+                                ${candidate.status}
+                            </span>
+                        </div>
+                    `;
+                } else {
+                    return `
+                        <div class="flex items-center justify-between p-4 rounded-2xl bg-slate-50 border border-dashed border-slate-200">
+                            <div class="flex items-center gap-3">
+                                <span class="w-8 h-8 rounded-xl bg-slate-200 text-slate-600 font-bold text-xs flex items-center justify-center">${rank}순위</span>
+                                <span class="text-xs text-slate-400 font-medium">대기열 비어있음 (지원 가능)</span>
+                            </div>
+                            <span class="text-xs font-bold text-slate-400 bg-white px-3 py-1 rounded-lg border border-slate-200">
+                                모집중
+                            </span>
+                        </div>
+                    `;
+                }
+            }).join('');
+        }
+
+        function openApplyModal() {
+            document.getElementById('applyModal').classList.remove('hidden');
+        }
+
+        function closeApplyModal() {
+            document.getElementById('applyModal').classList.add('hidden');
+        }
+
+        function submitApplication(e) {
+            e.preventDefault();
+            const name = document.getElementById('app-name').value;
+            const badge = document.getElementById('app-badge').value;
+
+            if (!currentJob.candidates) {
+                currentJob.candidates = [];
+            }
+
+            if (currentJob.candidates.length >= 3) {
+                alert('해당 공고의 1·2·3순위 대기열이 모두 마감되었습니다.');
+                closeApplyModal();
+                return;
+            }
+
+            const nextRank = currentJob.candidates.length + 1;
+            const now = new Date();
+            const timeStr = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+
+            const newCandidate = {
+                rank: nextRank,
+                name: name,
+                age: 66,
+                time: timeStr,
+                badge: badge,
+                status: nextRank === 1 ? '출근대기' : `${nextRank}순위 대기`
+            };
+
+            currentJob.candidates.push(newCandidate);
+            if (nextRank === 1) {
+                currentJob.status = '1순위 매칭 완료';
+            }
+
+            // Save back to LocalStorage
+            const jobs = JSON.parse(localStorage.getItem('sw_jobs')) || [];
+            const idx = jobs.findIndex(j => j.id === currentJob.id);
+            if (idx !== -1) {
+                jobs[idx] = currentJob;
+                localStorage.setItem('sw_jobs', JSON.stringify(jobs));
+            }
+
+            alert(`[지원 완료]\n\n${name}님, ${nextRank}순위 지원이 성공적으로 완료되었습니다.`);
+            closeApplyModal();
+            loadJobDetail();
+        }
+
+        document.addEventListener('DOMContentLoaded', loadJobDetail);
+    </script>
+</body>
+</html>

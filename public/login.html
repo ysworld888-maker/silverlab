@@ -3,165 +3,249 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>실버랩 - 통합 로그인</title>
+    <title>silverworks - 로그인 / 회원가입</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css');
-        body { font-family: "Pretendard", -apple-system, BlinkMacSystemFont, system-ui, sans-serif; }
-        .role-btn.active {
-            background-color: #2563eb;
+        
+        :root {
+            --toss-blue: #3182f6;
+            --toss-blue-hover: #1b64da;
+            --toss-bg: #f9fafb;
+        }
+
+        body { 
+            font-family: "Pretendard", -apple-system, BlinkMacSystemFont, system-ui, Roboto, sans-serif;
+            background-color: var(--toss-bg);
+            color: #191f28;
+            word-break: keep-all;
+        }
+
+        .btn-toss {
+            background-color: var(--toss-blue);
             color: #ffffff;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .btn-toss:hover {
+            background-color: var(--toss-blue-hover);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 14px rgba(49, 130, 246, 0.35);
+        }
+
+        .tab-active {
+            color: #3182f6;
+            border-bottom: 2px solid #3182f6;
             font-weight: 800;
+        }
+
+        .input-toss {
+            background-color: #f2f4f6;
+            border: 1px solid transparent;
+            transition: all 0.2s ease;
+        }
+
+        .input-toss:focus {
+            background-color: #ffffff;
+            border-color: #3182f6;
+            box-shadow: 0 0 0 3px rgba(49, 130, 246, 0.15);
+            outline: none;
         }
     </style>
 </head>
-<body class="bg-slate-100 text-slate-800 min-h-screen flex flex-col justify-between">
+<body class="min-h-screen flex flex-col justify-between antialiased selection:bg-blue-100 selection:text-blue-600">
 
-    <!-- Header -->
-    <header class="bg-white border-b border-slate-200">
-        <div class="max-w-md mx-auto px-4 h-16 flex items-center justify-between">
-            <a href="/index.html" class="flex items-center gap-2">
-                <span class="text-2xl font-black text-blue-600 tracking-tight">SILVERLAB</span>
+    <!-- Header Navigation -->
+    <header class="sticky top-0 z-50 bg-white/90 backdrop-blur-md border-b border-slate-100 shadow-sm">
+        <div class="max-w-6xl mx-auto px-5 h-16 flex items-center justify-between">
+            <!-- Brand Logo (Wave Mark SVG) -->
+            <a href="/index.html" class="flex items-center gap-2.5 group">
+                <div class="p-1.5 rounded-xl bg-blue-50 text-blue-600 group-hover:bg-blue-100 transition">
+                    <svg class="w-8 h-8" viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="8" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M 14 58 C 28 72 44 72 58 48 C 72 24 88 18 95 35" />
+                        <path d="M 48 70 C 62 82 78 78 86 60" />
+                    </svg>
+                </div>
+                <span class="text-xl font-extrabold tracking-tight text-slate-900 group-hover:text-blue-600 transition">
+                    silverworks
+                </span>
             </a>
-            <a href="/index.html" class="text-xs font-bold text-slate-500 hover:text-slate-800">
-                <i class="fa-solid fa-house mr-1"></i> 메인으로
+
+            <!-- Navigation Links -->
+            <nav class="hidden md:flex items-center gap-8 text-sm font-semibold text-slate-600">
+                <a href="/jobs.html" class="hover:text-blue-600 transition">피크타임 공고</a>
+                <a href="/senior-apply.html" class="hover:text-blue-600 transition">시니어 일자리센터</a>
+                <a href="/employer.html" class="hover:text-blue-600 transition">사장님 센터</a>
+                <a href="/admin.html" class="hover:text-blue-600 transition">관리자 HQ</a>
+            </nav>
+
+            <a href="/index.html" class="text-xs font-bold px-3.5 py-2 rounded-xl text-slate-500 hover:bg-slate-100 transition">
+                홈으로 돌아가기
             </a>
         </div>
     </header>
 
-    <!-- Login Box -->
-    <main class="max-w-md w-full mx-auto px-4 py-8 flex-1 flex flex-col justify-center">
-        <div class="bg-white rounded-2xl p-6 md:p-8 shadow-md border border-slate-200 space-y-6">
-
+    <!-- Main Login & Signup Card Container -->
+    <main class="flex-1 flex items-center justify-center py-12 px-5">
+        <div class="w-full max-w-md bg-white rounded-3xl p-8 border border-slate-200/80 shadow-xl space-y-6">
+            
             <div class="text-center space-y-2">
-                <h1 class="text-2xl font-black text-slate-900">실버랩 로그인</h1>
-                <p class="text-xs text-slate-500">시니어 일자리 매칭 & 피크타임 인력 연결 플랫폼</p>
+                <div class="inline-flex p-3 rounded-2xl bg-blue-50 text-blue-600 mb-1">
+                    <svg class="w-10 h-10" viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="8" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M 14 58 C 28 72 44 72 58 48 C 72 24 88 18 95 35" />
+                        <path d="M 48 70 C 62 82 78 78 86 60" />
+                    </svg>
+                </div>
+                <h1 class="text-2xl font-black text-slate-900 tracking-tight">silverworks에 오신 것을 환영합니다</h1>
+                <p class="text-xs text-slate-500">회원 유형을 선택하신 후 로그인 또는 회원가입을 진행해주세요.</p>
             </div>
 
-            <!-- Role Selection Tabs -->
-            <div class="grid grid-cols-3 gap-1 bg-slate-100 p-1 rounded-xl text-xs font-semibold">
-                <button type="button" onclick="selectRole('seeker')" id="role-seeker" class="role-btn active py-2.5 rounded-lg text-slate-600 transition">
+            <!-- Role Selector Tabs -->
+            <div class="flex border-b border-slate-200 text-xs font-bold text-center">
+                <button type="button" onclick="switchRole('senior')" id="tab-senior" class="flex-1 py-3 tab-active transition">
                     시니어 회원
                 </button>
-                <button type="button" onclick="selectRole('employer')" id="role-employer" class="role-btn py-2.5 rounded-lg text-slate-600 transition">
+                <button type="button" onclick="switchRole('employer')" id="tab-employer" class="flex-1 py-3 text-slate-400 hover:text-slate-600 transition">
                     사장님 회원
                 </button>
-                <button type="button" onclick="selectRole('admin')" id="role-admin" class="role-btn py-2.5 rounded-lg text-slate-600 transition">
+                <button type="button" onclick="switchRole('admin')" id="tab-admin" class="flex-1 py-3 text-slate-400 hover:text-slate-600 transition">
                     관리자
                 </button>
             </div>
 
-            <!-- Main Form -->
-            <form onsubmit="handleLogin(event)" class="space-y-4">
+            <!-- Login Form -->
+            <form onsubmit="handleLogin(event)" class="space-y-4 text-xs">
                 <div>
-                    <label class="block text-xs font-bold text-slate-700 mb-1" id="idLabel">휴대폰 번호 또는 아이디</label>
-                    <input type="text" id="loginId" placeholder="예: 01012345678" required class="w-full p-3 border border-slate-300 rounded-xl text-sm focus:outline-none focus:border-blue-600">
+                    <label class="block font-bold text-slate-700 mb-1">휴대폰 번호 또는 이메일</label>
+                    <input type="text" id="user-id" placeholder="예: 01012345678 또는 user@domain.com" required
+                           class="w-full p-3.5 rounded-xl input-toss text-slate-900 font-medium">
                 </div>
 
                 <div>
-                    <label class="block text-xs font-bold text-slate-700 mb-1">비밀번호</label>
-                    <input type="password" id="loginPw" placeholder="비밀번호를 입력하세요" required class="w-full p-3 border border-slate-300 rounded-xl text-sm focus:outline-none focus:border-blue-600">
+                    <label class="block font-bold text-slate-700 mb-1">비밀번호</label>
+                    <input type="password" id="user-pw" placeholder="비밀번호를 입력하세요" required
+                           class="w-full p-3.5 rounded-xl input-toss text-slate-900 font-medium">
                 </div>
 
-                <div class="flex items-center justify-between text-xs text-slate-500 pt-1">
-                    <label class="flex items-center gap-1.5 cursor-pointer">
-                        <input type="checkbox" checked class="rounded border-slate-300 text-blue-600 focus:ring-0">
-                        <span>로그인 상태 유지</span>
-                    </label>
-                    <a href="#" onclick="alert('고객센터(010-7464-3657)로 문의해 주세요.')" class="hover:underline">비밀번호 찾기</a>
+                <!-- Employer Extra Info Notice (Dynamic) -->
+                <div id="employer-notice" class="hidden p-3.5 rounded-xl bg-blue-50 border border-blue-100 text-[11px] text-blue-800 space-y-1">
+                    <p class="font-bold"><i class="fa-solid fa-crown mr-1"></i> 사장님 1년 정기구독 우대 회원</p>
+                    <p class="text-blue-600">구독 진행 시 플랫폼 매칭 수수료가 10%에서 5%로 감면 적용됩니다.</p>
                 </div>
 
-                <button type="submit" class="w-full py-3.5 bg-blue-600 hover:bg-blue-700 text-white font-black text-base rounded-xl shadow transition mt-2">
-                    로그인 하기
+                <button type="submit" class="w-full py-3.5 rounded-xl btn-toss font-bold text-sm shadow-md mt-2">
+                    로그인하기
                 </button>
             </form>
 
-            <!-- Social / Easy Logins -->
-            <div class="space-y-3 pt-2 border-t border-slate-100">
-                <button type="button" onclick="easyLogin('kakao')" class="w-full py-3 bg-[#FEE500] hover:bg-[#FADA00] text-[#3c1e1e] font-bold text-sm rounded-xl shadow-sm transition flex items-center justify-center gap-2">
-                    <i class="fa-solid fa-comment"></i> 카카오 3초 간편 로그인
+            <div class="pt-2 border-t border-slate-100 flex items-center justify-between text-xs text-slate-500 font-medium">
+                <span>계정이 없으신가요?</span>
+                <button onclick="openSignupModal()" class="text-blue-600 font-bold hover:underline">
+                    빠른 회원가입
                 </button>
             </div>
-
-            <!-- Prototype Quick Test Buttons -->
-            <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 space-y-2">
-                <p class="text-xs font-bold text-slate-500 text-center"><i class="fa-solid fa-flask text-blue-600"></i> 체험용 원클릭 빠른 로그인</p>
-                <div class="grid grid-cols-3 gap-1.5 text-xs">
-                    <button onclick="quickTestLogin('seeker')" class="bg-white border border-slate-300 hover:bg-blue-50 py-2 rounded-lg font-bold text-slate-700 transition">
-                        시니어 회원
-                    </button>
-                    <button onclick="quickTestLogin('employer')" class="bg-white border border-slate-300 hover:bg-blue-50 py-2 rounded-lg font-bold text-slate-700 transition">
-                        사장님 회원
-                    </button>
-                    <button onclick="quickTestLogin('admin')" class="bg-white border border-slate-300 hover:bg-blue-50 py-2 rounded-lg font-bold text-slate-700 transition">
-                        관리자
-                    </button>
-                </div>
-            </div>
-
-            <!-- Sign up link -->
-            <div class="text-center text-xs text-slate-500 pt-2">
-                아직 실버랩 회원이 아니신가요? 
-                <a href="/seeker.html" class="text-blue-600 font-bold hover:underline">회원가입 신청</a>
-            </div>
-
         </div>
     </main>
 
+    <!-- Modal: Fast Signup -->
+    <div id="signupModal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm hidden z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl max-w-md w-full p-7 space-y-5 shadow-2xl">
+            <div class="flex justify-between items-center border-b border-slate-100 pb-3">
+                <h3 class="text-lg font-black text-slate-900">silverworks 신규 회원가입</h3>
+                <button onclick="closeSignupModal()" class="text-slate-400 hover:text-slate-600">
+                    <i class="fa-solid fa-xmark text-lg"></i>
+                </button>
+            </div>
+
+            <form onsubmit="handleSignup(event)" class="space-y-3 text-xs">
+                <div>
+                    <label class="block font-bold text-slate-700 mb-1">이름</label>
+                    <input type="text" id="signup-name" placeholder="성함을 입력하세요" required class="w-full p-3 rounded-xl input-toss">
+                </div>
+                <div>
+                    <label class="block font-bold text-slate-700 mb-1">휴대폰 번호</label>
+                    <input type="tel" id="signup-phone" placeholder="010-0000-0000" required class="w-full p-3 rounded-xl input-toss">
+                </div>
+                <div>
+                    <label class="block font-bold text-slate-700 mb-1">회원 유형</label>
+                    <select id="signup-role" class="w-full p-3 rounded-xl input-toss font-bold text-slate-800">
+                        <option value="senior">시니어 구직자 회원 (체력검증 대상)</option>
+                        <option value="employer">사장님 회원 (구인 및 정산 관리)</option>
+                    </select>
+                </div>
+
+                <div class="pt-3 flex gap-2">
+                    <button type="button" onclick="closeSignupModal()" class="flex-1 py-3 border border-slate-200 font-bold rounded-xl text-slate-600">취소</button>
+                    <button type="submit" class="flex-1 py-3 btn-toss font-bold rounded-xl shadow">가입 완료</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <!-- Footer -->
-    <footer class="bg-slate-900 text-slate-400 text-xs py-6 border-t border-slate-800 text-center">
-        <p><strong class="text-white">silverworks (실버웍스)</strong> | 대표: 유연성, 민 혁</p>
-        <p class="text-slate-500 text-[11px] mt-1">경기도 성남시 중원구 광명로 79, 4층 404호</p>
+    <footer class="bg-slate-900 text-slate-400 text-xs py-8 border-t border-slate-800 text-center">
+        <p><strong class="text-white">silverworks (실버웍스)</strong> | 대표: 유연성, 민 혁 | 고객센터: 010-7464-3657</p>
+        <p class="text-slate-500 text-[11px] mt-1">경기도 성남시 중원구 광명로 79, 4층 404호 (성남동, 상산빌딩)</p>
     </footer>
 
     <script>
-        let currentRole = 'seeker';
+        let currentRole = 'senior';
 
-        function selectRole(role) {
+        function switchRole(role) {
             currentRole = role;
-            ['seeker', 'employer', 'admin'].forEach(r => {
-                document.getElementById('role-' + r).classList.remove('active');
+            document.querySelectorAll('[id^="tab-"]').forEach(el => {
+                el.className = 'flex-1 py-3 text-slate-400 hover:text-slate-600 transition';
             });
-            document.getElementById('role-' + role).classList.add('active');
+            document.getElementById(`tab-${role}`).className = 'flex-1 py-3 tab-active transition';
 
-            const idLabel = document.getElementById('idLabel');
-            if (role === 'seeker') idLabel.innerText = '휴대폰 번호 (시니어 회원)';
-            else if (role === 'employer') idLabel.innerText = '아이디 또는 사업자번호 (사장님 회원)';
-            else idLabel.innerText = '관리자 계정 ID';
+            const notice = document.getElementById('employer-notice');
+            if (role === 'employer') {
+                notice.classList.remove('hidden');
+            } else {
+                notice.classList.add('hidden');
+            }
         }
 
         function handleLogin(e) {
             e.preventDefault();
-            const id = document.getElementById('loginId').value;
-            localStorage.setItem('userRole', currentRole);
-            localStorage.setItem('userId', id);
-
-            alert(`[로그인 성공]\n역할: ${currentRole.toUpperCase()}\n로그인 아이디: ${id}`);
+            const userId = document.getElementById('user-id').value;
             
-            if(currentRole === 'admin') window.location.href = '/admin.html';
-            else if(currentRole === 'employer') window.location.href = '/employer.html';
-            else window.location.href = '/seeker.html';
+            const sessionData = {
+                role: currentRole,
+                id: userId,
+                name: currentRole === 'senior' ? '박철수 어르신' : (currentRole === 'employer' ? '김대박 대표' : '관리자'),
+                loginAt: new Date().toISOString()
+            };
+
+            localStorage.setItem('sw_user', JSON.stringify(sessionData));
+
+            if (currentRole === 'senior') {
+                window.location.href = '/senior-apply.html';
+            } else if (currentRole === 'employer') {
+                window.location.href = '/employer.html';
+            } else {
+                window.location.href = '/admin.html';
+            }
         }
 
-        function easyLogin(provider) {
-            alert(`[${provider.toUpperCase()} 간편 로그인]\n인증 후 이동합니다.`);
-            localStorage.setItem('userRole', 'seeker');
-            window.location.href = '/seeker.html';
+        function openSignupModal() {
+            document.getElementById('signupModal').classList.remove('hidden');
         }
 
-        function quickTestLogin(role) {
-            selectRole(role);
-            document.getElementById('loginId').value = role + '_test_user';
-            document.getElementById('loginPw').value = '123456';
-            
-            localStorage.setItem('userRole', role);
-            localStorage.setItem('userId', role + '_test_user');
+        function closeSignupModal() {
+            document.getElementById('signupModal').classList.add('hidden');
+        }
 
-            if(role === 'admin') window.location.href = '/admin.html';
-            else if(role === 'employer') window.location.href = '/employer.html';
-            else window.location.href = '/seeker.html';
+        function handleSignup(e) {
+            e.preventDefault();
+            const name = document.getElementById('signup-name').value;
+            const role = document.getElementById('signup-role').value;
+            
+            alert(`[회원가입 완료]\n\n${name}님, silverworks 회원이 되신 것을 환영합니다.\n선택하신 유형으로 로그인해 주세요.`);
+            closeSignupModal();
+            switchRole(role);
         }
     </script>
 </body>
