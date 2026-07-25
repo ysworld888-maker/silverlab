@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scalable=no">
+    <title>SILVERWORKS 최고관리자 콘솔 - 마스터 제어실</title>
+    <!-- [지시 요건 완벽 수립] 수많은 기능을 큼직하게 분류하여 버튼 누르면 해당 전용 화면으로 뷰 스위칭되는 단순 명료 아키텍처 -->
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Malgun Gothic", sans-serif; letter-spacing: -0.4px; }
+        body { background-color: #ffffff; color: #0f1419; padding: 20px; -webkit-font-smoothing: antialiased; }
+        header { display: flex; justify-content: space-between; align-items: center; padding-bottom: 16px; border-bottom: 1px solid #eff3f4; margin-bottom: 24px; }
+        .logo { font-size: 20px; font-weight: 800; color: #1967d2; cursor: pointer; }
+        
+        /* [지시 요건] 가시적으로 한 번에 다 보여주지 않고, 큼직하게 카드 형태 버튼으로 분류하여 스위칭하는 탭 그리드 */
+        .admin-master-grid-menu { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-bottom: 28px; }
+        @media (max-width: 768px) { .admin-master-grid-menu { grid-template-columns: 1fr 1fr; } }
+        
+        .admin-menu-card-btn { background-color: #ffffff; border: 1px solid #cfd9de; padding: 20px; border-radius: 16px; text-align: left; cursor: pointer; transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1); display: flex; flex-direction: column; gap: 6px; }
+        .admin-menu-card-btn:hover { border-color: #1967d2; background-color: #f4f9ff; transform: translateY(-2px); }
+        .admin-menu-card-btn.active { border-color: #1967d2; background-color: #f4f9ff; box-shadow: 0 4px 16px rgba(25,103,210,0.08); }
+        .menu-btn-title { font-size: 15px; font-weight: 800; color: #1967d2; }
+        .menu-btn-desc { font-size: 11.5px; color: #536471; font-weight: 500; line-height: 1.4; }
+        
+        /* 기능별 뷰 스위칭 락 컨테이너 상자 */
+        .admin-view-panel-slot { display: none; }
+        .admin-view-panel-slot.active { display: block; }
+        
+        .card { border: 1px solid #eff3f4; border-radius: 14px; padding: 24px; margin-top: 16px; box-shadow: 0 4px 12px rgba(0,0,0,0.01); }
+        h3 { font-size: 15px; font-weight: 800; color: #1c1c1e; margin-bottom: 16px; border-left: 5px solid #1967d2; padding-left: 10px; }
+        
+        .table-container { width: 100%; overflow-x: auto; margin-top: 10px; }
+        table { width: 100%; border-collapse: collapse; font-size: 12.5px; min-width: 900px; }
+        th { background-color: #f7f9fa; color: #536471; padding: 12px 10px; font-weight: 600; border-bottom: 1px solid #eff3f4; text-align: left; }
+        td { padding: 12px 10px; border-bottom: 1px solid #eff3f4; vertical-align: middle; color: #1c1c1e; font-weight: 500; }
+        
+        /* [지시 요건] 국민체력 100 오프라인 2차 검증 스펙 실시간 인서트용 인풋 박스 */
+        .fitness-input { width: 68px; padding: 5px; text-align: center; border: 1px solid #cfd9de; border-radius: 6px; font-weight: 700; color: #0f1419; outline: none; }
+        .fitness-input:focus { border-color: #1967d2; background-color: #f4f9ff; }
+        
+        .btn { background-color: #1967d2; color: #ffffff; border: none; padding: 6px 14px; border-radius: 9999px; cursor: pointer; font-size: 11.5px; font-weight: 700; transition: background-color 0.15s; }
+        .btn:hover { background-color: #1152b3; }
+        .btn-purge-red { background-color: #ffffff; color: #eb5757; border: 1px solid #cfd9de; padding: 5px 12px; border-radius: 6px; cursor: pointer; font-size: 11px; font-weight: 700; }
+        .btn-purge-red:hover { background-color: #fff5f5; border-color: #eb5757; }
+        
+        /* [지시 요건] 약속 안 지킨 회원 블랙리스트 표식용 전용 배지 셋팅 */
+        .blacklist-badge-warning { background-color: #fff5f5; color: #eb5757; border: 1px solid #eb5757; padding: 2px 6px; border-radius: 4px; font-size: 11px; font-weight: 700; display: inline-block; }
+        .subscription-badge-premium { background-color: #e8f3ff; color: #1967d2; border: 1px solid #1967d2; padding: 2px 6px; border-radius: 4px; font-size: 11px; font-weight: 700; display: inline-block; }
+        
+        .inspect-modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.4); display: none; align-items: center; justify-content: center; z-index: 600; backdrop-filter: blur(4px); }
+        .inspect-modal-content { background-color: #ffffff; width: 90%; max-width: 500px; border-radius: 16px; padding: 24px; max-height: 80vh; overflow-y: auto; box-shadow: 0 10px 30px rgba(0,0,0,0.15); }
+        .click-id-link { color: #1967d2; font-weight: 700; cursor: pointer; text-decoration: underline; }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo" onclick="location.href='/'">SILVERWORKS 최고행정관제소</div>
+        <button type="button" class="btn" onclick="location.href='/jobs.html'">구인구직 피드 실시간 감제</button>
+    </header>
+
+    <!-- [지시 요건 반영] 가시적으로 난잡하게 다 펼치지 않고, 큼직한 카드 버튼으로 분류 정돈한 조작계 -->
+    <div class="admin-master-grid-menu">
+        <button type="button" class="admin-menu-card-btn active" id="adminMenuTabBtn0" onclick="handleSwitchAdminViewConsoleChannel(0)">
+            <span class="menu-btn-title">💰 0. 수수료 수납 & 리셋</span>
+            <span class="menu-btn-desc">구독 / 일반 사장님 차등 정산 청구 영수증 현황을 감제하고 대금을 0원 완납 세척 리셋합니다.</span>
+        </button>
+        <button type="button" class="admin-menu-card-btn" id="adminMenuTabBtn1" onclick="handleSwitchAdminViewConsoleChannel(1)">
+            <span class="menu-btn-title">👥 1. 유저 통제 & 체력 인서트</span>
+            <span class="menu-btn-desc">회원 정보를 열람하고 2차 오프라인 국민체력 100 등급 인서트 및 블랙리스트 강제 탈퇴를 통제합니다.</span>
+        </button>
+        <button type="button" class="admin-menu-card-btn" id="adminMenuTabBtn2" onclick="handleSwitchAdminViewConsoleChannel(2)">
+            <span class="menu-btn-title">📋 2. 구인공고 & 파쇄 심사</span>
+            <span class="menu-btn-desc">매장 피크타임 신규 공고 규격 심사 승인 및 불법·허위 공고글을 즉각 원천 삭제 조치합니다.</span>
+        </button>
+        <button type="button" class="admin-menu-card-btn" id="adminMenuTabBtn3" onclick="handleSwitchAdminViewConsoleChannel(3)">
+            <span class="menu-btn-title">📞 3. 행정 문의 & 이의 신청</span>
+            <span class="menu-btn-desc">비회원 문의 인프라 타임스탬프 원장 감제 및 사장님의 이의 제기 분쟁 건을 검토 처리합니다.</span>
+        </button>
+    </div>
+
+    <!-- 뷰 스위칭 0번 패널 슬롯: 사장님 차등 정산 대금 청구서 수납대 -->
+    <div class="admin-view-panel-slot active" id="adminViewPanelSlot0">
+        <div class="card" style="border-color: #eb5757;">
+            <h3 style="color: #eb5757; border-left-color: #eb5757;">💰 사장님실 차등 중개 수수료 수납 증빙 및 0원 영구 리셋 패널</h3>
+            <div class="table-container"><table>
+                <thead><tr><th>명세 ID</th><th>구인 사장님 ID</th><th>대상 베테랑 ID</th><th>공고 번호</th><th>임금 원금</th><th>수수료 계수</th><th>최종 청구액</th><th>수납 명세 상태</th><th>본부 수납 확정 (0원 리셋)</th></tr></thead>
+                <tbody id="adminBillingInvoiceBody"><tr><td colspan="9" style="text-align:center; color:#536471; padding:15px 0;">청구서 원장을 불러오는 중입니다...</td></tr></tbody>
+            </table></div>
+        </div>
+    </div>
+
+    <!-- 뷰 스위칭 1번 패널 슬롯: 유저 관리 및 오프라인 2차 체력 등급 주입소 -->
+    <div class="admin-view-panel-slot" id="adminViewPanelSlot1">
+        <div class="card">
+            <h3>👥 회원 가입 승인, 2차 오프라인 체력 등급 주입 및 블랙리스트 가드 제어판</h3>
+            <div class="table-container"><table>
+                <thead><tr><th>아이디 (원장열람)</th><th>성명/상호명</th><th>연락처 명세</th><th>분류</th><th>계정 세션 상태</th><th>2차 체력등급</th><th>악력 (kg)</th><th>유연성 (cm)</th><th>지구력 (회)</th><th>블랙리스트</th><th>행정 처분 저장</th></tr></thead>
+                <tbody id="userBody"></tbody>
+            </table></div>
+        </div>
+    </div>
+
+    <!-- 뷰 스위칭 2번 패널 슬롯: 구인공고 심사 통제판 -->
+    <div class="admin-view-panel-slot" id="adminViewPanelSlot2">
+        <div class="card">
+            <h3>📋 사장님 피크타임 구인공고 규격 심사 및 원천 파쇄 통제 패널</h3>
+            <div class="table-container"><table>
+                <thead><tr><th>공고 ID</th><th>발행 사장님 ID</th><th>매장 상호명</th><th>공고 제목 명세</th><th>근무 날짜</th><th>시급 가이드</th><th>공고 라이브 게재 상태</th></tr></thead>
+                <tbody id="jobAdminBody"></tbody>
+            </table></div>
+        </div>
+    </div>
+
+    <!-- 뷰 스위칭 3번 패널 슬롯: 행정 문의 및 이의 제기 분쟁 관제소 -->
+    <div class="admin-view-panel-slot" id="adminViewPanelSlot3">
+        <div class="card">
+            <h3>📞 비회원 전용 원터치 다이렉트 매장 행정 문의 실시간 감제 패널</h3>
+            <div class="table-container"><table>
+                <thead><tr><th>접수 번호</th><th>문의 매장 상호명</th><th>대표자 소통 연락처</th><th>문의 버튼 터치 실시간 시각 (타임스탬프 각인 원장)</th></tr></thead>
+                <tbody id="storeConsultBody"></tbody>
+            </table></div>
+        </div>
+    </div>
+
+    <!-- 신원 영구 검출 마스터 모달 가드 보존 -->
+    <div id="inspectUserModal" class="inspect-modal-overlay">
+        <div class="inspect-modal-content">
+            <div style="display:flex; justify-content:space-between; margin-bottom:12px; border-bottom:1px solid #eff3f4; padding-bottom:6px;">
+                <h3 style="margin:0; border:none; padding:0;">마스터 신원 원장 영구 검출록</h3>
+                <button type="button" style="background:none; border:none; font-size:16px; cursor:pointer;" onclick="closeInspectUserModal()">✕</button>
+            </div>
+            <div id="inspectModalContentBox"></div>
+        </div>
+    </div>
+    <!-- [사장님 오더 완벽 이식] 4대 마스터 뷰 스위칭 및 오프라인 체력 인서트, 블랙리스트 가드 제어 엔진 -->
+    <script>
+        // [지시 반영] 난잡한 요소를 전면 배제하고, 버튼 누르면 해당 전용 화면으로 뷰 스위칭되는 함수
+        function handleSwitchAdminViewConsoleChannel(panelIndex) {
+            for(let i = 0; i <= 3; i++) {
+                document.getElementById('adminMenuTabBtn' + i).classList.remove('active');
+                document.getElementById('adminViewPanelSlot' + i).classList.remove('active');
+            }
+            document.getElementById('adminMenuTabBtn' + panelIndex).classList.add('active');
+            document.getElementById('adminViewPanelSlot' + panelIndex).classList.add('active');
+        }
+
+        function loadAdminMasterConsole() {
+            // 1. 유저 데이터베이스 원장 연동 및 2차 오프라인 체력 주입 인풋 셋팅
+            fetch('/api/admin/users')
+                .then(res => res.json())
+                .then(data => {
+                    const body = document.getElementById('userBody'); 
+                    body.innerHTML = '';
+                    
+                    data.users.forEach(u => {
+                        let inputs = `<td>-</td><td>-</td><td>-</td><td>-</td>`;
+                        // 시니어 회원일 경우 오프라인 체력 수치 인서트 인프라 개통
+                        if(u.role === 'seeker') {
+                            inputs = `
+                                <td><input type="text" class="fitness-input" id="g_${u.username}" value="${u.fitness_grade||'미인증'}"></td>
+                                <td><input type="text" class="fitness-input" id="gp_${u.username}" value="${u.fitness_grip||'-'}"></td>
+                                <td><input type="text" class="fitness-input" id="f_${u.username}" value="${u.fitness_flex||'-'}"></td>
+                                <td><input type="text" class="fitness-input" id="c_${u.username}" value="${u.fitness_cardio||'-'}"></td>
+                            `;
+                        }
+
+                        // 블랙리스트 여부 가시적 토글 양식 바인딩
+                        const isBlack = u.is_blacklist === 1;
+                        const blacklistBadge = isBlack ? `<span class="blacklist-badge-warning">⚠️ 블랙리스트</span>` : `<span style="color:#8e8e93; font-weight:700;">정상회원</span>`;
+                        
+                        // 사장님 구독 배지 상태 가이드라인 출력
+                        let subBadge = "";
+                        if(u.role === 'employer' && u.subscription_status === 'premium') {
+                            subBadge = `<span class="subscription-badge-premium">👑 구독 사장님</span>`;
+                        }
+
+                        body.innerHTML += `
+                            <tr>
+                                <td><span class="click-id-link" onclick="openInspectUserModal('${u.username}')">@${u.username}</span></td>
+                                <td style="font-weight:700;">${u.name} ${subBadge}</td>
+                                <td>${u.phone}</td>
+                                <td>${u.role==='employer'?'구인 사장님':'구직 시니어'}</td>
+                                <td>${u.status==='approved'?'승인완료':'승인대기'}</td>
+                                ${inputs}
+                                <td>${blacklistBadge}</td>
+                                <td>
+                                    <button class="btn" style="padding:4px 10px; font-size:11px; margin-bottom:2px;" onclick="saveSpec('${u.username}', '${u.role}')">스펙저장</button>
+                                    <button class="btn-purge-red" style="padding:4px 10px; font-size:11px;" onclick="executeTriggerBlacklistHedge('${u.username}', ${isBlack ? 0 : 1})">${isBlack?'해제':'블랙등록'}</button>
+                                </td>
+                            </tr>
+                        `;
+                    });
+                });
+
+            // 2. 구인공고 리스트 파싱 로드선 
+            fetch('/api/admin/jobs-all')
+                .then(res => res.json())
+                .then(data => {
+                    const body = document.getElementById('jobAdminBody'); 
+                    body.innerHTML = '';
+                    data.jobs.forEach(j => {
+                        const isCompleted = j.status === 'completed';
+                        body.innerHTML += `
+                            <tr>
+                                <td>SL-${j.id}</td>
+                                <td class="click-id-link" onclick="openInspectUserModal('${j.employer_id}')">@${j.employer_id}</td>
+                                <td style="font-weight:700;">${j.company}</td>
+                                <td>${j.title}</td>
+                                <td>${j.work_date}</td>
+                                <td style="font-weight:700; color:#1967d2;">${j.wage.toLocaleString()} 원</td>
+                                <td>
+                                    <span style="font-weight:700; color:${isCompleted?'#8e8e93':'#1967d2'};">${isCompleted?'✓ 채용마감':'구인중'}</span>
+                                    <button class="btn-purge-red" style="margin-left:8px;" onclick="executeForcePurgeJobPost(${j.id})">공고 파쇄삭제</button>
+                                </td>
+                            </tr>
+                        `;
+                    });
+                });
+
+            // 3. 차등 가산 수수료 청구서 원장 목록 로드 파싱 엔진
+            fetch('/api/admin/match-logs')
+                .then(res => res.json())
+                .then(data => {
+                    const billingBody = document.getElementById('adminBillingInvoiceBody'); 
+                    billingBody.innerHTML = '';
+                    
+                    if(!data.billings || data.billings.length === 0) {
+                        billingBody.innerHTML = `<tr><td colspan="9" style="text-align:center; color:#536471; padding:15px 0;">본부에 발행 적재된 사장님 대금 청구 내역이 없습니다.</td></tr>`;
+                    } else {
+                        data.billings.forEach(b => {
+                            const isPending = b.status === 'pending';
+                            const isRequested = b.status === 'paid_requested';
+                            
+                            let statusText = "✓ 완납종결";
+                            let actionBtnHtml = "✓ 정산마감";
+                            
+                            if (isPending) {
+                                statusText = "⚠️ 미수납";
+                                actionBtnHtml = `<span style="font-size:11px; color:#536471; font-weight:700;">입금대기중</span>`;
+                            } else if (isRequested) {
+                                statusText = "🔔 입금확정요청";
+                                actionBtnHtml = `<button class="btn" style="background-color:#eb5757;" onclick="executeClearEmployerInvoiceBill(${b.id})">실물 현금 입금확정 (0원 리셋)</button>`;
+                            } else if (b.status === 'disputed_claim_hold') {
+                                statusText = "🚨 이의신청 분쟁 보류";
+                                actionBtnHtml = `<button class="btn" onclick="executeClearEmployerInvoiceBill(${b.id})">분쟁 해결 (강제승인 0원 리셋)</button>`;
+                            }
+
+                            billingBody.innerHTML += `<tr>
+                                <td>INV-${b.id}</td>
+                                <td class="click-id-link" onclick="openInspectUserModal('${b.employer_id}')">@${b.employer_id}</td>
+                                <td class="click-id-link" onclick="openInspectUserModal('${b.seeker_id}')">@${b.seeker_id}</td>
+                                <td>SL-${b.job_id}</td>
+                                <td>${b.base_wage.toLocaleString()} P</td>
+                                <td style="color:#1967d2; font-weight:700;">+ ${b.commission.toLocaleString()} 원</td>
+                                <td style="color:#eb5757; font-weight:800;">${b.total_bill.toLocaleString()} 원</td>
+                                <td style="font-weight:700;">${statusText}</td>
+                                <td>${actionBtnHtml}</td>
+                            </tr>`;
+                        });
+                    }
+
+                    // 4. 비회원 행정 문의 피드 파존 및 실시간 타임스탬프 원장 감제
+                    const consultBody = document.getElementById('storeConsultBody'); 
+                    consultBody.innerHTML = '';
+                    if(!data.consults || data.consults.length === 0) {
+                        consultBody.innerHTML = `<tr><td colspan="4" style="text-align:center; color:#536471; padding:15px 0;">행정 문의 피드가 비어있습니다.</td></tr>`;
+                    } else {
+                        data.consults.forEach(c => {
+                            consultBody.innerHTML += `<tr>
+                                <td>C-00${c.id}</td>
+                                <td style="font-weight:700;">${c.store_name}</td>
+                                <td style="font-weight:700; color:#1967d2;">${c.phone}</td>
+                                <td style="color:#536471; font-weight:700;">${new Date(c.created_at).toLocaleString('ko-KR')}</td>
+                            </tr>`;
+                        });
+                    }
+                });
+        }
+
+        // [지시 반영] 사장님이 가산 청구 대금을 이체 완료 시, 본부 수납 단추를 눌러 청구액을 0원으로 리셋하고 신규 공고 제한 락을 해제하는 엔진
+        function executeClearEmployerInvoiceBill(bId) {
+            if (confirm('본부 오피셜 입금 수납 확인 고지:\n\n해당 사장님이 10% 혹은 5% 차등 가산 수수료 비용을 실물 통장 계좌로 송금 완료한 사실을 증빙 확인하셨습니까?\n\n(승인 즉시 사장님 제어반의 청구 명세 대 잔액이 실시간 [0원]으로 클리어 정화되며 신규 공고 작성 금지 전산 락이 전격 해제됩니다)')) {
+                fetch('/api/admin/settle/clear-employer-invoice', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ billing_id: bId })
+                }).then(res => res.json()).then(data => {
+                    alert(data.message);
+                    loadAdminMasterConsole();
+                });
+            }
+        }
+
+        // [지시 반영] 국민체력 100 오프라인 2차 체력 수치 강제 주입 주입소 스크립트 유닛
+        function saveSpec(user, userRole) {
+            let g = "미인증", gp = "-", f = "-", c = "-";
+            if (userRole === 'seeker' && document.getElementById('g_' + user)) {
+            g = document.getElementById('g_' + user).value; 
+            gp = document.getElementById('gp_' + user).value;
+            f = document.getElementById('f_' + user).value; 
+            c = document.getElementById('c_' + user).value;
+        }
+        fetch('/api/admin/update-user', { 
+            method: 'POST', 
+            headers: { 'Content-Type': 'application/json' }, 
+            body: JSON.stringify({ target_username: user, status: 'approved', fitness_grade: g, fitness_grip: gp, fitness_flex: f, fitness_cardio: c }) 
+        }).then(() => { 
+            alert('2차 오프라인 체력 검증 등급 원장 주입 완료!'); 
+            loadAdminMasterConsole(); 
+        });
+    }
+
+    // [지시 반영] 약속 위반 유저 및 대금 미납자 블랙리스트 영구 가드 통제 스위칭 유닛
+    function executeTriggerBlacklistHedge(targetUser, setStatus) {
+        if(!confirm(`블랙리스트 처분 고지: @${targetUser} 회원의 블랙리스트 처리 상태를 격상/토글 변경합니까?`)) return;
+        fetch('/api/auth/update-blacklist-status', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ target_username: targetUser, is_blacklist: setStatus })
+        }).then(() => {
+            alert('블랙리스트 행정 가드 처분이 완료되었습니다.');
+            loadAdminMasterConsole();
+        });
+    }
+
+    // 공고 강제 파쇄 삭제 조치
+    function executeForcePurgeJobPost(jobId) {
+        if(!confirm('이 구인공고를 피드에서 원천 강제 파쇄 삭제 조치합니까?')) return;
+        fetch('/api/jobs/purge-delete', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ job_id: jobId })
+        }).then(() => { alert('공고 강제 파쇄 완료'); loadAdminMasterConsole(); });
+    }
+    
+    function openInspectUserModal(username) {
+        document.getElementById('inspectUserModal').style.display = 'flex';
+        fetch(`/api/admin/inspect-user?target_username=${encodeURIComponent(username)}`)
+            .then(res => res.json())
+            .then(data => {
+                const u = data.profile; 
+                const qa = data.senior_answers; 
+                let qaHtml = "";
+                if(u.role === 'seeker' && qa) {
+                    qaHtml = `<div style="margin-top:14px; font-weight:800; color:#1967d2;">📋 온라인 문진 질문지 사본 원장</div>`;
+                    const answers = [qa.q1, qa.q2, qa.q3, qa.q4, qa.q5, qa.q6, qa.q7, qa.q8, qa.q9, qa.q10, qa.q11, qa.q12];
+                    answers.forEach((ans, i) => { qaHtml += `<div style="font-size:12px; color:#536471; margin-top:5px;">• 문항 ${i+1}층 데이터 : ${ans||'미기입'}</div>`; });
+                }
+                document.getElementById('inspectModalContentBox').innerHTML = `
+                    <div style="font-size:13.5px; line-height:1.7;">
+                        <div><strong>계정 ID:</strong> @${u.username} | <strong>분류:</strong> ${u.role==='employer'?'구인 사장님':'구직 시니어'}</div>
+                        <div><strong>성명/매장명:</strong> ${u.name} | <strong>보유 포인트:</strong> ${u.points.toLocaleString()} P</div>
+                        <div><strong>긴급 소통선:</strong> ${u.phone} | <strong>비상연락처(보호자):</strong> ${u.emergency_phone || '-'}</div>
+                        <div><strong>사업자 번호:</strong> ${u.business_number || '-'} | <strong>구독 상태:</strong> ${u.subscription_status==='premium'?'연4만원 결제회원':'일반회원'}</div>
+                    </div>${qaHtml}
+                `;
+            });
+    }
+
+    document.getElementById('inspectUserModal').addEventListener('click', function(e) {
+        if(e.target === this) closeInspectUserModal();
+    });
+
+    function closeInspectUserModal() { document.getElementById('inspectUserModal').style.display = 'none'; }
+
+    loadAdminMasterConsole();
+</script>
+</body>
+</html>

@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scalable=no">
+    <title>SILVERWORKS - 내 알림 센터</title>
+    <!-- [대기업 공식 콘솔 스펙] 회원 전용 통합 알림함 및 가산 보상 추적 인터페이스 CSS 명세 -->
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Malgun Gothic", sans-serif; letter-spacing: -0.4px; }
+        body { background-color: #ffffff; color: #1c1c1e; padding-bottom: 60px; -webkit-font-smoothing: antialiased; }
+        header { display: flex; justify-content: space-between; align-items: center; padding: 18px 24px; background-color: #ffffff; border-bottom: 1px solid #eff3f4; position: sticky; top: 0; z-index: 100; }
+        .logo { font-size: 20px; font-weight: 800; color: #1967d2; cursor: pointer; }
+        
+        .main-container { max-width: 640px; margin: 0 auto; padding: 32px 20px; }
+        
+        /* [지시 요건 반영] 난잡함을 원천 차단하고 카드형태로 정돈된 입체 레이아웃 */
+        .noti-page-title-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; padding-bottom: 12px; border-bottom: 2px solid #f2f4f6; }
+        .page-title { font-size: 20px; font-weight: 800; color: #1c1c1e; }
+        
+        .btn-clear-all { background: none; border: 1px solid #cfd9de; color: #536471; font-size: 12.5px; font-weight: 700; padding: 6px 14px; border-radius: 8px; cursor: pointer; transition: all 0.15s; }
+        .btn-clear-all:hover { background-color: #f7f9fa; color: #1c1c1e; }
+        
+        /* 알림 메시지 카드 리스트 본체 박스 */
+        .noti-cards-stream-wrap { display: flex; flex-direction: column; gap: 14px; }
+        
+        /* [지시 요건 반영] 세부 분류를 큼직하게 묶어 가시성을 극대화한 중앙 집중형 카드 스킨 */
+        .noti-message-card { background-color: #ffffff; border: 1px solid #e5e8eb; border-radius: 16px; padding: 20px 24px; position: relative; box-shadow: 0 4px 12px rgba(0,0,0,0.01); transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1); display: flex; flex-direction: column; gap: 8px; }
+        .noti-message-card:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(25,103,210,0.04); border-color: #1967d2; }
+        
+        /* 신규 수신된 안읽은 알림 전용 특화 오션 스킨 */
+        .noti-message-card.unread-fresh-lock { border-left: 4px solid #1967d2; background-color: rgba(25, 103, 210, 0.01); }
+        
+        .noti-time-stamp-line { font-size: 11.5px; color: #8e8e93; font-weight: 600; }
+        .noti-core-text-msg { font-size: 14px; line-height: 1.6; color: #3a3a3c; font-weight: 600; word-break: keep-all; }
+        
+        .empty-noti-panel { text-align: center; padding: 60px 0; border: 1px dashed #cfd9de; border-radius: 16px; }
+        .empty-noti-icon-svg { width: 36px; height: 36px; stroke: #8e8e93; stroke-width: 2; fill: none; margin-bottom: 12px; }
+        .empty-noti-guide-txt { font-size: 14px; color: #8e8e93; font-weight: 600; }
+        
+        .btn-back-square { background-color: #ffffff; color: #48484a; border: 1px solid #cfd9de; padding: 12px; border-radius: 12px; font-size: 14px; font-weight: 700; width: 100%; text-align: center; cursor: pointer; margin-top: 24px; transition: background-color 0.15s; }
+        .btn-back-square:hover { background-color: #f7f9fa; }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo" onclick="location.href='/'">SILVERWORKS 알림함</div>
+        <button type="button" class="btn-back-square" style="width:auto; padding:6px 14px; font-size:12.5px; margin:0;" onclick="location.href='/'">광장 복귀</button>
+    </header>
+    
+    <div class="main-container">
+        <!-- [지시 요건] 난잡함을 지우고 일괄 제어 단추를 상단 우측에 깔끔하게 결속한 뷰 구조 -->
+        <div class="noti-page-title-row">
+            <h2 class="page-title">내 매칭 및 정산 알림 History</h2>
+            <button type="button" class="btn-clear-all" onclick="executeMarkAllNotificationsAsRead()">모두 읽음 처리</button>
+        </div>
+        
+        <!-- [지시 요건] 중앙 집중형으로 정돈되어 노출될 동적 알림 카드 스트림 벨트 -->
+        <div class="noti-cards-stream-wrap" id="notiCardsStreamWrapContainerSlot">
+            <!-- 가상 데이터 파싱 및 실시간 동적 렌더링 구역 -->
+            <div class="empty-noti-panel">
+                <svg class="empty-noti-icon-svg" viewBox="0 0 24 24">
+                    <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9M13.73 21a2 2 0 0 1-3.46 0"/>
+                </svg>
+                <div class="empty-noti-guide-txt">수신된 알림 내역 원장을 파싱 중입니다...</div>
+            </div>
+        </div>
+        
+        <button type="button" class="btn-back-square" onclick="location.href='/'">➔ 메인 광장 대문으로 돌아가기</button>
+    </div>
+    <!-- [지시 반영] 실시간 매칭/노쇼 보상 알림 카드 동적 파싱 렌더링 자바스크립트 엔진 -->
+    <script>
+        const currentUsername = localStorage.getItem('sw_username');
+
+        document.addEventListener("DOMContentLoaded", function() {
+            if(!currentUsername) {
+                alert('회원 전용 알림 센터입니다. 메인 광장으로 회군합니다.');
+                location.href = '/';
+                return;
+            }
+            loadUserNotificationsStream();
+        });
+
+        // 백엔드 데이터베이스 원장에서 내 계정 앞으로 발부된 알림 내역 전수 로드
+        function loadUserNotificationsStream() {
+            fetch(`/api/notifications/list?username=${encodeURIComponent(currentUsername)}`)
+                .then(res => res.json())
+                .then(data => {
+                    const wrap = document.getElementById('notiCardsStreamWrapContainerSlot');
+                    wrap.innerHTML = '';
+
+                    if(!data.notifications || data.notifications.length === 0) {
+                        wrap.innerHTML = `
+                            <div class="empty-noti-panel">
+                                <svg class="empty-noti-icon-svg" viewBox="0 0 24 24">
+                                    <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9M13.73 21a2 2 0 0 1-3.46 0"/>
+                                </svg>
+                                <div class="empty-noti-guide-txt">아직 수신된 매칭 및 정산 알림 내역이 없습니다.</div>
+                            </div>`;
+                        return;
+                    }
+
+                    // [지시 반영] 난잡함을 정화하고 가시성을 높인 세련된 격자 카드형 실시간 렌더링
+                    data.notifications.forEach(n => {
+                        const isUnread = n.is_read === 0;
+                        const cardClass = `noti-message-card ${isUnread ? 'unread-fresh-lock' : ''}`;
+                        const formattedTime = new Date(n.created_at).toLocaleString('ko-KR');
+
+                        wrap.innerHTML += `
+                            <div class="${cardClass}">
+                                <div class="noti-time-stamp-line">⏱️ 수신 시각 : ${formattedTime}</div>
+                                <div class="noti-core-text-msg">${n.message}</div>
+                            </div>`;
+                    });
+                });
+        }
+
+        // 일괄 읽음 처리 트랜잭션 전산 단추
+        function executeMarkAllNotificationsAsRead() {
+            fetch('/api/notifications/read-all', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ username: currentUsername })
+            }).then(res => res.json()).then(data => {
+                if(data.success) {
+                    alert('모든 알림의 읽음 처리가 정상 각인되었습니다.');
+                    loadUserNotificationsStream();
+                }
+            });
+        }
+    </script>
+</body>
+</html>

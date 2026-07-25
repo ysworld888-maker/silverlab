@@ -1,0 +1,16 @@
+{
+  "name": "silverlab",
+  "version": "1.0.0",
+  "description": "실버웍스 플랫폼 전산망 무료 빌드 패스 규격",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "dependencies": {
+    "express": "^5.2.1"
+  }
+}

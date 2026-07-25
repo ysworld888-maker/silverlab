@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>SILVERWORKS - 통합 인증 센터</title>
+    <!-- [대기업 공식 로그인 스펙] 다이내믹 폼 교차 뷰 스위칭 및 공식 로드 미학 CSS 명세 -->
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Malgun Gothic", "맑은 고딕", sans-serif; letter-spacing: -0.4px; -webkit-tap-highlight-color: transparent; }
+        body { background-color: #ffffff; color: #1c1c1e; display: flex; align-items: center; justify-content: center; min-height: 100vh; padding: 20px; -webkit-font-smoothing: antialiased; }
+        
+        .auth-container-skin { width: 100%; max-width: 440px; background-color: #ffffff; border: 1px solid #e5e8eb; border-radius: 28px; padding: 40px; box-shadow: 0 12px 36px rgba(0,0,0,0.02); transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1); }
+        
+        /* 공식 파도 로고를 웹 코딩으로 선명하게 구현한 브랜딩 헤더 헤드 */
+        .auth-logo-header { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; margin-bottom: 32px; cursor: pointer; }
+        .auth-logo-svg { width: 64px; height: 58px; fill: none; stroke: #1967d2; stroke-width: 6.5; stroke-linecap: round; stroke-linejoin: round; }
+        .auth-brand-text { font-size: 24px; font-weight: 800; color: #1967d2; letter-spacing: -0.8px; }
+        
+        /* 사장님 / 시니어 회원 로그인 분리용 상단 교차 탭 그리드 */
+        .auth-type-tab-menu { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 24px; background-color: #f2f4f6; padding: 4px; border-radius: 12px; }
+        .auth-tab-btn { background: none; border: none; color: #636366; font-size: 14px; font-weight: 700; padding: 12px; border-radius: 9px; cursor: pointer; text-align: center; transition: all 0.2s; }
+        .auth-tab-btn.active { background-color: #ffffff; color: #1967d2; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
+        
+        /* 로그인 / 회원가입 화면 완전 대전환 전용 뷰 슬롯 */
+        .auth-panel-slot-view { display: none; }
+        .auth-panel-slot-view.active { display: block; }
+        
+        .form-group { margin-bottom: 20px; position: relative; }
+        .form-label { display: block; font-size: 13.5px; font-weight: 700; color: #48484a; margin-bottom: 8px; }
+        .form-input { width: 100%; padding: 14px 16px; border-radius: 12px; border: 1px solid #cfd9de; font-size: 15px; font-weight: 600; outline: none; transition: all 0.2s; }
+        .form-input:focus { border-color: #1967d2; background-color: #f4f9ff; }
+        
+        /* 다이내믹 조건부 출현 폼 슬롯 스킨 */
+        .conditional-input-slot-box { display: none; border: 1px dashed #1967d2; padding: 16px; border-radius: 14px; background-color: #f4f9ff; margin-bottom: 20px; animation: fade-in-slide 0.3w ease-out forwards; }
+        @keyframes fade-in-slide { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
+        
+        .btn-auth-submit { width: 100%; background-color: #1967d2; color: #ffffff; border: none; padding: 16px; border-radius: 9999px; font-size: 15.5px; font-weight: 700; cursor: pointer; text-align: center; box-shadow: 0 6px 16px rgba(25,103,210,0.15); transition: background-color 0.2s, transform 0.2s; margin-top: 8px; }
+        .btn-auth-submit:hover { background-color: #1152b3; transform: translateY(-1px); }
+        
+        .auth-toggle-link-row { display: flex; justify-content: center; gap: 6px; font-size: 13.5px; font-weight: 600; color: #636366; margin-top: 24px; }
+        .auth-action-link { color: #1967d2; font-weight: 700; cursor: pointer; text-decoration: underline; }
+    </style>
+</head>
+<body>
+    <div class="auth-container-skin">
+        <!-- [지시 요건] 사장님의 영롱한 공식 파도 로고 드로잉 헤더 -->
+        <div class="auth-logo-header" onclick="location.href='/'">
+            <svg class="auth-logo-svg" viewBox="0 0 100 90">
+                <path d="M12.5 54C13.5 53 19.5 54.5 28.5 48.5C38.5 42 47 28 56.5 19.5C65.5 11 76.5 6.5 85.5 12.5" />
+                <path d="M51.5 59C58.5 67 71 68 80.5 60.5C90 53 92.5 39.5 85.5 32" />
+            </svg>
+            <span class="auth-brand-text">SILVERWORKS</span>
+        </div>
+
+        <!-- [지시 요건] 회원 가드 권한 분리를 위한 사장님 / 시니어 교차 선택 탭 -->
+        <div class="auth-type-tab-menu">
+            <button type="button" class="auth-tab-btn active" id="authTabBtn_seeker" onclick="handleSwitchAuthRoleType('seeker')">시니어 회원</button>
+            <button type="button" class="auth-tab-btn" id="authTabBtn_employer" onclick="handleSwitchAuthRoleType('employer')">구인 사장님</button>
+        </div>
+
+        <!-- 화면 채널 1: 로그인 입력 폼 섹션 (초기 디폴트 활성화) -->
+        <div class="auth-panel-slot-view active" id="authPanelSlot_login">
+            <form id="loginForm" onsubmit="return false;">
+                <div class="form-group"><label class="form-label">아이디</label><input type="text" id="lUsername" class="form-input" placeholder="아이디를 입력하세요" required></div>
+                <div class="form-group"><label class="form-label">비밀번호</label><input type="password" id="lPassword" class="form-input" placeholder="비밀번호를 입력하세요" required></div>
+                <button type="button" class="btn-auth-submit" onclick="executeUserLoginAuthV2Engine()">로그인 단행</button>
+            </form>
+            <div class="auth-toggle-link-row">아직 회원이 아니신가요?<span class="auth-action-link" onclick="handleToggleSwitchAuthModeView('register')">회원가입 하기</span></div>
+        </div>
+
+        <!-- 화면 채널 2: 회원가입 입력 폼 섹션 (다이내믹 조건부 인풋 슬롯 내장) -->
+        <div class="auth-panel-slot-view" id="authPanelSlot_register">
+            <form id="registerForm" onsubmit="return false;">
+                <div class="form-group"><label class="form-label">아이디 생성</label><input type="text" id="rUsername" class="form-input" placeholder="4자 이상의 아이디 입력" required></div>
+                <div class="form-group"><label class="form-label">비밀번호 설정</label><input type="password" id="rPassword" class="form-input" placeholder="6자 이상의 비밀번호 설정" required></div>
+                <div class="form-group"><label class="form-label">성명 또는 상호명 명세</label><input type="text" id="rName" class="form-input" placeholder="실명 또는 매장명 정확히 입력" required></div>
+                <div class="form-group"><label class="form-label">소통용 개인 연락처</label><input type="text" id="rPhone" class="form-input" placeholder="하이픈 없이 숫자만 입력" required></div>
+                
+                <!-- 구인 사장님 탭 선택 시에만 100% 필수 다이내믹 출현 가드 박스 -->
+                <div class="conditional-input-slot-box" id="conditionalSlot_employer">
+                    <label class="form-label" style="color:#1967d2;">🏢 사업자 등록번호 (사장님 필수)</label>
+                    <input type="text" id="rBusinessNumber" class="form-input" placeholder="사업자 번호 정확히 기입 (-제외)">
+                </div>
+
+                <!-- 구직 시니어 탭 선택 시에만 100% 필수 다이내믹 출현 가드 박스 -->
+                <div class="conditional-input-slot-box" id="conditionalSlot_seeker" style="display: block;">
+                    <label class="form-label" style="color:#1967d2;">🚨 비상 연락처 (시니어 보호자 번호 필수)</label>
+                    <input type="text" id="rEmergencyPhone" class="form-input" placeholder="자녀 또는 보호자 번호 필수 기입">
+                </div>
+
+                <button type="button" class="btn-auth-submit" onclick="executeUserRegisterV2Engine()">회원가입 최종 신청</button>
+            </form>
+            <div class="auth-toggle-link-row">이미 계정이 있으신가요?<span class="auth-action-link" onclick="handleToggleSwitchAuthModeView('login')">로그인 하러가기</span></div>
+        </div>
+    </div>
+    <!-- [지시 반영] 사장님/시니어 가입 분리 및 다이내믹 조건부 가드 락 자바스크립트 엔진 -->
+    <script>
+        let currentSelectedRole = "seeker"; // 초기 디폴트는 시니어 계정 세션 모드
+        let currentAuthModeView = "login";  // 초기 디폴트는 로그인 폼 뷰
+
+        // 사장님 / 시니어 탭 스위칭 터치 제어 및 조건부 필수 기입란 활성화 엔진
+        function handleSwitchAuthRoleType(roleType) {
+            currentSelectedRole = roleType;
+            
+            document.getElementById('authTabBtn_seeker').classList.remove('active');
+            document.getElementById('authTabBtn_employer').classList.remove('active');
+            document.getElementById('authTabBtn_' + roleType).classList.add('active');
+
+            const empSlot = document.getElementById('conditionalSlot_employer');
+            const sekSlot = document.getElementById('conditionalSlot_seeker');
+
+            // [사장님 특명 반영] 선택 탭에 따라 사업자등록번호 / 보호자 비상연락처 박스를 다이내믹 토글 교차 전환
+            if(roleType === 'employer') {
+                empSlot.style.display = "block";
+                sekSlot.style.display = "none";
+            } else {
+                empSlot.style.display = "none";
+                sekSlot.style.display = "block";
+            }
+        }
+
+        // 로그인 / 회원가입 폼 자체 대전환 스위칭 함수
+        function handleToggleSwitchAuthModeView(mode) {
+            currentAuthModeView = mode;
+            document.getElementById('authPanelSlot_login').classList.remove('active');
+            document.getElementById('authPanelSlot_register').classList.remove('active');
+            document.getElementById('authPanelSlot_' + mode).classList.add('active');
+        }
+
+        // 백엔드 server.js 와 유기 연동하는 회원가입 신청 트랜잭션 구동 유닛
+        function executeUserRegisterV2Engine() {
+            const username = document.getElementById('rUsername').value.trim();
+            const password = document.getElementById('rPassword').value.trim();
+            const name = document.getElementById('rName').value.trim();
+            const phone = document.getElementById('rPhone').value.trim();
+            const bNum = document.getElementById('rBusinessNumber').value.trim();
+            const ePhone = document.getElementById('rEmergencyPhone').value.trim();
+
+            if(!username || !password || !name || !phone) {
+                alert('알림: 가입 필수 입력 명세를 모두 기입하세요.');
+                return;
+            }
+            if(currentSelectedRole === 'employer' && !bNum) {
+                alert('보안 고지: 사장님 회원은 [사업자등록번호] 기입이 100% 필수입니다.');
+                return;
+            }
+            if(currentSelectedRole === 'seeker' && !ePhone) {
+                alert('보안 고지: 시니어 베테랑 회원은 보호자 또는 자녀 [비상 연락처] 기입이 100% 필수입니다.');
+                return;
+            }
+
+            fetch('/api/auth/register', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    username: username, password: password, name: name, phone: phone,
+                    role: currentSelectedRole, business_number: bNum, emergency_phone: ePhone
+                })
+            }).then(res => res.json()).then(data => {
+                if(data.success) {
+                    alert('실버웍스 연동 회원가입 최종 대성공!\n\n자동으로 로그인 폼 화면으로 안내 워프 전환합니다.');
+                    document.getElementById('registerForm').reset();
+                    handleToggleSwitchAuthModeView('login');
+                } else { alert('가입 실패 알림: ' + data.message); }
+            });
+        }
+
+        // 사장님실 / 시니어실 교차 권한 디바이드 검증 락 로그인 엔진
+        function executeUserLoginAuthV2Engine() {
+            const username = document.getElementById('lUsername').value.trim();
+            const password = document.getElementById('lPassword').value.trim();
+
+            if(!username || !password) { alert('아이디와 비밀번호를 기입해 주세요.'); return; }
+
+            fetch('/api/auth/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ username: username, password: password, requested_role: currentSelectedRole })
+            })
+            .then(res => {
+                if(res.status === 403) {
+                    return res.json().then(data => { alert(data.message); throw new Error('블랙 가드 차단'); });
+                }
+                return res.json();
+            })
+            .then(data => {
+                if(data.success && data.user) {
+                    const u = data.user;
+                    // 가상 세션 보안 영구 스토리지 보존 각인
+                    localStorage.setItem('sw_username', u.username);
+                    localStorage.setItem('sw_role', u.role);
+                    localStorage.setItem('sw_name', u.name);
+
+                    alert(`인증 통과 성료!\n\n${u.name} ${u.role==='employer'?'사장님':'베테랑님'}, 실버웍스 관제 전산망에 안전하게 당도 진입하셨습니다.`);
+                    
+                    // 로그인과 동시에 메인 광장 대문으로 리다이렉트 자동 워프 고속 배포
+                    location.href = '/';
+                }
+            }).catch(() => {});
+        }
+    </script>
+</body>
+</html>

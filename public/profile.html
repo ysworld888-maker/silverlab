@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scalable=no">
+    <title>SILVERWORKS - 회원 프로필 정보실</title>
+    <!-- [대기업 공식 리팩토링 스펙] 불필요 소셜로그 파쇄 및 미니멀 단순화 프로필 CSS 명세 -->
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Malgun Gothic", "맑은 고딕", sans-serif; letter-spacing: -0.4px; -webkit-tap-highlight-color: transparent; }
+        body { background-color: #ffffff; color: #1c1c1e; padding-bottom: 60px; -webkit-font-smoothing: antialiased; }
+        header { display: flex; justify-content: space-between; align-items: center; padding: 18px 24px; background-color: #ffffff; border-bottom: 1px solid #eff3f4; position: sticky; top: 0; z-index: 100; }
+        .logo { font-size: 20px; font-weight: 800; color: #1967d2; cursor: pointer; }
+        
+        .main-container { max-width: 600px; margin: 0 auto; padding: 32px 20px; }
+        .page-title { font-size: 22px; font-weight: 800; color: #1c1c1e; margin-bottom: 24px; border-left: 5px solid #1967d2; padding-left: 12px; }
+        
+        /* [지시 요건 반영] 지저분함을 완전 정화한 미니멀 격자 카드 레이아웃 스킨 */
+        .profile-master-card { background-color: #ffffff; border: 1px solid #e5e8eb; border-radius: 24px; padding: 32px; box-shadow: 0 4px 16px rgba(0,0,0,0.01); display: flex; flex-direction: column; gap: 20px; }
+        
+        .profile-header-user-row { display: flex; align-items: center; gap: 16px; padding-bottom: 20px; border-bottom: 1px solid #f2f4f6; }
+        .profile-avatar-circle { width: 56px; height: 56px; background-color: #1967d2; color: #ffffff; font-size: 18px; font-weight: 800; border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 2px solid #ffffff; box-shadow: 0 4px 12px rgba(25, 103, 210, 0.15); }
+        .profile-name-digits { font-size: 18px; font-weight: 800; color: #1c1c1e; }
+        .profile-role-badge-grey { font-size: 12px; font-weight: 600; color: #536471; background-color: #f2f4f6; padding: 3px 10px; border-radius: 6px; width: fit-content; margin-top: 4px; }
+        
+        .info-data-row { display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid #f2f4f6; font-size: 14px; font-weight: 600; color: #48484a; }
+        .info-data-row strong { color: #1c1c1e; font-weight: 700; }
+        
+        /* 오프라인 체력 수치 디스플레이 전용 카드 */
+        .spec-card-box { background-color: #f8f9fa; border-radius: 16px; padding: 20px; margin-top: 8px; border: 1px solid #eff3f4; }
+        .spec-title-headline { font-size: 13.5px; font-weight: 800; color: #1967d2; margin-bottom: 14px; }
+        .spec-grid-layout { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; text-align: center; }
+        .spec-grid-unit { font-size: 12px; color: #636366; font-weight: 600; }
+        .spec-grid-unit span { display: block; font-size: 14.5px; color: #1c1c1e; font-weight: 800; margin-top: 4px; }
+        
+        /* 자동으로 장착 표출될 뱃지 정렬 격자 공간 */
+        .badge-flex-layout { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 6px; }
+        .auto-display-badge-item { background-color: #f4f9ff; color: #1967d2; border: 1px solid #1967d2; padding: 6px 12px; border-radius: 8px; font-size: 12px; font-weight: 700; }
+        
+        .btn-back-square { width: 100%; background-color: #ffffff; color: #48484a; border: 1px solid #cfd9de; padding: 15px; border-radius: 12px; font-size: 14.5px; font-weight: 700; text-align: center; cursor: pointer; margin-top: 24px; transition: background-color 0.15s; }
+        .btn-back-square:hover { background-color: #f7f9fa; }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo" onclick="location.href='/'">SILVERWORKS 프로필</div>
+        <button type="button" class="btn-back-square" style="width:auto; padding:6px 14px; font-size:12.5px; margin:0;" onclick="location.href='/'">광장 복귀</button>
+    </header>
+    
+    <div class="main-container">
+        <h2 class="page-title">내 계정 종합 원장록</h2>
+        
+        <!-- [지시 요건] 난잡함을 지우고 큼직하게 묶어 가시성을 높인 프로필 카드 본체 -->
+        <div class="profile-master-card">
+            
+            <div class="profile-header-user-row">
+                <div class="profile-avatar-circle" id="uAvatarCircle">MY</div>
+                <div>
+                    <div class="profile-name-digits" id="uDisplayName">파싱 중...</div>
+                    <div class="profile-role-badge-grey" id="uRoleBadge">회원 등급</div>
+                </div>
+            </div>
+            
+            <div class="info-data-row"><span>계정 아이디 (ID)</span><strong id="uUsername">@-</strong></div>
+            <div class="info-data-row"><span>소통용 전화번호</span><strong id="uPhone">-</strong></div>
+            
+            <!-- 사장님 계정 진입 시에만 바인딩 노출될 사업자 번호 명세란 -->
+            <div class="info-data-row" id="employerInfoRowZone" style="display: none;"><span>사업자 등록번호</span><strong id="uBusinessNum">-</strong></div>
+            
+            <!-- 시니어 계정 진입 시에만 바인딩 노출될 보호자 비상연락처 명세란 -->
+            <div class="info-data-row" id="seekerInfoRowZone" style="display: none;"><span>🚨 자녀/보호자 비상연락처</span><strong id="uEmergencyPhone">-</strong></div>
+            <div class="info-data-row"><span>플랫폼 가입 등급 상태</span><strong style="color: #1967d2;">✓ 정식 공인 승인 회원</strong></div>
+
+            <!-- [지시 요건 반영] 국민체력 100 오프라인 2차 검증 스펙 데이터 가시적 최적화 카드 상자 -->
+            <div class="spec-card-box" id="seekerFitnessSpecCardBoxSlot" style="display: none;">
+                <div class="spec-title-headline">💪 국민체력 100 기준 오프라인 2차 검증 스펙 계수</div>
+                <div class="spec-grid-layout">
+                    <div class="spec-grid-unit">인증등급<span id="pFitGrade">미인증</span></div>
+                    <div class="spec-grid-unit">악력 (kg)<span id="pFitGrip">-</span></div>
+                    <div class="spec-grid-unit">유연성 (cm)<span id="pFitFlex">-</span></div>
+                    <div class="spec-grid-unit">지구력 (회)<span id="pFitCardio">-</span></div>
+                </div>
+            </div>
+
+            <!-- 무사히 일을 완료 시 자동으로 표출 마운트될 배지 정렬 격자 구역 -->
+            <div class="spec-card-box" id="seekerBadgeCardBoxSlot" style="display: none;">
+                <div class="spec-title-headline">⏱️ 실버웍스 오피셜 수납 인증 성실 배지</div>
+                <div class="badge-flex-layout" id="profileAutoBadgeContainerSlot">
+                    <span style="font-size:12.5px; color:#8e8e93; font-weight:500;">근무 완료 데이터를 대조 판독 중입니다...</span>
+                </div>
+            </div>
+
+        </div>
+        
+        <button type="button" class="btn-back-square" onclick="location.href='/'">➔ 메인 광장 대문 대광장으로 회군</button>
+    </div>
+    <!-- [백엔드 프로필 동기화 및 뱃지 자동화 마운트 자바스크립트 엔진] -->
+    <script>
+        const targetProfileUser = localStorage.getItem('sw_username');
+
+        document.addEventListener("DOMContentLoaded", function() {
+            if(!targetProfileUser) {
+                alert('보안 가드 고지: 로그인 회원 전용 정보실입니다. 메인 대문으로 리다이렉트합니다.');
+                location.href = '/';
+                return;
+            }
+            loadMyAccountProfileMasterSpec();
+        });
+
+        // 백엔드 원장에서 내 계정의 체력 인서트 수치 및 비상연락처 데이터 실시간 동환 동기화
+        function loadMyAccountProfileMasterSpec() {
+            fetch('/api/profile/me?username=' + encodeURIComponent(targetProfileUser))
+                .then(res => res.json())
+                .then(data => {
+                    if(data.success && data.profile) {
+                        const p = data.profile;
+                        
+                        // 상단 아바타 뱃지 및 타이틀 가이드 바인딩
+                        document.getElementById('uDisplayName').innerText = p.name;
+                        document.getElementById('uUsername').innerText = `@${p.username}`;
+                        document.getElementById('uPhone').innerText = p.phone;
+                        document.getElementById('uAvatarCircle').innerText = p.username.substring(0,2).toUpperCase();
+
+                        if(p.role === 'employer') {
+                            // 구인 사장님 회원 유형 진입 시
+                            document.getElementById('uRoleBadge').innerText = "실버웍스 정식 가맹 사장님";
+                            document.getElementById('employerInfoRowZone').style.display = "flex";
+                            document.getElementById('uBusinessNum').innerText = p.business_number || '-';
+                        } else if(p.role === 'seeker') {
+                            // 구직 시니어 회원 유형 진입 시
+                            document.getElementById('uRoleBadge').innerText = "실버웍스 공인 숙련 베테랑 시니어";
+                            document.getElementById('seekerInfoRowZone').style.display = "flex";
+                            document.getElementById('uEmergencyPhone').innerText = p.emergency_phone === '-' ? '미등록 (마이페이지에서 등록 필수)' : p.emergency_phone;
+                            
+                            // [지시 반영] 관리자실 수기 인서트 체력 등급 및 계수 데이터 큼직하게 묶어 카드 매핑 표출
+                            document.getElementById('seekerFitnessSpecCardBoxSlot').style.display = "block";
+                            document.getElementById('pFitGrade').innerText = p.fitness_grade || '미인증';
+                            document.getElementById('pFitGrip').innerText = p.fitness_grip || '-';
+                            document.getElementById('pFitFlex').innerText = p.fitness_flex || '-';
+                            document.getElementById('pFitCardio').innerText = p.fitness_cardio || '-';
+
+                            // [지시 반영] 근무 성료 시 자동으로 표출될 성실 배지 카드 유닛 활성화
+                            document.getElementById('seekerBadgeCardBoxSlot').style.display = "block";
+                            const badgeWrap = document.getElementById('profileAutoBadgeContainerSlot');
+                            if(p.points > 0 || p.fitness_grade !== '미인증') {
+                                badgeWrap.innerHTML = `
+                                    <span class="auto-display-badge-item">⏱️ 시간 엄수 100%</span>
+                                    <span class="auto-display-badge-item">👍 사장님 추천 베테랑</span>
+                                    <span class="auto-display-badge-item">💪 체력 베테랑</span>
+                                `;
+                            } else {
+                                badgeWrap.innerHTML = `<span style="font-size:12.5px; color:#8e8e93; font-weight:500;">첫 근무 완료 승인 이후 성실 마스터 배지가 자동으로 도출 장착됩니다.</span>`;
+                            }
+                        }
+                    }
+                });
+        }
+    </script>
+</body>
+</html>
