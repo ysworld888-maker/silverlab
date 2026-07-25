@@ -2,165 +2,175 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scalable=no">
-    <title>SILVERWORKS - 초단기 숙련 베테랑 매칭 전산망</title>
-    <!-- [제1철칙 준수] 기존 오리지널 디자인 레이아웃 명세를 100% 원형 보존하며 Y축 스크롤 위치 감제 모션만 정밀 인서트 -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>실버랩 (SILVERLAB) - 세상을 은빛 지혜로 채우다</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Malgun Gothic", "맑은 고딕", sans-serif; letter-spacing: -0.4px; }
-        body { background-color: #ffffff; color: #0f1419; -webkit-font-smoothing: antialiased; }
-        
-        /* [지시 요건 반영] 기존 헤더 속성에 Y축 위치 추적 기반 동적 트랜스폼 슬라이딩 애니메이션 가드만 정밀 융합 */
-        header { 
-            display: flex; 
-            justify-content: space-between; 
-            align-items: center; 
-            padding: 18px 24px; 
-            background-color: #ffffff; 
-            border-bottom: 1px solid #eff3f4; 
-            position: sticky; 
-            top: 0; 
-            z-index: 500; 
-            transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), background-color 0.2s;
+        @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css');
+        body { font-family: "Pretendard", -apple-system, BlinkMacSystemFont, system-ui, Roboto, sans-serif; }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
         }
-        /* 자바스크립트 위치 추적 제어반에 의해 스크롤 다운 시 상단으로 부드럽게 실종 숨김 처리 */
-        header.hide-header-offset {
-            transform: translateY(-100%);
-        }
-        
-        .logo { font-size: 20px; font-weight: 800; color: #1967d2; cursor: pointer; }
-        
-        .auth-nav-zone { display: flex; align-items: center; gap: 12px; }
-        .nav-link-btn { font-size: 13.5px; font-weight: 700; color: #536471; background: none; border: none; cursor: pointer; text-decoration: none; }
-        .nav-link-btn:hover { color: #0f1419; }
-        
-        .btn-blue-action { background-color: #1967d2; color: #ffffff; border: none; padding: 10px 18px; border-radius: 9999px; font-size: 13.5px; font-weight: 700; cursor: pointer; transition: background-color 0.15s; }
-        .btn-blue-action:hover { background-color: #1152b3; }
-        
-        /* 기존 고유 대형 와이드 메인 디자인 프레임 보전 */
-        .hero-banner-frame { background-color: #f7f9fa; padding: 60px 24px; text-align: center; border-bottom: 1px solid #eff3f4; }
-        .hero-headline { font-size: 28px; font-weight: 800; color: #1c1c1e; line-height: 1.3; margin-bottom: 12px; }
-        .hero-sub-guide { font-size: 14.5px; color: #536471; font-weight: 500; margin-bottom: 24px; }
-        
-        .main-content-grid { max-width: 900px; margin: 40px auto; padding: 0 20px; display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
-        @media (max-width: 768px) { .main-content-grid { grid-template-columns: 1fr; } }
-        
-        /* 정보 열람 단순 조회 전용 고유 상자 명세 */
-        .info-preview-card { background-color: #ffffff; border: 1px solid #eff3f4; border-radius: 20px; padding: 32px; box-shadow: 0 4px 16px rgba(0,0,0,0.01); display: flex; flex-direction: column; gap: 16px; }
-        .card-tag-line { font-size: 11px; font-weight: 800; color: #1967d2; text-transform: uppercase; }
-        .card-headline { font-size: 18px; font-weight: 800; color: #1c1c1e; }
-        .card-body-text { font-size: 13.5px; color: #536471; font-weight: 500; line-height: 1.6; }
     </style>
 </head>
-<body>
-    <!-- [제1철칙 준수] 사장님의 오리지널 헤더 디자인 구조를 100% 유지하며 위치추적 식별용 ID만 부여 -->
-    <header id="masterDynamicScrollHeader">
-        <div class="logo" onclick="location.href='/'">SILVERWORKS</div>
-        <div class="auth-nav-zone" id="authNavZoneSlot">
-            <!-- 자바스크립트 세션 엔진에 의해 실시간 가변 갱신 수납될 디스플레이 슬롯 -->
-            <button type="button" class="btn-blue-action" onclick="location.href='/login.html'">통합 인증 센터 로그인</button>
+<body class="bg-slate-50 text-slate-800 flex flex-col min-h-screen">
+
+    <!-- 1. Navigation Header -->
+    <header class="sticky top-0 z-50 bg-white/95 border-b border-slate-200 shadow-sm backdrop-blur">
+        <div class="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between">
+            <a href="/index.html" class="flex items-center gap-2">
+                <span class="text-2xl font-extrabold text-blue-600 tracking-tight">SILVERLAB</span>
+                <span class="text-xs bg-blue-100 text-blue-700 font-semibold px-2 py-0.5 rounded">실버랩</span>
+            </a>
+            <nav class="hidden md:flex items-center gap-6 font-medium text-slate-600">
+                <a href="/index.html" class="text-blue-600 font-bold">홈</a>
+                <a href="/seeker.html" class="hover:text-blue-600 transition">시니어 구직</a>
+                <a href="/employer.html" class="hover:text-blue-600 transition">사장님 구인</a>
+                <a href="/jobs.html" class="hover:text-blue-600 transition">공고 목록</a>
+            </nav>
+            <div class="flex items-center gap-3">
+                <a href="/login.html" class="text-sm px-4 py-2 text-slate-700 hover:text-blue-600 font-medium">로그인</a>
+                <a href="/employer.html" class="text-sm px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg shadow-sm transition">구인 공고 등록</a>
+            </div>
         </div>
     </header>
 
-    <!-- 사장님이 공들여 기획하신 오리지널 최상단 프리미엄 스킨 와이드 안내 배너 -->
-    <section class="hero-banner-frame">
-        <h1 class="hero-headline">대한민국 구인구직 피크타임 신용 매칭 전산망</h1>
-        <p class="hero-sub-guide">실버웍스 전산망은 엄격한 신원 검증과 자석 결합 정산 시스템을 통해 숙련 베테랑 시니어와 가맹 사장님을 실시간 연결합니다.</p>
-        <div style="display:flex; justify-content:center; gap:12px;">
-            <button type="button" class="btn-blue-action" onclick="location.href='/jobs.html'">구인구직 피드판 열람하기</button>
-            <button type="button" class="btn-blue-action" style="background-color:#ffffff; color:#1967d2; border:1px solid #1967d2;" id="myMainConsoleShortcutBtn" onclick="handleRedirectMyTargetConsole()">내 마이페이지 관제실 이동</button>
+    <!-- 2. Hero Section -->
+    <section class="relative bg-gradient-to-b from-blue-50 via-white to-slate-50 py-20 px-4 text-center border-b border-slate-100">
+        <div class="max-w-4xl mx-auto space-y-6">
+            <!-- 메인 문구 -->
+            <h1 class="text-4xl md:text-6xl font-black text-slate-900 leading-tight tracking-tight">
+                세상을 은빛 지혜로 채우다.
+            </h1>
+            <!-- 서브 문구 (파란색, 작은 글씨) -->
+            <p class="text-blue-600 font-semibold text-base md:text-lg">
+                변화에 도전할 사장님과 베테랑 시니어 구직자들의 만남
+            </p>
+
+            <div class="pt-6 flex flex-col sm:flex-row items-center justify-center gap-4">
+                <a href="/seeker.html" class="w-full sm:w-auto px-8 py-4 bg-slate-900 hover:bg-slate-800 text-white font-bold text-lg rounded-xl shadow-lg hover:shadow-xl transition flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-user-check text-blue-400"></i> 시니어 구직 신청하기
+                </a>
+                <a href="/employer.html" class="w-full sm:w-auto px-8 py-4 bg-blue-600 hover:bg-blue-700 text-white font-bold text-lg rounded-xl shadow-lg hover:shadow-xl transition flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-store"></i> 사장님 인력 매칭 신청
+                </a>
+            </div>
         </div>
     </section>
 
-    <!-- [지시 요건 반영] 회원이든 비회원이든 어떤 고객이든 전수 무료 전면 개방 조회용 종합 안내판 그리드 -->
-    <main class="main-content-grid">
-        
-        <!-- 왼쪽 오리지널 안내 카드: 구직 시니어 고객 전용 정보 안내실 -->
-        <article class="info-preview-card">
-            <span class="card-tag-line">시니어 안내실</span>
-            <h2 class="card-headline">공인 구직 베테랑 시니어 활동 지침 명세록</h2>
-            <p class="card-body-text">
-                실버웍스의 모든 시니어 구직자는 초기 2차 오프라인 검증 수칙에 의거하여 본사 사무실에 직접 방문하신 뒤, 국민체력 100의 65세 이상 연령대 기준 체력 테스트를 필수 이수하셔야 정식 지원 권한이 개통됩니다. 하단 단추를 터치해 12단계 정밀 온라인 건강 문진 질문지를 최종 접수하시면 본사 전문 상담사가 기재하신 비상 연락처로 신속히 유선 전화를 드릴 예정입니다.
+    <!-- 3. Body Content Section (기획서 문구 100% 반영) -->
+    <main class="max-w-4xl mx-auto px-4 py-16 space-y-16">
+
+        <!-- 헤드라인 카피 -->
+        <div class="text-center space-y-4">
+            <h2 class="text-2xl md:text-3xl font-bold text-slate-900 leading-relaxed">
+                매장을 책임져줄 성실한 사람을 구하는 것은<br class="hidden sm:inline"> 하늘의 별 따기가 되었습니다.
+            </h2>
+        </div>
+
+        <!-- 카드 1: 사장님의 현실 & 노쇼 통계 -->
+        <div class="bg-white rounded-2xl p-8 border border-slate-200 shadow-sm space-y-6">
+            <div class="bg-amber-50 border-l-4 border-amber-500 p-4 rounded-r-lg">
+                <p class="font-bold text-slate-800 text-base md:text-lg">
+                    [자영업자 4명 중 3명이 알바생의 갑작스러운 결근·퇴사 등 '노쇼'로 인해 곤란한 상황을 겪은 것으로 나타났다.]
+                </p>
+                <p class="text-xs text-slate-500 mt-2">
+                    출처: <a href="https://www.sedaily.com" target="_blank" class="underline hover:text-blue-600">중장년 알바와 MZ 사장... 문제는 없을까? 직접 들어봤다 | 서울경제</a>
+                </p>
+            </div>
+            <p class="text-slate-700 text-lg leading-relaxed">
+                치솟는 <strong class="text-slate-900">최저임금과 주휴수당, 퇴직금</strong>이라는 고정비 압박 속에서 사장님들의 어깨는 날이 갈수록 무거워지고 있습니다.
             </p>
-            <button type="button" class="btn-blue-action" style="width:fit-content; margin-top:auto;" onclick="location.href='/seeker.html'">시니어 문진표 작성하러 가기 ➔</button>
-        </article>
+        </div>
 
-        <!-- 오른쪽 오리지널 안내 카드: 구인 사장님 고객 전용 정보 안내실 -->
-        <article class="info-preview-card">
-            <span class="card-tag-line">사장님 안내실</span>
-            <h2 class="card-headline">구인 사장님 고용 리스크 관리 및 혜택 안내록</h2>
-            <p class="card-body-text">
-                초단기 숙련 시니어 매칭 고용 협약 조항을 적용하여 주휴수당 등 인건비 리스크를 합법적으로 면제 절감하는 모의 계산기 엔진을 상시 무료 개방합니다. 연 4만원의 결제 구독료를 충전 수납하신 프리미엄 가맹 사장님께는 중개 수수료 5% 우대 인하 락 해제 효과 및 구인 피드 최상단 무제한 광고 고정 표식 배지 혜택을 전격 발부 대령합니다.
+        <!-- 카드 2: 시니어의 현실 & 노인 일자리 통계 -->
+        <div class="bg-white rounded-2xl p-8 border border-slate-200 shadow-sm space-y-6">
+            <p class="text-slate-700 text-lg leading-relaxed">
+                이런 상황에서, 체력과 열정을 가지고 일터를 찾는 <strong class="text-slate-900">시니어</strong>들은 해 마다 늘어나고 있습니다.
             </p>
-            <button type="button" class="btn-blue-action" style="width:fit-content; margin-top:auto;" onclick="location.href='/employer.html'">사장님실 행정 문의처 가기 ➔</button>
-        </article>
+            <div class="bg-blue-50 border-l-4 border-blue-500 p-4 rounded-r-lg">
+                <p class="text-slate-800 text-base md:text-lg leading-relaxed">
+                    (노인 일자리 참여자는 꾸준히 늘고 있다. 2020년 73만7708명이던 참여자는 올해 8월 99만7233명으로 증가했다. 하지만 같은 기간 신청자 수는 82만3754명에서 <strong class="text-blue-700">122만5776명으로 48.8%나 폭증</strong>했다.)
+                </p>
+                <p class="text-xs text-slate-500 mt-2">
+                    출처 : <a href="https://www.newsquest.co.kr" target="_blank" class="underline hover:text-blue-600">뉴스퀘스트(https://www.newsquest.co.kr)</a>
+                </p>
+            </div>
+            <p class="text-slate-700 text-lg leading-relaxed">
+                하지만 나이라는 장벽에 부딪혀 <strong class="text-slate-900">역량</strong>을 펼칠 기회조차 얻지 못하는 게 오늘날의 현실입니다.
+            </p>
+        </div>
 
-    </main>
-    <!-- [지시 반영] Y축 실시간 위치 추적 오프셋 숨김/출현 인터랙션 코어 제어 엔진 스크립트 -->
-    <script>
-        let lastScrollYPositionTracker = window.scrollY;
-        const headerDOMElementNode = document.getElementById('masterDynamicScrollHeader');
-
-        // [지시 요건 반영] 마우스 휠 스크롤 Y축 위치 오프셋 변화량을 감제하여 헤더를 동적 제어하는 코어 루프
-        window.addEventListener('scroll', function() {
-            const currentScrollYPosition = window.scrollY;
+        <!-- 카드 3: 실버랩의 가치 및 메시지 -->
+        <div class="bg-gradient-to-br from-slate-900 to-slate-800 text-white rounded-2xl p-8 md:p-12 shadow-xl space-y-8">
+            <h3 class="text-2xl md:text-3xl font-extrabold text-blue-400 text-center leading-tight">
+                우리는 왜 이 거대한 두 개의 갈증을 단 한 번도 연결하지 못했을까요?
+            </h3>
             
-            // 1. 스크롤을 아래로 내리는 중이면서, 헤더가 온전히 시야에서 사라질 수 있는 Y축 120px 이하 구역을 지날 때
-            if (currentScrollYPosition > lastScrollYPositionTracker && currentScrollYPosition > 120) {
-                headerDOMElementNode.classList.add('hide-header-offset'); // 위로 스르륵 숨김 실종 처리
-            } else {
-                // 2. 스크롤을 위로 올리는 중일 때는 즉각 시야 앞으로 다시 스르륵 출현 개통
-                headerDOMElementNode.classList.remove('hide-header-offset');
-            }
-            lastScrollYPositionTracker = currentScrollYPosition;
-        });
-        document.addEventListener("DOMContentLoaded", function() {
-            handleRefreshMasterAuthNavigationDisplay();
-        });
+            <div class="space-y-6 text-slate-200 text-lg leading-relaxed border-t border-slate-700 pt-6">
+                <p>
+                    단기 근로를 원하는 <strong class="text-white">숙련된 시니어층</strong>과, <strong class="text-white">피크타임 단기 인력이 절실한 사장님들</strong>. 이들이 마침내 <strong class="text-blue-300">하나로 뭉치면서</strong> 매장의 관리 구조가 완전히 뒤바뀝니다.
+                </p>
+                <p>
+                    실버랩은 단순한 인력 소개 게시판이 아닙니다. <strong class="text-white">사람과 매장을 있고, 실질적인 인건비 절감을 주도</strong>하며, 인력을 사용하면서 발생하는 문제들을 같이 해결하는 <strong class="text-blue-300">동반자</strong> 입니다.
+                </p>
+                <p>
+                    물론, 아무나 실버랩의 팀원이 될 수는 없습니다.
+                </p>
+                <p class="bg-slate-800/80 p-5 rounded-xl border border-slate-700">
+                    실버랩은 구직을 희망하시는 시니어분들의 실제 건강 상태, 스마트 디지털 인지 능력, 그리고 체계적인 오프라인 면접으로 완벽히 검증을 통과한 <strong class="text-amber-400">'베테랑'</strong>만을 선발하여 매장에 추천합니다.
+                </p>
+                <p>
+                    더불어, '베테랑'의 오랜 인생 경험과 근면함을 존중할 줄 아는 품격 있는 사장님들의 <strong class="text-white">매장을 엄선하여 서로를 연결</strong>합니다.
+                </p>
+            </div>
 
-        // 가상 세션 원장을 실시간 교차 대조하여 단추 표시 상태를 가변 갱신하는 함수
-        function handleRefreshMasterAuthNavigationDisplay() {
-            const loggedInUser = localStorage.getItem('sw_username');
-            const loggedInRole = localStorage.getItem('sw_role');
-            const loggedInName = localStorage.getItem('sw_name');
-            const navSlot = document.getElementById('authNavZoneSlot');
+            <div class="text-center pt-4 border-t border-slate-700">
+                <p class="text-xl md:text-2xl font-bold text-white mb-6">
+                    변화에 도전 할 사장님과 준비된 베테랑님의 상생 파트너십. 지금 시작됩니다.
+                </p>
+                <div class="flex flex-wrap justify-center gap-4">
+                    <a href="/employer.html" class="px-8 py-3.5 bg-blue-600 hover:bg-blue-500 text-white font-bold rounded-lg shadow transition">
+                        사장님 회원가입 / 상담
+                    </a>
+                    <a href="/seeker.html" class="px-8 py-3.5 bg-slate-700 hover:bg-slate-600 text-white font-bold rounded-lg shadow transition">
+                        시니어 회원가입 / 질문지 작성
+                    </a>
+                </div>
+            </div>
+        </div>
+    </main>
 
-            if(loggedInUser && loggedInRole) {
-                let adminGoBtn = "";
-                // 마스터 최고 행정관 최고 관리자 원장 계정 포착 시 전용 콘솔 통로 활성화
-                if(loggedInUser === 'admin') {
-                    adminGoBtn = `<button type="button" class="nav-link-btn" style="color:#eb5757; font-weight:800;" onclick="location.href='/admin.html'">행정통제소 진입</button>`;
-                }
+    <!-- 4. Footer (실버웍스 정밀 사업자 정보 반영) -->
+    <footer class="mt-auto bg-slate-900 text-slate-400 text-xs md:text-sm py-10 border-t border-slate-800">
+        <div class="max-w-6xl mx-auto px-4 space-y-6">
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-b border-slate-800 pb-6">
+                <div>
+                    <span class="text-xl font-bold text-white tracking-wide">silverworks</span>
+                    <span class="ml-2 text-slate-500">실버웍스</span>
+                </div>
+                <div class="text-slate-400">
+                    <p><strong class="text-slate-200">입금 전용 계좌:</strong> 국민은행 <span class="text-amber-400 font-mono text-sm">275401-04-310474</span> (예금주: 민 혁(silverworks))</p>
+                </div>
+            </div>
 
-                navSlot.innerHTML = `
-                    <span style="font-size:13.5px; font-weight:700; color:#1c1c1e;">${loggedInName}님 접속중</span>
-                    ${adminGoBtn}
-                    <button type="button" class="nav-link-btn" style="color:#eb5757;" onclick="executeAuthSessionLogoutPurge()">로그아웃</button>
-                `;
-            } else {
-                navSlot.innerHTML = `<button type="button" class="btn-blue-action" onclick="location.href='/login.html'">통합 인증 센터 로그인</button>`;
-            }
-        }
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 leading-relaxed">
+                <div>
+                    <p><strong class="text-slate-300">대표:</strong> 유연성 (010-7464-3657) | 민 혁 (010-9187-9074)</p>
+                    <p><strong class="text-slate-300">주소:</strong> 경기도 성남시 중원구 광명로 79, 4층 404호 (성남동, 상산빌딩)</p>
+                    <p><strong class="text-slate-300">사업자등록번호:</strong> 726-19-02892</p>
+                </div>
+                <div>
+                    <p><strong class="text-slate-300">주업종:</strong> 경영컨설팅업 (전문, 과학 및 기술서비스업) [업종코드: 741400]</p>
+                    <p><strong class="text-slate-300">부업종:</strong> 데이터베이스 및 온라인 정보 제공업 [업종코드: 724000]</p>
+                    <p class="text-slate-500 mt-2">© SILVERWORKS. All rights reserved.</p>
+                </div>
+            </div>
+        </div>
+    </footer>
 
-        // 바로가기 터치 시 사장님/시니어 회원 권한별 마이페이지 관제실로 분기 고속 워프 처리하는 라우팅 가드
-        function handleRedirectMyTargetConsole() {
-            const currentRole = localStorage.getItem('sw_role');
-            if(!currentRole) {
-                alert('알림: 비회원 상태입니다. 먼저 통합 인증 센터에서 회원가입 또는 로그인을 완료해 주십시오.');
-                location.href = '/login.html';
-                return;
-            }
-            if(currentRole === 'employer') location.href = '/employer.html';
-            else if(currentRole === 'seeker') location.href = '/seeker.html';
-        }
-
-        // 로그인 디스크 세션 원장을 완전히 제거 파쇄 소멸시키고 리부팅하는 로그아웃 트랙
-        function executeAuthSessionLogoutPurge() {
-            if(confirm('알림: 실버웍스 관제 전산망 자산 세션을 완전 종료하고 로그아웃합니까?')) {
-                localStorage.clear();
-                alert('안전 로그아웃 처리가 완료되었습니다.');
-                location.reload();
-            }
-        }
-    </script>
 </body>
 </html>

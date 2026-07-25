@@ -2,157 +2,237 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scalable=no">
-    <title>SILVERWORKS - 회원 프로필 정보실</title>
-    <!-- [대기업 공식 리팩토링 스펙] 불필요 소셜로그 파쇄 및 미니멀 단순화 프로필 CSS 명세 -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>실버랩 - 마이 프로필 & 검증 센터</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Malgun Gothic", "맑은 고딕", sans-serif; letter-spacing: -0.4px; -webkit-tap-highlight-color: transparent; }
-        body { background-color: #ffffff; color: #1c1c1e; padding-bottom: 60px; -webkit-font-smoothing: antialiased; }
-        header { display: flex; justify-content: space-between; align-items: center; padding: 18px 24px; background-color: #ffffff; border-bottom: 1px solid #eff3f4; position: sticky; top: 0; z-index: 100; }
-        .logo { font-size: 20px; font-weight: 800; color: #1967d2; cursor: pointer; }
-        
-        .main-container { max-width: 600px; margin: 0 auto; padding: 32px 20px; }
-        .page-title { font-size: 22px; font-weight: 800; color: #1c1c1e; margin-bottom: 24px; border-left: 5px solid #1967d2; padding-left: 12px; }
-        
-        /* [지시 요건 반영] 지저분함을 완전 정화한 미니멀 격자 카드 레이아웃 스킨 */
-        .profile-master-card { background-color: #ffffff; border: 1px solid #e5e8eb; border-radius: 24px; padding: 32px; box-shadow: 0 4px 16px rgba(0,0,0,0.01); display: flex; flex-direction: column; gap: 20px; }
-        
-        .profile-header-user-row { display: flex; align-items: center; gap: 16px; padding-bottom: 20px; border-bottom: 1px solid #f2f4f6; }
-        .profile-avatar-circle { width: 56px; height: 56px; background-color: #1967d2; color: #ffffff; font-size: 18px; font-weight: 800; border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 2px solid #ffffff; box-shadow: 0 4px 12px rgba(25, 103, 210, 0.15); }
-        .profile-name-digits { font-size: 18px; font-weight: 800; color: #1c1c1e; }
-        .profile-role-badge-grey { font-size: 12px; font-weight: 600; color: #536471; background-color: #f2f4f6; padding: 3px 10px; border-radius: 6px; width: fit-content; margin-top: 4px; }
-        
-        .info-data-row { display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid #f2f4f6; font-size: 14px; font-weight: 600; color: #48484a; }
-        .info-data-row strong { color: #1c1c1e; font-weight: 700; }
-        
-        /* 오프라인 체력 수치 디스플레이 전용 카드 */
-        .spec-card-box { background-color: #f8f9fa; border-radius: 16px; padding: 20px; margin-top: 8px; border: 1px solid #eff3f4; }
-        .spec-title-headline { font-size: 13.5px; font-weight: 800; color: #1967d2; margin-bottom: 14px; }
-        .spec-grid-layout { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; text-align: center; }
-        .spec-grid-unit { font-size: 12px; color: #636366; font-weight: 600; }
-        .spec-grid-unit span { display: block; font-size: 14.5px; color: #1c1c1e; font-weight: 800; margin-top: 4px; }
-        
-        /* 자동으로 장착 표출될 뱃지 정렬 격자 공간 */
-        .badge-flex-layout { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 6px; }
-        .auto-display-badge-item { background-color: #f4f9ff; color: #1967d2; border: 1px solid #1967d2; padding: 6px 12px; border-radius: 8px; font-size: 12px; font-weight: 700; }
-        
-        .btn-back-square { width: 100%; background-color: #ffffff; color: #48484a; border: 1px solid #cfd9de; padding: 15px; border-radius: 12px; font-size: 14.5px; font-weight: 700; text-align: center; cursor: pointer; margin-top: 24px; transition: background-color 0.15s; }
-        .btn-back-square:hover { background-color: #f7f9fa; }
+        @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css');
+        body { font-family: "Pretendard", -apple-system, BlinkMacSystemFont, system-ui, sans-serif; }
+        .profile-tab.active {
+            background-color: #2563eb;
+            color: #ffffff;
+            font-weight: 800;
+        }
     </style>
 </head>
-<body>
-    <header>
-        <div class="logo" onclick="location.href='/'">SILVERWORKS 프로필</div>
-        <button type="button" class="btn-back-square" style="width:auto; padding:6px 14px; font-size:12.5px; margin:0;" onclick="location.href='/'">광장 복귀</button>
+<body class="bg-slate-100 text-slate-800 min-h-screen flex flex-col justify-between">
+
+    <!-- Header -->
+    <header class="sticky top-0 z-50 bg-white/95 border-b border-slate-200 shadow-sm backdrop-blur">
+        <div class="max-w-5xl mx-auto px-4 h-16 flex items-center justify-between">
+            <a href="/index.html" class="flex items-center gap-2">
+                <span class="text-2xl font-extrabold text-blue-600 tracking-tight">SILVERLAB</span>
+                <span class="text-xs bg-blue-100 text-blue-800 font-bold px-2 py-0.5 rounded">마이 프로필</span>
+            </a>
+            <nav class="hidden md:flex items-center gap-6 font-medium text-slate-600 text-sm">
+                <a href="/index.html" class="hover:text-blue-600 transition">홈</a>
+                <a href="/seeker.html" class="hover:text-blue-600 transition">시니어 구직</a>
+                <a href="/employer.html" class="hover:text-blue-600 transition">사장님 구인</a>
+                <a href="/jobs.html" class="hover:text-blue-600 transition">공고 목록</a>
+                <a href="/notifications.html" class="hover:text-blue-600 transition">알림 센터</a>
+            </nav>
+            <div class="flex items-center gap-3">
+                <a href="/login.html" class="text-xs font-bold text-slate-500 hover:text-slate-800">로그아웃</a>
+            </div>
+        </div>
     </header>
-    
-    <div class="main-container">
-        <h2 class="page-title">내 계정 종합 원장록</h2>
-        
-        <!-- [지시 요건] 난잡함을 지우고 큼직하게 묶어 가시성을 높인 프로필 카드 본체 -->
-        <div class="profile-master-card">
-            
-            <div class="profile-header-user-row">
-                <div class="profile-avatar-circle" id="uAvatarCircle">MY</div>
-                <div>
-                    <div class="profile-name-digits" id="uDisplayName">파싱 중...</div>
-                    <div class="profile-role-badge-grey" id="uRoleBadge">회원 등급</div>
+
+    <!-- Main Content -->
+    <main class="max-w-4xl mx-auto px-4 py-8 flex-1 w-full space-y-6">
+
+        <!-- Role Toggle Switcher -->
+        <div class="bg-white p-2 rounded-2xl border border-slate-200 shadow-sm flex gap-2">
+            <button onclick="switchProfileView('seeker')" id="tab-seeker-view" class="profile-tab active flex-1 py-3 rounded-xl text-center text-sm transition flex items-center justify-center gap-2">
+                <i class="fa-solid fa-user-check"></i> 시니어 회원 프로필 보기
+            </button>
+            <button onclick="switchProfileView('employer')" id="tab-employer-view" class="profile-tab flex-1 py-3 text-slate-600 rounded-xl text-center text-sm transition flex items-center justify-center gap-2">
+                <i class="fa-solid fa-store"></i> 사장님 회원 프로필 보기
+            </button>
+        </div>
+
+        <!-- 1. Senior Seeker Profile Section -->
+        <div id="view-seeker-profile" class="space-y-6">
+
+            <!-- Profile Summary Card -->
+            <div class="bg-white rounded-2xl p-6 md:p-8 border border-slate-200 shadow-sm flex flex-col md:flex-row items-center md:items-start gap-6">
+                <div class="w-24 h-24 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center text-4xl font-bold border-4 border-blue-50">
+                    <i class="fa-solid fa-user"></i>
+                </div>
+                <div class="flex-1 space-y-3 text-center md:text-left">
+                    <div class="flex flex-col md:flex-row md:items-center gap-2">
+                        <h2 class="text-2xl font-black text-slate-900">김순희 어르신 <span class="text-sm font-normal text-slate-500">(68세 / SEN-101)</span></h2>
+                        <span class="bg-emerald-100 text-emerald-800 text-xs font-extrabold px-3 py-1 rounded-full w-fit mx-auto md:mx-0">
+                            실버랩 4단계 검증 완료
+                        </span>
+                    </div>
+
+                    <!-- Badges -->
+                    <div class="flex flex-wrap justify-center md:justify-start gap-2 pt-1">
+                        <span class="bg-blue-600 text-white text-xs font-bold px-3 py-1 rounded-lg flex items-center gap-1">
+                            <i class="fa-solid fa-award"></i> 체력 베테랑
+                        </span>
+                        <span class="bg-amber-500 text-white text-xs font-bold px-3 py-1 rounded-lg flex items-center gap-1">
+                            <i class="fa-solid fa-clock"></i> 시간 엄수 100%
+                        </span>
+                        <span class="bg-purple-600 text-white text-xs font-bold px-3 py-1 rounded-lg flex items-center gap-1">
+                            <i class="fa-solid fa-thumbs-up"></i> 사장님 추천
+                        </span>
+                        <span class="bg-emerald-600 text-white text-xs font-bold px-3 py-1 rounded-lg flex items-center gap-1">
+                            <i class="fa-solid fa-file-medical"></i> 보건증 완료
+                        </span>
+                    </div>
+
+                    <p class="text-xs text-slate-500 pt-1">
+                        거주지: 경기도 성남시 중원구 성남동 | 연락처: 010-9999-8888 | 비상연락처: 010-1234-5678 (자녀)
+                    </p>
+                </div>
+                <button onclick="editProfile()" class="px-4 py-2 border border-slate-300 rounded-xl text-xs font-bold text-slate-700 hover:bg-slate-50 transition">
+                    정보 수정
+                </button>
+            </div>
+
+            <!-- Health & Fitness Verification Card (국민체력100 65세 이상) -->
+            <div class="bg-gradient-to-br from-blue-900 to-slate-900 text-white rounded-2xl p-6 shadow-md space-y-4">
+                <div class="flex justify-between items-center border-b border-blue-800 pb-3">
+                    <h3 class="text-lg font-bold text-blue-300 flex items-center gap-2">
+                        <i class="fa-solid fa-heart-pulse"></i> 국민체력100 검증 & 건강 질문지 상태
+                    </h3>
+                    <span class="text-xs bg-blue-500/30 text-blue-200 px-3 py-1 rounded-full border border-blue-400/30 font-semibold">오프라인 측정 완료</span>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
+                    <div class="bg-white/10 p-4 rounded-xl border border-white/10 space-y-1">
+                        <span class="text-slate-300 block">체력 측정 등급</span>
+                        <span class="text-xl font-black text-amber-400">1등급 (우수)</span>
+                        <p class="text-[11px] text-slate-400">3층 계단 오르기 및 악력 측정 통과</p>
+                    </div>
+                    <div class="bg-white/10 p-4 rounded-xl border border-white/10 space-y-1">
+                        <span class="text-slate-300 block">1단계 자체 질문지</span>
+                        <span class="text-xl font-black text-emerald-400">적합 (정상)</span>
+                        <p class="text-[11px] text-slate-400">관절 통증 없음 / 식당·마트 근무 희망</p>
+                    </div>
+                    <div class="bg-white/10 p-4 rounded-xl border border-white/10 space-y-1">
+                        <span class="text-slate-300 block">교육 및 보건증</span>
+                        <span class="text-xl font-black text-blue-300">발급 완료</span>
+                        <p class="text-[11px] text-slate-400">보건증 유효기간: ~2027년 06월</p>
+                    </div>
                 </div>
             </div>
-            
-            <div class="info-data-row"><span>계정 아이디 (ID)</span><strong id="uUsername">@-</strong></div>
-            <div class="info-data-row"><span>소통용 전화번호</span><strong id="uPhone">-</strong></div>
-            
-            <!-- 사장님 계정 진입 시에만 바인딩 노출될 사업자 번호 명세란 -->
-            <div class="info-data-row" id="employerInfoRowZone" style="display: none;"><span>사업자 등록번호</span><strong id="uBusinessNum">-</strong></div>
-            
-            <!-- 시니어 계정 진입 시에만 바인딩 노출될 보호자 비상연락처 명세란 -->
-            <div class="info-data-row" id="seekerInfoRowZone" style="display: none;"><span>🚨 자녀/보호자 비상연락처</span><strong id="uEmergencyPhone">-</strong></div>
-            <div class="info-data-row"><span>플랫폼 가입 등급 상태</span><strong style="color: #1967d2;">✓ 정식 공인 승인 회원</strong></div>
 
-            <!-- [지시 요건 반영] 국민체력 100 오프라인 2차 검증 스펙 데이터 가시적 최적화 카드 상자 -->
-            <div class="spec-card-box" id="seekerFitnessSpecCardBoxSlot" style="display: none;">
-                <div class="spec-title-headline">💪 국민체력 100 기준 오프라인 2차 검증 스펙 계수</div>
-                <div class="spec-grid-layout">
-                    <div class="spec-grid-unit">인증등급<span id="pFitGrade">미인증</span></div>
-                    <div class="spec-grid-unit">악력 (kg)<span id="pFitGrip">-</span></div>
-                    <div class="spec-grid-unit">유연성 (cm)<span id="pFitFlex">-</span></div>
-                    <div class="spec-grid-unit">지구력 (회)<span id="pFitCardio">-</span></div>
-                </div>
-            </div>
-
-            <!-- 무사히 일을 완료 시 자동으로 표출 마운트될 배지 정렬 격자 구역 -->
-            <div class="spec-card-box" id="seekerBadgeCardBoxSlot" style="display: none;">
-                <div class="spec-title-headline">⏱️ 실버웍스 오피셜 수납 인증 성실 배지</div>
-                <div class="badge-flex-layout" id="profileAutoBadgeContainerSlot">
-                    <span style="font-size:12.5px; color:#8e8e93; font-weight:500;">근무 완료 데이터를 대조 판독 중입니다...</span>
+            <!-- Work History & Earnings -->
+            <div class="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm space-y-4">
+                <h3 class="text-lg font-bold text-slate-900 flex items-center gap-2">
+                    <i class="fa-solid fa-history text-blue-600"></i> 최근 근무 내역 및 일당 수령 기록
+                </h3>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-xs text-left text-slate-600">
+                        <thead class="bg-slate-100 text-slate-700 font-bold uppercase">
+                            <tr>
+                                <th class="p-3">근무 일시</th>
+                                <th class="p-3">가게명 / 업무</th>
+                                <th class="p-3">수령 일당</th>
+                                <th class="p-3">매칭 순위</th>
+                                <th class="p-3 text-center">상태</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-200">
+                            <tr>
+                                <td class="p-3 font-semibold">2026-07-26 12:00~14:00</td>
+                                <td class="p-3 font-bold text-slate-900">[대박식당] 홀 서빙</td>
+                                <td class="p-3 text-blue-600 font-bold">35,000 원 <span class="text-[10px] text-red-500 font-normal">(가산 보상 +5,000원)</span></td>
+                                <td class="p-3"><span class="bg-amber-100 text-amber-800 px-2 py-0.5 rounded font-bold">2순위 승계</span></td>
+                                <td class="p-3 text-center"><span class="bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded font-bold">지급 완료</span></td>
+                            </tr>
+                            <tr>
+                                <td class="p-3 font-semibold">2026-07-20 18:00~21:00</td>
+                                <td class="p-3 font-bold text-slate-900">[성남카페] 음료 가공</td>
+                                <td class="p-3 text-blue-600 font-bold">36,000 원</td>
+                                <td class="p-3"><span class="bg-blue-100 text-blue-800 px-2 py-0.5 rounded font-bold">1순위 확정</span></td>
+                                <td class="p-3 text-center"><span class="bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded font-bold">지급 완료</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
             </div>
 
         </div>
-        
-        <button type="button" class="btn-back-square" onclick="location.href='/'">➔ 메인 광장 대문 대광장으로 회군</button>
-    </div>
-    <!-- [백엔드 프로필 동기화 및 뱃지 자동화 마운트 자바스크립트 엔진] -->
+
+        <!-- 2. Employer Profile Section -->
+        <div id="view-employer-profile" class="hidden space-y-6">
+
+            <!-- Store & Subscription Card -->
+            <div class="bg-white rounded-2xl p-6 md:p-8 border border-slate-200 shadow-sm space-y-6">
+                <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-b border-slate-100 pb-4">
+                    <div class="space-y-1">
+                        <div class="flex items-center gap-2">
+                            <span class="bg-amber-500 text-slate-950 text-xs font-black px-2.5 py-0.5 rounded">1년 구독 회원</span>
+                            <h2 class="text-2xl font-black text-slate-900">대박식당 <span class="text-sm font-normal text-slate-500">(사장님: 김대박)</span></h2>
+                        </div>
+                        <p class="text-xs text-slate-500">
+                            사업자등록번호: 726-19-02892 | 경기도 성남시 중원구 광명로 79
+                        </p>
+                    </div>
+                    <div class="bg-amber-50 border border-amber-300 p-4 rounded-xl text-center">
+                        <span class="text-xs font-bold text-amber-800 block">적용 플랫폼 수수료</span>
+                        <span class="text-2xl font-black text-red-600">5% <span class="text-xs text-slate-500 line-through">(기본 10%)</span></span>
+                        <span class="text-[10px] text-slate-500 block">구독 만료일: 2027-07-25</span>
+                    </div>
+                </div>
+
+                <!-- Employer Statistics -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-center">
+                    <div class="bg-slate-50 p-4 rounded-xl border border-slate-200">
+                        <span class="text-xs text-slate-500 font-semibold">총 등록 공고 수</span>
+                        <p class="text-2xl font-black text-slate-900 mt-1">12 건</p>
+                    </div>
+                    <div class="bg-slate-50 p-4 rounded-xl border border-slate-200">
+                        <span class="text-xs text-slate-500 font-semibold">성공적 매칭 수</span>
+                        <p class="text-2xl font-black text-blue-600 mt-1">18 회</p>
+                    </div>
+                    <div class="bg-slate-50 p-4 rounded-xl border border-slate-200">
+                        <span class="text-xs text-slate-500 font-semibold">절감된 인건비 (월)</span>
+                        <p class="text-2xl font-black text-emerald-600 mt-1">약 53 만원</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Payment Account Info -->
+            <div class="bg-slate-900 text-white rounded-2xl p-6 space-y-3">
+                <h3 class="font-bold text-amber-400 text-sm flex items-center gap-2">
+                    <i class="fa-solid fa-building-columns"></i> 실버랩 정산 입금 계좌 안내
+                </h3>
+                <p class="text-xs text-slate-300">
+                    국민은행 <strong class="text-white text-sm">275401-04-310474</strong> (예금주: 민 혁(silverworks))
+                </p>
+                <p class="text-[11px] text-slate-400">
+                    * 무통장 입금 후 공고 관리 창에서 <span class="text-amber-400 font-bold">[입금 완료했어요]</span>를 클릭해 주시면 수동 확인 후 알림이 발송됩니다.
+                </p>
+            </div>
+
+        </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-slate-900 text-slate-400 text-xs py-6 border-t border-slate-800 text-center">
+        <p><strong class="text-white">silverworks (실버웍스)</strong> | 대표: 유연성, 민 혁</p>
+        <p class="text-slate-500 text-[11px] mt-1">경기도 성남시 중원구 광명로 79, 4층 404호 (성남동, 상산빌딩)</p>
+    </footer>
+
     <script>
-        const targetProfileUser = localStorage.getItem('sw_username');
+        function switchProfileView(view) {
+            ['seeker', 'employer'].forEach(v => {
+                document.getElementById('view-' + v + '-profile').classList.add('hidden');
+                document.getElementById('tab-' + v + '-view').classList.remove('active');
+            });
+            document.getElementById('view-' + view + '-profile').classList.remove('hidden');
+            document.getElementById('tab-' + view + '-view').classList.add('active');
+        }
 
-        document.addEventListener("DOMContentLoaded", function() {
-            if(!targetProfileUser) {
-                alert('보안 가드 고지: 로그인 회원 전용 정보실입니다. 메인 대문으로 리다이렉트합니다.');
-                location.href = '/';
-                return;
-            }
-            loadMyAccountProfileMasterSpec();
-        });
-
-        // 백엔드 원장에서 내 계정의 체력 인서트 수치 및 비상연락처 데이터 실시간 동환 동기화
-        function loadMyAccountProfileMasterSpec() {
-            fetch('/api/profile/me?username=' + encodeURIComponent(targetProfileUser))
-                .then(res => res.json())
-                .then(data => {
-                    if(data.success && data.profile) {
-                        const p = data.profile;
-                        
-                        // 상단 아바타 뱃지 및 타이틀 가이드 바인딩
-                        document.getElementById('uDisplayName').innerText = p.name;
-                        document.getElementById('uUsername').innerText = `@${p.username}`;
-                        document.getElementById('uPhone').innerText = p.phone;
-                        document.getElementById('uAvatarCircle').innerText = p.username.substring(0,2).toUpperCase();
-
-                        if(p.role === 'employer') {
-                            // 구인 사장님 회원 유형 진입 시
-                            document.getElementById('uRoleBadge').innerText = "실버웍스 정식 가맹 사장님";
-                            document.getElementById('employerInfoRowZone').style.display = "flex";
-                            document.getElementById('uBusinessNum').innerText = p.business_number || '-';
-                        } else if(p.role === 'seeker') {
-                            // 구직 시니어 회원 유형 진입 시
-                            document.getElementById('uRoleBadge').innerText = "실버웍스 공인 숙련 베테랑 시니어";
-                            document.getElementById('seekerInfoRowZone').style.display = "flex";
-                            document.getElementById('uEmergencyPhone').innerText = p.emergency_phone === '-' ? '미등록 (마이페이지에서 등록 필수)' : p.emergency_phone;
-                            
-                            // [지시 반영] 관리자실 수기 인서트 체력 등급 및 계수 데이터 큼직하게 묶어 카드 매핑 표출
-                            document.getElementById('seekerFitnessSpecCardBoxSlot').style.display = "block";
-                            document.getElementById('pFitGrade').innerText = p.fitness_grade || '미인증';
-                            document.getElementById('pFitGrip').innerText = p.fitness_grip || '-';
-                            document.getElementById('pFitFlex').innerText = p.fitness_flex || '-';
-                            document.getElementById('pFitCardio').innerText = p.fitness_cardio || '-';
-
-                            // [지시 반영] 근무 성료 시 자동으로 표출될 성실 배지 카드 유닛 활성화
-                            document.getElementById('seekerBadgeCardBoxSlot').style.display = "block";
-                            const badgeWrap = document.getElementById('profileAutoBadgeContainerSlot');
-                            if(p.points > 0 || p.fitness_grade !== '미인증') {
-                                badgeWrap.innerHTML = `
-                                    <span class="auto-display-badge-item">⏱️ 시간 엄수 100%</span>
-                                    <span class="auto-display-badge-item">👍 사장님 추천 베테랑</span>
-                                    <span class="auto-display-badge-item">💪 체력 베테랑</span>
-                                `;
-                            } else {
-                                badgeWrap.innerHTML = `<span style="font-size:12.5px; color:#8e8e93; font-weight:500;">첫 근무 완료 승인 이후 성실 마스터 배지가 자동으로 도출 장착됩니다.</span>`;
-                            }
-                        }
-                    }
-                });
+        function editProfile() {
+            alert('회원 정보 수정 페이지로 이동합니다.');
         }
     </script>
 </body>

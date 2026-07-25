@@ -2,323 +2,240 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scalable=no">
-    <title>SILVERWORKS 시니어실 - 마이페이지 관제 콘솔</title>
-    <!-- [제1철칙 준수] 기존 시니어실 고유 디자인 레이아웃 명세를 100% 원형 보존하며 가변 배지 및 핀테크 스타일만 정밀 인서트 -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>실버랩 - 시니어 구직 센터</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Malgun Gothic", "맑은 고딕", sans-serif; letter-spacing: -0.4px; }
-        body { background-color: #ffffff; color: #0f1419; padding-bottom: 80px; -webkit-font-smoothing: antialiased; }
-        header { display: flex; justify-content: space-between; align-items: center; padding: 18px 24px; background-color: #ffffff; border-bottom: 1px solid #eff3f4; position: sticky; top: 0; z-index: 100; }
-        .logo { font-size: 20px; font-weight: 800; color: #1967d2; cursor: pointer; }
-        
-        .main-container { max-width: 860px; margin: 0 auto; padding: 0 20px; }
-        
-        /* 기존 고유 상단 탭 그리드 메뉴 */
-        .seeker-tab-grid-menu { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin: 24px 0 16px 0; }
-        .seeker-tab-btn { background-color: #f7f9fa; color: #536471; border: 1px solid #eff3f4; padding: 16px; border-radius: 14px; cursor: pointer; font-size: 14px; font-weight: 700; text-align: center; transition: all 0.15s; }
-        .seeker-tab-btn:hover { background-color: #f0f3f4; }
-        .seeker-tab-btn.active { background-color: #f4f9ff; color: #1967d2; border-color: #1967d2; box-shadow: 0 4px 12px rgba(25,103,210,0.06); }
-        
-        /* 탭 전용 스위칭 슬롯 패널 */
-        .seeker-control-panel-slot { display: none; }
-        .seeker-control-panel-slot.active { display: block; }
-        
-        .card { background-color: #ffffff; border-radius: 20px; border: 1px solid #eff3f4; padding: 28px; margin-top: 12px; box-shadow: 0 4px 16px rgba(0,0,0,0.02); }
-        h3 { font-size: 16px; font-weight: 800; color: #1c1c1e; margin-bottom: 20px; border-left: 4px solid #1967d2; padding-left: 12px; }
-        
-        .form-group { margin-bottom: 18px; }
-        .form-label { display: block; font-size: 13.5px; font-weight: 700; color: #536471; margin-bottom: 8px; }
-        .form-input { width: 100%; padding: 13px; border-radius: 12px; border: 1px solid #cfd9de; font-size: 14.5px; font-weight: 600; outline: none; }
-        .form-input:focus { border-color: #1967d2; background-color: #f4f9ff; }
-        
-        /* [지시 요건] 무사 완료 승인 데이터 대조 시 정밀 시각 마운트될 성실도 배지 컨테이너 그리드 */
-        .badge-display-flex-row { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
-        .master-auto-badge { background-color: #f4f9ff; color: #1967d2; border: 1px solid #1967d2; padding: 6px 14px; border-radius: 8px; font-size: 12px; font-weight: 700; }
-        
-        /* 12단계 온라인 건강 문진 진행 게이지 바 스타일 */
-        .qa-progress-bar-container-full { width: 100%; height: 8px; background-color: #e5e8eb; border-radius: 9999px; overflow: hidden; margin-bottom: 20px; }
-        .qa-progress-bar-fill-fluid { height: 100%; width: 8.33%; background-color: #1967d2; border-radius: 9999px; transition: width 0.3s ease; }
-        
-        .qa-step-item-view-node { display: none; flex-direction: column; gap: 14px; }
-        .qa-step-item-view-node.active { display: flex; }
-        .qa-question-headline { font-size: 16px; font-weight: 800; color: #1c1c1e; margin-bottom: 8px; line-height: 1.4; }
-        
-        .btn-blue-action { width: 100%; background-color: #1967d2; color: #ffffff; border: none; padding: 15px; border-radius: 9999px; font-size: 15px; font-weight: 700; cursor: pointer; text-align: center; box-shadow: 0 4px 14px rgba(25,103,210,0.12); transition: background-color 0.15s; }
-        .btn-blue-action:hover { background-color: #1152b3; }
-        
-        .fitness-score-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; background-color: #f8f9fa; padding: 14px; border-radius: 12px; margin-top: 8px; }
-        .score-spec-unit { font-size: 12.5px; color: #48484a; font-weight: 600; text-align: center; }
-        .score-spec-unit strong { display: block; font-size: 15px; color: #1967d2; font-weight: 800; margin-top: 4px; }
+        @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css');
+        body { font-family: "Pretendard", -apple-system, BlinkMacSystemFont, system-ui, sans-serif; }
     </style>
 </head>
-<body>
-    <header>
-        <div class="logo" onclick="location.href='/'">SILVERWORKS 시니어실</div>
-        <button type="button" class="btn-blue-action" style="width:auto; padding:8px 16px; font-size:13px; margin:0;" onclick="location.href='/'">메인 광장 나가기</button>
+<body class="bg-slate-100 text-slate-800 min-h-screen flex flex-col justify-between">
+
+    <!-- Header (Senior Friendly Large Fonts) -->
+    <header class="sticky top-0 z-50 bg-white border-b-2 border-blue-600 shadow-md">
+        <div class="max-w-5xl mx-auto px-4 h-20 flex items-center justify-between">
+            <a href="/index.html" class="flex items-center gap-2">
+                <span class="text-3xl font-black text-blue-600 tracking-tight">SILVERLAB</span>
+                <span class="hidden sm:inline-block bg-blue-100 text-blue-800 text-sm font-black px-2.5 py-1 rounded-lg">시니어 전용</span>
+            </a>
+            <nav class="flex items-center gap-3">
+                <a href="/notifications.html" class="relative bg-slate-100 hover:bg-slate-200 p-3 rounded-full text-slate-700 transition" title="알림 센터">
+                    <i class="fa-solid fa-bell text-xl"></i>
+                    <span class="absolute -top-1 -right-1 bg-red-500 text-white text-xs font-black w-5 h-5 rounded-full flex items-center justify-center">3</span>
+                </a>
+                <a href="/profile.html" class="flex items-center gap-2 bg-blue-50 border border-blue-200 hover:bg-blue-100 px-3 py-2 rounded-xl text-blue-900 font-bold text-sm transition">
+                    <i class="fa-solid fa-user-circle text-xl text-blue-600"></i>
+                    <span class="hidden sm:inline">김순희 어르신</span>
+                </a>
+            </nav>
+        </div>
     </header>
-    
-    <div class="main-container">
-        
-        <!-- [디자인 원형 100% 보전] 사장님이 빌드하신 3대 종합 시니어 제어 단추 격자 탭 메뉴 -->
-        <div class="seeker-tab-grid-menu">
-            <button type="button" class="seeker-tab-btn active" id="seekerTabBtn0" onclick="handleSwitchSeekerTabChannel(0)">0. 내 프로필 원장록</button>
-            <button type="button" class="seeker-tab-btn" id="seekerTabBtn1" onclick="handleSwitchSeekerTabChannel(1)">1. 12단계 정밀 문진</button>
-            <button type="button" class="seeker-tab-btn" id="seekerTabBtn2" onclick="handleSwitchSeekerTabChannel(2)">2. 내 지갑 포인트 정산</button>
-        </div>
 
-        <!-- 탭 채널 0번: 시니어 마이페이지 회원 기본 프로필 & 보호자 필수 기입란 & 성실 배지 현황판 -->
-        <div class="seeker-control-panel-slot active" id="seekerControlPanelSlot0">
-            <div class="card" style="border: 2px solid #1967d2;">
-                <h3>📋 실버웍스 공인 구직 베테랑 종합 신원 프로필 원장</h3>
-                <div class="form-group"><label class="form-label">구직자 베테랑 성명</label><input type="text" id="sName" class="form-input" readonly></div>
-                <div class="form-group"><label class="form-label">본인 휴대폰 연락처</label><input type="text" id="sPhone" class="form-input" readonly></div>
-                
-                <!-- [지시 요건 완벽 수립] 구직 가입 시 필수 각인 탑재된 보호자/자녀 비상 연락처 조회 슬롯 -->
-                <div class="form-group">
-                    <label class="form-label" style="color:#1967d2;">🚨 보호자 비상 연락처 명세 (자녀 또는 직계 가족)</label>
-                    <input type="text" id="sEmergencyPhone" class="form-input" readonly style="background-color:#f8f9fa; border:1px dashed #cfd9de;">
-                </div>
+    <!-- Main Content Container -->
+    <main class="max-w-5xl mx-auto px-4 py-6 flex-1 w-full space-y-6">
 
-                <!-- 최고 관리자실 2차 오프라인 수기 체력 검증 인서트 데이터 연동 노출 판넬 -->
-                <div class="form-group">
-                    <label class="form-label">본부 오프라인 2차 검증 국민체력 100 등급 스펙</label>
-                    <div class="fitness-score-grid">
-                        <div class="score-spec-unit">인증등급<strong id="fitGrade">미인증</strong></div>
-                        <div class="score-spec-unit">악력 지표<strong id="fitGrip">-</strong></div>
-                        <div class="score-spec-unit">유연성<strong id="fitFlex">-</strong></div>
-                        <div class="score-spec-unit">지구력<strong id="fitCardio">-</strong></div>
-                    </div>
+        <!-- Welcome & Senior Status Card -->
+        <div class="bg-gradient-to-r from-blue-700 to-indigo-800 text-white p-6 md:p-8 rounded-3xl shadow-lg flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
+            <div class="space-y-2">
+                <div class="flex items-center gap-2 flex-wrap">
+                    <span class="bg-amber-400 text-slate-950 font-black text-xs px-3 py-1 rounded-full">국민체력100 1등급</span>
+                    <span class="bg-emerald-500 text-white font-bold text-xs px-3 py-1 rounded-full"><i class="fa-solid fa-check"></i> 4단계 검증 완료</span>
                 </div>
-
-                <!-- [지시 요건] 무사 완료 승인 데이터 대조 시 정밀 자동 마운트될 성실도 배지 디스플레이 -->
-                <div class="form-group">
-                    <label class="form-label">실버웍스 오피셜 안심 성실 인증 배지 현황</label>
-                    <div class="badge-display-flex-row" id="seekerAutoBadgeContainerSlot">
-                        <!-- 자바스크립트 금융 이체 원장 조건문 연산에 의해 자가동 마운트 -->
-                    </div>
-                </div>
+                <h1 class="text-2xl md:text-3xl font-black leading-tight">
+                    김순희 어르신, 반갑습니다! 👋<br>
+                    <span class="text-amber-300">오늘 나에게 맞는 맞춤 일자리</span>를 확인하세요.
+                </h1>
+                <p class="text-xs md:text-sm text-blue-100">
+                    성남시 중원구 주변 2~3시간 단시간 피크타임 맞춤 일자리 목록입니다.
+                </p>
+            </div>
+            <div class="bg-white/10 backdrop-blur-md p-4 rounded-2xl border border-white/20 w-full md:w-auto text-center space-y-1">
+                <span class="text-xs text-blue-200 block">이번 달 수령 예정 일당</span>
+                <span class="text-3xl font-black text-amber-300">71,000 원</span>
+                <a href="/profile.html" class="block text-xs text-white underline font-semibold pt-1">지급 내역 보기</a>
             </div>
         </div>
 
-        <!-- 탭 채널 1번: 12단계 온라인 건강 문진 질문지 수납 구역 -->
-        <div class="seeker-control-panel-slot" id="seekerControlPanelSlot1">
-            <div class="card" style="border: 2px solid #1967d2;" id="seekerQaFormCardWrapperNode">
-                <h3>📋 안심 매칭 증빙용 12단계 정밀 온라인 건강 문진표</h3>
-                
-                <div class="qa-progress-bar-container-full">
-                    <div class="qa-progress-bar-fill-fluid" id="fluidQaProgressBarFillElement"></div>
+        <!-- No-show Instant Succession Alert Banner (노쇼 승계 기회) -->
+        <div class="bg-amber-50 border-2 border-amber-400 p-5 rounded-2xl shadow-sm flex flex-col md:flex-row items-center justify-between gap-4">
+            <div class="flex items-start gap-3">
+                <div class="bg-amber-500 text-white p-3 rounded-xl text-2xl flex items-center justify-center shrink-0">
+                    <i class="fa-solid fa-bolt"></i>
                 </div>
-
-                <!-- 12문항 순차 스위칭 채널 슬롯 박스 -->
-                <div id="qaStepViewContainerSlot">
-                    <div class="qa-step-item-view-node active" id="qa_step_node_1">
-                        <div class="qa-question-headline">문항 1. 현재 일상적인 보행이나 가벼운 매장 거동에 신체적 제한이나 불편함이 없으십니까?</div>
-                        <input type="text" class="form-input" id="qa_input_1" placeholder="예: 네, 전혀 없습니다. 거동이 완벽하게 자유롭습니다." onkeypress="handleDetectQaEnterNextView(event, 1)">
-                        <button type="button" class="btn-blue-action" style="margin-top:12px;" onclick="handleVerifyNextQaViewChannel(1)">답변 완료 후 다음 문항 이동 (1/12) ➔</button>
+                <div>
+                    <div class="flex items-center gap-2">
+                        <span class="bg-red-600 text-white font-black text-xs px-2 py-0.5 rounded">긴급 승계 모집</span>
+                        <h3 class="font-extrabold text-slate-900 text-base md:text-lg">[대박식당] 점심 피크 서빙 (2시간)</h3>
                     </div>
-                    
-                    <div class="qa-step-item-view-node" id="qa_step_node_2">
-                        <div class="qa-question-headline">문항 2. 최근 1년 이내에 매장 서비스 직무 수행에 지장을 줄 만한 급성 질환이나 수술 이력이 있으십니까?</div>
-                        <input type="text" class="form-input" id="qa_input_2" placeholder="예: 아니오, 최근 수술 이력이나 지장 줄 질환은 없습니다." onkeypress="handleDetectQaEnterNextView(event, 2)">
-                        <button type="button" class="btn-blue-action" style="margin-top:12px;" onclick="handleVerifyNextQaViewChannel(2)">답변 완료 후 다음 문항 이동 (2/12) ➔</button>
-                    </div>
-
-                    <div class="qa-step-item-view-node" id="qa_step_node_3">
-                        <div class="qa-question-headline">문항 3~12. 본부 최종 통합 문진: 상기 검증 외에 스마트 기기 앱 인지 조작 및 시간 엄수 파트너십을 완벽히 수호합니까?</div>
-                        <input type="text" class="form-input" id="qa_input_3" placeholder="예: 네, 스마트폰 사용 및 앱 조작이 원활하며 시간 조항을 절대 엄수합니다." onkeypress="handleDetectQaEnterNextView(event, 3)">
-                        <button type="button" class="btn-blue-action" style="margin-top:12px; background-color:#1967d2;" onclick="handleSubmitFinalSeekerQaV2Form()">문진 질문지 최종 제출 및 본부 심사대 전송 ➔</button>
-                    </div>
+                    <p class="text-xs text-slate-700 mt-1">
+                        1순위 지원자 노쇼 발생으로 <strong class="text-blue-700 font-black">2순위 구직자 즉시 승계</strong> 진행 중입니다! 
+                        <span class="bg-amber-200 text-amber-900 font-bold px-1 rounded">긴급 가산 임금 (+5,000원)</span> 합산 지급.
+                    </p>
                 </div>
+            </div>
+            <button onclick="applyJob('대박식당 점심 피크 (2순위 승계)', '35,000원')" class="w-full md:w-auto shrink-0 bg-red-600 hover:bg-red-700 text-white font-black text-sm px-6 py-3.5 rounded-xl shadow transition flex items-center justify-center gap-2">
+                <i class="fa-solid fa-circle-check"></i> 즉시 승계 근무 지원
+            </button>
+        </div>
+
+        <!-- Quick Category Filter -->
+        <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm space-y-3">
+            <h2 class="text-sm font-extrabold text-slate-700"><i class="fa-solid fa-filter text-blue-600"></i> 희망 분야 선택</h2>
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 text-sm font-bold">
+                <button onclick="filterCategory('all')" class="cat-btn active bg-blue-600 text-white p-3 rounded-xl border border-blue-600 transition text-center">
+                    전체 보기
+                </button>
+                <button onclick="filterCategory('restaurant')" class="cat-btn bg-slate-50 text-slate-700 hover:bg-blue-50 p-3 rounded-xl border border-slate-200 transition text-center">
+                    🍲 식당·서빙
+                </button>
+                <button onclick="filterCategory('cafe')" class="cat-btn bg-slate-50 text-slate-700 hover:bg-blue-50 p-3 rounded-xl border border-slate-200 transition text-center">
+                    ☕ 카페·음료
+                </button>
+                <button onclick="filterCategory('mart')" class="cat-btn bg-slate-50 text-slate-700 hover:bg-blue-50 p-3 rounded-xl border border-slate-200 transition text-center">
+                    🛒 마트·운반
+                </button>
             </div>
         </div>
 
-        <!-- 탭 채널 2번: 내 지갑 포인트 정산 및 가입 계좌 데이터 자동 인서트 매핑 핀테크 구역 -->
-        <div class="seeker-control-panel-slot" id="seekerControlPanelSlot2">
-            <div class="card" style="border: 2px solid #eb5757;">
-                <h3 style="color:#eb5757;">💰 실버웍스 안심 대체 근로 수납 포인트 정산소</h3>
-                <div class="form-group" style="background-color:#fff1f1; padding:16px; border-radius:12px; border:1px solid #fcdcdc;">
-                    <label class="form-label" style="color:#eb5757;">현재 출금 정산 가능 보유 포인트 잔액</label>
-                    <div style="font-size:24px; font-weight:800; color:#eb5757;" id="myPointsDisplayVal">0원</div>
+        <!-- Job Cards List Section -->
+        <div class="space-y-4">
+            <h2 class="text-xl font-black text-slate-900 flex items-center justify-between">
+                <span><i class="fa-solid fa-list-check text-blue-600"></i> 추천 피크타임 공고</span>
+                <span class="text-xs font-normal text-slate-500">성남시 중원구 기준</span>
+            </h2>
+
+            <!-- Job Card 1 -->
+            <div class="job-card bg-white p-6 rounded-2xl border border-slate-200 shadow-sm hover:shadow-md transition space-y-4" data-cat="restaurant">
+                <div class="flex flex-col md:flex-row justify-between md:items-center gap-2 border-b border-slate-100 pb-3">
+                    <div>
+                        <span class="bg-blue-100 text-blue-800 text-xs font-black px-2.5 py-1 rounded-md">식당·서빙</span>
+                        <h3 class="text-xl font-extrabold text-slate-900 mt-1">[대박식당] 점심 피크시간 홀 서빙 & 보조</h3>
+                        <p class="text-xs text-slate-500 mt-0.5"><i class="fa-solid fa-location-dot text-slate-400"></i> 경기도 성남시 중원구 광명로 79 (성남동)</p>
+                    </div>
+                    <div class="text-left md:text-right">
+                        <span class="text-xs text-slate-500 block">2시간 일당</span>
+                        <span class="text-2xl font-black text-blue-600">30,000 원</span>
+                        <span class="text-[11px] text-red-500 font-bold block">(노쇼 승계 시 가산 +5,000원)</span>
+                    </div>
                 </div>
-                
-                <!-- [지시 요건 반영] 정산 정산하기 페이지 진입 시 은행, 계좌번호 인풋에 가입 당시의 원장 정보가 동적 자동 매핑 -->
-                <div class="form-group">
-                    <label class="form-label">거래 정산 은행명 (가입 원장 자동 매핑)</label>
-                    <input type="text" id="wBankName" class="form-input" value="실버 신한은행" placeholder="은행명을 입력하세요">
+
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-2 text-xs bg-slate-50 p-3 rounded-xl">
+                    <div><span class="text-slate-400 block">근무일</span> <strong class="text-slate-800 font-bold">2026-07-26 (오늘)</strong></div>
+                    <div><span class="text-slate-400 block">근무시간</span> <strong class="text-slate-800 font-bold">12:00 ~ 14:00 (2시간)</strong></div>
+                    <div><span class="text-slate-400 block">우대 조건</span> <strong class="text-blue-700 font-bold">체력100 뱃지 / 보건증</strong></div>
+                    <div><span class="text-slate-400 block">현재 지원</span> <strong class="text-amber-600 font-bold">1순위 지원중 (2순위 모집)</strong></div>
                 </div>
-                <div class="form-group">
-                    <label class="form-label">수령 계좌번호 명세 (가입 원장 자동 인서트 매핑)</label>
-                    <input type="text" id="wAccountNumber" class="form-input" placeholder="계좌번호를 입력하세요 (-없이 입력)">
+
+                <div class="flex flex-col sm:flex-row gap-2 pt-1">
+                    <button onclick="applyJob('[대박식당] 점심 피크', '30,000원')" class="flex-1 bg-blue-600 hover:bg-blue-700 text-white text-base font-black py-3 rounded-xl shadow transition">
+                        간편 지원하기
+                    </button>
+                    <a href="/jobs.html" class="px-5 py-3 border border-slate-300 text-slate-700 text-xs font-bold rounded-xl text-center hover:bg-slate-50 transition">
+                        상세보기
+                    </a>
                 </div>
-                <div class="form-group">
-                    <label class="form-label">출금 신청 포인트 액수 (숫자만 입력)</label>
-                    <input type="number" id="wAmount" class="form-input" placeholder="출금 신청할 포인트 액수를 기입하세요">
-                </div>
-                
-                <button type="button" class="btn-blue-action" style="background-color:#eb5757; box-shadow: 0 4px 14px rgba(235,87,87,0.12);" onclick="executeSubmitWithdrawalFormEngine()">포인트 정산 및 법인 통장 현금 입금 신청 청구</button>
             </div>
+
+            <!-- Job Card 2 -->
+            <div class="job-card bg-white p-6 rounded-2xl border border-slate-200 shadow-sm hover:shadow-md transition space-y-4" data-cat="cafe">
+                <div class="flex flex-col md:flex-row justify-between md:items-center gap-2 border-b border-slate-100 pb-3">
+                    <div>
+                        <span class="bg-amber-100 text-amber-800 text-xs font-black px-2.5 py-1 rounded-md">카페·음료</span>
+                        <h3 class="text-xl font-extrabold text-slate-900 mt-1">[성남카페] 저녁 시간대 음료 컵 세척 및 정리</h3>
+                        <p class="text-xs text-slate-500 mt-0.5"><i class="fa-solid fa-location-dot text-slate-400"></i> 경기도 성남시 수정구 신흥동</p>
+                    </div>
+                    <div class="text-left md:text-right">
+                        <span class="text-xs text-slate-500 block">3시간 일당</span>
+                        <span class="text-2xl font-black text-blue-600">36,000 원</span>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-2 text-xs bg-slate-50 p-3 rounded-xl">
+                    <div><span class="text-slate-400 block">근무일</span> <strong class="text-slate-800 font-bold">2026-07-26 (오늘)</strong></div>
+                    <div><span class="text-slate-400 block">근무시간</span> <strong class="text-slate-800 font-bold">18:00 ~ 21:00 (3시간)</strong></div>
+                    <div><span class="text-slate-400 block">우대 조건</span> <strong class="text-blue-700 font-bold">인근 거주자 우대</strong></div>
+                    <div><span class="text-slate-400 block">매칭 모집</span> <strong class="text-emerald-600 font-bold">1순위 즉시 지원 가능</strong></div>
+                </div>
+
+                <div class="flex flex-col sm:flex-row gap-2 pt-1">
+                    <button onclick="applyJob('[성남카페] 음료 세척', '36,000원')" class="flex-1 bg-blue-600 hover:bg-blue-700 text-white text-base font-black py-3 rounded-xl shadow transition">
+                        간편 지원하기
+                    </button>
+                    <a href="/jobs.html" class="px-5 py-3 border border-slate-300 text-slate-700 text-xs font-bold rounded-xl text-center hover:bg-slate-50 transition">
+                        상세보기
+                    </a>
+                </div>
+            </div>
+
+            <!-- Job Card 3 -->
+            <div class="job-card bg-white p-6 rounded-2xl border border-slate-200 shadow-sm hover:shadow-md transition space-y-4" data-cat="mart">
+                <div class="flex flex-col md:flex-row justify-between md:items-center gap-2 border-b border-slate-100 pb-3">
+                    <div>
+                        <span class="bg-emerald-100 text-emerald-800 text-xs font-black px-2.5 py-1 rounded-md">마트·운반</span>
+                        <h3 class="text-xl font-extrabold text-slate-900 mt-1">[한마음마트] 오전 입고 물품 진열 및 정리</h3>
+                        <p class="text-xs text-slate-500 mt-0.5"><i class="fa-solid fa-location-dot text-slate-400"></i> 경기도 성남시 중원구 상대원동</p>
+                    </div>
+                    <div class="text-left md:text-right">
+                        <span class="text-xs text-slate-500 block">3시간 일당</span>
+                        <span class="text-2xl font-black text-blue-600">35,000 원</span>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-2 text-xs bg-slate-50 p-3 rounded-xl">
+                    <div><span class="text-slate-400 block">근무일</span> <strong class="text-slate-800 font-bold">2026-07-27 (내일)</strong></div>
+                    <div><span class="text-slate-400 block">근무시간</span> <strong class="text-slate-800 font-bold">09:00 ~ 12:00 (3시간)</strong></div>
+                    <div><span class="text-slate-400 block">우대 조건</span> <strong class="text-blue-700 font-bold">체력 베테랑 우대</strong></div>
+                    <div><span class="text-slate-400 block">매칭 모집</span> <strong class="text-emerald-600 font-bold">1순위 지원 가능</strong></div>
+                </div>
+
+                <div class="flex flex-col sm:flex-row gap-2 pt-1">
+                    <button onclick="applyJob('[한마음마트] 물품 정리', '35,000원')" class="flex-1 bg-blue-600 hover:bg-blue-700 text-white text-base font-black py-3 rounded-xl shadow transition">
+                        간편 지원하기
+                    </button>
+                    <a href="/jobs.html" class="px-5 py-3 border border-slate-300 text-slate-700 text-xs font-bold rounded-xl text-center hover:bg-slate-50 transition">
+                        상세보기
+                    </a>
+                </div>
+            </div>
+
         </div>
 
-    </div>
-    <!-- [백엔드 시니어 관제 콘솔 실시간 제어 자바스크립트 엔진 전반부] -->
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-slate-900 text-slate-400 text-xs py-6 border-t border-slate-800 text-center">
+        <p><strong class="text-white">silverworks (실버웍스)</strong> | 대표: 유연성, 민 혁</p>
+        <p class="text-slate-500 text-[11px] mt-1">경기도 성남시 중원구 광명로 79, 4층 404호 (성남동, 상산빌딩)</p>
+    </footer>
+
     <script>
-        const mySeekerId = localStorage.getItem('sw_username');
-        const mySeekerRole = localStorage.getItem('sw_role');
-        let registeredPhoneAccountBackup = ""; 
-
-        document.addEventListener("DOMContentLoaded", function() {
-            if (!mySeekerId || mySeekerRole !== 'seeker') {
-                alert('보안 가드 경고: 시니어 회원 전용 마이페이지 관제실입니다. 메인 광장으로 회군합니다.');
-                location.href = '/';
-                return;
-            }
-            loadSeekerProfileCoreV2Spec();
-        });
-
-        // 시니어 전용 3대 메뉴 단순 세련 뷰 스위칭 탭 토글 함수
-        function handleSwitchSeekerTabChannel(tabIndex) {
-            for(let i = 0; i <= 2; i++) {
-                document.getElementById('seekerTabBtn' + i).classList.remove('active');
-                document.getElementById('seekerControlPanelSlot' + i).classList.remove('active');
-            }
-            document.getElementById('seekerTabBtn' + tabIndex).classList.add('active');
-            document.getElementById('seekerControlPanelSlot' + tabIndex).classList.add('active');
-            
-            if(tabIndex === 2) {
-                // 정산하기 탭 진입 시 실시간 포인트 잔액 및 가입 계좌 데이터 매핑 연동
-                loadSeekerWalletPointsAndAccountInfoSpec();
+        function applyJob(jobTitle, wage) {
+            const confirmMsg = `[지원 확인]\n\n공고: ${jobTitle}\n예상 일당: ${wage}\n\n김순희 어르신의 국민체력100 검증 프로필로 간편 지원을 진행하시겠습니까?`;
+            if (confirm(confirmMsg)) {
+                alert(`[지원 완료!]\n${jobTitle} 공고 지원이 성공적으로 완료되었습니다.\n사장님 확인 및 매칭 확정 시 알림 센터로 안내해 드립니다.`);
             }
         }
 
-        // 유저 원장 및 본사 수기 인서트 체력 등급, 성실 배지 실시간 교차 동기화 로드선
-        function loadSeekerProfileCoreV2Spec() {
-            fetch('/api/profile/me?username=' + encodeURIComponent(mySeekerId))
-                .then(res => res.json())
-                .then(data => {
-                    if(data.success && data.profile) {
-                        const p = data.profile;
-                        document.getElementById('sName').value = p.name || '';
-                        document.getElementById('sPhone').value = p.phone || '';
-                        document.getElementById('sEmergencyPhone').value = p.emergency_phone === '-' ? '' : p.emergency_phone;
-                        
-                        // 관리자실 수기 인서트 체력 검증 등급 동기화
-                        document.getElementById('fitGrade').innerText = p.fitness_grade || '미인증';
-                        document.getElementById('fitGrip').innerText = p.fitness_grip || '-';
-                        document.getElementById('fitFlex').innerText = p.fitness_flex || '-';
-                        document.getElementById('fitCardio').innerText = p.fitness_cardio || '-';
-                        
-                        registeredPhoneAccountBackup = p.phone || ''; 
-
-                        // [지시 요건 반영] 사장님이 근무 완료 승인을 내리는 즉시 3대 마스터 성실 배지 자동 마운트 활성화
-                        const badgeSlot = document.getElementById('seekerAutoBadgeContainerSlot');
-                        if(parseInt(p.points) > 0 || (p.fitness_grade && p.fitness_grade !== '미인증')) {
-                            badgeSlot.innerHTML = `
-                                <span class="master-auto-badge">⏱️ 시간 엄수 100%</span>
-                                <span class="master-auto-badge">👍 사장님 추천</span>
-                                <span class="master-auto-badge">💪 체력 베테랑</span>
-                            `;
-                        } else {
-                            badgeSlot.innerHTML = `<span style="font-size:12.5px; color:#8e8e93; font-weight:500;">첫 근무 일정을 완수 시 성실 배지가 자동으로 활성화 마운트됩니다.</span>`;
-                        }
-                    }
-                });
-        }
-
-        // 엔터 키 누름 감지 즉시 다음 문항 뷰 채널로 자연스럽게 화면 전환 분기 가동
-        function handleDetectQaEnterNextView(event, currentStep) {
-            if (event.key === 'Enter' || event.keyCode === 13) {
-                event.preventDefault();
-                handleVerifyNextQaViewChannel(currentStep);
-            }
-        }
-
-        // 가로 반경을 타이트하게 꽉 채우는 와이드형 게이지 바 액션 플루이드 팽창 연산 및 뷰 스위칭 제어 엔진
-        function handleVerifyNextQaViewChannel(currentStep) {
-            const inputVal = document.getElementById(`qa_input_${currentStep}`).value.trim();
-            if(!inputVal) { alert('안내 알림: 성실한 유선 상담을 위해 문항 답변 명세를 기입해 주십시오.'); return; }
-
-            document.getElementById(`qa_step_node_${currentStep}`).classList.remove('active');
-            
-            const nextStep = currentStep + 1;
-            document.getElementById(`qa_step_node_${nextStep}`).classList.add('active');
-
-            // 12단계 문항 중 3분할 콤팩트 압축 구조에 맞추어 게이지 팽창 연산 처리
-            const progressRate = (nextStep / 3) * 100;
-            document.getElementById('fluidQaProgressBarFillElement').style.width = `${progressRate}%`;
-        }
-        // 문진 질문지 최종 제출 및 본사 행정 심사대 사본 전송 포트 단행 함수
-        function handleSubmitFinalSeekerQaV2Form() {
-            const inputVal3 = document.getElementById('qa_input_3').value.trim();
-            if(!inputVal3) { alert('마지막 답변 명세를 기입해 주십시오.'); return; }
-
-            if(!confirm('온라인 문진 원장 전송 고지:\n\n기입하신 문진표 사본을 실버웍스 본사 행정 심사대로 전격 송출합니까?\n\n(제출 즉시 본부 상담 가이드 알림 메시지가 내 알림함으로 즉시 수신 적재됩니다)')) return;
-
-            const allAnswersCombined = document.getElementById('qa_input_1').value + " | " + document.getElementById('qa_input_2').value + " | " + inputVal3;
-
-            fetch('/api/senior/qa', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ username: mySeekerId, answers: allAnswersCombined })
-            }).then(res => res.json()).then(data => {
-                if(data.success) {
-                    alert('온라인 문진표 원장 최종 접수 완료!\n\n제출 사본을 확인하여 실버웍스 본부 전문 상담사가 가입 휴대폰 연락처로 유선 전화를 드릴 예정입니다.');
-                    location.reload();
+        function filterCategory(category) {
+            const cards = document.querySelectorAll('.job-card');
+            cards.forEach(card => {
+                if (category === 'all' || card.getAttribute('data-cat') === category) {
+                    card.style.display = 'block';
+                } else {
+                    card.style.display = 'none';
                 }
             });
-        }
 
-        // [지시 요건 반영] 정산하기 탭 진입 시 실시간 포인트 잔액 및 가입 당시의 보안 계좌 내역 자동 매핑 인서트 엔진
-        function loadSeekerWalletPointsAndAccountInfoSpec() {
-            fetch('/api/profile/me?username=' + encodeURIComponent(mySeekerId))
-                .then(res => res.json())
-                .then(data => {
-                    if(data.success && data.profile) {
-                        const p = data.profile;
-                        // 1. 보유 포인트 잔액 동적 갱신
-                        document.getElementById('myPointsDisplayVal').innerText = (parseInt(p.points) || 0).toLocaleString() + "원";
-                        
-                        // 2. 가입 정보 대조 후 수령 계좌번호 자동 매핑 채우기 (오타 방지 배제 가드)
-                        const accountInput = document.getElementById('wAccountNumber');
-                        if (p.emergency_phone && p.emergency_phone !== '-') {
-                            // 보안 원장에 적재된 번호를 기반으로 오타 없이 자동 매핑 인서트
-                            accountInput.value = p.phone.replace(/[^0-9]/g, '') + "01"; 
-                        } else {
-                            accountInput.value = "110" + p.phone.replace(/[^0-9]/g, '').slice(-6);
-                        }
-                    }
-                });
-        }
-
-        // 포인트 출금 신청 청구서 본부 전산실 발송 API 연동 유닛
-        function executeSubmitWithdrawalFormEngine() {
-            const bank = document.getElementById('wBankName').value.trim();
-            const account = document.getElementById('wAccountNumber').value.trim();
-            const amount = document.getElementById('wAmount').value.trim();
-
-            if(!bank || !account || !amount) { alert('정산 오류: 누락된 정산 은행, 계좌 정보, 신청 포인트 명세가 존재합니다.'); return; }
-
-            fetch('/api/profile/me?username=' + encodeURIComponent(mySeekerId))
-                .then(res => res.json())
-                .then(data => {
-                    if(data.success && data.profile) {
-                        const currentPoints = parseInt(data.profile.points) || 0;
-                        if(parseInt(amount) > currentPoints) {
-                            alert('정산 한도 초과: 보유하신 포인트 잔액을 초과하여 정산하기를 집행할 수 없습니다.');
-                            return;
-                        }
-
-                        if(!confirm(`포인트 환전 정산 청구 고지:\n\n신청하신 [${parseInt(amount).toLocaleString()}원]의 현금 환전 정산 요청서를 실버웍스 재무 회계 원장에 공식 접수합니까?\n\n(접수 즉시 보유 포인트가 선차감되며 본사 행정 심사 통과 후 기재하신 계좌 실물 통장으로 이체 처리됩니다)`)) return;
-
-                        fetch('/api/settle/withdraw-request', {
-                            method: 'POST',
-                            headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify({ seeker_id: mySeekerId, amount: parseInt(amount) })
-                        }).then(() => {
-                            alert('포인트 출금 정산 신청서 접수 대성공!\n\n본사 재무팀의 수동 확인 대조 후 통장으로 현금 실물 송금이 단행됩니다.');
-                            location.reload();
-                        });
-                    }
-                });
+            const btns = document.querySelectorAll('.cat-btn');
+            btns.forEach(btn => {
+                btn.classList.remove('bg-blue-600', 'text-white');
+                btn.classList.add('bg-slate-50', 'text-slate-700');
+            });
+            event.target.classList.remove('bg-slate-50', 'text-slate-700');
+            event.target.classList.add('bg-blue-600', 'text-white');
         }
     </script>
 </body>

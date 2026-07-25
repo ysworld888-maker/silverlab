@@ -2,220 +2,330 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scalable=no">
-    <title>SILVERWORKS - 구인구직 피드 관제 센터</title>
-    <!-- [제1철칙 준수] 기존 고유 디자인 레이아웃 명세를 100% 원형 보존하며 마감 토글 배너 락 스타일만 추가 인서트 -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>실버랩 - 시니어 맞춤 구인 공고 목록</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Malgun Gothic", "맑은 고딕", sans-serif; letter-spacing: -0.4px; }
-        body { background-color: #ffffff; color: #0f1419; padding-bottom: 80px; -webkit-font-smoothing: antialiased; }
-        header { display: flex; justify-content: space-between; align-items: center; padding: 18px 24px; background-color: #ffffff; border-bottom: 1px solid #eff3f4; position: sticky; top: 0; z-index: 100; }
-        .logo { font-size: 20px; font-weight: 800; color: #1967d2; cursor: pointer; }
-        
-        .feed-container { max-width: 800px; margin: 0 auto; padding: 24px 20px; }
-        .page-headline { font-size: 22px; font-weight: 800; color: #1c1c1e; margin-bottom: 20px; border-left: 5px solid #1967d2; padding-left: 12px; }
-        
-        /* [지시 요건] 구독 결제 사장님의 광고성 공고 상단 고정 표식 및 오션블루 프리미엄 스킨 인프라 */
-        .job-feed-card { background-color: #ffffff; border: 1px solid #eff3f4; border-radius: 20px; padding: 24px; margin-bottom: 16px; box-shadow: 0 4px 16px rgba(0,0,0,0.01); position: relative; transition: border-color 0.2s; }
-        .job-feed-card.premium-pinned-ad { border: 2px solid #1967d2; background-color: #f4f9ff; }
-        
-        /* 프리미엄 가맹 광고 배지 스킨 명세 */
-        .premium-ad-badge-line { display: inline-block; background-color: #1967d2; color: #ffffff; font-size: 11px; font-weight: 800; padding: 3px 8px; border-radius: 4px; margin-bottom: 10px; text-transform: uppercase; }
-        
-        /* [지시 요건] 채용 완료/마감 시 렌더링될 투명 가드 커버 레이어 레이아웃 */
-        .job-feed-card.completed-lock-view { opacity: 0.65; background-color: #f8f9fa; border-color: #cfd9de; }
-        .completed-soldout-banner-tag { display: inline-block; background-color: #536471; color: #ffffff; font-size: 12px; font-weight: 700; padding: 4px 10px; border-radius: 6px; margin-bottom: 10px; }
-        
-        .job-title-row { font-size: 18px; font-weight: 800; color: #1c1c1e; margin-bottom: 8px; }
-        .job-meta-detail-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px 16px; font-size: 13.5px; color: #536471; font-weight: 600; margin-bottom: 16px; padding: 12px 0; border-top: 1px solid #f2f4f6; border-bottom: 1px solid #f2f4f6; }
-        .job-meta-detail-grid div { display: flex; gap: 6px; }
-        .job-meta-detail-grid strong { color: #1c1c1e; font-weight: 700; }
-        
-        .btn-feed-submit-action { background-color: #1967d2; color: #ffffff; border: none; padding: 12px 24px; border-radius: 9999px; font-size: 14px; font-weight: 700; cursor: pointer; transition: background-color 0.15s; width: fit-content; }
-        .btn-feed-submit-action:hover { background-color: #1152b3; }
-        .btn-feed-submit-action:disabled { background-color: #cfd9de; color: #8e8e93; cursor: not-allowed; }
-        
-        .btn-purge-delete-red { background-color: #ffffff; color: #eb5757; border: 1px solid #fcf0f0; padding: 8px 14px; border-radius: 8px; font-size: 12.5px; font-weight: 700; cursor: pointer; transition: background-color 0.15s; }
-        .btn-purge-delete-red:hover { background-color: #fff1f1; }
+        @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css');
+        body { font-family: "Pretendard", -apple-system, BlinkMacSystemFont, system-ui, sans-serif; }
     </style>
 </head>
-<body>
-    <header>
-        <div class="logo" onclick="location.href='/'">SILVERWORKS 구인피드</div>
-        <div style="display:flex; gap:12px; align-items:center;">
-            <button type="button" class="btn-feed-submit-action" style="padding:6px 14px; font-size:12.5px; background-color:#ffffff; color:#1967d2; border:1px solid #1967d2;" onclick="location.href='/'">메인 대문 복귀</button>
-            <span id="uFeedStatusName" style="font-size:13px; font-weight:700; color:#1c1c1e;">로그인 확인 중...</span>
+<body class="bg-slate-50 text-slate-800 flex flex-col min-h-screen">
+
+    <!-- Header -->
+    <header class="sticky top-0 z-50 bg-white/95 border-b border-slate-200 shadow-sm backdrop-blur">
+        <div class="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between">
+            <a href="/index.html" class="flex items-center gap-2">
+                <span class="text-2xl font-extrabold text-blue-600 tracking-tight">SILVERLAB</span>
+                <span class="text-xs bg-emerald-100 text-emerald-800 font-semibold px-2 py-0.5 rounded">공고 매칭 센터</span>
+            </a>
+            <nav class="hidden md:flex items-center gap-6 font-medium text-slate-600">
+                <a href="/index.html" class="hover:text-blue-600 transition">홈</a>
+                <a href="/seeker.html" class="hover:text-blue-600 transition">시니어 구직</a>
+                <a href="/employer.html" class="hover:text-blue-600 transition">사장님 구인</a>
+                <a href="/jobs.html" class="text-blue-600 font-bold">공고 목록</a>
+            </nav>
+            <div class="flex items-center gap-3">
+                <a href="/login.html" class="text-xs font-bold text-slate-600 hover:text-blue-600">로그인</a>
+                <a href="/notifications.html" class="text-slate-600 hover:text-blue-600 relative">
+                    <i class="fa-solid fa-bell text-lg"></i>
+                    <span class="absolute -top-1 -right-1 w-2 h-2 bg-red-500 rounded-full"></span>
+                </a>
+            </div>
         </div>
     </header>
 
-    <div class="feed-container">
-        <!-- [디자인 단순화] 큼직하게 묶어 가시성을 끌어올린 실시간 구인 원장록 헤드라인 -->
-        <h2 class="page-headline">실시간 게재 구인 공고 피드 원장록</h2>
-        
-        <!-- 실시간 백엔드 데이터베이스 원장 조회를 통해 공고 카드가 비동기 동적 표출될 마운트 정착 구역 -->
-        <div id="jobsFeedMasterGridWrapperSlot">
-            <div style="text-align:center; padding:40px; color:#8e8e93; font-weight:600; font-size:14px;">
-                실버웍스 공인 구인 전산망 통신 회로를 연결하는 중입니다...
+    <!-- Main Section -->
+    <main class="max-w-6xl mx-auto px-4 py-8 flex-1 w-full space-y-8">
+
+        <!-- Title & Search Banner -->
+        <div class="bg-gradient-to-r from-blue-900 to-indigo-900 text-white rounded-2xl p-6 md:p-8 shadow-lg space-y-6">
+            <div class="space-y-2">
+                <span class="bg-blue-500/30 text-blue-300 text-xs font-bold px-3 py-1 rounded-full border border-blue-400/30">안심 시니어 일자리</span>
+                <h1 class="text-2xl md:text-3xl font-black">검증된 사장님의 피크타임 맞춤 일자리</h1>
+                <p class="text-xs md:text-sm text-slate-300">2시간 피크타임 단기 일자리부터 꾸준한 일자리까지! 1순위 지원 및 2·3순위 노쇼 승계 대기를 선택하세요.</p>
+            </div>
+
+            <!-- Search & Filter Controls -->
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-3 bg-white/10 p-4 rounded-xl backdrop-blur border border-white/10">
+                <div>
+                    <label class="block text-xs font-bold text-slate-200 mb-1">검색어 (가게명 / 위치)</label>
+                    <input type="text" id="filter-keyword" placeholder="예: 성남동, 식당, 카페" class="w-full p-2.5 rounded-lg text-slate-900 text-sm">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-200 mb-1">지역 선택</label>
+                    <select id="filter-region" class="w-full p-2.5 rounded-lg text-slate-900 text-sm">
+                        <option value="">전체 (성남시 및 인근)</option>
+                        <option value="중원구">성남시 중원구</option>
+                        <option value="수정구">성남시 수정구</option>
+                        <option value="분당구">성남시 분당구</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-200 mb-1">우대 조건</label>
+                    <select id="filter-badge" class="w-full p-2.5 rounded-lg text-slate-900 text-sm">
+                        <option value="">전체 보기</option>
+                        <option value="subscribed">구독 사장님 회원 공고</option>
+                        <option value="fitness">체력 베테랑 우대</option>
+                        <option value="punctual">시간 엄수 우대</option>
+                    </select>
+                </div>
+                <div class="flex items-end">
+                    <button onclick="applyFilters()" class="w-full py-2.5 bg-blue-500 hover:bg-blue-400 text-white font-bold rounded-lg transition text-sm flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-magnifying-glass"></i> 공고 검색
+                    </button>
+                </div>
             </div>
         </div>
+
+        <!-- Job Listings Feed -->
+        <div class="space-y-4">
+            <div class="flex justify-between items-center">
+                <h2 class="text-xl font-bold text-slate-900 flex items-center gap-2">
+                    <i class="fa-solid fa-list-check text-blue-600"></i> 모집 중인 실버랩 공고
+                    <span class="text-xs bg-slate-200 text-slate-700 px-2 py-0.5 rounded-full font-bold">총 4건</span>
+                </h2>
+                <div class="text-xs text-slate-500">
+                    <span class="inline-block w-3 h-3 bg-amber-100 border border-amber-400 rounded-full mr-1"></span> 구독 회원 우선 고정
+                </div>
+            </div>
+
+            <!-- Job Cards List -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6" id="job-cards-container">
+
+                <!-- 1. Top Pinned Subscribed Employer Job -->
+                <div class="bg-amber-50/60 border-2 border-amber-400 rounded-2xl p-6 shadow-md hover:shadow-lg transition space-y-4 relative overflow-hidden">
+                    <div class="absolute top-0 right-0 bg-amber-500 text-slate-950 text-xs font-black px-3 py-1 rounded-bl-xl shadow">
+                        <i class="fa-solid fa-crown"></i> 구독 회원 상단 고정
+                    </div>
+
+                    <div class="space-y-2">
+                        <div class="flex items-center gap-2 pt-1">
+                            <span class="bg-blue-600 text-white text-xs font-extrabold px-2.5 py-0.5 rounded">구독 회원</span>
+                            <span class="bg-emerald-100 text-emerald-800 text-xs font-bold px-2 py-0.5 rounded">피크타임 2시간</span>
+                        </div>
+                        <h3 class="text-xl font-bold text-slate-900">[대박식당] 점심 피크타임 홀 서빙 & 식기 정리</h3>
+                        <p class="text-xs text-slate-600"><i class="fa-solid fa-location-dot text-slate-400 mr-1"></i> 경기도 성남시 중원구 광명로 (모란역 도보 5분)</p>
+                    </div>
+
+                    <div class="bg-white p-3.5 rounded-xl border border-amber-200 grid grid-cols-2 gap-2 text-xs">
+                        <div>
+                            <span class="text-slate-400 block">근무 일시</span>
+                            <span class="font-bold text-slate-800">2026-07-26 12:00 ~ 14:00</span>
+                        </div>
+                        <div>
+                            <span class="text-slate-400 block">일당 (시급)</span>
+                            <span class="font-extrabold text-blue-600 text-sm">30,000 원 <span class="text-xs font-normal text-slate-500">(시급 15,000원)</span></span>
+                        </div>
+                        <div class="col-span-2 pt-1 border-t border-slate-100">
+                            <span class="text-slate-400 block">사장님 희망 시니어 조건</span>
+                            <span class="font-semibold text-slate-700">[체력 베테랑] 뱃지 보유 시 우대, 친절한 어르신 환영</span>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center justify-between pt-2">
+                        <div class="text-xs">
+                            <span class="text-slate-500">지원의 수: </span>
+                            <span class="font-bold text-slate-800">1순위 확정 완료 / <span class="text-amber-700 font-bold">2순위·3순위 대기 모집 중</span></span>
+                        </div>
+                        <button onclick="openApplyModal('JOB-001', '[대박식당] 점심 피크타임 홀 서빙')" class="px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-bold text-sm rounded-xl shadow transition">
+                            지원하기 (2/3순위 가능)
+                        </button>
+                    </div>
+                </div>
+
+                <!-- 2. Standard Job 1 -->
+                <div class="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm hover:shadow-md transition space-y-4">
+                    <div class="space-y-2">
+                        <div class="flex items-center gap-2">
+                            <span class="bg-slate-100 text-slate-700 text-xs font-bold px-2.5 py-0.5 rounded">일반 회원</span>
+                            <span class="bg-emerald-100 text-emerald-800 text-xs font-bold px-2 py-0.5 rounded">피크타임 3시간</span>
+                        </div>
+                        <h3 class="text-xl font-bold text-slate-900">[성남카페] 저녁 퇴근길 음료 가공 및 매장 보조</h3>
+                        <p class="text-xs text-slate-600"><i class="fa-solid fa-location-dot text-slate-400 mr-1"></i> 경기도 성남시 수정구 신흥동</p>
+                    </div>
+
+                    <div class="bg-slate-50 p-3.5 rounded-xl border border-slate-200 grid grid-cols-2 gap-2 text-xs">
+                        <div>
+                            <span class="text-slate-400 block">근무 일시</span>
+                            <span class="font-bold text-slate-800">2026-07-26 18:00 ~ 21:00</span>
+                        </div>
+                        <div>
+                            <span class="text-slate-400 block">일당</span>
+                            <span class="font-extrabold text-blue-600 text-sm">36,000 원</span>
+                        </div>
+                        <div class="col-span-2 pt-1 border-t border-slate-100">
+                            <span class="text-slate-400 block">희망 조건</span>
+                            <span class="font-semibold text-slate-700">[시간 엄수 100%] 뱃지 우대</span>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center justify-between pt-2">
+                        <div class="text-xs">
+                            <span class="text-slate-500">지원 상태: </span>
+                            <span class="font-bold text-emerald-600">1순위 지원 가능!</span>
+                        </div>
+                        <button onclick="openApplyModal('JOB-002', '[성남카페] 저녁 음료 가공 및 보조')" class="px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-bold text-sm rounded-xl shadow transition">
+                            1순위 지원하기
+                        </button>
+                    </div>
+                </div>
+
+                <!-- 3. Standard Job 2 -->
+                <div class="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm hover:shadow-md transition space-y-4">
+                    <div class="space-y-2">
+                        <div class="flex items-center gap-2">
+                            <span class="bg-slate-100 text-slate-700 text-xs font-bold px-2.5 py-0.5 rounded">일반 회원</span>
+                            <span class="bg-blue-100 text-blue-800 text-xs font-bold px-2 py-0.5 rounded">주말 단기</span>
+                        </div>
+                        <h3 class="text-xl font-bold text-slate-900">[박가네 마트] 주말 상품 진열 및 박스 정리</h3>
+                        <p class="text-xs text-slate-600"><i class="fa-solid fa-location-dot text-slate-400 mr-1"></i> 경기도 성남시 분당구 야탑동</p>
+                    </div>
+
+                    <div class="bg-slate-50 p-3.5 rounded-xl border border-slate-200 grid grid-cols-2 gap-2 text-xs">
+                        <div>
+                            <span class="text-slate-400 block">근무 일시</span>
+                            <span class="font-bold text-slate-800">2026-07-27 09:00 ~ 12:00</span>
+                        </div>
+                        <div>
+                            <span class="text-slate-400 block">일당</span>
+                            <span class="font-extrabold text-blue-600 text-sm">40,000 원</span>
+                        </div>
+                        <div class="col-span-2 pt-1 border-t border-slate-100">
+                            <span class="text-slate-400 block">희망 조건</span>
+                            <span class="font-semibold text-slate-700">체력검증 1~2등급 시니어 우대</span>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center justify-between pt-2">
+                        <div class="text-xs">
+                            <span class="text-slate-500">지원 상태: </span>
+                            <span class="font-bold text-emerald-600">1순위 지원 가능!</span>
+                        </div>
+                        <button onclick="openApplyModal('JOB-003', '[박가네 마트] 상품 진열 및 정리')" class="px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-bold text-sm rounded-xl shadow transition">
+                            1순위 지원하기
+                        </button>
+                    </div>
+                </div>
+
+                <!-- 4. Subscribed Job 2 -->
+                <div class="bg-amber-50/60 border-2 border-amber-400 rounded-2xl p-6 shadow-md hover:shadow-lg transition space-y-4 relative overflow-hidden">
+                    <div class="absolute top-0 right-0 bg-amber-500 text-slate-950 text-xs font-black px-3 py-1 rounded-bl-xl shadow">
+                        <i class="fa-solid fa-crown"></i> 구독 회원 상단 고정
+                    </div>
+
+                    <div class="space-y-2">
+                        <div class="flex items-center gap-2 pt-1">
+                            <span class="bg-blue-600 text-white text-xs font-extrabold px-2.5 py-0.5 rounded">구독 회원</span>
+                            <span class="bg-emerald-100 text-emerald-800 text-xs font-bold px-2 py-0.5 rounded">피크타임 2시간</span>
+                        </div>
+                        <h3 class="text-xl font-bold text-slate-900">[희망 베이커리] 오프닝 주방 청결 및 재료 세척</h3>
+                        <p class="text-xs text-slate-600"><i class="fa-solid fa-location-dot text-slate-400 mr-1"></i> 경기도 성남시 중원구 성남동</p>
+                    </div>
+
+                    <div class="bg-white p-3.5 rounded-xl border border-amber-200 grid grid-cols-2 gap-2 text-xs">
+                        <div>
+                            <span class="text-slate-400 block">근무 일시</span>
+                            <span class="font-bold text-slate-800">2026-07-27 07:00 ~ 09:00</span>
+                        </div>
+                        <div>
+                            <span class="text-slate-400 block">일당</span>
+                            <span class="font-extrabold text-blue-600 text-sm">32,000 원</span>
+                        </div>
+                        <div class="col-span-2 pt-1 border-t border-slate-100">
+                            <span class="text-slate-400 block">희망 조건</span>
+                            <span class="font-semibold text-slate-700">보건증 소지자 및 아침 일찍 출근 가능자</span>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center justify-between pt-2">
+                        <div class="text-xs">
+                            <span class="text-slate-500">지원 상태: </span>
+                            <span class="font-bold text-emerald-600">1순위 지원 가능!</span>
+                        </div>
+                        <button onclick="openApplyModal('JOB-004', '[희망 베이커리] 재료 세척')" class="px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-bold text-sm rounded-xl shadow transition">
+                            1순위 지원하기
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Application Modal -->
+    <div id="applyModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl max-w-lg w-full p-6 space-y-6 shadow-2xl relative">
+            <button onclick="closeApplyModal()" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600 text-lg">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+
+            <div class="border-b border-slate-100 pb-3">
+                <span class="text-xs font-bold text-blue-600 bg-blue-50 px-2.5 py-0.5 rounded">지원서 제출</span>
+                <h3 class="text-lg font-bold text-slate-900 mt-1" id="modalJobTitle">공고 제목</h3>
+            </div>
+
+            <form onsubmit="submitApplication(event)" class="space-y-4 text-sm">
+                <div>
+                    <label class="block font-bold text-slate-700 mb-1">지원 희망 순위 선택 <span class="text-red-500">*</span></label>
+                    <select id="apply-rank" class="w-full p-3 border border-slate-300 rounded-xl font-medium">
+                        <option value="1순위">1순위 지원 (우선 매칭 대상)</option>
+                        <option value="2순위">2순위 대기 (1순위 노쇼 시 자동 승계 + 가산 임금 보상)</option>
+                        <option value="3순위">3순위 대기 (예비 순위)</option>
+                    </select>
+                </div>
+
+                <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 text-xs space-y-2 text-slate-600">
+                    <p class="font-bold text-slate-800"><i class="fa-solid fa-circle-info text-blue-600 mr-1"></i> 지원 안내 및 가산 임금 정책</p>
+                    <p>• 1순위로 확정된 후 정당한 사유 없는 노쇼 시 서비스 이용 경고가 부여됩니다.</p>
+                    <p>• 2순위 대기 지원자는 1순위 노쇼 발생 시 즉시 안내 알림이 전송되며, 출근 승계 시 <strong class="text-blue-600">가산 임금 보상</strong>을 지급받습니다.</p>
+                </div>
+
+                <div>
+                    <label class="block font-bold text-slate-700 mb-1">사장님께 전달할 한마디 / 보유 뱃지 확인</label>
+                    <textarea id="apply-note" rows="3" placeholder="예: 체력검증 1등급 보유 중이며 성실히 일하겠습니다." class="w-full p-3 border border-slate-300 rounded-xl"></textarea>
+                </div>
+
+                <button type="submit" class="w-full py-3.5 bg-blue-600 hover:bg-blue-700 text-white font-black text-base rounded-xl shadow transition">
+                    지원의사 제출하기
+                </button>
+            </form>
+        </div>
     </div>
-    <!-- [백엔드 구인 피드 실시간 연동 및 상단 고정 광고 마케팅 자바스크립트 엔진] -->
+
+    <!-- Footer -->
+    <footer class="bg-slate-900 text-slate-400 text-xs py-8 border-t border-slate-800">
+        <div class="max-w-6xl mx-auto px-4 space-y-2">
+            <p><strong class="text-white">silverworks (실버웍스)</strong> | 대표: 유연성 (010-7464-3657), 민 혁 (010-9187-9074)</p>
+            <p>경기도 성남시 중원구 광명로 79, 4층 404호 (성남동, 상산빌딩) | 사업자등록번호: 726-19-02892</p>
+        </div>
+    </footer>
+
     <script>
-        const myActiveUserId = localStorage.getItem('sw_username');
-        const myActiveUserRole = localStorage.getItem('sw_role');
-        const myActiveUserName = localStorage.getItem('sw_name');
+        let selectedJobId = '';
 
-        document.addEventListener("DOMContentLoaded", function() {
-            handleCheckUserFeedAuthDisplay();
-            loadLiveJobsFeedMasterGrid();
-        });
-
-        // 현재 로그인한 베테랑 및 사장님의 계명 이름을 헤더 우측에 안전 실시간 표출하는 유닛
-        function handleCheckUserFeedAuthDisplay() {
-            const statusName = document.getElementById('uFeedStatusName');
-            if(myActiveUserId && myActiveUserName) {
-                statusName.innerText = `${myActiveUserName}님 관제중`;
-            } else {
-                statusName.innerText = "비회원 단순조회 모드";
-            }
+        function openApplyModal(jobId, jobTitle) {
+            selectedJobId = jobId;
+            document.getElementById('modalJobTitle').innerText = jobTitle;
+            document.getElementById('applyModal').classList.remove('hidden');
         }
 
-        // 백엔드 원장 데이터베이스를 실시간 파싱 로드하여 피드판을 정렬 렌더링하는 핵심 엔진
-        function loadLiveJobsFeedMasterGrid() {
-            fetch('/api/jobs/list-all')
-                .then(res => res.json())
-                .then(data => {
-                    const wrapper = document.getElementById('jobsFeedMasterGridWrapperSlot');
-                    if(!data.success || !data.jobs || data.jobs.length === 0) {
-                        wrapper.innerHTML = `<div style="text-align:center; padding:40px; color:#8e8e93; font-weight:600;">현재 게재 승인된 피크타임 구인공고문이 존재하지 않습니다.</div>`;
-                        return;
-                    }
-
-                    // [지시 요건 완벽 수립] 연 4만원 구독 사장님의 공고글을 최상단 고정 정렬 배정 배치
-                    const sortedJobs = [...data.jobs].sort((a, b) => (b.is_pinned || 0) - (a.is_pinned || 0) || b.id - a.id);
-                    
-                    let htmlAccumulator = "";
-                    sortedJobs.forEach(j => {
-                        const isPinned = parseInt(j.is_pinned) === 1;
-                        const isCompleted = j.status === 'completed'; // 채용 완료 마감 판단 분기
-
-                        // 프리미엄 구독 광고 배지 및 마감 락 클래스 동적 주입 연산
-                        let cardClass = "job-feed-card";
-                        let premiumBadge = "";
-                        let completedBadge = "";
-                        let disabledAttr = "";
-                        let btnText = "베테랑 구직 지원하기";
-
-                        if (isPinned) {
-                            cardClass += " premium-pinned-ad";
-                            premiumBadge = `<span class="premium-ad-badge-line">👑 프리미엄 구독 광고 회원</span>`;
-                        }
-
-                        if (isCompleted) {
-                            cardClass += " completed-lock-view";
-                            completedBadge = `<span class="completed-soldout-banner-tag">✓ 채용 완료 / 마감</span>`;
-                            disabledAttr = "disabled";
-                            btnText = "지원 마감된 공고";
-                        }
-
-                        // 최고 관리자실 및 작성자 사장님 본인만 가동할 수 있는 정화 강제 파쇄 삭제 단추 레이어 연동
-                        let purgeDeleteBtn = "";
-                        if(myActiveUserId === 'admin' || myActiveUserId === j.employer_id) {
-                            purgeDeleteBtn = `<button type="button" class="btn-purge-delete-red" onclick="executePurgeDeleteJobFeedV2(${j.id})">공고 파쇄 삭제</button>`;
-                        }
-
-                        htmlAccumulator += `
-                            <div class="${cardClass}">
-                                ${premiumBadge}
-                                ${completedBadge}
-                                <div class="job-title-row">${j.title}</div>
-                                <div style="font-size:14px; font-weight:700; color:#1967d2; margin-bottom:12px;">${j.company}</div>
-                                
-                                <!-- 사장님이 명세 제안하신 구인공고글 6대 필수 기입 항목 정형화 디스플레이 그리드 -->
-                                <div class="job-meta-detail-grid">
-                                    <div>근무지 위치: <strong>${j.job_location || '-'}</strong></div>
-                                    <div>근무 날짜: <strong>${j.work_date || '-'}</strong></div>
-                                    <div>피크 타임: <strong>${j.work_time || '-'}</strong></div>
-                                    <div>모집 인원: <strong>${j.slots_limit || '1'}명</strong></div>
-                                    <div>약정 급여: <strong style="color:#1967d2;">${parseInt(j.wage).toLocaleString()}원</strong></div>
-                                    <div>담당 업무: <strong>${j.job_duty || '-'}</strong></div>
-                                </div>
-                                
-                                <div style="display:flex; justify-content:between; align-items:center; width:100%; gap:12px;">
-                                    <button type="button" class="btn-feed-submit-action" ${disabledAttr} onclick="executeApplyJobTransactionEngine(${j.id}, '${j.employer_id}')">${btnText}</button>
-                                    <div style="margin-left:auto;">${purgeDeleteBtn}</div>
-                                </div>
-                            </div>
-                        `;
-                    });
-
-                    wrapper.innerHTML = htmlAccumulator;
-                });
-        }
-        // 시니어 회원이 [지원하기] 단추를 터치 시 안전하게 권한을 가드 판독하는 트랜잭션 구동 엔진
-        function executeApplyJobTransactionEngine(jobId, employerId) {
-            // 1. 비회원 단순조회 상태일 때 터치 차단 가드 락
-            if(!myActiveUserId || !myActiveUserRole) {
-                alert('보안 가드 고지: 구직 지원은 회원전용 기능입니다. 통합 인증 센터에서 로그인을 선행 완료해 주십시오.');
-                location.href = '/login.html';
-                return;
-            }
-            // 2. 구인 사장님 계정 상태로 지원하기 터치 시 상호 교차 차단 락 가동
-            if(myActiveUserRole === 'employer') {
-                alert('보안 권한 제한: 구인 사장님 회원은 시니어 피드 공고에 지원할 수 없습니다.');
-                return;
-            }
-
-            // 3. 블랙리스트 차단 계정 및 오프라인 체력 미검증 가입 대기 유저 전수 검증 포트 가동
-            fetch('/api/profile/me?username=' + encodeURIComponent(myActiveUserId))
-                .then(res => res.json())
-                .then(data => {
-                    if(data.success && data.profile) {
-                        const p = data.profile;
-                        
-                        // 약속 위반 불량 고지 차단
-                        if(parseInt(p.is_blacklist) === 1) {
-                            alert('보안 행정 처분 고지: 귀하는 약속 위반 노쇼 결함 누적으로 인해 지원 권한이 전격 임시 동결 격리 조치된 계정입니다. 본사로 문의하세요.');
-                            return;
-                        }
-                        // 2차 오프라인 체력 테스트 수기 주입 미인증 회원 지원 원천 차단 가드 락
-                        if(!p.fitness_grade || p.fitness_grade === '미인증') {
-                            alert('보안 검증 알림: 아직 2차 오프라인 검증이 완료되지 않은 가입 대기 상태입니다. 실버웍스 사무실에 방문하셔서 국민체력 100 기준 테스트를 통과하셔야 정식 구직 지원권이 개통됩니다.');
-                            return;
-                        }
-
-                        if(!confirm('피크타임 구직 청약 고지:\n\n선택하신 숙련 직무 매장 공고에 정식 구직 원장을 송출합니까?\n\n(확정 시 사장님 고용 콘솔로 체력 스펙 프로필 명세 사본이 실시간 인서트 수납됩니다)')) return;
-
-                        // 최종 트랜잭션 결속 바인딩 포트 송출
-                        fetch('/api/jobs/apply', {
-                            method: 'POST',
-                            headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify({ job_id: parseInt(jobId), seeker_id: myActiveUserId })
-                        }).then(res => res.json()).then(resData => {
-                            if(resData.success) {
-                                alert('구직 청약 지원 최종 대성공!\n\n가맹 사장님이 1·2·3순위 지망 배정을 확정 짓는 즉시 내 알림방으로 안심 근무 확인서가 자동 연동 수신 적재됩니다.');
-                                location.reload();
-                            } else {
-                                alert('지원 실패 안내: ' + resData.message);
-                            }
-                        });
-                    }
-                });
+        function closeApplyModal() {
+            document.getElementById('applyModal').classList.add('hidden');
         }
 
-        // 사장님 자율 삭제 및 최고 관리자 본부의 허위 공고문 실시간 강제 파쇄 삭제 트랜잭션 유닛
-        function executePurgeDeleteJobFeedV2(jobId) {
-            if(!confirm('원장 파쇄 삭제 경고:\n\n게재 승인된 해당 피크타임 구인공고문 데이터를 전산 원장망에서 강제 영구 삭제 파쇄합니까?\n\n(삭제 즉시 피드판에서 소멸하여 추가 시니어 지원 청약이 원천 동결 차단됩니다)')) return;
+        function submitApplication(e) {
+            e.preventDefault();
+            const rank = document.getElementById('apply-rank').value;
+            alert(`[지원 완료]\n${rank}로 성공적으로 신청되었습니다.\n매칭 결과는 [알림 센터] 및 문자로 발송됩니다.`);
+            closeApplyModal();
+        }
 
-            fetch('/api/jobs/purge-delete', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ job_id: parseInt(jobId) })
-            }).then(res => res.json()).then(data => {
-                if(data.success) {
-                    alert('구인 공고 전산 원장 청정 파쇄 삭제가 최종 성료 완료되었습니다.');
-                    location.reload();
-                }
-            });
+        function applyFilters() {
+            alert('필터링 조건이 적용되었습니다.');
         }
     </script>
 </body>

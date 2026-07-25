@@ -2,522 +2,404 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scalable=no">
-    <title>SILVERWORKS 사장님실 - 마이페이지 관제 콘솔</title>
-    <!-- [제1철칙 준수] 기존 사장님실 고유 디자인 레이아웃 명세를 100% 원형 보존하며 타이머 및 조작계 스타일만 정밀 인서트 -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>실버랩 - 사장님 구인 & 매칭 센터</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Malgun Gothic", "맑은 고딕", sans-serif; letter-spacing: -0.4px; }
-        body { background-color: #ffffff; color: #0f1419; padding-bottom: 80px; -webkit-font-smoothing: antialiased; }
-        header { display: flex; justify-content: space-between; align-items: center; padding: 18px 24px; background-color: #ffffff; border-bottom: 1px solid #eff3f4; position: sticky; top: 0; z-index: 100; }
-        .logo { font-size: 20px; font-weight: 800; color: #1967d2; cursor: pointer; }
-        
-        .main-container { max-width: 860px; margin: 0 auto; padding: 0 20px; }
-        
-        /* 기존 고유 상단 탭 그리드 메뉴 */
-        .employer-tab-grid-menu { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin: 24px 0 16px 0; }
-        .employer-tab-btn { background-color: #f7f9fa; color: #536471; border: 1px solid #eff3f4; padding: 16px; border-radius: 14px; cursor: pointer; font-size: 14px; font-weight: 700; text-align: center; transition: all 0.15s; }
-        .employer-tab-btn:hover { background-color: #f0f3f4; }
-        .employer-tab-btn.active { background-color: #f4f9ff; color: #1967d2; border-color: #1967d2; box-shadow: 0 4px 12px rgba(25,103,210,0.06); }
-        
-        /* 탭 전용 스위칭 슬롯 패널 */
-        .employer-control-panel-slot { display: none; }
-        .employer-control-panel-slot.active { display: block; }
-        
-        .card { background-color: #ffffff; border-radius: 20px; border: 1px solid #eff3f4; padding: 28px; margin-top: 12px; box-shadow: 0 4px 16px rgba(0,0,0,0.02); position: relative; }
-        h3 { font-size: 16px; font-weight: 800; color: #1c1c1e; margin-bottom: 20px; border-left: 4px solid #1967d2; padding-left: 12px; display: flex; justify-content: space-between; align-items: center; }
-        
-        .form-group { margin-bottom: 18px; }
-        .form-label { display: block; font-size: 13.5px; font-weight: 700; color: #536471; margin-bottom: 8px; }
-        .form-input { width: 100%; padding: 13px; border-radius: 12px; border: 1px solid #cfd9de; font-size: 14.5px; font-weight: 600; outline: none; }
-        .form-input:focus { border-color: #1967d2; background-color: #f4f9ff; }
-        
-        /* 계산기 전용 그리드 레이아웃 */
-        .calculator-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; background-color: #f7f9fa; padding: 20px; border-radius: 16px; margin-top: 12px; }
-        .calc-result-box { background-color: #ffffff; padding: 16px; border-radius: 12px; border: 1px solid #eff3f4; text-align: center; }
-        .calc-result-value { font-size: 20px; font-weight: 800; color: #1967d2; margin-top: 6px; }
-        
-        /* 지원자 관리 내부 인라인 가벨 선택 콤보박스 */
-        .rank-select-combo { padding: 8px 12px; border-radius: 8px; border: 1px solid #cfd9de; font-size: 13px; font-weight: 600; outline: none; color: #1c1c1e; background-color: #ffffff; }
-        .rank-select-combo:focus { border-color: #1967d2; }
-        
-        /* [지시 요건] 근무 마감 종료 시간 카운트다운 타이머 스킨 명세 */
-        .timer-countdown-display { font-size: 13px; font-weight: 700; color: #eb5757; background-color: #fff1f1; padding: 4px 10px; border-radius: 6px; border: 1px solid #fcdcdc; }
-        .work-complete-approved-badge { font-size: 13px; font-weight: 700; color: #27ae60; background-color: #f4fbf7; padding: 4px 10px; border-radius: 6px; border: 1px solid #d4e7fc; }
-        
-        .btn-blue-action { width: 100%; background-color: #1967d2; color: #ffffff; border: none; padding: 15px; border-radius: 9999px; font-size: 15px; font-weight: 700; cursor: pointer; text-align: center; box-shadow: 0 4px 14px rgba(25,103,210,0.12); transition: background-color 0.15s; }
-        .btn-blue-action:hover { background-color: #1152b3; }
-        .btn-action-outline-red { background-color: #ffffff; color: #eb5757; border: 1px solid #fcdcdc; padding: 8px 16px; border-radius: 8px; font-size: 13px; font-weight: 700; cursor: pointer; transition: background-color 0.15s; }
-        .btn-action-outline-red:hover { background-color: #fff1f1; }
+        @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css');
+        body { font-family: "Pretendard", -apple-system, BlinkMacSystemFont, system-ui, sans-serif; }
     </style>
 </head>
-<body>
-    <header>
-        <div class="logo" onclick="location.href='/'">SILVERWORKS 사장님실</div>
-        <button type="button" class="btn-blue-action" style="width:auto; padding:8px 16px; font-size:13px; margin:0;" onclick="location.href='/'">메인 광장 나가기</button>
+<body class="bg-slate-50 text-slate-800 flex flex-col min-h-screen">
+
+    <!-- Header -->
+    <header class="sticky top-0 z-50 bg-white/95 border-b border-slate-200 shadow-sm backdrop-blur">
+        <div class="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between">
+            <a href="/index.html" class="flex items-center gap-2">
+                <span class="text-2xl font-extrabold text-blue-600 tracking-tight">SILVERLAB</span>
+                <span class="text-xs bg-blue-100 text-blue-700 font-semibold px-2 py-0.5 rounded">사장님 센터</span>
+            </a>
+            <nav class="hidden md:flex items-center gap-6 font-medium text-slate-600">
+                <a href="/index.html" class="hover:text-blue-600 transition">홈</a>
+                <a href="/seeker.html" class="hover:text-blue-600 transition">시니어 구직</a>
+                <a href="/employer.html" class="text-blue-600 font-bold">사장님 구인</a>
+                <a href="/jobs.html" class="hover:text-blue-600 transition">공고 목록</a>
+            </nav>
+            <div class="flex items-center gap-3">
+                <span id="userStatus" class="text-xs font-semibold bg-emerald-100 text-emerald-800 px-2.5 py-1 rounded-full">사장님 회원 로그인됨</span>
+            </div>
+        </div>
     </header>
-    
-    <div class="main-container">
-        
-        <!-- [디자인 원형 100% 보전] 나침반 역할을 수행하는 3대 종합 사장님 제어 단추 격자 탭 -->
-        <div class="employer-tab-grid-menu">
-            <button type="button" class="employer-tab-btn active" id="empTabBtn0" onclick="handleSwitchEmployerTabChannel(0)">0. 가맹 매장 신원 프로필</button>
-            <button type="button" class="employer-tab-btn" id="empTabBtn1" onclick="handleSwitchEmployerTabChannel(1)">1. 피크타임 구인공고 작성</button>
-            <button type="button" class="employer-tab-btn" id="empTabBtn2" onclick="handleSwitchEmployerTabChannel(2)">2. 지원 현황 및 정산 통제</button>
-        </div>
 
-        <!-- 탭 채널 0번: 가맹 매장 신원 프로필 & 인건비 절감 계산기 엔진 구역 -->
-        <div class="employer-control-panel-slot active" id="employerPanelSlot0">
-            <div class="card" style="border: 2px solid #1967d2;">
-                <h3>📋 실버웍스 공식 가맹 사장님 종합 신원 프로필 원장</h3>
-                <div class="form-group"><label class="form-label">구인처 대표명</label><input type="text" id="eName" class="form-input" readonly></div>
-                <div class="form-group"><label class="form-label">상호 연락처</label><input type="text" id="ePhone" class="form-input" readonly></div>
-                
-                <!-- [지시 요건] 사장님 회원 가입 시 필수로 각인 수납된 사업자등록번호 명세 조회부 -->
-                <div class="form-group"><label class="form-label">가맹 사업자등록번호 명세</label><input type="text" id="eBusinessNumber" class="form-input" readonly style="background-color:#f8f9fa; border:1px dashed #cfd9de;"></div>
-                <div class="form-group"><label class="form-label">현재 구독 상태 등급</label><input type="text" id="eSubBadgeStatusText" class="form-input" readonly style="color:#1967d2; font-weight:800;"></div>
+    <!-- Main Content -->
+    <main class="max-w-5xl mx-auto px-4 py-10 space-y-16 flex-1 w-full">
+
+        <!-- 1. 사장님 설득 섹션 (기획서 스크린샷 5, 6 문구 100% 반영) -->
+        <section class="bg-white rounded-2xl p-8 md:p-10 border border-slate-200 shadow-sm space-y-8">
+            <div class="space-y-4 border-b border-slate-100 pb-6">
+                <span class="text-xs font-bold text-blue-600 bg-blue-50 px-3 py-1 rounded-full">사장님 페이지</span>
+                <h1 class="text-2xl md:text-3xl font-black text-slate-900 leading-snug">
+                    "일을 잘 못할 것 같다. 일 하다가 다칠 확률이 높다."<br>
+                    "일 하면서 사장인 나의 지시를 잘 따르지 않을 것 같다."
+                </h1>
+                <p class="text-slate-600 leading-relaxed text-base">
+                    시니어 고용에 대한 사람들의 <strong class="text-slate-900">일반적인 인식</strong>입니다. 틀린 이야기는 아닙니다.<br>
+                    '알바'라는 형태의 일자리에 종사하는 대다수가 젊은 세대인걸 생각하면, 시니어층은 이들 보다는 부족한것이 사실입니다.<br>
+                    <strong class="text-blue-600">그러나,</strong>
+                </p>
             </div>
 
-            <!-- [오리지널 디자인 사수] 인건비 절감 모의 계산기 인터페이스 컴포넌트 -->
-            <div class="card" style="margin-top:16px;">
-                <h3>🧮 초단기 피크타임 도입에 따른 주휴수당 절감 산식 계산기</h3>
-                <div class="form-group">
-                    <label class="form-label">현재 고용 중인 주간 파트타임 근로자 수 (명)</label>
-                    <input type="number" id="calcWorkers" class="form-input" value="3" oninput="executeCalculateLaborWageSavingsSpec()">
+            <!-- 3가지 현실적인 이유 -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div class="bg-slate-50 p-5 rounded-xl border border-slate-200">
+                    <span class="text-red-500 font-black text-lg block mb-1">1.</span>
+                    <p class="font-bold text-slate-800">점점 오르는 최저임금</p>
+                    <p class="text-xs text-slate-500 mt-1">[ 2026년 10,320원 $\rightarrow$ 2027년 10,900원 (예상) ]</p>
                 </div>
-                <div class="calculator-grid">
-                    <div class="calc-result-box">
-                        <div class="form-label" style="margin-bottom:0;">기존 예상 주휴수당</div>
-                        <div class="calc-result-value" id="calcBeforeValue" style="color:#eb5757;">0원</div>
+                <div class="bg-slate-50 p-5 rounded-xl border border-slate-200">
+                    <span class="text-red-500 font-black text-lg block mb-1">2.</span>
+                    <p class="font-bold text-slate-800">당연히 오르는 주휴수당</p>
+                    <p class="text-xs text-slate-500 mt-1">고정비 압박 누적</p>
+                </div>
+                <div class="bg-slate-50 p-5 rounded-xl border border-slate-200">
+                    <span class="text-red-500 font-black text-lg block mb-1">3.</span>
+                    <p class="font-bold text-slate-800">MZ 세대 알바생의 리스크</p>
+                    <p class="text-xs text-slate-500 mt-1">짧은 근로기간 및 무단결근</p>
+                </div>
+            </div>
+
+            <p class="text-center font-bold text-slate-700 text-lg">
+                잠시, 일반적인 인식을 내려놓고, <span class="text-blue-600 font-black">실버랩의 이야기</span>를 들어보시죠.
+            </p>
+
+            <!-- 4단계 검증 시스템 표 -->
+            <div class="space-y-4">
+                <h3 class="text-xl font-bold text-slate-900 flex items-center gap-2">
+                    <i class="fa-solid fa-shield-halved text-blue-600"></i> 1. 검증 시스템
+                </h3>
+                <p class="text-sm text-slate-600">실버랩은 시니어 고용 리스크를 이해하고 상쇄하기 위한 다중 검증 시스템을 도입하였습니다.</p>
+                
+                <div class="overflow-x-auto border border-slate-300 rounded-xl">
+                    <table class="w-full text-sm text-left">
+                        <thead class="bg-slate-100 text-slate-700 font-bold border-b border-slate-300">
+                            <tr>
+                                <th class="p-3.5 border-r border-slate-300 w-28 text-center bg-slate-200">단계</th>
+                                <th class="p-3.5">검증 내용</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-200">
+                            <tr>
+                                <td class="p-3.5 font-extrabold text-blue-600 text-center border-r border-slate-200 bg-slate-50">Step 1</td>
+                                <td class="p-3.5 font-medium">실버랩 자체제작 질문지를 통해, 구직자분의 건강상태 및 희망업종을 확인.</td>
+                            </tr>
+                            <tr>
+                                <td class="p-3.5 font-extrabold text-blue-600 text-center border-r border-slate-200 bg-slate-50">Step 2</td>
+                                <td class="p-3.5 font-medium">질문지 답변 내용을 통한 전화상담.</td>
+                            </tr>
+                            <tr>
+                                <td class="p-3.5 font-extrabold text-blue-600 text-center border-r border-slate-200 bg-slate-50">Step 3</td>
+                                <td class="p-3.5 font-medium">오프라인 면접 및 체력테스트 (국민체력100 65세 이상 기준 검증).</td>
+                            </tr>
+                            <tr>
+                                <td class="p-3.5 font-extrabold text-blue-600 text-center border-r border-slate-200 bg-slate-50">Step 4</td>
+                                <td class="p-3.5 font-medium">합격시, 보건증 발급 안내 및 간단한 교육 진행.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- 피크타임 인력 해결 -->
+            <div class="bg-blue-50/70 p-6 rounded-xl border border-blue-200 space-y-3">
+                <h3 class="text-xl font-bold text-blue-900">2. 놓칠 수 없는 피크타임! 손님을 더 많이 받아보세요!</h3>
+                <p class="text-slate-700 leading-relaxed text-sm md:text-base">
+                    피크타임은 바쁩니다. 점심시간 그리고 저녁시간입니다. <strong class="text-blue-700">2시간씩 하루에 단 두 번.</strong><br>
+                    짧은 시간에 대다수의 매출이 이루어집니다. 따라서, 2시간 정도의 시간 안에 많은 손님을 잡아야 합니다.<br>
+                    실버랩은 <strong class="text-blue-700">2시간 정도 일하고 싶어하시는 베테랑 인력</strong>들을 매칭시켜 드립니다. 인건비도 줄이고 매출도 높여보세요!
+                </p>
+            </div>
+
+            <!-- 주 1회 전화 관리 & 자연스러운 홍보 -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 pt-2">
+                <div class="p-5 border border-slate-200 rounded-xl bg-slate-50 space-y-2">
+                    <h4 class="font-bold text-slate-900 text-lg">3. 끝까지 책임을 다하는 실버랩</h4>
+                    <p class="text-xs text-slate-600 leading-relaxed">
+                        고용하신 이후, 사장님과 고용하신 직원에게 <strong class="text-slate-900">주에 1번 전화를 드릴 예정</strong>입니다. 나이가 있어서 직접 지적하기 어렵다면 저희에게 말씀해 주세요. 중간에서 의견을 전달해 드립니다.
+                    </p>
+                </div>
+                <div class="p-5 border border-slate-200 rounded-xl bg-slate-50 space-y-2">
+                    <h4 class="font-bold text-slate-900 text-lg">4. 고용 시 자연스럽게 이루어지는 가게 홍보!</h4>
+                    <p class="text-xs text-slate-600 leading-relaxed">
+                        시니어분들은 입소문을 통해서, 지인분을 통해서 가게를 찾아갑니다. 입소문 만큼 강하고, 빠른 홍보수단은 없습니다.
+                    </p>
+                </div>
+            </div>
+
+            <div class="text-center pt-6 border-t border-slate-200 space-y-3">
+                <p class="text-2xl font-black text-slate-900">변화에 도전할 준비가 되셨나요?</p>
+                <a href="#inquiryFormSection" class="inline-block px-10 py-4 bg-blue-600 hover:bg-blue-700 text-white font-black text-lg rounded-xl shadow-lg transition">
+                    (상담하기 버튼)
+                </a>
+            </div>
+        </section>
+
+        <!-- 2. 사전 문의하기 폼 (로그인/회원가입 없이 문의 가능) -->
+        <section id="inquiryFormSection" class="bg-gradient-to-br from-slate-900 to-slate-800 text-white rounded-2xl p-8 shadow-xl space-y-6">
+            <div class="border-b border-slate-700 pb-4">
+                <h2 class="text-2xl font-bold text-blue-400">사장님 맞춤 상담 신청 (로그인 없이 가능)</h2>
+                <p class="text-xs text-slate-300 mt-1">성함과 전화번호를 남겨주시면 실버랩 매칭 매니저가 직접 전화로 상세히 안내해 드립니다.</p>
+            </div>
+            <form onsubmit="handleInquirySubmit(event)" class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div>
+                    <label class="block text-xs font-bold text-slate-300 mb-1">사장님 성함 <span class="text-red-400">*</span></label>
+                    <input type="text" id="inquiry-name" placeholder="홍길동" required class="w-full text-slate-900 p-3 rounded-lg border-0 text-sm">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-300 mb-1">가게 명 <span class="text-red-400">*</span></label>
+                    <input type="text" id="inquiry-store" placeholder="대박 식당" required class="w-full text-slate-900 p-3 rounded-lg border-0 text-sm">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-300 mb-1">전화번호 <span class="text-red-400">*</span></label>
+                    <input type="tel" id="inquiry-phone" placeholder="010-1234-5678" required class="w-full text-slate-900 p-3 rounded-lg border-0 text-sm">
+                </div>
+                <div class="md:col-span-3 pt-2">
+                    <button type="submit" class="w-full py-4 bg-blue-600 hover:bg-blue-500 font-bold text-white rounded-xl shadow transition text-base">
+                        문의하기 (상담 정보 수집 동의)
+                    </button>
+                </div>
+            </form>
+        </section>
+
+        <!-- 3. 인건비 절감 계산기 -->
+        <section class="bg-white rounded-2xl p-8 border border-slate-200 shadow-sm space-y-6">
+            <div class="border-b border-slate-100 pb-4">
+                <h2 class="text-xl font-bold text-slate-900 flex items-center gap-2">
+                    <i class="fa-solid fa-calculator text-blue-600"></i> 피크타임 인건비 절감 계산기
+                </h2>
+                <p class="text-xs text-slate-500">일반 4시간 알바 채용 대비 실버랩 2시간 베테랑 매칭 시 절감되는 월 인건비를 계산해보세요.</p>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 items-center">
+                <div>
+                    <label class="block text-xs font-bold text-slate-600 mb-1">시급 (원)</label>
+                    <input type="number" id="calc-wage" value="10320" oninput="calculateSavings()" class="w-full p-2.5 border rounded-lg text-sm border-slate-300">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-600 mb-1">주당 근무 일수</label>
+                    <select id="calc-days" onchange="calculateSavings()" class="w-full p-2.5 border rounded-lg text-sm border-slate-300">
+                        <option value="5">주 5일</option>
+                        <option value="6" selected>주 6일</option>
+                        <option value="7">주 7일</option>
+                    </select>
+                </div>
+                <div class="bg-blue-50 p-4 rounded-xl border border-blue-200 text-center">
+                    <span class="text-xs font-bold text-blue-700 block">예상 월 인건비 절감액</span>
+                    <span class="text-2xl font-black text-blue-600" id="calc-result">약 536,640 원 절감</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- 4. 구독 모델 안내 (연 4만원 / 수수료 5% + 상단 고정 뱃지) -->
+        <section class="bg-amber-50 border border-amber-300 rounded-2xl p-6 flex flex-col md:flex-row justify-between items-center gap-6">
+            <div class="space-y-1">
+                <div class="flex items-center gap-2">
+                    <span class="bg-amber-500 text-white font-extrabold text-xs px-2.5 py-0.5 rounded-full">구독 혜택</span>
+                    <h3 class="font-extrabold text-amber-950 text-lg">1년에 4만원 결제 시 플랫폼 수수료 5%로 할인!</h3>
+                </div>
+                <p class="text-xs text-amber-900">
+                    기본 수수료 10% $\rightarrow$ <strong class="text-red-600">5%로 감면</strong> + 등록 공고 1년간 상단 고정 및 <span class="bg-blue-100 text-blue-800 px-1.5 py-0.5 rounded font-bold text-xs">[구독 결제 회원]</span> 뱃지 부여.
+                </p>
+            </div>
+            <button onclick="subscribeMember()" class="w-full md:w-auto px-6 py-3 bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold rounded-xl shadow transition whitespace-nowrap text-sm">
+                1년 구독 신청하기 (4만원)
+            </button>
+        </section>
+
+        <!-- 5. 구인 공고 작성 & 관리 센터 (로그인 사장님 전용) -->
+        <section class="bg-white rounded-2xl p-8 border border-slate-200 shadow-sm space-y-8">
+            <div class="border-b border-slate-100 pb-4 flex justify-between items-center">
+                <h2 class="text-xl font-bold text-slate-900 flex items-center gap-2">
+                    <i class="fa-solid fa-pen-to-square text-blue-600"></i> 사장님 구인 공고 등록 및 우대순위 지정
+                </h2>
+            </div>
+
+            <!-- 공고 등록 폼 -->
+            <form onsubmit="postJob(event)" class="grid grid-cols-1 md:grid-cols-2 gap-4 bg-slate-50 p-6 rounded-xl border border-slate-200">
+                <div class="md:col-span-2">
+                    <label class="block text-xs font-bold text-slate-700 mb-1">공고 제목 <span class="text-red-500">*</span></label>
+                    <input type="text" id="job-title" placeholder="예: [피크타임] 점심 홀 서빙 베테랑 모십니다" required class="w-full p-2.5 border border-slate-300 rounded-lg text-sm">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1">가게 이름 / 위치 <span class="text-red-500">*</span></label>
+                    <input type="text" id="job-location" placeholder="성남시 중원구 대박식당" required class="w-full p-2.5 border border-slate-300 rounded-lg text-sm">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1">근무 날짜 및 종료 시간 (타이머 기준) <span class="text-red-500">*</span></label>
+                    <input type="datetime-local" id="job-endtime" required class="w-full p-2.5 border border-slate-300 rounded-lg text-sm">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1">일당 (원) <span class="text-red-500">*</span></label>
+                    <input type="number" id="job-dailypay" placeholder="100000" required class="w-full p-2.5 border border-slate-300 rounded-lg text-sm">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1">시급 (원)</label>
+                    <input type="number" id="job-hourlypay" placeholder="12000" class="w-full p-2.5 border border-slate-300 rounded-lg text-sm">
+                </div>
+                <div class="md:col-span-2">
+                    <label class="block text-xs font-bold text-slate-700 mb-1">주요 담당 업무 <span class="text-red-500">*</span></label>
+                    <textarea id="job-desc" rows="2" placeholder="홀 서빙 및 테이블 정리" required class="w-full p-2.5 border border-slate-300 rounded-lg text-sm"></textarea>
+                </div>
+                <div class="md:col-span-2">
+                    <button type="submit" class="w-full py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-lg shadow transition">
+                        공고 등록하기 (플랫폼 이용료 10% 자동 계산)
+                    </button>
+                </div>
+            </form>
+
+            <!-- 등록된 공고 및 지원자 지원 현황 / 노쇼 승계 관리 -->
+            <div class="space-y-4 pt-4 border-t border-slate-200">
+                <h3 class="font-bold text-lg text-slate-900">내 공고 목록 및 지원자 1·2·3순위 매칭 관리</h3>
+
+                <!-- 공고 카드 예시 -->
+                <div class="border border-slate-200 rounded-xl p-6 bg-white space-y-6 shadow-sm">
+                    <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-2 border-b border-slate-100 pb-4">
+                        <div>
+                            <div class="flex items-center gap-2">
+                                <span class="bg-blue-100 text-blue-700 font-bold text-xs px-2 py-0.5 rounded">구독 회원 공고</span>
+                                <h4 class="font-bold text-lg text-slate-900">[점심 피크타임] 식당 홀 서빙 및 정리</h4>
+                            </div>
+                            <p class="text-xs text-slate-500 mt-1">근무 종료: 2026-07-26 18:00 | 일당: 100,000원 (수수료 포함 최종 청구: 110,000원)</p>
+                        </div>
+                        <div id="completion-timer-box">
+                            <!-- 종료시간 도달 시 활성화되는 버튼 -->
+                            <button onclick="approveWorkCompletion()" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-lg shadow transition flex items-center gap-1">
+                                <i class="fa-solid fa-circle-check"></i> [근무 완료 승인] (타이머 도달)
+                            </button>
+                        </div>
                     </div>
-                    <div class="calc-result-box" style="background-color:#f4f9ff; border-color:#1967d2;">
-                        <div class="form-label" style="margin-bottom:0; color:#1967d2;">실버웍스 변환 절감액</div>
-                        <div class="calc-result-value" id="calcAfterValue">0원</div>
+
+                    <!-- 지원자 순위 지정 영역 -->
+                    <div class="space-y-3">
+                        <p class="text-xs font-bold text-slate-700">지원한 시니어 프로필 및 우대 순위 지정 (1순위/2순위/3순위)</p>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-3 text-xs">
+                            <div class="p-3 border rounded-lg bg-slate-50 space-y-2">
+                                <div class="flex justify-between items-center">
+                                    <span class="font-bold text-slate-800">김순희 (SEN-101)</span>
+                                    <span class="bg-blue-600 text-white px-2 py-0.5 rounded font-bold">1순위 확정</span>
+                                </div>
+                                <p class="text-slate-500">뱃지: [시간 엄수 100%]</p>
+                                <p class="text-slate-500">비상연락처: 010-9999-8888</p>
+                                <button onclick="triggerNoShow('SEN-101')" class="w-full mt-2 py-1.5 bg-red-600 hover:bg-red-700 text-white font-bold rounded transition">
+                                    [노쇼 처리]
+                                </button>
+                            </div>
+
+                            <div class="p-3 border rounded-lg bg-slate-50 space-y-2">
+                                <div class="flex justify-between items-center">
+                                    <span class="font-bold text-slate-800">이베테랑 (SEN-102)</span>
+                                    <span class="bg-amber-100 text-amber-800 px-2 py-0.5 rounded font-bold">2순위 대기</span>
+                                </div>
+                                <p class="text-slate-500">뱃지: [체력 베테랑]</p>
+                                <p class="text-slate-500">가산 임금 보상 대기 중</p>
+                                <p class="text-xs text-blue-600 font-semibold">알림 발송됨: "2순위로 지정되었습니다"</p>
+                            </div>
+
+                            <div class="p-3 border rounded-lg bg-slate-50 space-y-2">
+                                <div class="flex justify-between items-center">
+                                    <span class="font-bold text-slate-800">박성실 (SEN-103)</span>
+                                    <span class="bg-slate-200 text-slate-700 px-2 py-0.5 rounded font-bold">3순위 대기</span>
+                                </div>
+                                <p class="text-slate-500">뱃지: [사장님 추천]</p>
+                                <p class="text-slate-500">대기 상태</p>
+                            </div>
+                        </div>
                     </div>
-                </div>
-                <button type="button" class="btn-blue-action" style="margin-top:16px; background-color:#ffffff; color:#1967d2; border:1px solid #1967d2; font-size:13.5px; padding:10px;" onclick="executeLinkCalculatorToConsult()">이 절감 수치 그대로 본부 유선 행정상담 접수하기</button>
-            </div>
-        </div>
 
-        <!-- 탭 채널 1번: 6대 필수 기입란이 완비된 피크타임 구인공고 신규 생성 등록 폼 구역 -->
-        <div class="employer-control-panel-slot" id="employerPanelSlot1">
-            <div class="card" style="border: 2px solid #1967d2;">
-                <h3>📋 6대 필수 조항 공고 제목 및 매장 스펙 원장 발행 폼</h3>
-                <div class="form-group"><label class="form-label">1. 공고 제목 명세</label><input type="text" id="jTitle" class="form-input" placeholder="예: 주말 피크타임 카운터 및 매장 관리 베테랑 모집"></div>
-                <div class="form-group"><label class="form-label">2. 가게 이름 및 상호명</label><input type="text" id="jCompany" class="form-input" placeholder="예: 실버웍스 카페 화성반송점"></div>
-                <div class="form-group"><label class="form-label">3. 근무 날짜 지정 (YYYY-MM-DD)</label><input type="text" id="jWorkDate" class="form-input" placeholder="예: 2026-07-26"></div>
-                
-                <!-- [자동 타이머 트래킹 필수 연동] 근무 마감 종료 시각 (예: 18:00 형태로 기입) -->
-                <div class="form-group"><label class="form-label">4. 근무 피크타임 시간대 및 최종 종료 시각 명세 (HH:MM-HH:MM)</label><input type="text" id="jWorkTime" class="form-input" placeholder="예: 13:00-18:00"></div>
-                <div class="form-group"><label class="form-label">5. 약정 일당 및 시급 원금 (숫자만 입력)</label><input type="number" id="jWage" class="form-input" placeholder="예: 60000"></div>
-                <div class="form-group"><label class="form-label">6. 주요 담당 업무 명세</label><input type="text" id="jJobDuty" class="form-input" placeholder="예: 매장 카운터 결제 안내 및 테이블 정리 정돈 업무"></div>
-                
-                <!-- 부가 매장 스펙 조건부 인풋 그룹 -->
-                <div class="form-group"><label class="form-label">근무지 상세 위치 주소</label><input type="text" id="jJobLocation" class="form-input" placeholder="예: 경기도 화성시 반송동"></div>
-                <div class="form-group"><label class="form-label">직무 유형 대분류</label><input type="text" id="jJobType" class="form-input" value="매장서비스 및 행정지원"></div>
-                <div class="form-group"><label class="form-label">필요 모집 인원수 (명)</label><input type="number" id="jSlotsLimit" class="form-input" value="1"></div>
-                
-                <button type="button" class="btn-blue-action" onclick="executeCreateNewJobPostV2Spec()">피크타임 안심 구인 공고 실시간 게재 송출</button>
-            </div>
-        </div>
+                    <!-- 청구 명세서 및 [입금 완료했어요] 카드 -->
+                    <div class="bg-slate-900 text-white rounded-xl p-5 space-y-4" id="invoiceCard">
+                        <div class="flex justify-between items-center border-b border-slate-700 pb-3">
+                            <h5 class="font-bold text-amber-400 text-sm">본사 정산 청구 명세서</h5>
+                            <span class="text-xs text-slate-400">명세서 번호: INV-2026-0701</span>
+                        </div>
+                        <div class="text-xs space-y-1 text-slate-300">
+                            <p>시니어 일당: 100,000 원</p>
+                            <p>플랫폼 수수료 (10%): 10,000 원</p>
+                            <p class="text-sm font-bold text-white pt-1">최종 입금액: <span class="text-amber-400">110,000 원</span></p>
+                            <p class="text-slate-400 pt-1">입금 계좌: 국민은행 <strong class="text-white">275401-04-310474</strong> (예금주: 민 혁(silverworks))</p>
+                        </div>
+                        <div>
+                            <button onclick="confirmPayment()" class="w-full py-3 bg-amber-500 hover:bg-amber-400 text-slate-950 font-black rounded-lg transition text-sm">
+                                [입금 완료했어요]
+                            </button>
+                        </div>
+                    </div>
 
-        <!-- 탭 채널 2번: 실시간 내 공고 현황판 및 1·2·3순위 지망 배정 정산 통제 패널 구역 -->
-        <div class="employer-control-panel-slot" id="employerPanelSlot2">
-            <!-- 내 등록 공고 목록 및 지원 베테랑 파싱 슬롯 -->
-            <div id="employerMyJobsLiveFeedWrapperSlot">
-                <div style="text-align:center; padding:30px; color:#8e8e93; font-weight:600; font-size:14px;">
-                    가맹 구인 공고문 목록 및 실시간 매칭 상태를 파싱하는 중입니다...
+                    <!-- 입금 완료 클릭 시 교체되는 안심 카드 (기초 숨김) -->
+                    <div id="paymentPendingCard" class="hidden bg-emerald-900/90 text-white rounded-xl p-6 text-center space-y-2 border border-emerald-500">
+                        <i class="fa-solid fa-clock-rotate-left text-3xl text-emerald-300"></i>
+                        <h5 class="font-bold text-lg text-emerald-200">관리자가 통장 입금을 확인하고 있습니다.</h5>
+                        <p class="text-xs text-emerald-100">확인이 완료되면 알림으로 안내 드릴게요. 잠시만 기다려 주세요.</p>
+                    </div>
+
                 </div>
             </div>
-            
-            /* 수수료 차등 청구 명세 대금 영수증 출력 팝업 박스 구역 */
-            <div id="employerBillingInvoiceContainerSlot" style="margin-top:16px;"></div>
-        </div>
+        </section>
 
-    </div>
-    <!-- [가맹 사장님 관제 콘솔 실시간 제어 자바스크립트 엔진 전반부] -->
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-slate-900 text-slate-400 text-xs py-8 border-t border-slate-800">
+        <div class="max-w-5xl mx-auto px-4 space-y-4">
+            <p><strong class="text-white">silverworks (실버웍스)</strong> | 대표: 유연성 (010-7464-3657), 민 혁 (010-9187-9074)</p>
+            <p>주소: 경기도 성남시 중원구 광명로 79, 4층 404호 (성남동, 상산빌딩) | 사업자등록번호: 726-19-02892</p>
+            <p>입금 계좌: 국민은행 275401-04-310474 (예금주: 민 혁(silverworks))</p>
+        </div>
+    </footer>
+
     <script>
-        const myEmployerId = localStorage.getItem('sw_username');
-        const myEmployerRole = localStorage.getItem('sw_role');
+        function handleInquirySubmit(e) {
+            e.preventDefault();
+            const name = document.getElementById('inquiry-name').value;
+            const store = document.getElementById('inquiry-store').value;
+            const phone = document.getElementById('inquiry-phone').value;
+            alert(`[문의 접수 완료]\n성함: ${name}\n가게명: ${store}\n연락처: ${phone}\n\n실버랩 매니저가 빠른 시간 내로 전화드리겠습니다!`);
+            e.target.reset();
+        }
 
-        document.addEventListener("DOMContentLoaded", function() {
-            if (!myEmployerId || myEmployerRole !== 'employer') {
-                alert('보안 가드 경고: 구인 사장님 회원 전용 마이페이지 관제실입니다. 메인 광장으로 회군합니다.');
-                location.href = '/';
-                return;
+        function calculateSavings() {
+            const wage = Number(document.getElementById('calc-wage').value) || 10320;
+            const days = Number(document.getElementById('calc-days').value) || 6;
+            // 4시간 기존 - 2시간 피크타임 = 하루 2시간 절약
+            const monthlySaving = wage * 2 * days * 4.33;
+            document.getElementById('calc-result').innerText = `약 ${Math.floor(monthlySaving).toLocaleString()} 원 절감`;
+        }
+
+        function subscribeMember() {
+            alert('[구독 신청]\n입금 계좌(국민은행 275401-04-310474, 40,000원)로 입금 후 [입금 완료했어요]를 눌러주시면 수수료 5% 할인이 즉시 적용됩니다.');
+        }
+
+        function postJob(e) {
+            e.preventDefault();
+            const title = document.getElementById('job-title').value;
+            alert(`공고 [${title}]가 성공적으로 등록되었습니다.`);
+            e.target.reset();
+        }
+
+        function triggerNoShow(senId) {
+            if(confirm(`1순위 시니어(${senId})를 노쇼 처리하시겠습니까?\n즉시 2순위 시니어에게 "(1순위 노쇼로 인해 승계되었습니다 - 가산 임금 적용)" 알림이 발송되고 승계됩니다.`)) {
+                alert(`노쇼 처리 완료! 2순위 시니어에게 가산 임금 승계 알림이 발송되었습니다.`);
             }
-            loadEmployerProfileCoreV2Spec();
-            executeCalculateLaborWageSavingsSpec();
-        });
-
-        // 3대 메뉴 단순 세련 뷰 스위칭 탭 토글 함수
-        function handleSwitchEmployerTabChannel(tabIndex) {
-            for(let i = 0; i <= 2; i++) {
-                document.getElementById('empTabBtn' + i).classList.remove('active');
-                document.getElementById('employerPanelSlot' + i).classList.remove('active');
-            }
-            document.getElementById('empTabBtn' + tabIndex).classList.add('active');
-            document.getElementById('employerPanelSlot' + tabIndex).classList.add('active');
-            
-            if(tabIndex === 2) {
-                loadLiveEmployerJobsAndApplicantsControlPanel();
-                loadEmployerBillingInvoiceReceiptCore();
-            }
         }
 
-        // 사장님 계정 고유 신원 원장 및 구독 결제 배지 실시간 동환 조회부
-        function loadEmployerProfileCoreV2Spec() {
-            fetch('/api/profile/me?username=' + encodeURIComponent(myEmployerId))
-                .then(res => res.json())
-                .then(data => {
-                    if(data.success && data.profile) {
-                        const p = data.profile;
-                        document.getElementById('eName').value = p.name || '';
-                        document.getElementById('ePhone').value = p.phone || '';
-                        document.getElementById('eBusinessNumber').value = p.business_number || '-';
-                        
-                        const isPremium = p.subscription_status === 'premium';
-                        document.getElementById('eSubBadgeStatusText').value = isPremium ? "👑 프리미엄 구독 요금제 회원 (수수료 5% 적용)" : "일반 회원 (수수료 10% 적용)";
-                    }
-                });
+        function approveWorkCompletion() {
+            alert(`[근무 완료 승인 성공]\n시니어 계정으로 포인트가 지급되었으며 청구 명세서가 발급되었습니다.`);
         }
 
-        // [오리지널 산식 보전] 주휴수당 모의 절감 계산기 동적 연산 유닛
-        function executeCalculateLaborWageSavingsSpec() {
-            const workers = parseInt(document.getElementById('calcWorkers').value) || 0;
-            const beforeWage = workers * 15 * 10030 * 4; // 주 15시간 미만 쪼개기 도입 전 주휴수당 기대치 연산
-            const savingsValue = Math.floor(beforeWage);
-            
-            document.getElementById('calcBeforeValue').innerText = savingsValue.toLocaleString() + "원";
-            document.getElementById('calcAfterValue').innerText = "월 " + savingsValue.toLocaleString() + "원 전액 절감";
-        }
-
-        // [지시 요건 반영] 계산기 절감 금액 수치를 매장 행정상담 원장에 타임스탬프와 함께 자동 바인딩 각인시키는 치트키
-        function executeLinkCalculatorToConsult() {
-            const workers = document.getElementById('calcWorkers').value;
-            const savingsText = document.getElementById('calcAfterValue').innerText;
-            const storeNamePrompt = prompt('본부 행정 접수 안내:\n\n상담을 수납받으실 사장님의 가맹 매장 상호명을 적어주십시오.');
-            if(!storeNamePrompt) return;
-            
-            const phonePrompt = prompt('상담 가이드 전화를 수신하실 사장님의 휴대폰 번호를 적어주십시오. (-없이 입력)');
-            if(!phonePrompt) return;
-
-            const combinedStoreNote = `[모의계산 파싱접수: 파트타임 ${workers}명 기준 ${savingsText}] ` + storeNamePrompt;
-
-            fetch('/api/employer/consult', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ store_name: combinedStoreNote, phone: phonePrompt })
-            }).then(res => res.json()).then(data => {
-                if(data.success) {
-                    alert('원터치 행정 영업 상담 접수가 최종 성료 완료되었습니다.\n\n기입하신 계산 데이터 사본을 토대로 본사 전문 상담사가 24시간 내에 유선 전화를 대령하겠습니다.');
-                }
-            });
-        }
-
-        // [지시 요건 반영] 6대 필수 기입 란 유효성 검증 필터 및 신규 공고 생성 라우터 트리거
-        function executeCreateNewJobPostV2Spec() {
-            const title = document.getElementById('jTitle').value.trim();
-            const company = document.getElementById('jCompany').value.trim();
-            const work_date = document.getElementById('jWorkDate').value.trim();
-            const work_time = document.getElementById('jWorkTime').value.trim();
-            const wage = document.getElementById('jWage').value.trim();
-            const job_duty = document.getElementById('jJobDuty').value.trim();
-            
-            const job_location = document.getElementById('jJobLocation').value.trim();
-            const job_type = document.getElementById('jJobType').value.trim();
-            const slots_limit = document.getElementById('jSlotsLimit').value.trim();
-
-            if(!title || !company || !work_date || !work_time || !wage || !job_duty) {
-                alert('행정 기입 오류: 사장님이 등록하실 공고의 필수 6대 항목 [공고 제목, 가게 이름, 근무 날짜, 종료 시간대, 일당/시급, 주요 담당 업무] 명세는 낙장 없이 필수로 작성하셔야 합니다.');
-                return;
-            }
-
-            fetch('/api/jobs/create', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ employer_id: myEmployerId, title, company, work_date, work_time, wage, job_type, job_location, job_duty, slots_limit })
-            }).then(res => res.json()).then(data => {
-                if(data.success) {
-                    alert('피크타임 안심 구인 공고문이 본사 전산망 심사대를 통과하여 실시간 피드판에 전격 게재 송출되었습니다.');
-                    location.reload();
-                } else {
-                    alert(data.message); // 미납 가드 락 메세지 다이렉트 도출 출력
-                }
-            });
-        }
-        // 내 등록 공고 현황 및 지원자 명단 수납 제어반 로드 엔진
-        function loadLiveEmployerJobsAndApplicantsControlPanel() {
-            fetch('/api/employer/my-jobs?employer_id=' + encodeURIComponent(myEmployerId))
-                .then(res => res.json())
-                .then(data => {
-                    const container = document.getElementById('employerMyJobsLiveFeedWrapperSlot');
-                    if(!data.success || !data.jobs || data.jobs.length === 0) {
-                        container.innerHTML = `<div class="card" style="text-align:center; color:#8e8e93; font-weight:600;">현재 사장님이 등록 게재하신 피크타임 구인공고문 내역이 존재하지 않습니다.</div>`;
-                        return;
-                    }
-
-                    let htmlAccumulator = "";
-                    data.jobs.forEach(j => {
-                        htmlAccumulator += `
-                            <div class="card" id="job_card_node_${j.id}">
-                                <h3>
-                                    <span>[공고 ID: ${j.id}] ${j.title}</span>
-                                    <div id="timer_box_slot_${j.id}"></div>
-                                </h3>
-                                <div style="font-size:13.5px; color:#536471; font-weight:600; margin-bottom:14px;">
-                                    약정 점포: ${j.company} | 근무날짜: ${j.work_date} | 약정시간대: ${j.work_time} | 약정일당: ${j.wage.toLocaleString()}원
-                                </div>
-                                <div id="applicants_control_zone_${j.id}" style="border-top:1px solid #eff3f4; padding-top:14px;">
-                                    지원 베테랑 명단을 로드 중입니다...
-                                </div>
-                            </div>
-                        `;
-                        // 1. 공고별 지원자 리스트 및 123지망 선택 콤보박스 바인딩 비동기 트리거 가동
-                        loadApplicantsRankComboSelectorEngine(j.id);
-                        // 2. [지시 요건] 근무 날짜 및 종료 시간 기준 자동 실시간 트래킹 타이머 커넬 가동
-                        executeWorkTimeCountdownTrackerLoop(j.id, j.work_date, j.work_time, j.wage);
-                    });
-                    container.innerHTML = htmlAccumulator;
-                });
-        }
-
-        // 공고별 지원자 프로필 상세 대조 및 1·2·3순위 콤보박스 스위칭 렌더러
-        function loadApplicantsRankComboSelectorEngine(jobId) {
-            fetch('/api/employer/applicants?job_id=' + jobId)
-                .then(res => res.json())
-                .then(resData => {
-                    const zone = document.getElementById(`applicants_control_zone_${jobId}`);
-                    if(!resData.success || !resData.data || resData.data.length === 0) {
-                        zone.innerHTML = `<span style="font-size:13px; color:#8e8e93; font-weight:600;">현재 본 매장 공고에 구직 청약을 제출한 시니어 지원자가 대기열에 없습니다.</span>`;
-                        return;
-                    }
-
-                    let html = `<div style="font-size:13.5px; font-weight:700; color:#1c1c1e; margin-bottom:10px;">베테랑 구직 지원자 통합 신원 관리 명부</div>`;
-                    let hasAssigned = resData.data.some(a => ['assigned', 'completed_clear'].includes(a.status));
-
-                    resData.data.forEach(a => {
-                        const inf = a.seeker_info;
-                        
-                        let selectComboRow = "";
-                        // 채용 확정 성사 전 단계일 때만 1·2·3순위 지망 배정 콤보박스 제어반 개통 노출
-                        if(!hasAssigned) {
-                            selectComboRow = `
-                                <div style="display:flex; gap:6px; align-items:center; margin-top:8px;">
-                                    <span style="font-size:12.5px; font-weight:700; color:#536471;">순위 배정:</span>
-                                    <select class="rank-select-combo" id="rank_priority_select_${jobId}_${inf.username}">
-                                        <option value="0">배정 안함</option>
-                                        <option value="1">1순위 (채용 확정)</option>
-                                        <option value="2">2순위 (대체 대기)</option>
-                                        <option value="3">3순위 (최고대기보상)</option>
-                                    </select>
-                                </div>
-                            `;
-                        } else {
-                            let roleBadge = `<span class="work-complete-approved-badge" style="background-color:#f7f9fa; color:#536471; border-color:#cfd9de;">대기 탈락</span>`;
-                            if(a.rank_priority == 1) roleBadge = `<span class="work-complete-approved-badge" style="background-color:#e8f4fd; color:#1967d2; border-color:#91d5ff;">✓ 1순위 베테랑 채용 성사</span>`;
-                            if(a.rank_priority == 2) roleBadge = `<span class="work-complete-approved-badge" style="background-color:#fff7e6; color:#d35400; border-color:#ffe7ba;">2순위 대기 승계 대기</span>`;
-                            if(a.rank_priority == 3) roleBadge = `<span class="work-complete-approved-badge" style="background-color:#feefe8; color:#eb5757; border-color:#fcdcdc;">3순위 최고 가산 대기</span>`;
-                            selectComboRow = `<div style="margin-top:8px;">${roleBadge}</div>`;
-                        }
-
-                        html += `
-                            <div style="background-color:#f8f9fa; padding:14px; border-radius:12px; margin-bottom:8px; border:1px solid #eff3f4;">
-                                <div style="font-size:14px; font-weight:700; color:#1c1c1e;">${inf.name} 베테랑 (아이디: ${inf.username})</div>
-                                <div style="font-size:12.5px; color:#536471; font-weight:600; margin-top:4px;">
-                                    연락처: ${inf.phone} | 🚨 보호자 비상: ${inf.emergency_phone || '-'} | 🏋️ 체력 등급: <strong style="color:#1967d2;">${inf.fitness_grade}</strong> (악력 ${inf.fitness_grip}/유연 ${inf.fitness_flex}/지구 ${inf.fitness_cardio})
-                                </div>
-                                ${selectComboRow}
-                            </div>
-                        `;
-                    });
-
-                    if(!hasAssigned) {
-                        html += `<button type="button" class="btn-blue-action" style="padding:10px; font-size:13.5px; margin-top:8px;" onclick="executeSubmitMultiRanksAssignTransaction(${jobId}, '${resData.data.map(a=>a.seeker_id).join(',')}')">선택한 우선순위 기준 [채용 계약하기] 최종 단행</button>`;
-                    }
-
-                    zone.innerHTML = html;
-                });
-        }
-
-        // [지시 요건 반영] 다중 순위 배정 최종 계약 단행 트랜잭션 함수
-        function executeSubmitMultiRanksAssignTransaction(jobId, seekerIdsCsv) {
-            const sIds = seekerIdsCsv.split(',');
-            let rank1 = ""; let rank2 = ""; let rank3 = "";
-
-            for(let id of sIds) {
-                const val = document.getElementById(`rank_priority_select_${jobId}_${id}`).value;
-                if(val == 1) rank1 = id;
-                if(val == 2) rank2 = id;
-                if(val == 3) rank3 = id;
-            }
-
-            if(!rank1) { alert('계약 불성사: 매장에 실출동하여 일을 집행할 1순위 베테랑 시니어 채용 지정을 완료하셔야 계약이 성사됩니다.'); return; }
-
-            if(!confirm('채용 계약 체결 통보:\n\n선택하신 우선 순위 규격대로 1지망 채용 및 2·3지망 보상 대체 대기 배정을 최종 확정 성사합니까?\n\n(확정 즉시 1순위 시니어 화면 중앙에 깔끔한 1페이지짜리 안심 근무 확인서 팝업창 링크가 실시간 자동 연동 송출 발행됩니다)')) return;
-
-            fetch('/api/employer/assign-multi-ranks', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ job_id: jobId, rank1_seeker: rank1, rank2_seeker: rank2, rank3_seeker: rank3 })
-            }).then(() => {
-                alert('실버웍스 공인 매칭 계약 체결 대성공!\n\n해당 구인 카드는 실시간 지원 마감 락 가드가 장착 처리되었습니다.');
-                loadLiveEmployerJobsAndApplicantsControlPanel();
-            });
-        }
-
-        // [지시 요건 완벽 수립] 근무 종료 날짜 및 시각 기준 2026 시스템 정밀 자동 인식 카운트다운 타이머 연산 엔진 루프
-        function executeWorkTimeCountdownTrackerLoop(jobId, wDate, wTime, wage) {
-            const timerBox = document.getElementById(`timer_box_slot_${jobId}`);
-            if(!timerBox) return;
-
-            const timePart = wTime.split('-');
-            const endTimeStr = timePart[1] ? timePart[1].trim() : "18:00";
-            
-            // 종료 시간 문자열 파싱 (예: 2026-07-26 18:00)
-            const targetEndDateTimeStamp = new Date(`${wDate} ${endTimeStr}:00`).getTime();
-            
-            const timerIntervalLoop = setInterval(() => {
-                const nowTimeStamp = new Date().getTime();
-                const distanceDiff = targetEndDateTimeStamp - nowTimeStamp;
-
-                // 1. 아직 종료 시각에 도달하기 전 단계: 타임 락 카운트다운 타이머 표출 구동
-                if (distanceDiff > 0) {
-                    const hours = Math.floor((distanceDiff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-                    const minutes = Math.floor((distanceDiff % (1000 * 60 * 60)) / (1000 * 60));
-                    const seconds = Math.floor((distanceDiff % (1000 * 60)) / 1000);
-                    
-                    timerBox.innerHTML = `<span class="timer-countdown-display">⏳ 베테랑 근로 마감 타임락 구동중: ${hours}시간 ${minutes}분 ${seconds}초 남음</span>`;
-                } else {
-                    // 2. 약정 종료 시각이 지나는 밀리초 시점: 타이머가 멈추고 [근무 완료 승인] 및 [이의 신청] 제어조반 즉시 다이내믹 출현
-                    clearInterval(timerIntervalLoop);
-                    
-                    // 해당 공고에 최종 채용 승인된 1순위 인력(또는 노쇼 승계 인력)이 있는지 파싱 대조
-                    fetch('/api/employer/applicants?job_id=' + jobId)
-                        .then(res => res.json())
-                        .then(resData => {
-                            if(resData.success && resData.data) {
-                                const activeWorker = resData.data.find(a => a.rank_priority == 1);
-                                const isAllCleared = resData.data.some(a => a.status === 'completed_clear');
-
-                                if(isAllCleared) {
-                                    timerBox.innerHTML = `<span class="work-complete-approved-badge">✓ 가상 포인트 지갑 이체 및 근무 승인 최종 완료 완료</span>`;
-                                    return;
-                                }
-
-                                if(activeWorker) {
-                                    timerBox.innerHTML = `
-                                        <div style="display:flex; gap:8px; align-items:center;">
-                                            <button type="button" class="btn-blue-action" style="padding:6px 14px; font-size:12.5px; width:auto; box-shadow:none;" onclick="executeFinalWorkCompleteApproval(${jobId}, '${activeWorker.seeker_id}', ${wage})">근무 완료 승인</button>
-                                            <button type="button" class="btn-action-outline-red" onclick="executeTriggerNoshowPassClaim(${jobId}, '${activeWorker.seeker_id}')">노쇼 처리</button>
-                                            <button type="button" class="btn-action-outline-red" style="color:#e67e22; border-color:#ffe7ba;" onclick="executeTriggerDisputeClaimHold(${jobId}, '${activeWorker.seeker_id}')">이의 신청</button>
-                                        </div>
-                                    `;
-                                } else {
-                                    timerBox.innerHTML = `<span style="font-size:12.5px; color:#8e8e93; font-weight:600;">근무 마감 도출 시각 통과 (채용 인력 없음)</span>`;
-                                }
-                            }
-                        });
-                }
-            }, 1000);
-        }
-
-        // [지시 요건 반영] 사장님이 버튼을 누르는 즉시 시니어 계정에 포인트 지급 및 차등 청구서 생성 자동화 단행
-        function executeFinalWorkCompleteApproval(jobId, seekerId, wage) {
-            if(!confirm('근무 완료 최종 승인 각인:\n\n본 베테랑 시니어의 피크타임 대체 근로 임무 완수를 오피셜 승인합니까?\n\n(터치 즉시 시니어 지갑 원장으로 가상 포인트가 안전 실시간 충전 이체되며 본사 관제센터에는 사장님 전용 중개 수수료 차등 청구 명세서 영수증이 즉시 발부 발행 적재됩니다)')) return;
-
-            fetch('/api/employer/execute-work-complete', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ job_id: jobId, seeker_id: seekerId, final_wage: parseInt(wage) })
-            }).then(res => res.json()).then(data => {
-                alert(data.message);
-                loadLiveEmployerJobsAndApplicantsControlPanel();
-                loadEmployerBillingInvoiceReceiptCore();
-            });
-        }
-
-        // [지시 요건 반영] 1순위 연락두절 노쇼 처리 버튼 터치 시 2순위 자동 승계 가산임금 알림 발송 트랙
-        function executeTriggerNoshowPassClaim(jobId, seekerId) {
-            if(!confirm('🚨 비상 약속 위반 노쇼 확정 처분 고지:\n\n본 1순위 구직 인력의 연락두절 불참 결함을 원장망에 최종 확정 각인합니까?\n\n(처분 즉시 해당 불량 인력은 블랙리스트 보안 가드 처분되며, 2순위 혹은 3순위 대체 베테랑 시니어 알림방 센터창 앞으로 가산 임금 보상 패키지 승계 낙찰 고지 카드가 실시간 원터치 송출 비행 가동됩니다)')) return;
-
-            fetch('/api/employer/trigger-noshow-pass', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ job_id: jobId, current_noshow_id: seekerId })
-            }).then(res => res.json()).then(data => {
-                alert('비상 노쇼 행정 인계 완료!\n\n후순위 대체 대기 베테랑 시니어 세션 트랙 앞으로 임금 가산 승계 통보 알림카드가 무결성 발송 송출되었습니다.');
-                loadLiveEmployerJobsAndApplicantsControlPanel();
-            });
-        }
-
-        // [지시 요건 반영] 사장님이 [이의 신청]을 눌렀을 때 관리자실 비상 알림 트리거 및 지급 홀딩 단행 함수
-        function executeTriggerDisputeClaimHold(jobId, seekerId) {
-            if(!confirm('⚠️ 행정 분쟁 이의 신청 접수 고지:\n\n본 근로 계약 건에 대해 공식 이의 신청 분쟁 접수서를 본사 행정 심사대로 전격 송출합니까?\n\n(접수 즉시 최고 관리자 콘솔 대장에 실시간 비상 경고 알림 알럿이 발생하며 본사 최종 판독 심사 전까지 대금 정산 처리가 일시 홀딩 가드 처리되었습니다)')) return;
-
-            fetch('/api/employer/trigger-dispute-claim', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ job_id: jobId, seeker_id: seekerId })
-            }).then(res => res.json()).then(data => {
-                alert(data.message);
-                loadLiveEmployerJobsAndApplicantsControlPanel();
-            });
-        }
-
-        // 내 가맹점 앞으로 발부 적재된 미납 중개 수수료 청구 명세 영수증 로드선
-        function loadEmployerBillingInvoiceReceiptCore() {
-            fetch('/api/settle/employer-billing-invoice?employer_id=' + encodeURIComponent(myEmployerId))
-                .then(res => res.json())
-                .then(data => {
-                    const slot = document.getElementById('employerBillingInvoiceContainerSlot');
-                    if(!data.success || !data.billings || data.billings.length === 0) {
-                        slot.innerHTML = "";
-                        return;
-                    }
-
-                    let html = `
-                        <div class="card" style="border: 2px solid #eb5757; background-color:#fffbfa;">
-                            <h3 style="color:#eb5757; border-left-color:#eb5757;">⚠️ 본사 미납 차등 중개 수수료 대금 청구서 내역 명세</h3>
-                            <span style="font-size:12.5px; color:#536471; font-weight:600; display:block; margin-bottom:12px; line-height:1.4;">
-                                법인 계좌 입금 미납 연체 방지 안내 가드: 아래 청구 대금 명세를 확인하신 후 본사 오피셜 사업자 통장으로 계좌이체 송금을 완료해 주시고 하단 입금완료 단추를 터치해 주십시오. 완납 확인 전까지는 새로운 공고글을 새로 쓸 수 없게 화면 작성이 일시 차단 가드 락 처리됩니다.
-                            </span>
-                    `;
-
-                    data.billings.forEach(b => {
-                        let btnText = "확인 명세 대금 입금 완료했어요";
-                        let btnStyle = "";
-                        if(b.status === 'paid_requested') {
-                            btnText = "⏳ 본사 실물 통장 대조 수납 대기중";
-                            btnStyle = "background-color:#cfd9de; color:#8e8e93; cursor:not-allowed; box-shadow:none;";
-                        } else if(b.status === 'disputed_claim_hold') {
-                            btnText = "🚨 이의 신청 분쟁 조정 심사대 계류중 (홀딩)";
-                            btnStyle = "background-color:#eb5757; color:#ffffff; cursor:not-allowed; box-shadow:none;";
-                        }
-
-                        html += `
-                            <div style="background-color:#ffffff; padding:16px; border:1px solid #fcdcdc; border-radius:12px; margin-bottom:10px; font-size:13.5px; font-weight:600; color:#1c1c1e;">
-                                청구 고유 ID: ${b.id} | 근로임금 원금: ${b.base_wage.toLocaleString()}원 | 차등 수수료 대금: ${b.commission.toLocaleString()}원
-                                <div style="font-size:16px; font-weight:800; color:#eb5757; margin-top:6px; margin-bottom:10px;">최종 송금 이체 잔액 명세액: ${b.total_bill.toLocaleString()}원</div>
-                                <button type="button" class="btn-blue-action" style="padding:10px; font-size:13px; ${btnStyle}" onclick="executeRequestPaidInvoiceVerificationV2(${b.id})">${btnText}</button>
-                            </div>
-                        `;
-                    });
-
-                    html += `</div>`;
-                    slot.innerHTML = html;
-                });
-        }
-
-        // 입금 후 본사 최고 행정관 앞 수납 확인 실물 통장 대조 검증 패널 신청 전송선
-        function executeRequestPaidInvoiceVerificationV2(billingId) {
-            fetch('/api/settle/request-paid-invoice', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ billing_id: parseInt(billingId) })
-            }).then(() => {
-                alert('본사 핀테크 통장 대조 행정실로 입금 수납 확인 검증 요청서가 실시간 도달 적재되었습니다.\n\n행정관이 확인 단행하는 즉시 영수증 미납액 잔고가 0원으로 깨끗이 청정 리셋 소멸 파쇄 처리됩니다.');
-                loadEmployerBillingInvoiceReceiptCore();
-            });
+        function confirmPayment() {
+            document.getElementById('invoiceCard').classList.add('hidden');
+            document.getElementById('paymentPendingCard').classList.remove('hidden');
         }
     </script>
 </body>
