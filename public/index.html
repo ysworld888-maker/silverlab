@@ -3,309 +3,178 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>silverworks - 초단기 피크타임 인력 매칭 플랫폼</title>
+    <title>silverworks - 세상을 은빛지혜로 채우다</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css');
-        :root {
-            --toss-blue: #3182f6;
-            --toss-blue-hover: #1b64da;
-            --toss-sky: #e8f3ff;
-        }
-        body {
-            font-family: "Pretendard", -apple-system, BlinkMacSystemFont, system-ui, Roboto, sans-serif;
-            background-color: #f9fafb;
-            color: #191f28;
-            word-break: keep-all;
-        }
-        .wave-bg {
-            background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 40%, #3182f6 100%);
-            position: relative;
-            overflow: hidden;
-        }
-        .wave-bg::before {
-            content: "";
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: radial-gradient(circle, rgba(255,255,255,0.08) 0%, rgba(255,255,255,0) 60%);
-            animation: wavePulse 8s infinite ease-in-out;
-        }
-        @keyframes wavePulse {
-            0%, 100% { transform: translate(0, 0) scale(1); }
-            50% { transform: translate(-2%, 2%) scale(1.05); }
-        }
-        .glass-card {
-            background: rgba(255, 255, 255, 0.85);
-            backdrop-filter: blur(12px);
-            border: 1px solid rgba(226, 232, 240, 0.8);
-        }
-        .btn-toss {
-            background-color: var(--toss-blue);
-            color: #ffffff;
-            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-        .btn-toss:hover {
-            background-color: var(--toss-blue-hover);
-            transform: translateY(-1px);
-            box-shadow: 0 4px 14px rgba(49, 130, 246, 0.35);
-        }
-        .btn-toss:active {
-            transform: translateY(0);
-        }
+        body { font-family: "Pretendard", sans-serif; background-color: #f9fafb; color: #191f28; word-break: keep-all; }
+        .btn-toss { background-color: #3182f6; color: #ffffff; transition: all 0.2s; }
+        .btn-toss:hover { background-color: #1b64da; }
+        .input-toss { background-color: #f2f4f6; border: 1px solid transparent; }
+        .input-toss:focus { background-color: #ffffff; border-color: #3182f6; outline: none; }
     </style>
 </head>
-<body class="min-h-screen flex flex-col justify-between antialiased selection:bg-blue-100 selection:text-blue-600">
-    <header class="sticky top-0 z-50 bg-white/90 backdrop-blur-md border-b border-slate-100 shadow-sm transition-all">
+<body class="min-h-screen flex flex-col justify-between antialiased">
+    <!-- Header -->
+    <header class="sticky top-0 z-50 bg-white/90 backdrop-blur-md border-b border-slate-100 shadow-sm">
         <div class="max-w-6xl mx-auto px-5 h-16 flex items-center justify-between">
-            <a href="/index.html" class="flex items-center gap-2.5 group">
-                <div class="p-1.5 rounded-xl bg-blue-50 text-blue-600 group-hover:bg-blue-100 transition">
+            <a href="/index.html" class="flex items-center gap-2.5">
+                <div class="p-1.5 rounded-xl bg-blue-50 text-blue-600">
                     <svg class="w-8 h-8" viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="8" stroke-linecap="round" stroke-linejoin="round">
                         <path d="M 14 58 C 28 72 44 72 58 48 C 72 24 88 18 95 35" />
                         <path d="M 48 70 C 62 82 78 78 86 60" />
                     </svg>
                 </div>
-                <span class="text-xl font-extrabold tracking-tight text-slate-900 group-hover:text-blue-600 transition">
-                    silverworks
-                </span>
+                <span class="text-xl font-extrabold tracking-tight text-slate-900">silverworks</span>
             </a>
             <nav class="hidden md:flex items-center gap-8 text-sm font-semibold text-slate-600">
                 <a href="/jobs.html" class="hover:text-blue-600 transition">피크타임 공고</a>
                 <a href="/senior-apply.html" class="hover:text-blue-600 transition">시니어 일자리센터</a>
                 <a href="/employer.html" class="hover:text-blue-600 transition">사장님 센터</a>
-                <a href="/admin.html" class="hover:text-blue-600 transition">관리자 HQ</a>
             </nav>
-            <div class="flex items-center gap-3">
-                <a href="/notifications.html" class="relative p-2 text-slate-500 hover:text-blue-600 hover:bg-slate-100 rounded-full transition" title="알림 센터">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0.538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path>
-                    </svg>
-                    <span id="unread-count-badge" class="absolute top-1 right-1 w-2 h-2 bg-blue-600 rounded-full ring-2 ring-white"></span>
-                </a>
-                <a href="/login.html" class="text-xs font-bold px-4 py-2 rounded-xl bg-slate-100 text-slate-700 hover:bg-slate-200 transition">
-                    로그인/회원가입
-                </a>
-            </div>
+            <div id="header-user-area" class="flex items-center gap-3"></div>
         </div>
     </header>
 
     <main class="flex-1 space-y-12 pb-16">
-        <section class="wave-bg text-white py-16 md:py-24 px-5">
-            <div class="max-w-5xl mx-auto flex flex-col md:flex-row items-center justify-between gap-10">
-                <div class="space-y-6 max-w-xl text-center md:text-left">
-                    <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-xs font-semibold text-blue-200">
-                        <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-                        실시간 피크타임 인력 매칭 시스템
-                    </div>
-                    <h1 class="text-3xl md:text-5xl font-black tracking-tight leading-tight">
-                        갑작스런 바쁜 시간, <br>
-                        <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-200 to-sky-300">
-                            파도처럼 시원하게
-                        </span> 채워드립니다.
-                    </h1>
-                    <p class="text-sm md:text-base text-slate-300 leading-relaxed font-normal">
-                        2~3시간 단시간 피크타임 인력 연결부터 1·2·3순위 노쇼 자동 승계 시스템까지. 검증된 시니어 인재와 매장을 유기적으로 매칭합니다.
-                    </p>
-                    <div class="flex flex-col sm:flex-row items-center gap-3 pt-2 justify-center md:justify-start">
-                        <a href="/jobs.html" class="w-full sm:w-auto text-center font-bold text-sm px-6 py-3.5 rounded-xl btn-toss shadow-lg">
-                            피크타임 공고 찾아보기
-                        </a>
-                        <a href="/employer.html" class="w-full sm:w-auto text-center font-bold text-sm px-6 py-3.5 rounded-xl bg-white/10 hover:bg-white/20 text-white border border-white/20 backdrop-blur-md transition">
-                            사장님 구인 공고 등록
-                        </a>
-                    </div>
-                </div>
-
-                <div class="w-full md:w-80 glass-card rounded-3xl p-6 text-slate-900 shadow-2xl space-y-4">
-                    <div class="flex items-center justify-between border-b border-slate-100 pb-3">
-                        <span class="text-xs font-bold text-slate-500 uppercase tracking-wider">오늘의 매칭 현황</span>
-                        <span class="text-xs font-bold text-blue-600 bg-blue-50 px-2.5 py-0.5 rounded-full">실시간</span>
-                    </div>
-                    <div class="space-y-3">
-                        <div class="flex justify-between items-center text-sm">
-                            <span class="text-slate-600 font-medium">진행 중인 피크 공고</span>
-                            <strong class="text-base font-extrabold text-blue-600" id="stat-active-jobs">12건</strong>
-                        </div>
-                        <div class="flex justify-between items-center text-sm">
-                            <span class="text-slate-600 font-medium">2순위 자동 승계율</span>
-                            <strong class="text-base font-extrabold text-emerald-600">99.4%</strong>
-                        </div>
-                        <div class="flex justify-between items-center text-sm">
-                            <span class="text-slate-600 font-medium">체력 검증 완료 시니어</span>
-                            <strong class="text-base font-extrabold text-slate-900">312명</strong>
-                        </div>
-                    </div>
-                    <div class="pt-2 border-t border-slate-100 text-[11px] text-slate-400 text-center">
-                        국민체력100 및 4단계 검증 프로세스 적용중
-                    </div>
-                </div>
+        <!-- Hero Visual Matching IMG_0874 -->
+        <section class="py-16 px-5 text-center space-y-8 bg-gradient-to-b from-blue-50/50 to-transparent">
+            <div class="space-y-2">
+                <h1 class="text-2xl md:text-4xl font-black text-blue-600 tracking-tight leading-tight">
+                    변화에 도전할 사장님과<br>베테랑 시니어 구직자들의 만남
+                </h1>
+                <p class="text-xs md:text-sm text-slate-500 font-medium">세상을 은빛 지혜로 채우다.</p>
             </div>
-        </section>
 
-        <section class="max-w-6xl mx-auto px-5 space-y-6">
-            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-end gap-2">
-                <div>
-                    <h2 class="text-2xl font-black text-slate-900 tracking-tight">마감 임박 피크타임 일자리</h2>
-                    <p class="text-xs md:text-sm text-slate-500 mt-1">2~3시간 단시간 근무로 부담 없이 일할 수 있는 검증된 매장입니다.</p>
-                </div>
-                <a href="/jobs.html" class="text-xs font-bold text-blue-600 hover:text-blue-700 flex items-center gap-1 transition">
-                    전체 공고 보기 <i class="fa-solid fa-chevron-right text-[10px]"></i>
+            <!-- Two Cards Layout Matching IMG_0874 -->
+            <div class="max-w-3xl mx-auto grid grid-cols-1 sm:grid-cols-2 gap-5 pt-2">
+                <a href="/senior-apply.html" class="bg-white p-7 rounded-3xl border border-slate-200/80 shadow-sm hover:shadow-md transition text-left space-y-3 block">
+                    <span class="text-[11px] font-bold text-blue-600 bg-blue-50 px-2.5 py-1 rounded-lg">구직 시니어 회원</span>
+                    <h3 class="text-lg font-bold text-slate-900">베테랑 전용 문진성 이력서</h3>
+                    <p class="text-xs text-slate-500 leading-relaxed">디지털 인지 능력, 오프라인 검증 및 건강 문진표를 통한 신뢰 이력서 작성</p>
+                </a>
+                <a href="/employer.html" class="bg-white p-7 rounded-3xl border border-slate-200/80 shadow-sm hover:shadow-md transition text-left space-y-3 block">
+                    <span class="text-[11px] font-bold text-blue-600 bg-blue-50 px-2.5 py-1 rounded-lg">구인 사업장 사장님</span>
+                    <h3 class="text-lg font-bold text-slate-900">필요한 시간만 맞춤형 고용 솔루션</h3>
+                    <p class="text-xs text-slate-500 leading-relaxed">2~3시간 초단기 피크타임 인력 연결 및 1·2·3순위 노쇼 자동 승계 시스템</p>
                 </a>
             </div>
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5" id="main-job-container"></div>
         </section>
 
-        <section class="max-w-6xl mx-auto px-5 pt-6 space-y-8">
-            <div class="text-center max-w-2xl mx-auto space-y-2">
-                <h2 class="text-2xl font-black text-slate-900 tracking-tight">silverworks만의 신뢰 매칭 프로세스</h2>
-                <p class="text-xs md:text-sm text-slate-500 leading-relaxed">
-                    구직자와 사장님 모두가 안심할 수 있는 차별화된 시스템을 제공합니다.
+        <!-- Original Main Content Text Section -->
+        <section class="max-w-4xl mx-auto px-5 space-y-6 text-slate-800 leading-relaxed text-sm md:text-base">
+            <div class="bg-white rounded-3xl p-8 border border-slate-200/80 shadow-sm space-y-6">
+                <h2 class="text-xl md:text-2xl font-black text-slate-900 leading-snug">
+                    매장을 책임져줄 성실한 사람을 구하는 것은 하늘의 별 따기가 되었습니다.
+                </h2>
+                
+                <div class="p-4 rounded-2xl bg-slate-50 border-l-4 border-blue-600 text-xs md:text-sm text-slate-700 space-y-1">
+                    <p class="font-bold">[자영업자 4명 중 3명이 알바생의 갑작스러운 결근·퇴사 등 '노쇼'로 인해 곤란한 상황을 겪은 것으로 나타났다.]</p>
+                    <p class="text-[11px] text-slate-400">출처: 중장년 알바와 MZ 사장... 문제는 없을까? 직접 들어봤다 | 서울경제</p>
+                </div>
+
+                <p>치솟는 최저임금과 주휴수당, 퇴직금이라는 고정비 압박 속에서 사장님들의 어깨는 날이 갈수록 무거워지고 있습니다.</p>
+                <p>이런 상황에서, <strong>체력과 열정</strong>을 가지고 일터를 찾는 <strong>시니어들은 해마다 늘어나고 있습니다.</strong></p>
+
+                <div class="p-4 rounded-2xl bg-slate-50 border-l-4 border-blue-600 text-xs md:text-sm text-slate-700 space-y-1">
+                    <p>(노인 일자리 참여자는 꾸준히 늘고 있다. 2020년 73만7708명이던 참여자는 올해 8월 99만7233명으로 증가했다. 하지만 같은 기간 신청자 수는 82만3754명에서 122만5776명으로 48.8%나 폭증했다.)</p>
+                    <p class="text-[11px] text-slate-400">출처 : 뉴스퀘스트(https://www.newsquest.co.kr)</p>
+                </div>
+
+                <p>하지만 나이라는 장벽에 부딪혀 역량을 펼칠 기회조차 얻지 못하는 게 오늘날의 현실입니다.</p>
+                <h3 class="text-lg font-extrabold text-blue-600 pt-2">우리는 왜 이 거대한 두 개의 갈증을 단 한 번도 연결하지 못했을까요?</h3>
+                <p>
+                    단기 근로를 원하는 숙련된 시니어층과, 피크타임 단기 인력이 절실한 사장님들. 이들이 마침내 하나로 뭉치면서 매장의 관리 구조가 완전히 뒤바뀝니다.
                 </p>
-            </div>
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <div class="bg-white rounded-3xl p-7 border border-slate-200/80 shadow-sm hover:shadow-md transition space-y-3">
-                    <div class="w-12 h-12 rounded-2xl bg-blue-50 text-blue-600 flex items-center justify-center text-xl font-bold">
-                        <i class="fa-solid fa-bolt"></i>
-                    </div>
-                    <h3 class="text-lg font-bold text-slate-900">1·2·3순위 노쇼 자동 승계</h3>
-                    <p class="text-xs text-slate-500 leading-relaxed">
-                        1순위 매칭자의 갑작스러운 노쇼 발생 시, 2순위 대기 구직자에게 즉시 승계되며 가산 임금(+5,000원)이 자동으로 부여됩니다.
-                    </p>
-                </div>
-                <div class="bg-white rounded-3xl p-7 border border-slate-200/80 shadow-sm hover:shadow-md transition space-y-3">
-                    <div class="w-12 h-12 rounded-2xl bg-blue-50 text-blue-600 flex items-center justify-center text-xl font-bold">
-                        <i class="fa-solid fa-heart-pulse"></i>
-                    </div>
-                    <h3 class="text-lg font-bold text-slate-900">4단계 시니어 체력 검증</h3>
-                    <p class="text-xs text-slate-500 leading-relaxed">
-                        국민체력100 및 오프라인 체력 측정, 보건증, 건강 질문지를 통해 검증된 65세 이상 [체력 베테랑] 시니어를 연계합니다.
-                    </p>
-                </div>
-                <div class="bg-white rounded-3xl p-7 border border-slate-200/80 shadow-sm hover:shadow-md transition space-y-3">
-                    <div class="w-12 h-12 rounded-2xl bg-blue-50 text-blue-600 flex items-center justify-center text-xl font-bold">
-                        <i class="fa-solid fa-shield-halved"></i>
-                    </div>
-                    <h3 class="text-lg font-bold text-slate-900">1년 구독 혜택 & 정산 안전망</h3>
-                    <p class="text-xs text-slate-500 leading-relaxed">
-                        사장님 1년 정기 구독 시 플랫폼 수수료 5% 우대 적용 및 지정 무통장 계좌 입금 승인을 통한 안전 정산을 지원합니다.
-                    </p>
+                <p>
+                    실버웍스는 단순한 인력 소개 게시판이 아닙니다. 사람과 매장을 잇고, 실질적인 인건비 절감을 주도하며, 인력을 사용하면서 발생하는 문제들을 같이 해결하는 동반자 입니다.
+                </p>
+                <p>
+                    물론, 아무나 실버웍스의 팀원이 될 수는 없습니다. 실버웍스는 구직을 희망하는 시니어분들의 실제 건강 상태, 스마트 디지털 인지 능력, 그리고 체계적인 오프라인 면접으로 완벽히 검증을 통과한 <strong>'베테랑'</strong> 만을 선발하여 매장에 추천합니다.
+                </p>
+                <p>
+                    더불어, '베테랑'의 오랜 인생 경험과 근면함을 존중할 줄 아는 품격 있는 사장님들의 매장을 엄선하여 서로를 연결합니다.
+                </p>
+                <div class="pt-4 font-black text-blue-600 text-base md:text-lg border-t border-slate-100">
+                    변화에 도전 할 사장님과 준비된 베테랑님의 상생 파트너십. 지금 시작됩니다.
                 </div>
             </div>
         </section>
     </main>
 
-    <footer class="bg-slate-900 text-slate-400 text-xs py-10 border-t border-slate-800">
-        <div class="max-w-6xl mx-auto px-5 space-y-4">
-            <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-b border-slate-800 pb-6">
-                <div class="flex items-center gap-2">
-                    <div class="p-1 rounded-lg bg-blue-600 text-white">
-                        <svg class="w-5 h-5" viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="8" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M 14 58 C 28 72 44 72 58 48 C 72 24 88 18 95 35" />
-                            <path d="M 48 70 C 62 82 78 78 86 60" />
-                        </svg>
-                    </div>
-                    <span class="text-lg font-black text-white tracking-tight">silverworks</span>
-                </div>
-                <div class="flex gap-6 text-slate-400 font-medium">
-                    <a href="/jobs.html" class="hover:text-white transition">공고목록</a>
-                    <a href="/senior-apply.html" class="hover:text-white transition">시니어센터</a>
-                    <a href="/employer.html" class="hover:text-white transition">사장님센터</a>
-                    <a href="/admin.html" class="hover:text-white transition">관리자</a>
-                </div>
+    <!-- Point Settlement Modal Matching IMG_0872 / IMG_0876 -->
+    <div id="subModal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm hidden z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl max-w-md w-full p-7 space-y-5 shadow-2xl">
+            <div class="flex justify-between items-center border-b border-slate-100 pb-3">
+                <h3 class="text-lg font-black text-slate-900">포인트 현금 정산 신청</h3>
+                <button onclick="closeSubModal()" class="text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark text-lg"></i></button>
             </div>
-            <div class="text-[11px] text-slate-400 leading-relaxed">
-                실버웍스 (silverworks), 대표 유연성 010-7464-3657, 대표 민 혁 010-9187-9074, 주소: 경기도 성남시 중원구 광명로 79, 4층 404호 (성남동, 상산빌딩), 사업자등록 번호 : 726-19-02892, 주업종: 경영컨설팅업 (전문, 과학 및 기술서비스업) (업종코드 : 741400) | 부업종: 데이터베이스 및 온라인 정보 제공업 (업종코드 : 724000)
-            </div>
-            <p class="text-[10px] text-slate-600 pt-2">© 2026 silverworks. All rights reserved.</p>
+            <form onsubmit="handleSettlement(event)" class="space-y-4 text-xs">
+                <div>
+                    <label class="block font-bold text-slate-700 mb-1">입금 은행 선택</label>
+                    <select id="settle-bank" class="w-full p-3.5 rounded-xl input-toss font-bold text-slate-800">
+                        <option value="신한은행">신한은행</option>
+                        <option value="우리은행">우리은행</option>
+                        <option value="하나은행">하나은행</option>
+                        <option value="카카오뱅크">카카오뱅크</option>
+                        <option value="KB국민은행">KB국민은행</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block font-bold text-slate-700 mb-1">정산 요청 금액 (원)</label>
+                    <input type="number" id="settle-amount" placeholder="0" required class="w-full p-3.5 rounded-xl input-toss font-bold text-blue-600">
+                </div>
+                <button type="submit" class="w-full py-3.5 bg-rose-500 hover:bg-rose-600 text-white font-bold rounded-xl shadow">정산서 즉시 지급신청</button>
+            </form>
         </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-slate-900 text-slate-400 text-xs py-8 border-t border-slate-800 text-center px-5">
+        <p>실버웍스 (silverworks), 대표 유연성 010-7464-3657, 대표 민 혁 010-9187-9074, 주소: 경기도 성남시 중원구 광명로 79, 4층 404호 (성남동, 상산빌딩), 사업자등록 번호 : 726-19-02892, 주업종: 경영컨설팅업 (전문, 과학 및 기술서비스업) (업종코드 : 741400) | 부업종: 데이터베이스 및 온라인 정보 제공업 (업종코드 : 724000)</p>
     </footer>
 
     <script>
-        const SilverworksStore = {
-            init() {
-                if (!localStorage.getItem('sw_jobs')) {
-                    const defaultJobs = [
-                        {
-                            id: 'job-1',
-                            storeName: '대박식당',
-                            title: '[대박식당] 점심 피크시간 홀 서빙 & 보조',
-                            category: '식당·서빙',
-                            date: '2026-07-26',
-                            time: '12:00~14:00 (2시간)',
-                            pay: 30000,
-                            feeRate: 0.05,
-                            status: '1순위 매칭 완료',
-                            badgeReq: '체력 100 우대',
-                            candidates: [
-                                { rank: 1, name: '박철수', age: 66, time: '09:30', badge: '체력 100 1등급', status: '출근대기' },
-                                { rank: 2, name: '김순희', age: 68, time: '09:42', badge: '보건증 유효', status: '2순위 대기' },
-                                { rank: 3, name: '이영자', age: 65, time: '10:15', badge: '질문지 완료', status: '3순위 대기' }
-                            ]
-                        },
-                        {
-                            id: 'job-2',
-                            storeName: '성남카페',
-                            title: '[성남카페] 저녁 음료 컵 세척 & 매장 정리',
-                            category: '카페·음료',
-                            date: '2026-07-26',
-                            time: '18:00~21:00 (3시간)',
-                            pay: 36000,
-                            feeRate: 0.10,
-                            status: '구직자 모집중',
-                            badgeReq: '보건증 필수',
-                            candidates: []
-                        },
-                        {
-                            id: 'job-3',
-                            storeName: '모란유통',
-                            title: '[모란유통] 하차 물품 분류 & 단시간 정리',
-                            category: '마트·운반',
-                            date: '2026-07-27',
-                            time: '08:00~11:00 (3시간)',
-                            pay: 40000,
-                            feeRate: 0.05,
-                            status: '구직자 모집중',
-                            badgeReq: '체력 베테랑 우대',
-                            candidates: []
-                        }
-                    ];
-                    localStorage.setItem('sw_jobs', JSON.stringify(defaultJobs));
-                }
-            },
-            getJobs() {
-                this.init();
-                return JSON.parse(localStorage.getItem('sw_jobs')) || [];
-            }
-        };
+        function updateHeaderUI() {
+            const userArea = document.getElementById('header-user-area');
+            const user = JSON.parse(localStorage.getItem('sw_user'));
+            const points = parseInt(localStorage.getItem('sw_points') || '0', 10);
 
-        document.addEventListener('DOMContentLoaded', () => {
-            SilverworksStore.init();
-            const jobs = SilverworksStore.getJobs();
-            const container = document.getElementById('main-job-container');
-            document.getElementById('stat-active-jobs').innerText = jobs.length + '건';
-            container.innerHTML = jobs.map(job => `
-                <div class="bg-white rounded-3xl p-6 border border-slate-200/80 shadow-sm hover:shadow-md transition flex flex-col justify-between space-y-4">
-                    <div class="space-y-2">
-                        <div class="flex items-center justify-between">
-                            <span class="bg-blue-50 text-blue-600 text-[11px] font-bold px-2.5 py-1 rounded-lg">${job.category}</span>
-                            <span class="text-xs font-semibold text-slate-400">${job.badgeReq}</span>
-                        </div>
-                        <h3 class="text-base font-extrabold text-slate-900 leading-snug">${job.title}</h3>
-                        <p class="text-xs text-slate-500">근무일시: ${job.date} ${job.time}</p>
-                    </div>
-                    <div class="pt-3 border-t border-slate-100 flex items-center justify-between">
-                        <div>
-                            <span class="text-[10px] text-slate-400 block font-medium">지급 일당</span>
-                            <strong class="text-base font-black text-blue-600">${job.pay.toLocaleString()}원</strong>
-                        </div>
-                        <a href="/job-detail.html?id=${job.id}" class="btn-toss text-xs font-bold px-4 py-2.5 rounded-xl shadow-sm">지원하기</a>
-                    </div>
-                </div>
-            `).join('');
-        });
+            let html = `
+                <a href="/notifications.html" class="p-2 text-slate-500 hover:text-blue-600 transition" title="알림 센터">
+                    <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+                        <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+                    </svg>
+                </a>
+            `;
+
+            if (user) {
+                html += `
+                    <button onclick="openSubModal()" class="text-xs font-extrabold bg-blue-50 text-blue-600 px-3 py-1.5 rounded-xl border border-blue-100 hover:bg-blue-100 transition">
+                        포인트 ${points.toLocaleString()}P (정산)
+                    </button>
+                    <a href="/senior-apply.html" class="w-9 h-9 rounded-full bg-slate-200 flex items-center justify-center text-slate-700 font-bold border border-slate-300 hover:border-blue-500 transition" title="프로필 페이지">
+                        <i class="fa-solid fa-user"></i>
+                    </a>
+                `;
+            } else {
+                html += `<a href="/login.html" class="text-xs font-bold px-4 py-2 rounded-xl bg-slate-100 text-slate-700 hover:bg-slate-200 transition">로그인</a>`;
+            }
+            userArea.innerHTML = html;
+        }
+
+        function openSubModal() { document.getElementById('subModal').classList.remove('hidden'); }
+        function closeSubModal() { document.getElementById('subModal').classList.add('hidden'); }
+
+        function handleSettlement(e) {
+            e.preventDefault();
+            alert('정산 지급 신청이 접수되었습니다.');
+            closeSubModal();
+        }
+
+        document.addEventListener('DOMContentLoaded', () => { updateHeaderUI(); });
     </script>
 </body>
 </html>

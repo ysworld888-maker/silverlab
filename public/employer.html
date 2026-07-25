@@ -8,147 +8,80 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css');
-        :root {
-            --toss-blue: #3182f6;
-            --toss-blue-hover: #1b64da;
-            --toss-bg: #f9fafb;
-        }
-        body {
-            font-family: "Pretendard", -apple-system, BlinkMacSystemFont, system-ui, Roboto, sans-serif;
-            background-color: var(--toss-bg);
-            color: #191f28;
-            word-break: keep-all;
-        }
-        .btn-toss {
-            background-color: var(--toss-blue);
-            color: #ffffff;
-            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-        .btn-toss:hover {
-            background-color: var(--toss-blue-hover);
-            transform: translateY(-1px);
-            box-shadow: 0 4px 14px rgba(49, 130, 246, 0.35);
-        }
-        .input-toss {
-            background-color: #f2f4f6;
-            border: 1px solid transparent;
-            transition: all 0.2s ease;
-        }
-        .input-toss:focus {
-            background-color: #ffffff;
-            border-color: #3182f6;
-            box-shadow: 0 0 0 3px rgba(49, 130, 246, 0.15);
-            outline: none;
-        }
+        body { font-family: "Pretendard", sans-serif; background-color: #f9fafb; color: #191f28; word-break: keep-all; }
+        .btn-toss { background-color: #3182f6; color: #ffffff; transition: all 0.2s; }
+        .btn-toss:hover { background-color: #1b64da; }
+        .input-toss { background-color: #f2f4f6; border: 1px solid transparent; }
+        .input-toss:focus { background-color: #ffffff; border-color: #3182f6; outline: none; }
     </style>
 </head>
-<body class="min-h-screen flex flex-col justify-between antialiased selection:bg-blue-100 selection:text-blue-600">
+<body class="min-h-screen flex flex-col justify-between antialiased">
     <header class="sticky top-0 z-50 bg-white/90 backdrop-blur-md border-b border-slate-100 shadow-sm">
         <div class="max-w-6xl mx-auto px-5 h-16 flex items-center justify-between">
-            <a href="/index.html" class="flex items-center gap-2.5 group">
-                <div class="p-1.5 rounded-xl bg-blue-50 text-blue-600 group-hover:bg-blue-100 transition">
+            <a href="/index.html" class="flex items-center gap-2.5">
+                <div class="p-1.5 rounded-xl bg-blue-50 text-blue-600">
                     <svg class="w-8 h-8" viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="8" stroke-linecap="round" stroke-linejoin="round">
                         <path d="M 14 58 C 28 72 44 72 58 48 C 72 24 88 18 95 35" />
                         <path d="M 48 70 C 62 82 78 78 86 60" />
                     </svg>
                 </div>
-                <span class="text-xl font-extrabold tracking-tight text-slate-900 group-hover:text-blue-600 transition">
-                    silverworks
-                </span>
+                <span class="text-xl font-extrabold tracking-tight text-slate-900">silverworks</span>
             </a>
             <nav class="hidden md:flex items-center gap-8 text-sm font-semibold text-slate-600">
                 <a href="/jobs.html" class="hover:text-blue-600 transition">피크타임 공고</a>
                 <a href="/senior-apply.html" class="hover:text-blue-600 transition">시니어 일자리센터</a>
                 <a href="/employer.html" class="text-blue-600 font-extrabold transition">사장님 센터</a>
-                <a href="/admin.html" class="hover:text-blue-600 transition">관리자 HQ</a>
             </nav>
-            <div class="flex items-center gap-3">
-                <a href="/notifications.html" class="relative p-2 text-slate-500 hover:text-blue-600 hover:bg-slate-100 rounded-full transition">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0.538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path>
-                    </svg>
-                    <span class="absolute top-1 right-1 w-2 h-2 bg-blue-600 rounded-full"></span>
-                </a>
-                <span class="text-xs font-bold px-3 py-1.5 rounded-xl bg-blue-50 text-blue-600 border border-blue-100">
-                    김대박 사장님
-                </span>
-            </div>
+            <div id="header-user-area" class="flex items-center gap-3"></div>
         </div>
     </header>
 
     <main class="max-w-6xl mx-auto px-5 py-10 flex-1 w-full space-y-8">
         <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
-            <div class="bg-white rounded-3xl p-6 border border-slate-200/80 shadow-sm space-y-3 relative overflow-hidden">
-                <div class="flex items-center justify-between">
-                    <span class="text-xs font-bold text-slate-500">1년 정기 구독 혜택</span>
-                    <span class="text-[11px] font-extrabold text-blue-600 bg-blue-50 px-2.5 py-1 rounded-full">5% 수수료 우대</span>
-                </div>
-                <div>
-                    <h3 class="text-xl font-black text-slate-900">구독 진행 중</h3>
-                    <p class="text-xs text-slate-500 mt-1">일반 수수료 10%→5% 할인 적용 완료</p>
-                </div>
-                <button onclick="openSubModal()" class="text-xs font-bold text-blue-600 hover:underline pt-2 inline-block">
-                    구독 기간 연장/무통장 입금 안내 <i class="fa-solid fa-chevron-right text-[10px]"></i>
-                </button>
+            <div class="bg-white rounded-3xl p-6 border border-slate-200/80 shadow-sm space-y-3">
+                <span class="text-xs font-bold text-slate-500">1년 정기 구독 혜택</span>
+                <h3 class="text-xl font-black text-slate-900">수수료 우대 신청</h3>
+                <p class="text-xs text-slate-500">일반 수수료 10% → 5% 감면 적용</p>
+                <button onclick="openSubModal()" class="text-xs font-bold text-blue-600 hover:underline pt-2 inline-block">무통장 입금 안내 <i class="fa-solid fa-chevron-right text-[10px]"></i></button>
             </div>
             <div class="bg-white rounded-3xl p-6 border border-slate-200/80 shadow-sm space-y-3">
-                <div class="flex items-center justify-between">
-                    <span class="text-xs font-bold text-slate-500">등록한 피크 공고</span>
-                    <span class="text-[11px] font-bold text-slate-400">실시간</span>
-                </div>
-                <div>
-                    <h3 class="text-2xl font-black text-slate-900" id="emp-active-count">0건</h3>
-                    <p class="text-xs text-slate-500 mt-1">1·2·3순위 대기열 매칭 진행 상태</p>
-                </div>
-                <button onclick="openCreateJobModal()" class="btn-toss text-xs font-bold px-4 py-2 rounded-xl shadow-sm">
-                    + 피크타임 공고 등록
-                </button>
+                <span class="text-xs font-bold text-slate-500">등록 피크 공고</span>
+                <h3 class="text-2xl font-black text-slate-900" id="emp-active-count">0건</h3>
+                <button onclick="openCreateJobModal()" class="btn-toss text-xs font-bold px-4 py-2 rounded-xl shadow-sm">+ 피크타임 공고 등록</button>
             </div>
             <div class="bg-slate-900 text-white rounded-3xl p-6 shadow-md space-y-3">
-                <div class="flex items-center justify-between text-slate-400">
-                    <span class="text-xs font-bold">지정 정산 무통장 계좌</span>
-                    <i class="fa-solid fa-building-columns text-sm"></i>
-                </div>
-                <div class="space-y-1">
-                    <strong class="text-sm font-bold text-blue-300 block">KB국민은행 812701-04-182934</strong>
-                    <p class="text-xs text-slate-300">예금주: 주식회사 실버웍스</p>
-                </div>
-                <p class="text-[11px] text-slate-400 border-t border-slate-800 pt-2">
-                    매칭 완료 후 당일 무통장 입금 승인 처리됩니다.
-                </p>
+                <span class="text-xs font-bold text-slate-400">지정 정산 계좌</span>
+                <strong class="text-sm font-bold text-blue-300 block">KB국민은행 812701-04-182934</strong>
+                <p class="text-[11px] text-slate-400">예금주: 주식회사 실버웍스</p>
             </div>
         </div>
 
         <div class="bg-white rounded-3xl p-6 md:p-8 border border-slate-200/80 shadow-sm space-y-6">
-            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 border-b border-slate-100 pb-4">
-                <div>
-                    <h2 class="text-lg font-black text-slate-900">내 매장 구인 공고 및 지원자 관리</h2>
-                    <p class="text-xs text-slate-500 mt-0.5">매칭된 지원자의 출근 여부를 확인하고 노쇼 발생 시 2순위 자동 승계를 실행하세요.</p>
-                </div>
-                <button onclick="openCreateJobModal()" class="btn-toss text-xs font-bold px-4 py-2.5 rounded-xl shadow-sm">
-                    + 신규 공고 작성
-                </button>
+            <div class="flex justify-between items-center border-b border-slate-100 pb-4">
+                <h2 class="text-lg font-black text-slate-900">내 매장 구인 공고 및 지원자 관리</h2>
+                <button onclick="openCreateJobModal()" class="btn-toss text-xs font-bold px-4 py-2.5 rounded-xl">+ 신규 공고 작성</button>
             </div>
-            <div class="space-y-6" id="employer-job-list"></div>
+            <div class="space-y-6" id="employer-job-list">
+                <p class="text-xs text-slate-400 text-center py-8">등록된 구인 공고가 없습니다.</p>
+            </div>
         </div>
     </main>
 
+    <!-- Create Job Modal -->
     <div id="createJobModal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm hidden z-50 flex items-center justify-center p-4">
         <div class="bg-white rounded-3xl max-w-lg w-full p-7 space-y-5 shadow-2xl">
             <div class="flex justify-between items-center border-b border-slate-100 pb-3">
                 <h3 class="text-lg font-black text-slate-900">피크타임 구인 공고 등록</h3>
-                <button onclick="closeCreateJobModal()" class="text-slate-400 hover:text-slate-600">
-                    <i class="fa-solid fa-xmark text-lg"></i>
-                </button>
+                <button onclick="closeCreateJobModal()" class="text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark text-lg"></i></button>
             </div>
             <form onsubmit="handleCreateJob(event)" class="space-y-4 text-xs">
                 <div>
                     <label class="block font-bold text-slate-700 mb-1">매장명</label>
-                    <input type="text" id="job-store" value="대박식당" required class="w-full p-3.5 rounded-xl input-toss font-medium">
+                    <input type="text" id="job-store" placeholder="예: 사업장 매장명 입력" required class="w-full p-3.5 rounded-xl input-toss font-medium">
                 </div>
                 <div>
                     <label class="block font-bold text-slate-700 mb-1">공고 제목</label>
-                    <input type="text" id="job-title" placeholder="예: [대박식당] 주말 점심 피크 홀 서빙" required class="w-full p-3.5 rounded-xl input-toss font-medium">
+                    <input type="text" id="job-title" placeholder="예: 점심 피크 홀 서빙 알바 구인" required class="w-full p-3.5 rounded-xl input-toss font-medium">
                 </div>
                 <div class="grid grid-cols-2 gap-3">
                     <div>
@@ -171,20 +104,16 @@
                 <div class="grid grid-cols-2 gap-3">
                     <div>
                         <label class="block font-bold text-slate-700 mb-1">근무 날짜</label>
-                        <input type="date" id="job-date" value="2026-07-28" required class="w-full p-3.5 rounded-xl input-toss font-medium">
+                        <input type="date" id="job-date" required class="w-full p-3.5 rounded-xl input-toss font-medium">
                     </div>
                     <div>
                         <label class="block font-bold text-slate-700 mb-1">근무 시간대</label>
-                        <input type="text" id="job-time" value="12:00~15:00 (3시간)" required class="w-full p-3.5 rounded-xl input-toss font-medium">
+                        <input type="text" id="job-time" placeholder="예: 12:00~14:00 (2시간)" required class="w-full p-3.5 rounded-xl input-toss font-medium">
                     </div>
                 </div>
                 <div>
                     <label class="block font-bold text-slate-700 mb-1">지급 일당 (원)</label>
-                    <input type="number" id="job-pay" value="35000" required class="w-full p-3.5 rounded-xl input-toss font-bold text-blue-600">
-                </div>
-                <div class="p-3.5 rounded-xl bg-blue-50 text-blue-900 text-[11px] space-y-1">
-                    <p class="font-bold">1년 정기 구독 사장님 우대 혜택 적용</p>
-                    <p class="text-blue-700">플랫폼 이용 수수료 5%가 정산 금액 산정 시 자동 감면됩니다.</p>
+                    <input type="number" id="job-pay" placeholder="30000" required class="w-full p-3.5 rounded-xl input-toss font-bold text-blue-600">
                 </div>
                 <div class="pt-2 flex gap-2">
                     <button type="button" onclick="closeCreateJobModal()" class="flex-1 py-3.5 border border-slate-200 font-bold rounded-xl text-slate-600">취소</button>
@@ -194,113 +123,71 @@
         </div>
     </div>
 
+    <!-- Settlement Modal -->
     <div id="subModal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm hidden z-50 flex items-center justify-center p-4">
         <div class="bg-white rounded-3xl max-w-md w-full p-7 space-y-5 shadow-2xl">
             <div class="flex justify-between items-center border-b border-slate-100 pb-3">
-                <h3 class="text-lg font-black text-slate-900">1년 정기 구독 & 무통장 입금 안내</h3>
-                <button onclick="closeSubModal()" class="text-slate-400 hover:text-slate-600">
-                    <i class="fa-solid fa-xmark text-lg"></i>
-                </button>
+                <h3 class="text-lg font-black text-slate-900">포인트 정산 신청</h3>
+                <button onclick="closeSubModal()" class="text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark text-lg"></i></button>
             </div>
-            <div class="space-y-4 text-xs">
-                <div class="p-4 rounded-2xl bg-slate-50 border border-slate-200/80 space-y-2">
-                    <span class="text-slate-500 font-bold block">1년 연간 구독료</span>
-                    <strong class="text-2xl font-black text-slate-900 block">120,000원 <span class="text-xs font-normal text-slate-500">(월 1만원 꼴)</span></strong>
-                    <p class="text-[11px] text-blue-600 font-semibold">모든 공고 매칭 수수료 10% → 5% 감면 포함</p>
+            <form onsubmit="handleSettlement(event)" class="space-y-4 text-xs">
+                <div>
+                    <label class="block font-bold text-slate-700 mb-1">입금 은행 선택</label>
+                    <select id="settle-bank" class="w-full p-3.5 rounded-xl input-toss font-bold">
+                        <option value="신한은행">신한은행</option>
+                        <option value="우리은행">우리은행</option>
+                        <option value="하나은행">하나은행</option>
+                        <option value="카카오뱅크">카카오뱅크</option>
+                        <option value="KB국민은행">KB국민은행</option>
+                    </select>
                 </div>
-                <div class="p-4 rounded-2xl bg-blue-50 border border-blue-100 space-y-2">
-                    <span class="text-xs font-bold text-blue-900 block">입금 지정 전용 계좌</span>
-                    <div class="text-slate-800 space-y-1">
-                        <p><strong>은행:</strong> KB국민은행</p>
-                        <p><strong>계좌번호:</strong> <span class="font-mono font-bold text-blue-700">812701-04-182934</span></p>
-                        <p><strong>예금주:</strong> 주식회사 실버웍스</p>
-                    </div>
+                <div>
+                    <label class="block font-bold text-slate-700 mb-1">정산 요청 금액 (P)</label>
+                    <input type="number" id="settle-amount" placeholder="0" required class="w-full p-3.5 rounded-xl input-toss font-bold text-blue-600">
                 </div>
-                <p class="text-[11px] text-slate-400">
-                    입금 완료 후 관리자 확인 시 즉시 1년 구독 혜택 연장 승인이 완료됩니다.
-                </p>
-                <button onclick="closeSubModal()" class="w-full py-3.5 btn-toss font-bold rounded-xl shadow">확인 완료</button>
-            </div>
+                <button type="submit" class="w-full py-3.5 bg-rose-500 hover:bg-rose-600 text-white font-bold rounded-xl shadow">정산서 즉시 지급신청</button>
+            </form>
         </div>
     </div>
 
-    <footer class="bg-slate-900 text-slate-400 text-xs py-8 border-t border-slate-800 text-center">
-        <p><strong class="text-white">실버웍스 (silverworks)</strong>, 대표 유연성 010-7464-3657, 대표 민 혁 010-9187-9074, 주소: 경기도 성남시 중원구 광명로 79, 4층 404호 (성남동, 상산빌딩), 사업자등록 번호 : 726-19-02892, 주업종: 경영컨설팅업 (전문, 과학 및 기술서비스업) (업종코드 : 741400) | 부업종: 데이터베이스 및 온라인 정보 제공업 (업종코드 : 724000)</p>
+    <footer class="bg-slate-900 text-slate-400 text-xs py-8 border-t border-slate-800 text-center px-5">
+        <p>실버웍스 (silverworks), 대표 유연성 010-7464-3657, 대표 민 혁 010-9187-9074, 주소: 경기도 성남시 중원구 광명로 79, 4층 404호 (성남동, 상산빌딩), 사업자등록 번호 : 726-19-02892, 주업종: 경영컨설팅업 (전문, 과학 및 기술서비스업) (업종코드 : 741400) | 부업종: 데이터베이스 및 온라인 정보 제공업 (업종코드 : 724000)</p>
     </footer>
 
     <script>
-        function loadEmployerJobs() {
-            const jobs = JSON.parse(localStorage.getItem('sw_jobs')) || [];
-            document.getElementById('emp-active-count').innerText = jobs.length + '건';
-            const container = document.getElementById('employer-job-list');
-            if (jobs.length === 0) {
-                container.innerHTML = '<p class="text-xs text-slate-400 text-center py-8">등록된 구인 공고가 없습니다.</p>';
-                return;
-            }
-            container.innerHTML = jobs.map(job => {
-                const candidates = job.candidates || [];
-                const c1 = candidates.find(c => c.rank === 1);
-                const c2 = candidates.find(c => c.rank === 2);
-                const c3 = candidates.find(c => c.rank === 3);
-                return `
-                    <div class="p-6 rounded-3xl bg-slate-50 border border-slate-200/80 space-y-4">
-                        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 border-b border-slate-200/60 pb-3">
-                            <div>
-                                <span class="text-[11px] font-bold text-blue-600 bg-blue-50 px-2.5 py-0.5 rounded-lg">${job.category}</span>
-                                <h3 class="text-base font-extrabold text-slate-900 mt-1">${job.title}</h3>
-                                <p class="text-xs text-slate-500">일시: ${job.date} ${job.time} | 일당: ${job.pay.toLocaleString()}원</p>
-                            </div>
-                            <span class="text-xs font-bold text-emerald-600 bg-emerald-50 px-3 py-1 rounded-full">${job.status}</span>
-                        </div>
-                        <div class="space-y-2 text-xs">
-                            <span class="font-bold text-slate-700 text-[11px] block">지원자 순위 현황</span>
-                            <div class="p-3 rounded-2xl bg-white border border-slate-200/80 flex items-center justify-between">
-                                <div>
-                                    <span class="font-bold text-blue-600">1순위:</span>
-                                    ${c1 ? `<strong class="text-slate-900">${c1.name}</strong> (${c1.badge}) - <span class="text-emerald-600">${c1.status}</span>` : '<span class="text-slate-400">지원자 없음</span>'}
-                                </div>
-                                ${c1 ? `<button onclick="triggerNoShow('${job.id}')" class="text-[11px] font-bold px-3 py-1.5 rounded-xl bg-rose-50 text-rose-600 hover:bg-rose-100 transition">노쇼 발생 처리 (2순위 승계)</button>` : ''}
-                            </div>
-                            <div class="p-3 rounded-2xl bg-white border border-slate-200/80 flex items-center justify-between">
-                                <div>
-                                    <span class="font-bold text-slate-600">2순위 (대기):</span>
-                                    ${c2 ? `<strong class="text-slate-900">${c2.name}</strong> (${c2.badge}) - <span class="text-blue-600">${c2.status}</span>` : '<span class="text-slate-400">대기자 없음</span>'}
-                                </div>
-                                ${c2 ? '<span class="text-[10px] text-amber-600 font-bold bg-amber-50 px-2 py-0.5 rounded">+5,000원 가산 대상</span>' : ''}
-                            </div>
-                            <div class="p-3 rounded-2xl bg-white border border-slate-200/80 flex items-center justify-between">
-                                <div>
-                                    <span class="font-bold text-slate-400">3순위 (대기):</span>
-                                    ${c3 ? `<strong class="text-slate-900">${c3.name}</strong> (${c3.badge})` : '<span class="text-slate-400">대기자 없음</span>'}
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                `;
-            }).join('');
-        }
+        function updateHeaderUI() {
+            const userArea = document.getElementById('header-user-area');
+            const user = JSON.parse(localStorage.getItem('sw_user'));
+            const points = parseInt(localStorage.getItem('sw_points') || '0', 10);
 
-        function triggerNoShow(jobId) {
-            if (!confirm('1순위 지원자의 노쇼를 확정하시겠습니까?\n즉시 2순위 대기자에게 승계 및 가산금(+5,000원)이 부여됩니다.')) return;
-            const jobs = JSON.parse(localStorage.getItem('sw_jobs')) || [];
-            const job = jobs.find(j => j.id === jobId);
-            if (job && job.candidates && job.candidates.length > 1) {
-                job.candidates.shift();
-                job.candidates.forEach((c, idx) => {
-                    c.rank = idx + 1;
-                    c.status = c.rank === 1 ? '2순위 승계 출근확정 (가산금 적용)' : `${c.rank}순위 대기`;
-                });
-                job.status = '2순위 자동 승계 완료';
-                localStorage.setItem('sw_jobs', JSON.stringify(jobs));
-                alert('[노쇼 승계 성공]\n\n2순위 대기자에게 긴급 알림이 발송되었으며 승계 출근이 확정되었습니다.');
-                loadEmployerJobs();
+            let html = `
+                <a href="/notifications.html" class="p-2 text-slate-500 hover:text-blue-600 transition" title="알림 센터">
+                    <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+                        <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+                    </svg>
+                </a>
+            `;
+
+            if (user) {
+                html += `
+                    <button onclick="openSubModal()" class="text-xs font-extrabold bg-blue-50 text-blue-600 px-3 py-1.5 rounded-xl border border-blue-100 hover:bg-blue-100 transition">
+                        포인트 ${points.toLocaleString()}P (정산)
+                    </button>
+                    <a href="/senior-apply.html" class="w-9 h-9 rounded-full bg-slate-200 flex items-center justify-center text-slate-700 font-bold border border-slate-300 hover:border-blue-500 transition" title="프로필 페이지">
+                        <i class="fa-solid fa-user"></i>
+                    </a>
+                `;
             } else {
-                alert('승계할 2순위 대기 지원자가 없습니다.');
+                html += `<a href="/login.html" class="text-xs font-bold px-4 py-2 rounded-xl bg-slate-100 text-slate-700 hover:bg-slate-200 transition">로그인</a>`;
             }
+            userArea.innerHTML = html;
         }
 
         function openCreateJobModal() { document.getElementById('createJobModal').classList.remove('hidden'); }
         function closeCreateJobModal() { document.getElementById('createJobModal').classList.add('hidden'); }
+        function openSubModal() { document.getElementById('subModal').classList.remove('hidden'); }
+        function closeSubModal() { document.getElementById('subModal').classList.add('hidden'); }
 
         function handleCreateJob(e) {
             e.preventDefault();
@@ -311,31 +198,23 @@
             const date = document.getElementById('job-date').value;
             const time = document.getElementById('job-time').value;
             const pay = parseInt(document.getElementById('job-pay').value, 10);
-            const newJob = {
-                id: 'job-' + Date.now(),
-                storeName: store,
-                title: title,
-                category: category,
-                date: date,
-                time: time,
-                pay: pay,
-                feeRate: 0.05,
-                status: '구직자 모집중',
-                badgeReq: badgeReq,
-                candidates: []
-            };
+            
+            const newJob = { id: 'job-' + Date.now(), storeName: store, title, category, date, time, pay, status: '구직자 모집중', badgeReq, candidates: [] };
             const jobs = JSON.parse(localStorage.getItem('sw_jobs')) || [];
             jobs.unshift(newJob);
             localStorage.setItem('sw_jobs', JSON.stringify(jobs));
-            alert('[공고 등록 완료]\n\n피크타임 구인 공고가 실시간으로 등록되었습니다.');
+            alert('피크타임 구인 공고가 등록되었습니다.');
             closeCreateJobModal();
-            loadEmployerJobs();
+            location.reload();
         }
 
-        function openSubModal() { document.getElementById('subModal').classList.remove('hidden'); }
-        function closeSubModal() { document.getElementById('subModal').classList.add('hidden'); }
+        function handleSettlement(e) {
+            e.preventDefault();
+            alert('정산 지급 신청서가 접수되었습니다.');
+            closeSubModal();
+        }
 
-        document.addEventListener('DOMContentLoaded', loadEmployerJobs);
+        document.addEventListener('DOMContentLoaded', () => { updateHeaderUI(); });
     </script>
 </body>
 </html>

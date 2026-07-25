@@ -8,177 +8,74 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css');
-        :root {
-            --toss-blue: #3182f6;
-            --toss-blue-hover: #1b64da;
-            --toss-bg: #f9fafb;
-        }
-        body {
-            font-family: "Pretendard", -apple-system, BlinkMacSystemFont, system-ui, Roboto, sans-serif;
-            background-color: var(--toss-bg);
-            color: #191f28;
-            word-break: keep-all;
-        }
-        .btn-toss {
-            background-color: var(--toss-blue);
-            color: #ffffff;
-            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-        .btn-toss:hover {
-            background-color: var(--toss-blue-hover);
-            transform: translateY(-1px);
-            box-shadow: 0 4px 14px rgba(49, 130, 246, 0.35);
-        }
+        body { font-family: "Pretendard", sans-serif; background-color: #f9fafb; color: #191f28; word-break: keep-all; }
     </style>
 </head>
-<body class="min-h-screen flex flex-col justify-between antialiased selection:bg-blue-100 selection:text-blue-600">
+<body class="min-h-screen flex flex-col justify-between antialiased">
     <header class="sticky top-0 z-50 bg-white/90 backdrop-blur-md border-b border-slate-100 shadow-sm">
         <div class="max-w-6xl mx-auto px-5 h-16 flex items-center justify-between">
-            <a href="/index.html" class="flex items-center gap-2.5 group">
-                <div class="p-1.5 rounded-xl bg-blue-50 text-blue-600 group-hover:bg-blue-100 transition">
+            <a href="/index.html" class="flex items-center gap-2.5">
+                <div class="p-1.5 rounded-xl bg-blue-50 text-blue-600">
                     <svg class="w-8 h-8" viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="8" stroke-linecap="round" stroke-linejoin="round">
                         <path d="M 14 58 C 28 72 44 72 58 48 C 72 24 88 18 95 35" />
                         <path d="M 48 70 C 62 82 78 78 86 60" />
                     </svg>
                 </div>
-                <span class="text-xl font-extrabold tracking-tight text-slate-900 group-hover:text-blue-600 transition">
-                    silverworks
-                </span>
+                <span class="text-xl font-extrabold tracking-tight text-slate-900">silverworks</span>
             </a>
-            <nav class="hidden md:flex items-center gap-8 text-sm font-semibold text-slate-600">
-                <a href="/jobs.html" class="hover:text-blue-600 transition">피크타임 공고</a>
-                <a href="/senior-apply.html" class="hover:text-blue-600 transition">시니어 일자리센터</a>
-                <a href="/employer.html" class="hover:text-blue-600 transition">사장님 센터</a>
-                <a href="/admin.html" class="hover:text-blue-600 transition">관리자 HQ</a>
-            </nav>
-            <div class="flex items-center gap-3">
-                <a href="/notifications.html" class="relative p-2 text-blue-600 bg-blue-50 rounded-full transition">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0.538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path>
-                    </svg>
-                    <span class="absolute top-1 right-1 w-2 h-2 bg-blue-600 rounded-full"></span>
-                </a>
-            </div>
+            <div id="header-user-area" class="flex items-center gap-3"></div>
         </div>
     </header>
 
     <main class="max-w-3xl mx-auto px-5 py-10 flex-1 w-full space-y-6">
-        <div class="flex items-center justify-between border-b border-slate-200 pb-5">
-            <div>
-                <h1 class="text-2xl font-black text-slate-900 tracking-tight">알림 센터</h1>
-                <p class="text-xs text-slate-500 mt-1">2순위 자동 승계, 체력검증 배지 승인, 카카오 알림톡 실시간 내역</p>
-            </div>
-            <button onclick="markAllAsRead()" class="text-xs font-bold text-slate-500 hover:text-blue-600 bg-white border border-slate-200 px-3.5 py-2 rounded-xl transition">
-                모두 읽음 처리
-            </button>
-        </div>
-
-        <div class="flex items-center gap-2 overflow-x-auto pb-1 text-xs font-bold">
-            <button onclick="filterNoti('all')" id="tab-all" class="px-4 py-2 rounded-xl bg-slate-900 text-white transition">전체 <span id="count-all" class="ml-1 opacity-80">4</span></button>
-            <button onclick="filterNoti('match')" id="tab-match" class="px-4 py-2 rounded-xl bg-white text-slate-600 border border-slate-200 hover:bg-slate-50 transition">매칭·승계</button>
-            <button onclick="filterNoti('verify')" id="tab-verify" class="px-4 py-2 rounded-xl bg-white text-slate-600 border border-slate-200 hover:bg-slate-50 transition">체력검증</button>
-            <button onclick="filterNoti('pay')" id="tab-pay" class="px-4 py-2 rounded-xl bg-white text-slate-600 border border-slate-200 hover:bg-slate-50 transition">정산·구독</button>
+        <div class="border-b border-slate-200 pb-5">
+            <h1 class="text-2xl font-black text-slate-900 tracking-tight">알림 센터</h1>
+            <p class="text-xs text-slate-500 mt-1">2순위 자동 승계, 체력검증 배지 승인, 실시간 알림 내역</p>
         </div>
 
         <div class="space-y-3" id="notification-list">
-            <div class="noti-item type-match bg-blue-50/70 border border-blue-200/80 rounded-3xl p-5 space-y-2 relative transition hover:shadow-md">
-                <div class="flex items-center justify-between">
-                    <span class="inline-flex items-center gap-1.5 text-[11px] font-extrabold text-blue-700 bg-blue-100 px-2.5 py-0.5 rounded-md">
-                        <i class="fa-solid fa-bolt text-amber-500"></i> 2순위 긴급 출근 승계
-                    </span>
-                    <span class="text-[11px] font-medium text-slate-400">10분 전</span>
-                </div>
-                <h3 class="text-sm font-black text-slate-900">[대박식당] 피크타임 근무 2순위 승계 출근 확정!</h3>
-                <p class="text-xs text-slate-600 leading-relaxed">
-                    1순위 지원자의 노쇼 발생으로 대기자(2순위) 지원님의 출근이 승계 확정되었습니다.<br>
-                    <strong>대기 가산금 +5,000원</strong>이 정산액에 추가 합산됩니다. 늦지 않게 도착해 주세요!
-                </p>
-                <div class="pt-2 flex items-center justify-between text-xs">
-                    <span class="text-[11px] font-bold text-blue-600">카카오 알림톡 발송 완료</span>
-                    <a href="/jobs.html" class="font-bold text-blue-600 hover:underline">공고 상세 확인 <i class="fa-solid fa-chevron-right text-[10px]"></i></a>
-                </div>
-            </div>
-
-            <div class="noti-item type-verify bg-white border border-slate-200/80 rounded-3xl p-5 space-y-2 relative transition hover:shadow-md">
-                <div class="flex items-center justify-between">
-                    <span class="inline-flex items-center gap-1.5 text-[11px] font-extrabold text-emerald-700 bg-emerald-50 px-2.5 py-0.5 rounded-md">
-                        <i class="fa-solid fa-award"></i> [체력 베테랑] 배지 발급
-                    </span>
-                    <span class="text-[11px] font-medium text-slate-400">1시간 전</span>
-                </div>
-                <h3 class="text-sm font-black text-slate-900">국민체력100 1등급 검증 서류 승인 완료</h3>
-                <p class="text-xs text-slate-600 leading-relaxed">
-                    제출하신 국민체력100 인증서 심사가 완료되어 프로필에 <strong>[체력 베테랑]</strong> 배지가 정상 부여되었습니다. 피크타임 구인 공고 지원 시 우선 순위가 반영됩니다.
-                </p>
-                <div class="pt-2 flex items-center justify-between text-xs">
-                    <span class="text-[11px] font-medium text-slate-400">심사기관: 관리자 HQ</span>
-                    <a href="/senior-apply.html" class="font-bold text-blue-600 hover:underline">내 배지 확인 <i class="fa-solid fa-chevron-right text-[10px]"></i></a>
-                </div>
-            </div>
-
-            <div class="noti-item type-pay bg-white border border-slate-200/80 rounded-3xl p-5 space-y-2 relative transition hover:shadow-md">
-                <div class="flex items-center justify-between">
-                    <span class="inline-flex items-center gap-1.5 text-[11px] font-extrabold text-slate-700 bg-slate-100 px-2.5 py-0.5 rounded-md">
-                        <i class="fa-solid fa-file-invoice-dollar"></i> 구독 수수료 감면 승인
-                    </span>
-                    <span class="text-[11px] font-medium text-slate-400">어제</span>
-                </div>
-                <h3 class="text-sm font-black text-slate-900">1년 연간 구독(120,000원) 무통장 입금 확인 완료</h3>
-                <p class="text-xs text-slate-600 leading-relaxed">
-                    KB국민 812701-04-182934 계좌 입금이 확인되어 1년간 피크타임 구인 수수료 5% 감면 혜택이 적용되었습니다.
-                </p>
-                <div class="pt-2 flex items-center justify-between text-xs">
-                    <span class="text-[11px] font-medium text-slate-400">적용 수수료: 10% → 5%</span>
-                    <a href="/employer.html" class="font-bold text-blue-600 hover:underline">사장님 센터 이동 <i class="fa-solid fa-chevron-right text-[10px]"></i></a>
-                </div>
-            </div>
-
-            <div class="noti-item type-match bg-white border border-slate-200/80 rounded-3xl p-5 space-y-2 relative transition hover:shadow-md">
-                <div class="flex items-center justify-between">
-                    <span class="inline-flex items-center gap-1.5 text-[11px] font-extrabold text-slate-700 bg-slate-100 px-2.5 py-0.5 rounded-md">
-                        <i class="fa-solid fa-clock"></i> 출근 리마인드
-                    </span>
-                    <span class="text-[11px] font-medium text-slate-400">2일 전</span>
-                </div>
-                <h3 class="text-sm font-black text-slate-900">[대박식당] 피크타임 홀 서빙 알바 사전 리마인드</h3>
-                <p class="text-xs text-slate-600 leading-relaxed">
-                    근무 시작 1시간 전입니다. 위치: 경기도 성남시 중원구 광명로 79. 무단 지각 시 2순위 대기자에게 승계될 수 있습니다.
-                </p>
+            <div class="p-8 text-center text-slate-400 bg-white rounded-3xl border border-slate-200/80">
+                <i class="fa-solid fa-bell-slash text-3xl mb-2 text-slate-300"></i>
+                <p class="text-xs font-bold">새로운 알림이 없습니다.</p>
             </div>
         </div>
     </main>
 
-    <footer class="bg-slate-900 text-slate-400 text-xs py-8 border-t border-slate-800 text-center">
-        <p><strong class="text-white">실버웍스 (silverworks)</strong>, 대표 유연성 010-7464-3657, 대표 민 혁 010-9187-9074, 주소: 경기도 성남시 중원구 광명로 79, 4층 404호 (성남동, 상산빌딩), 사업자등록 번호 : 726-19-02892, 주업종: 경영컨설팅업 (전문, 과학 및 기술서비스업) (업종코드 : 741400) | 부업종: 데이터베이스 및 온라인 정보 제공업 (업종코드 : 724000)</p>
+    <footer class="bg-slate-900 text-slate-400 text-xs py-8 border-t border-slate-800 text-center px-5">
+        <p>실버웍스 (silverworks), 대표 유연성 010-7464-3657, 대표 민 혁 010-9187-9074, 주소: 경기도 성남시 중원구 광명로 79, 4층 404호 (성남동, 상산빌딩), 사업자등록 번호 : 726-19-02892, 주업종: 경영컨설팅업 (전문, 과학 및 기술서비스업) (업종코드 : 741400) | 부업종: 데이터베이스 및 온라인 정보 제공업 (업종코드 : 724000)</p>
     </footer>
 
     <script>
-        function markAllAsRead() {
-            const unreadCards = document.querySelectorAll('.noti-item.bg-blue-50\\/70');
-            unreadCards.forEach(card => {
-                card.classList.remove('bg-blue-50/70', 'border-blue-200/80');
-                card.classList.add('bg-white', 'border-slate-200/80');
-            });
-            alert('모든 알림을 읽음 처리했습니다.');
+        function updateHeaderUI() {
+            const userArea = document.getElementById('header-user-area');
+            const user = JSON.parse(localStorage.getItem('sw_user'));
+            const points = parseInt(localStorage.getItem('sw_points') || '0', 10);
+
+            let html = `
+                <a href="/notifications.html" class="p-2 text-blue-600 bg-blue-50 rounded-full transition" title="알림 센터">
+                    <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+                        <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+                    </svg>
+                </a>
+            `;
+
+            if (user) {
+                html += `
+                    <button onclick="alert('정산 페이지로 이동합니다.')" class="text-xs font-extrabold bg-blue-50 text-blue-600 px-3 py-1.5 rounded-xl border border-blue-100 hover:bg-blue-100 transition">
+                        포인트 ${points.toLocaleString()}P (정산)
+                    </button>
+                    <a href="/senior-apply.html" class="w-9 h-9 rounded-full bg-slate-200 flex items-center justify-center text-slate-700 font-bold border border-slate-300 hover:border-blue-500 transition" title="프로필 페이지">
+                        <i class="fa-solid fa-user"></i>
+                    </a>
+                `;
+            } else {
+                html += `<a href="/login.html" class="text-xs font-bold px-4 py-2 rounded-xl bg-slate-100 text-slate-700 hover:bg-slate-200 transition">로그인</a>`;
+            }
+            userArea.innerHTML = html;
         }
 
-        function filterNoti(type) {
-            const allItems = document.querySelectorAll('.noti-item');
-            ['all', 'match', 'verify', 'pay'].forEach(t => {
-                const btn = document.getElementById(`tab-${t}`);
-                if (btn) btn.className = "px-4 py-2 rounded-xl bg-white text-slate-600 border border-slate-200 hover:bg-slate-50 transition";
-            });
-            const activeBtn = document.getElementById(`tab-${type}`);
-            if (activeBtn) activeBtn.className = "px-4 py-2 rounded-xl bg-slate-900 text-white transition";
-
-            allItems.forEach(item => {
-                if (type === 'all' || item.classList.contains(`type-${type}`)) {
-                    item.style.display = 'block';
-                } else {
-                    item.style.display = 'none';
-                }
-            });
-        }
+        document.addEventListener('DOMContentLoaded', () => { updateHeaderUI(); });
     </script>
 </body>
 </html>

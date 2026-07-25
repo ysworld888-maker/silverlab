@@ -8,55 +8,26 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css');
-        :root {
-            --toss-blue: #3182f6;
-            --toss-blue-hover: #1b64da;
-            --toss-bg: #f9fafb;
-        }
-        body {
-            font-family: "Pretendard", -apple-system, BlinkMacSystemFont, system-ui, Roboto, sans-serif;
-            background-color: var(--toss-bg);
-            color: #191f28;
-            word-break: keep-all;
-        }
-        .btn-toss {
-            background-color: var(--toss-blue);
-            color: #ffffff;
-            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-        .btn-toss:hover {
-            background-color: var(--toss-blue-hover);
-            transform: translateY(-1px);
-            box-shadow: 0 4px 14px rgba(49, 130, 246, 0.35);
-        }
+        body { font-family: "Pretendard", sans-serif; background-color: #f9fafb; color: #191f28; word-break: keep-all; }
+        .btn-toss { background-color: #3182f6; color: #fff; transition: all 0.2s; }
+        .btn-toss:hover { background-color: #1b64da; }
     </style>
 </head>
-<body class="min-h-screen flex flex-col justify-between antialiased selection:bg-blue-100 selection:text-blue-600">
+<body class="min-h-screen flex flex-col justify-between antialiased">
     <header class="sticky top-0 z-50 bg-slate-900 text-white shadow-md">
         <div class="max-w-7xl mx-auto px-5 h-16 flex items-center justify-between">
-            <a href="/index.html" class="flex items-center gap-2.5 group">
-                <div class="p-1.5 rounded-xl bg-blue-500/20 text-blue-400 group-hover:bg-blue-500/30 transition">
+            <a href="/index.html" class="flex items-center gap-2.5">
+                <div class="p-1.5 rounded-xl bg-blue-500/20 text-blue-400">
                     <svg class="w-8 h-8" viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="8" stroke-linecap="round" stroke-linejoin="round">
                         <path d="M 14 58 C 28 72 44 72 58 48 C 72 24 88 18 95 35" />
                         <path d="M 48 70 C 62 82 78 78 86 60" />
                     </svg>
                 </div>
-                <span class="text-xl font-extrabold tracking-tight text-white group-hover:text-blue-400 transition">
-                    silverworks <span class="text-xs font-bold px-2 py-0.5 rounded bg-blue-600 text-white ml-1">HQ</span>
-                </span>
+                <span class="text-xl font-extrabold text-white">silverworks <span class="text-xs px-2 py-0.5 rounded bg-blue-600">HQ</span></span>
             </a>
-            <nav class="hidden md:flex items-center gap-8 text-sm font-semibold text-slate-300">
-                <a href="/jobs.html" class="hover:text-blue-400 transition">피크타임 공고</a>
-                <a href="/senior-apply.html" class="hover:text-blue-400 transition">시니어 일자리센터</a>
-                <a href="/employer.html" class="hover:text-blue-400 transition">사장님 센터</a>
-                <a href="/admin.html" class="text-blue-400 font-extrabold transition">관리자 HQ</a>
-            </nav>
-            <div class="flex items-center gap-3">
-                <span class="inline-flex items-center gap-1.5 text-xs font-bold px-3 py-1.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
-                    <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-                    시스템 정상 가동 중
-                </span>
-            </div>
+            <span class="text-xs font-bold px-3 py-1.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+                <span class="w-2 h-2 rounded-full bg-emerald-400 inline-block animate-pulse mr-1"></span> 관리자 보안 접속 모드
+            </span>
         </div>
     </header>
 
@@ -64,35 +35,25 @@
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             <div class="bg-white p-5 rounded-3xl border border-slate-200/80 shadow-sm space-y-1">
                 <span class="text-xs font-bold text-slate-400">누적 매칭 거래액</span>
-                <p class="text-2xl font-black text-slate-900" id="stat-total-volume">1,840,000원</p>
-                <p class="text-[11px] text-blue-600 font-semibold">당일 예상 수수료 수익: 92,000원</p>
+                <p class="text-2xl font-black text-slate-900" id="stat-total-volume">0원</p>
+                <p class="text-[11px] text-blue-600 font-semibold">실시간 정산 관리중</p>
             </div>
             <div class="bg-white p-5 rounded-3xl border border-slate-200/80 shadow-sm space-y-1">
                 <span class="text-xs font-bold text-slate-400">등록 피크타임 공고</span>
                 <p class="text-2xl font-black text-slate-900" id="stat-job-count">0건</p>
-                <p class="text-[11px] text-emerald-600 font-semibold">매칭 성공률 98.2%</p>
             </div>
             <div class="bg-white p-5 rounded-3xl border border-slate-200/80 shadow-sm space-y-1">
                 <span class="text-xs font-bold text-slate-400">체력검증 대기건</span>
-                <p class="text-2xl font-black text-amber-600" id="stat-pending-verify">2건</p>
-                <p class="text-[11px] text-slate-500">24시간 내 심사 처리 필요</p>
+                <p class="text-2xl font-black text-amber-600" id="stat-pending-verify">0건</p>
             </div>
             <div class="bg-white p-5 rounded-3xl border border-slate-200/80 shadow-sm space-y-1">
                 <span class="text-xs font-bold text-slate-400">구독 무통장 입금 승인 대기</span>
-                <p class="text-2xl font-black text-blue-600" id="stat-pending-sub">1건</p>
-                <p class="text-[11px] text-slate-500">KB국민 812701-04-182934 내역 확인</p>
+                <p class="text-2xl font-black text-blue-600" id="stat-pending-sub">0건</p>
             </div>
         </div>
 
         <div class="bg-white rounded-3xl p-6 md:p-8 border border-slate-200/80 shadow-sm space-y-4">
-            <div class="flex justify-between items-center border-b border-slate-100 pb-4">
-                <div>
-                    <h2 class="text-base font-black text-slate-900 flex items-center gap-2">
-                        <i class="fa-solid fa-file-invoice-dollar text-blue-600"></i> 사장님 연간 구독 무통장 입금 승인 관리
-                    </h2>
-                    <p class="text-xs text-slate-500 mt-0.5">지정 계좌 입금 확인 시 승인 버튼을 클릭하여 수수료 5% 감면 혜택을 활성화합니다.</p>
-                </div>
-            </div>
+            <h2 class="text-base font-black text-slate-900"><i class="fa-solid fa-file-invoice-dollar text-blue-600"></i> 사장님 연간 구독 무통장 입금 승인 관리</h2>
             <div class="overflow-x-auto">
                 <table class="w-full text-left border-collapse text-xs">
                     <thead>
@@ -105,20 +66,15 @@
                             <th class="p-3 text-right">관리 Action</th>
                         </tr>
                     </thead>
-                    <tbody id="sub-table-body" class="divide-y divide-slate-100 text-slate-700"></tbody>
+                    <tbody id="sub-table-body" class="divide-y divide-slate-100 text-slate-700">
+                        <tr><td colspan="6" class="p-6 text-center text-slate-400">현재 대기 중인 신청 내역이 없습니다.</td></tr>
+                    </tbody>
                 </table>
             </div>
         </div>
 
         <div class="bg-white rounded-3xl p-6 md:p-8 border border-slate-200/80 shadow-sm space-y-4">
-            <div class="flex justify-between items-center border-b border-slate-100 pb-4">
-                <div>
-                    <h2 class="text-base font-black text-slate-900 flex items-center gap-2">
-                        <i class="fa-solid fa-id-card text-emerald-600"></i> 시니어 체력 검증 & 보건증 심사
-                    </h2>
-                    <p class="text-xs text-slate-500 mt-0.5">국민체력100 및 보건증 서류를 검토하고 [체력 베테랑] 배지를 부여하세요.</p>
-                </div>
-            </div>
+            <h2 class="text-base font-black text-slate-900"><i class="fa-solid fa-id-card text-emerald-600"></i> 시니어 체력 검증 & 보건증 심사</h2>
             <div class="overflow-x-auto">
                 <table class="w-full text-left border-collapse text-xs">
                     <thead>
@@ -131,121 +87,16 @@
                             <th class="p-3 text-right">관리 Action</th>
                         </tr>
                     </thead>
-                    <tbody id="verify-table-body" class="divide-y divide-slate-100 text-slate-700"></tbody>
+                    <tbody id="verify-table-body" class="divide-y divide-slate-100 text-slate-700">
+                        <tr><td colspan="6" class="p-6 text-center text-slate-400">현재 대기 중인 심사 내역이 없습니다.</td></tr>
+                    </tbody>
                 </table>
             </div>
         </div>
-
-        <div class="bg-white rounded-3xl p-6 md:p-8 border border-slate-200/80 shadow-sm space-y-4">
-            <div class="flex justify-between items-center border-b border-slate-100 pb-4">
-                <div>
-                    <h2 class="text-base font-black text-slate-900 flex items-center gap-2">
-                        <i class="fa-solid fa-list-check text-slate-700"></i> 전체 피크 공고 및 2순위 승계 모니터링
-                    </h2>
-                    <p class="text-xs text-slate-500 mt-0.5">노쇼 발생 시 2순위 자동 승계 및 대기 가산금(+5,000원) 정산 현황을 실시간 관리합니다.</p>
-                </div>
-            </div>
-            <div id="admin-job-monitor" class="space-y-4"></div>
-        </div>
     </main>
 
-    <footer class="bg-slate-900 text-slate-400 text-xs py-8 border-t border-slate-800 text-center">
-        <p><strong class="text-white">실버웍스 (silverworks)</strong>, 대표 유연성 010-7464-3657, 대표 민 혁 010-9187-9074, 주소: 경기도 성남시 중원구 광명로 79, 4층 404호 (성남동, 상산빌딩), 사업자등록 번호 : 726-19-02892, 주업종: 경영컨설팅업 (전문, 과학 및 기술서비스업) (업종코드 : 741400) | 부업종: 데이터베이스 및 온라인 정보 제공업 (업종코드 : 724000)</p>
+    <footer class="bg-slate-900 text-slate-400 text-xs py-8 border-t border-slate-800 text-center px-5">
+        <p>실버웍스 (silverworks), 대표 유연성 010-7464-3657, 대표 민 혁 010-9187-9074, 주소: 경기도 성남시 중원구 광명로 79, 4층 404호 (성남동, 상산빌딩), 사업자등록 번호 : 726-19-02892, 주업종: 경영컨설팅업 (전문, 과학 및 기술서비스업) (업종코드 : 741400) | 부업종: 데이터베이스 및 온라인 정보 제공업 (업종코드 : 724000)</p>
     </footer>
-
-    <script>
-        let mockSubscriptions = [
-            { id: 'sub-1', date: '2026-07-26 09:30', name: '김대박 (대박식당)', amount: 120000, depositor: '김대박', status: '입금대기' },
-            { id: 'sub-2', date: '2026-07-25 14:10', name: '이즐거운 (즐거운카페)', amount: 120000, depositor: '이즐거운', status: '승인완료' }
-        ];
-        let mockVerifications = [
-            { id: 'ver-1', senior: '김철수 (68세)', type: '국민체력100', detail: '성남 체력인증센터 1등급', date: '2026-07-26 10:15', status: '심사대기' },
-            { id: 'ver-2', senior: '박영희 (66세)', type: '보건증', detail: '중원구 보건소 (유효기간 ~2027)', date: '2026-07-26 11:00', status: '심사대기' }
-        ];
-
-        function renderAdminDashboard() {
-            const subBody = document.getElementById('sub-table-body');
-            subBody.innerHTML = mockSubscriptions.map(sub => `
-                <tr>
-                    <td class="p-3 text-slate-500">${sub.date}</td>
-                    <td class="p-3 font-bold text-slate-900">${sub.name}</td>
-                    <td class="p-3 font-mono font-bold text-blue-600">${sub.amount.toLocaleString()}원</td>
-                    <td class="p-3">${sub.depositor}</td>
-                    <td class="p-3">
-                        <span class="px-2.5 py-1 rounded-full text-[10px] font-bold ${sub.status === '승인완료' ? 'bg-emerald-50 text-emerald-600' : 'bg-amber-50 text-amber-600'}">
-                            ${sub.status}
-                        </span>
-                    </td>
-                    <td class="p-3 text-right">
-                        ${sub.status === '입금대기' ? `<button onclick="approveSub('${sub.id}')" class="btn-toss text-[11px] font-bold px-3 py-1 rounded-xl">입금 승인(수수료 5% 적용)</button>` : '<span class="text-slate-400">처리 완료</span>'}
-                    </td>
-                </tr>
-            `).join('');
-
-            const verBody = document.getElementById('verify-table-body');
-            verBody.innerHTML = mockVerifications.map(ver => `
-                <tr>
-                    <td class="p-3 font-bold text-slate-900">${ver.senior}</td>
-                    <td class="p-3"><span class="bg-blue-50 text-blue-600 font-bold px-2 py-0.5 rounded">${ver.type}</span></td>
-                    <td class="p-3 font-medium">${ver.detail}</td>
-                    <td class="p-3 text-slate-500">${ver.date}</td>
-                    <td class="p-3">
-                        <span class="px-2.5 py-1 rounded-full text-[10px] font-bold ${ver.status === '승인완료' ? 'bg-emerald-50 text-emerald-600' : 'bg-amber-50 text-amber-600'}">
-                            ${ver.status}
-                        </span>
-                    </td>
-                    <td class="p-3 text-right">
-                        ${ver.status === '심사대기' ? `<button onclick="approveVerification('${ver.id}')" class="btn-toss text-[11px] font-bold px-3 py-1 rounded-xl">승인 및 배지 부여</button>` : '<span class="text-slate-400">발급 완료</span>'}
-                    </td>
-                </tr>
-            `).join('');
-
-            const jobs = JSON.parse(localStorage.getItem('sw_jobs')) || [];
-            document.getElementById('stat-job-count').innerText = jobs.length + '건';
-            const monitorContainer = document.getElementById('admin-job-monitor');
-            if (jobs.length === 0) {
-                monitorContainer.innerHTML = '<p class="text-xs text-slate-400 text-center py-6">등록된 공고가 없습니다.</p>';
-                return;
-            }
-            monitorContainer.innerHTML = jobs.map(job => `
-                <div class="p-4 rounded-2xl bg-slate-50 border border-slate-200/80 flex flex-col md:flex-row justify-between items-start md:items-center gap-3 text-xs">
-                    <div>
-                        <div class="flex items-center gap-2">
-                            <span class="font-bold text-blue-600 bg-blue-50 px-2 py-0.5 rounded text-[10px]">${job.storeName}</span>
-                            <strong class="text-sm font-bold text-slate-900">${job.title}</strong>
-                        </div>
-                        <p class="text-slate-500 mt-1">일시: ${job.date} ${job.time} | 일당: ${job.pay.toLocaleString()}원 | 적용 수수료: ${(job.feeRate * 100)}%</p>
-                    </div>
-                    <div class="flex items-center gap-3">
-                        <span class="font-bold text-emerald-600 bg-emerald-50 px-3 py-1 rounded-full text-[11px]">
-                            ${job.status}
-                        </span>
-                    </div>
-                </div>
-            `).join('');
-        }
-
-        function approveSub(id) {
-            const item = mockSubscriptions.find(s => s.id === id);
-            if (item) {
-                item.status = '승인완료';
-                alert(`[무통장 입금 승인]\n\n${item.name} 사장님의 1년 정기 구독(120,000원)이 승인되었습니다.\n해당 사장님의 구인 수수료가 5%로 자동 인하됩니다.`);
-                document.getElementById('stat-pending-sub').innerText = '0건';
-                renderAdminDashboard();
-            }
-        }
-
-        function approveVerification(id) {
-            const item = mockVerifications.find(v => v.id === id);
-            if (item) {
-                item.status = '승인완료';
-                alert(`[체력 검증 승인]\n\n${item.senior} 시니어님께 '체력 베테랑' 배지가 부여되었습니다.\n우선 매칭 및 2순위 승계 가산금 자격이 활성화됩니다.`);
-                document.getElementById('stat-pending-verify').innerText = '1건';
-                renderAdminDashboard();
-            }
-        }
-
-        document.addEventListener('DOMContentLoaded', renderAdminDashboard);
-    </script>
 </body>
 </html>
