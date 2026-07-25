@@ -38,12 +38,16 @@
     <main class="max-w-6xl mx-auto px-5 py-10 flex-1 w-full space-y-8">
         <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
             <div class="bg-white rounded-3xl p-6 border border-sky-100 shadow-sm space-y-2">
-                <span class="text-xs font-bold text-slate-400">구독 우대 혜택</span>
+                <div class="flex justify-between items-center">
+                    <span class="text-xs font-bold text-slate-400">구독 우대 혜택</span>
+                    <span id="sub-badge-area"></span>
+                </div>
                 <h3 class="text-xl font-black text-slate-800">수수료 5% 우대</h3>
                 <p class="text-xs text-slate-500">피크타임 매칭 수수료 10% → 5% 감면</p>
+                <button onclick="openSubscribeModal()" class="btn-sky text-xs font-bold px-4 py-2 rounded-xl shadow-sm mt-2">구독하기</button>
             </div>
             <div class="bg-white rounded-3xl p-6 border border-sky-100 shadow-sm space-y-2">
-                <span class="text-xs font-bold text-slate-400">등록한 구인 공고</span>
+                <span class="text-xs font-bold text-slate-400">등록한 피크 공고</span>
                 <h3 class="text-2xl font-black text-slate-800" id="emp-active-count">0건</h3>
                 <button onclick="openCreateJobModal()" class="btn-sky text-xs font-bold px-4 py-2 rounded-xl shadow-sm">+ 피크 공고 작성</button>
             </div>
@@ -57,11 +61,31 @@
         <div class="bg-white rounded-3xl p-6 md:p-8 border border-sky-100 shadow-sm space-y-6">
             <div class="flex justify-between items-center border-b border-sky-100 pb-4">
                 <h2 class="text-lg font-black text-slate-800">내 매장 구인 공고 관리</h2>
-                <button onclick="openCreateJobModal()" class="btn-sky text-xs font-bold px-4 py-2.5 rounded-xl">+ 신규 공고 작성</button>
+                <button onclick="openCreateJobModal()" class="btn-sky text-xs font-bold px-4 py-2.5 rounded-xl">+ 신규 공고 등록</button>
             </div>
             <div class="space-y-4" id="employer-job-list"></div>
         </div>
     </main>
+
+    <!-- Subscribe Modal -->
+    <div id="subscribeModal" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm hidden z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl max-w-md w-full p-7 space-y-5 shadow-2xl">
+            <div class="flex justify-between items-center border-b border-sky-100 pb-3">
+                <h3 class="text-lg font-black text-slate-800">사장님 구독 회원 신청</h3>
+                <button onclick="closeSubscribeModal()" class="text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark text-lg"></i></button>
+            </div>
+            <div class="space-y-3 text-xs text-slate-700">
+                <div class="p-4 bg-sky-50 rounded-2xl border border-sky-100 space-y-1">
+                    <p class="font-bold text-sky-800">사업용 무통장 계좌 안내</p>
+                    <p><strong>은행:</strong> KB국민은행</p>
+                    <p><strong>계좌번호:</strong> 812701-04-182934</p>
+                    <p><strong>예금주:</strong> 주식회사 실버웍스</p>
+                </div>
+                <p class="text-slate-500">입금 후 아래 신청 버튼을 누르시면, 관리자 승인 완료 후 즉시 프로필에 [구독 회원] 배지가 부여되며 수수료 감면 혜택이 적용됩니다.</p>
+                <button onclick="requestSubscription()" class="w-full py-3.5 btn-sky font-bold rounded-xl shadow">입금 완료 및 구독 신청</button>
+            </div>
+        </div>
+    </div>
 
     <!-- Create Job Modal -->
     <div id="createJobModal" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm hidden z-50 flex items-center justify-center p-4">
@@ -135,6 +159,9 @@
             `;
 
             if (user) {
+                const subBadge = user.isSubscribed ? `<span class="bg-amber-100 text-amber-700 text-[10px] font-bold px-2 py-0.5 rounded-md border border-amber-200">구독 회원</span>` : '';
+                document.getElementById('sub-badge-area').innerHTML = subBadge;
+
                 html += `
                     <a href="/profile.html" class="text-xs font-extrabold bg-sky-50 text-sky-600 px-3 py-1.5 rounded-xl border border-sky-100 hover:bg-sky-100 transition">
                         포인트 ${points.toLocaleString()}P
@@ -161,7 +188,7 @@
             const user = JSON.parse(localStorage.getItem('sw_user') || '{}');
             const container = document.getElementById('employer-job-list');
             
-            const myJobs = jobs.filter(j => j.employerId === user.id || j.storeName === user.name || true);
+            const myJobs = jobs.filter(j => j.employerId === user.id || j.storeName === user.name);
             document.getElementById('emp-active-count').innerText = myJobs.length + '건';
 
             if (myJobs.length === 0) {
@@ -183,8 +210,22 @@
             `).join('');
         }
 
+        function openSubscribeModal() { document.getElementById('subscribeModal').classList.remove('hidden'); }
+        function closeSubscribeModal() { document.getElementById('subscribeModal').classList.add('hidden'); }
         function openCreateJobModal() { document.getElementById('createJobModal').classList.remove('hidden'); }
         function closeCreateJobModal() { document.getElementById('createJobModal').classList.add('hidden'); }
+
+        function requestSubscription() {
+            const user = JSON.parse(localStorage.getItem('sw_user') || '{}');
+            const users = JSON.parse(localStorage.getItem('sw_users') || '[]');
+            const idx = users.findIndex(u => u.id === user.id);
+            if (idx !== -1) {
+                users[idx].subRequested = true;
+                localStorage.setItem('sw_users', JSON.stringify(users));
+                alert('구독 신청이 접수되었습니다. 관리자 확인 후 구독 회권 및 배지가 부여됩니다.');
+            }
+            closeSubscribeModal();
+        }
 
         function handleCreateJob(e) {
             e.preventDefault();
@@ -204,7 +245,7 @@
             const jobs = JSON.parse(localStorage.getItem('sw_jobs') || '[]');
             jobs.unshift(newJob);
             localStorage.setItem('sw_jobs', JSON.stringify(jobs));
-            alert('피크타임 구인 공고가 실시간 등록되었습니다.');
+            alert('피크타임 구인 공고가 등록되었습니다.');
             closeCreateJobModal();
             renderJobList();
         }

@@ -43,6 +43,14 @@
     </main>
 
     <script>
+        function checkPermission() {
+            const user = JSON.parse(localStorage.getItem('sw_user') || 'null');
+            if (user && user.role === 'employer') {
+                alert('사장님 회원 권한으로는 공고 탐색 페이지 이용이 제한됩니다. 사장님 센터로 이동합니다.');
+                location.href = '/employer.html';
+            }
+        }
+
         function updateHeaderUI() {
             const userArea = document.getElementById('header-user-area');
             const user = JSON.parse(localStorage.getItem('sw_user') || 'null');
@@ -108,6 +116,7 @@
         }
 
         document.addEventListener('DOMContentLoaded', () => {
+            checkPermission();
             updateHeaderUI();
             renderJobs();
         });

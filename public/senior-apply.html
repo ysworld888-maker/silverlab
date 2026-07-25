@@ -34,7 +34,7 @@
     <main class="flex-1 flex items-center justify-center py-10 px-5">
         <div class="w-full max-w-lg bg-white rounded-3xl p-8 border border-sky-100 shadow-xl space-y-6 text-center">
             
-            <!-- Progress Gauge Bar: 1/13 Explicit Display -->
+            <!-- Exact 13 Step Progress Gauge Bar -->
             <div class="space-y-2">
                 <div class="flex justify-between items-center text-xs font-bold text-slate-400">
                     <span>문진 작성 진행률</span>
@@ -63,13 +63,13 @@
     <script>
         function checkPermission() {
             const user = JSON.parse(localStorage.getItem('sw_user') || 'null');
-            if (!user || user.role !== 'senior') {
-                alert('시니어 구직자 회원 전용 페이지입니다.');
-                location.href = '/login.html';
+            if (user && user.role !== 'senior') {
+                alert('시니어 구직자 회원 전용 작성 페이지입니다.');
+                location.href = '/employer.html';
             }
         }
 
-        // Full 13 Questions
+        // Exact 13 Questions
         const questions = [
             { id: "q1", q: "1. 오늘 이 일자리 신청은 누가 도와주고 계시나요?", type: "radio", options: ["어르신 본인이 직접 스마트폰을 보고 있어요.", "아들, 딸, 손주 등 가족이 대신 눌러주고 있어요.", "주변 사람의 도움을 받고 있어요."] },
             { id: "name", q: "2. 성함이 어떻게 되시나요?", type: "text", placeholder: "성함 입력" },
@@ -81,7 +81,7 @@
             { id: "disease", q: "8-2. 현장에서 조심해야 할 지병이 있으십니까?", type: "radio", options: ["아주 건강합니다.", "네, 하지만 일 하는데 문제 없습니다.", "주기적으로 통증이 오거나 병원 치료 중입니다."] },
             { id: "hearing", q: "9. 시끄러운 식당이나 마트 안에서도 지시 사항이나 주문 소리를 잘 들으실 수 있습니까?", type: "radio", options: ["네, 귀가 밝아서 잘 들립니다.", "가끔 안 들릴 때가 있지만 소통에 문제없습니다.", "귀가 조금 어두워 큰 소리로 말씀해 주셔야 합니다."] },
             { id: "kakao", q: "10. 평소 스마트폰으로 자녀분들과 카카오톡 메시지를 주고 받으실 때 어려움을 겪습니까?", type: "radio", options: ["아니요, 문제 없습니다.", "네, 조금 어렵습니다."] },
-            { id: "bannerMsg", q: "(거의 다 왔습니다) - 계속하시려면 아래 버튼을 눌러주세요.", type: "info" },
+            { id: "bannerMsg", q: "(거의 다 왔습니다) - 계속하시려면 아래 다음 단계 버튼을 눌러주세요.", type: "info" },
             { id: "worktime", q: "11. 실버웍스는 하루에 2~3시간씩 일하는 초단기 일자리를 주로 연결해 드립니다.", type: "radio", options: ["네, 이해했습니다.", "되도록이면 더 길게 일하고 싶습니다."] },
             { id: "govJob", q: "13. 올해 (2026) 정부에서 제공하는 노인 일자리 사업에 참여하신 적이 있습니까?", type: "radio", options: ["없습니다. (잘 모르겠습니다.)", "있습니다."] }
         ];
@@ -113,7 +113,7 @@
                 html += `</div>`;
                 document.getElementById('next-btn').classList.add('hidden');
             } else if (item.type === "info") {
-                html += `<p class="p-4 bg-sky-50 text-sky-700 rounded-xl font-bold text-xs">안내 질문입니다. 계속 버튼을 진행해 주세요.</p>`;
+                html += `<p class="p-4 bg-sky-50 text-sky-700 rounded-xl font-bold text-xs">문진 작성 안내입니다. 아래 다음 단계 버튼을 눌러 이동하세요.</p>`;
                 document.getElementById('next-btn').classList.remove('hidden');
             } else {
                 const val = answers[item.id] || '';
@@ -139,10 +139,29 @@
             } else {
                 const user = JSON.parse(localStorage.getItem('sw_user') || '{}');
                 const surveys = JSON.parse(localStorage.getItem('sw_surveys') || '[]');
-                surveys.unshift({ seniorId: user.id, name: answers.name || user.name, phone: answers.phone, location: answers.location, stairs: answers.stairs, answers, date: new Date().toLocaleString() });
+                
+                surveys.unshift({ 
+                    seniorId: user.id, 
+                    name: answers.name || user.name, 
+                    phone: answers.phone || user.phone, 
+                    location: answers.location, 
+                    stairs: answers.stairs, 
+                    answers, 
+                    date: new Date().toLocaleString() 
+                });
                 localStorage.setItem('sw_surveys', JSON.stringify(surveys));
 
-                alert('건강 문진 이력서 작성이 완료되었습니다. 검증 후 순차 연락드리겠습니다.');
+                // Mark user profile as completed survey
+                const users = JSON.parse(localStorage.getItem('sw_users') || '[]');
+                const idx = users.findIndex(u => u.id === user.id);
+                if (idx !== -1) {
+                    users[idx].hasSurvey = true;
+                    localStorage.setItem('sw_users', JSON.stringify(users));
+                }
+                user.hasSurvey = true;
+                localStorage.setItem('sw_user', JSON.stringify(user));
+
+                alert('건강 문진 이력서 작성이 완료되어 프로필에 정상 등록되었습니다.');
                 window.location.href = '/profile.html';
             }
         }
