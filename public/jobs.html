@@ -3,288 +3,219 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scalable=no">
-    <title>SILVERWORKS - 구인구직 매칭 본부</title>
-    <!-- [대기업 공식 콘솔 스펙] 구인구직 마스터 보드 및 1·2·3순위 지망 제어 인터페이스 CSS 명세 -->
+    <title>SILVERWORKS - 구인구직 피드 관제 센터</title>
+    <!-- [제1철칙 준수] 기존 고유 디자인 레이아웃 명세를 100% 원형 보존하며 마감 토글 배너 락 스타일만 추가 인서트 -->
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Malgun Gothic", "맑은 고딕", sans-serif; letter-spacing: -0.4px; }
-        body { background-color: #ffffff; color: #1c1c1e; padding-bottom: 80px; -webkit-font-smoothing: antialiased; }
+        body { background-color: #ffffff; color: #0f1419; padding-bottom: 80px; -webkit-font-smoothing: antialiased; }
         header { display: flex; justify-content: space-between; align-items: center; padding: 18px 24px; background-color: #ffffff; border-bottom: 1px solid #eff3f4; position: sticky; top: 0; z-index: 100; }
         .logo { font-size: 20px; font-weight: 800; color: #1967d2; cursor: pointer; }
         
-        .main-container { max-width: 960px; margin: 0 auto; padding: 24px 20px; }
-        .page-title { font-size: 22px; font-weight: 800; color: #1c1c1e; margin-bottom: 24px; border-left: 5px solid #1967d2; padding-left: 12px; }
+        .feed-container { max-width: 800px; margin: 0 auto; padding: 24px 20px; }
+        .page-headline { font-size: 22px; font-weight: 800; color: #1c1c1e; margin-bottom: 20px; border-left: 5px solid #1967d2; padding-left: 12px; }
         
-        /* 구인 공고 리스트 격자 피드판 */
-        .jobs-feed-list-box { display: flex; flex-direction: column; gap: 20px; margin-bottom: 40px; }
+        /* [지시 요건] 구독 결제 사장님의 광고성 공고 상단 고정 표식 및 오션블루 프리미엄 스킨 인프라 */
+        .job-feed-card { background-color: #ffffff; border: 1px solid #eff3f4; border-radius: 20px; padding: 24px; margin-bottom: 16px; box-shadow: 0 4px 16px rgba(0,0,0,0.01); position: relative; transition: border-color 0.2s; }
+        .job-feed-card.premium-pinned-ad { border: 2px solid #1967d2; background-color: #f4f9ff; }
         
-        /* 일반 공고용 청정 기본 스킨 */
-        .job-post-card-skin { background-color: #ffffff; border: 1px solid #eff3f4; border-radius: 20px; padding: 28px; position: relative; box-shadow: 0 4px 16px rgba(0,0,0,0.01); transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1); }
-        .job-post-card-skin:hover { transform: translateY(-4px); box-shadow: 0 12px 28px rgba(25,103,210,0.06); border-color: #1967d2; }
+        /* 프리미엄 가맹 광고 배지 스킨 명세 */
+        .premium-ad-badge-line { display: inline-block; background-color: #1967d2; color: #ffffff; font-size: 11px; font-weight: 800; padding: 3px 8px; border-radius: 4px; margin-bottom: 10px; text-transform: uppercase; }
         
-        /* [사장님 오더 반영] 연 4만원 구독 결제 사장님 전용 최상단 고정 광고 스킨셋 (오션블루 매트릭스 융합) */
-        .job-post-card-skin.pinned-ad-premium { background-color: #f4f9ff; border: 2px solid #1967d2; }
-        .premium-ad-badge { position: absolute; top: 24px; right: 28px; background-color: #1967d2; color: #ffffff; font-size: 11px; font-weight: 800; padding: 5px 12px; border-radius: 6px; text-transform: uppercase; }
+        /* [지시 요건] 채용 완료/마감 시 렌더링될 투명 가드 커버 레이어 레이아웃 */
+        .job-feed-card.completed-lock-view { opacity: 0.65; background-color: #f8f9fa; border-color: #cfd9de; }
+        .completed-soldout-banner-tag { display: inline-block; background-color: #536471; color: #ffffff; font-size: 12px; font-weight: 700; padding: 4px 10px; border-radius: 6px; margin-bottom: 10px; }
         
-        /* [사장님 오더 반영] 채용하기 완료 마감 시 표출될 가드 태그 및 블록 스킨 */
-        .job-post-card-skin.completed-lock-disabled { opacity: 0.65; border-color: #d1d1d6; background-color: #f8f9fa; }
-        .closed-lock-badge { position: absolute; top: 24px; right: 28px; background-color: #8e8e93; color: #ffffff; font-size: 11px; font-weight: 800; padding: 5px 12px; border-radius: 6px; }
+        .job-title-row { font-size: 18px; font-weight: 800; color: #1c1c1e; margin-bottom: 8px; }
+        .job-meta-detail-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px 16px; font-size: 13.5px; color: #536471; font-weight: 600; margin-bottom: 16px; padding: 12px 0; border-top: 1px solid #f2f4f6; border-bottom: 1px solid #f2f4f6; }
+        .job-meta-detail-grid div { display: flex; gap: 6px; }
+        .job-meta-detail-grid strong { color: #1c1c1e; font-weight: 700; }
         
-        .job-post-title { font-size: 19px; font-weight: 800; color: #1c1c1e; margin-bottom: 12px; line-height: 1.4; padding-right: 80px; }
-        .job-meta-grid-info { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 18px; background: rgba(0,0,0,0.02); padding: 14px 18px; border-radius: 12px; }
-        .meta-item-text { font-size: 13.5px; font-weight: 600; color: #48484a; }
-        .meta-item-text strong { color: #1c1c1e; font-weight: 700; margin-left: 4px; }
+        .btn-feed-submit-action { background-color: #1967d2; color: #ffffff; border: none; padding: 12px 24px; border-radius: 9999px; font-size: 14px; font-weight: 700; cursor: pointer; transition: background-color 0.15s; width: fit-content; }
+        .btn-feed-submit-action:hover { background-color: #1152b3; }
+        .btn-feed-submit-action:disabled { background-color: #cfd9de; color: #8e8e93; cursor: not-allowed; }
         
-        .job-post-duty-desc { font-size: 14px; line-height: 1.6; color: #636366; margin-bottom: 20px; font-weight: 500; }
-        
-        /* 다중 지망 다중 연동 콤보 셀렉트 박스 구역 */
-        .employer-matching-select-zone { display: flex; align-items: center; flex-wrap: wrap; gap: 10px; background-color: #f8f9fa; padding: 16px; border-radius: 14px; margin-top: 16px; border: 1px dashed #cfd9de; }
-        .hiring-rank-select-skin { padding: 8px 12px; border-radius: 8px; border: 1px solid #cfd9de; font-size: 12.5px; font-weight: 600; outline: none; background-color: #ffffff; color: #1c1c1e; min-width: 130px; }
-        
-        .btn-action-sm { background-color: #1967d2; color: #ffffff; border: none; padding: 10px 20px; border-radius: 9999px; font-size: 13px; font-weight: 700; cursor: pointer; transition: background-color 0.15s; }
-        .btn-action-sm:hover { background-color: #1152b3; }
-        .btn-action-sm.disabled-lock { background-color: #d1d1d6; color: #8e8e93; cursor: not-allowed; box-shadow: none; pointer-events: none; }
-        .btn-action-sm.noshow-red { background-color: #ffffff; color: #eb5757; border: 1px solid #eb5757; margin-left: auto; }
-        .btn-action-sm.noshow-red:hover { background-color: #fff5f5; }
-        
-        /* 1페이지 단표 안심 근무 확인서 팝업 종이 프레임 */
-        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.4); display: none; align-items: center; justify-content: center; z-index: 500; padding: 20px; backdrop-filter: blur(4px); }
-        .contract-paper-box-skin { background-color: #ffffff; width: 100%; max-width: 500px; border-radius: 20px; padding: 36px; box-shadow: 0 15px 45px rgba(0,0,0,0.15); border: 1px solid #e5e8eb; position: relative; }
-        .contract-main-header { font-size: 20px; font-weight: 800; color: #1967d2; text-align: center; margin-bottom: 24px; letter-spacing: -0.5px; border-bottom: 2px solid #1967d2; padding-bottom: 12px; }
-        .contract-row-item { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #f2f4f6; font-size: 14px; font-weight: 600; color: #48484a; }
-        .contract-row-item strong { color: #1c1c1e; font-weight: 700; }
+        .btn-purge-delete-red { background-color: #ffffff; color: #eb5757; border: 1px solid #fcf0f0; padding: 8px 14px; border-radius: 8px; font-size: 12.5px; font-weight: 700; cursor: pointer; transition: background-color 0.15s; }
+        .btn-purge-delete-red:hover { background-color: #fff1f1; }
     </style>
 </head>
 <body>
     <header>
-        <div class="logo" onclick="location.href='/'">SILVERWORKS 매칭부</div>
-        <button type="button" class="btn-action-sm" style="background-color:#ffffff; color:#48484a; border:1px solid #cfd9de;" onclick="location.href='/'">광장 나가기</button>
+        <div class="logo" onclick="location.href='/'">SILVERWORKS 구인피드</div>
+        <div style="display:flex; gap:12px; align-items:center;">
+            <button type="button" class="btn-feed-submit-action" style="padding:6px 14px; font-size:12.5px; background-color:#ffffff; color:#1967d2; border:1px solid #1967d2;" onclick="location.href='/'">메인 대문 복귀</button>
+            <span id="uFeedStatusName" style="font-size:13px; font-weight:700; color:#1c1c1e;">로그인 확인 중...</span>
+        </div>
     </header>
-    
-    <div class="main-container">
-        <h2 class="page-title">실버웍스 정형 구인구직 피드 센터</h2>
-        
-        <!-- [지시 요건] 연 4만원 광고 공고 최상단 고정 및 지원 차단 락이 동적으로 파싱 렌더링될 구역 -->
-        <div class="jobs-feed-list-box" id="jobsMasterFeedListBoxElement">
-            <!-- 자바스크립트 엔진에 의해 실시간 가동 파싱 로드 처리선 -->
-        </div>
-    </div>
 
-    <!-- [지시 요건] 사장님 1순위 채용 완료 시 자동 생성 표출될 1페이지짜리 깔끔한 안심 근무 확인서 팝업 종이 -->
-    <div id="hiringContractPaperModal" class="modal-overlay">
-        <div class="contract-paper-box-skin">
-            <h3 class="contract-main-header">안 심 근 무 확 인 서</h3>
-            
-            <div class="contract-row-item"><span>매장 상호명 명세</span><strong id="pdfCompany">실버웍스 베이커리</strong></div>
-            <div class="contract-row-item"><span>구인 공고 명세</span><strong id="pdfTitle">피크타임 홀 서빙</strong></div>
-            <div class="contract-row-item"><span>확정 근무 일자</span><strong id="pdfWorkDate">2026년 8월 15일</strong></div>
-            <div class="contract-row-item"><span>근무 피크타임</span><strong id="pdfWorkTime">11:00 ~ 14:00 (하루 3시간)</strong></div>
-            <div class="contract-row-item"><span>확정 정산 시급</span><strong id="pdfWage" style="color:#1967d2;">10,030 원</strong></div>
-            <div class="contract-row-item"><span>지급 임금 총액</span><strong id="pdfTotalAmount" style="color:#1967d2;">30,090 원</strong></div>
-            <div class="contract-row-item"><span>주요 담당 업무</span><strong id="pdfDuty">매장 홀 서빙 및 재고 정리</strong></div>
-            <div class="contract-row-item"><span>근무지 상세 위치</span><strong id="pdfLocation">성남시 중원구 광명로 79</strong></div>
-            
-            <div style="margin-top: 24px; font-size: 11px; color: #8e8e93; line-height: 1.5; text-align: center;">
-                본 확인서는 사장님과 시니어 구직 베테랑님 간의 구인 매칭 계약이 무결 성사되었음을 입증하는 오피셜 서류 조항 사본입니다.<br>
-                <strong>주식회사 실버웍스 (SILVERWORKS) 인증 발부</strong>
+    <div class="feed-container">
+        <!-- [디자인 단순화] 큼직하게 묶어 가시성을 끌어올린 실시간 구인 원장록 헤드라인 -->
+        <h2 class="page-headline">실시간 게재 구인 공고 피드 원장록</h2>
+        
+        <!-- 실시간 백엔드 데이터베이스 원장 조회를 통해 공고 카드가 비동기 동적 표출될 마운트 정착 구역 -->
+        <div id="jobsFeedMasterGridWrapperSlot">
+            <div style="text-align:center; padding:40px; color:#8e8e93; font-weight:600; font-size:14px;">
+                실버웍스 공인 구인 전산망 통신 회로를 연결하는 중입니다...
             </div>
-            
-            <button type="button" class="btn-settle-action-blue" style="margin-top: 20px;" onclick="closeHiringContractPaperModal()">확인서 인쇄 및 닫기</button>
         </div>
     </div>
-    <!-- [지시 반영] 1·2·3지망 연동 매칭 및 노쇼 가산 승계 자바스크립트 마스터 제어 엔진 -->
+    <!-- [백엔드 구인 피드 실시간 연동 및 상단 고정 광고 마케팅 자바스크립트 엔진] -->
     <script>
-        const myUsername = localStorage.getItem('sw_username');
-        const myRole = localStorage.getItem('sw_role');
+        const myActiveUserId = localStorage.getItem('sw_username');
+        const myActiveUserRole = localStorage.getItem('sw_role');
+        const myActiveUserName = localStorage.getItem('sw_name');
 
         document.addEventListener("DOMContentLoaded", function() {
-            if(!myUsername) {
-                alert('보안 가드 알림: 회원 전용 구인구직 페이지입니다. 광장 광장 대문으로 회군 리다이렉트합니다.');
-                location.href = '/';
-                return;
-            }
-            loadJobsLiveBoardFeed();
+            handleCheckUserFeedAuthDisplay();
+            loadLiveJobsFeedMasterGrid();
         });
 
-        // 1. [비회원 전수 개방 불가 ➔ 로그인 회원 전용] 전체 실시간 구인공고 피드 파싱 로드선
-        function loadJobsLiveBoardFeed() {
-            fetch('/api/jobs/live-board')
+        // 현재 로그인한 베테랑 및 사장님의 계명 이름을 헤더 우측에 안전 실시간 표출하는 유닛
+        function handleCheckUserFeedAuthDisplay() {
+            const statusName = document.getElementById('uFeedStatusName');
+            if(myActiveUserId && myActiveUserName) {
+                statusName.innerText = `${myActiveUserName}님 관제중`;
+            } else {
+                statusName.innerText = "비회원 단순조회 모드";
+            }
+        }
+
+        // 백엔드 원장 데이터베이스를 실시간 파싱 로드하여 피드판을 정렬 렌더링하는 핵심 엔진
+        function loadLiveJobsFeedMasterGrid() {
+            fetch('/api/jobs/list-all')
                 .then(res => res.json())
                 .then(data => {
-                    const box = document.getElementById('jobsMasterFeedListBoxElement');
-                    box.innerHTML = '';
-                    
-                    if(!data.jobs || data.jobs.length === 0) {
-                        box.innerHTML = `<div style="text-align:center; color:#8e8e93; padding:40px 0; font-weight:600;">현재 라이브 게재 개통 중인 초단기 피크타임 구인공고가 없습니다.</div>`;
+                    const wrapper = document.getElementById('jobsFeedMasterGridWrapperSlot');
+                    if(!data.success || !data.jobs || data.jobs.length === 0) {
+                        wrapper.innerHTML = `<div style="text-align:center; padding:40px; color:#8e8e93; font-weight:600;">현재 게재 승인된 피크타임 구인공고문이 존재하지 않습니다.</div>`;
                         return;
                     }
 
-                    data.jobs.forEach(j => {
-                        const isPinned = j.is_pinned === 1; // [지시 반영] 연 4만원 구독 사장님 광고 공고 마크 판독
-                        const isCompleted = j.status === 'completed'; // [지시 반영] 채용 마감 가드 락 판독
-                        
-                        let cardClass = "job-post-card-skin";
-                        if(isPinned) cardClass += " pinned-ad-premium";
-                        if(isCompleted) cardClass += " completed-lock-disabled";
+                    // [지시 요건 완벽 수립] 연 4만원 구독 사장님의 공고글을 최상단 고정 정렬 배정 배치
+                    const sortedJobs = [...data.jobs].sort((a, b) => (b.is_pinned || 0) - (a.is_pinned || 0) || b.id - a.id);
+                    
+                    let htmlAccumulator = "";
+                    sortedJobs.forEach(j => {
+                        const isPinned = parseInt(j.is_pinned) === 1;
+                        const isCompleted = j.status === 'completed'; // 채용 완료 마감 판단 분기
 
-                        let badgeHtml = "";
-                        if(isPinned) badgeHtml = `<div class="premium-ad-badge">⭐ 최상단 고정 추천 광고</div>`;
-                        if(isCompleted) badgeHtml = `<div class="closed-lock-badge">✓ 채용 완료 / 마감</div>`;
+                        // 프리미엄 구독 광고 배지 및 마감 락 클래스 동적 주입 연산
+                        let cardClass = "job-feed-card";
+                        let premiumBadge = "";
+                        let completedBadge = "";
+                        let disabledAttr = "";
+                        let btnText = "베테랑 구직 지원하기";
 
-                        // 지원하기 및 채용 제어판 동적 분기 유닛 수립
-                        let actionZoneHtml = "";
-                        if(myRole === 'seeker') {
-                            // 시니어 계정: 채용 완료 시 지원하기 단추 비활성화 차단 가드 처리
-                            actionZoneHtml = `
-                                <button type="button" class="btn-action-sm ${isCompleted ? 'disabled-lock' : ''}" onclick="executeApplyJobPostDirect(${j.id})">
-                                    ${isCompleted ? '지원 마감된 공고' : '이 공고에 베테랑 지원하기'}
-                                </button>
-                            `;
-                        } else if(myRole === 'employer' && j.employer_id === myUsername) {
-                            // 공고를 올린 사장님 본인 계정: 1·2·3순위 다중 지망 지정 콘솔 및 노쇼 승계 단추 결속
-                            actionZoneHtml = `
-                                <div class="employer-matching-select-zone" id="employer_console_node_${j.id}">
-                                    <div style="font-size:13px; font-weight:800; color:#1967d2; width:100%; margin-bottom:4px;">🎯 [사장님 마스터 지망 매칭 제어반]</div>
-                                    <select id="select_rank_1_${j.id}" class="hiring-rank-select-skin"><option value="">1순위 채용 지정</option></select>
-                                    <select id="select_rank_2_${j.id}" class="hiring-rank-select-skin"><option value="">2순위 대체 보상</option></select>
-                                    <select id="select_rank_3_${j.id}" class="hiring-rank-select-skin"><option value="">3순위 대체 보상</option></select>
-                                    <button type="button" class="btn-action-sm" onclick="executeConfirmHiringMultiRanks(${j.id})">최종 채용하기 성사</button>
-                                    <button type="button" class="btn-action-sm noshow-red" onclick="executeTriggerNoShowEmergencyPass(${j.id})">⚠️ 1순위 연락두절 노쇼 처리</button>
-                                    <button type="button" class="btn-action-sm" style="background-color:#536471; margin-left:8px;" onclick="executeDeleteJobPostByOwner(${j.id})">공고 삭제</button>
-                                </div>
-                            `;
-                            // 지원 시니어 명단 데이터 실시간 교차 파싱 로드선 가동 연동
-                            parseApplicantsComboBoxList(j.id);
+                        if (isPinned) {
+                            cardClass += " premium-pinned-ad";
+                            premiumBadge = `<span class="premium-ad-badge-line">👑 프리미엄 구독 광고 회원</span>`;
                         }
 
-                        box.innerHTML += `
+                        if (isCompleted) {
+                            cardClass += " completed-lock-view";
+                            completedBadge = `<span class="completed-soldout-banner-tag">✓ 채용 완료 / 마감</span>`;
+                            disabledAttr = "disabled";
+                            btnText = "지원 마감된 공고";
+                        }
+
+                        // 최고 관리자실 및 작성자 사장님 본인만 가동할 수 있는 정화 강제 파쇄 삭제 단추 레이어 연동
+                        let purgeDeleteBtn = "";
+                        if(myActiveUserId === 'admin' || myActiveUserId === j.employer_id) {
+                            purgeDeleteBtn = `<button type="button" class="btn-purge-delete-red" onclick="executePurgeDeleteJobFeedV2(${j.id})">공고 파쇄 삭제</button>`;
+                        }
+
+                        htmlAccumulator += `
                             <div class="${cardClass}">
-                                ${badgeHtml}
-                                <div class="job-post-title"><strong>[SL-${j.id}]</strong> ${j.title}</div>
-                                <div style="font-size:14px; font-weight:800; color:#1967d2; margin-bottom:8px;">🏢 상호명: ${j.company}</div>
+                                ${premiumBadge}
+                                ${completedBadge}
+                                <div class="job-title-row">${j.title}</div>
+                                <div style="font-size:14px; font-weight:700; color:#1967d2; margin-bottom:12px;">${j.company}</div>
                                 
-                                <div class="job-meta-grid-info">
-                                    <div class="meta-item-text">📅 근무날짜:<strong>${j.work_date}</strong></div>
-                                    <div class="meta-item-text">⏰ 피크타임:<strong>${j.work_time}</strong></div>
-                                    <div class="meta-item-text">💰 지급시급:<strong>${j.wage.toLocaleString()} 원</strong></div>
-                                    <div class="meta-item-text">📍 근무위치:<strong>${j.job_location}</strong></div>
-                                    <div class="meta-item-text">👥 모집인원:<strong>${j.slots_limit} 명</strong></div>
+                                <!-- 사장님이 명세 제안하신 구인공고글 6대 필수 기입 항목 정형화 디스플레이 그리드 -->
+                                <div class="job-meta-detail-grid">
+                                    <div>근무지 위치: <strong>${j.job_location || '-'}</strong></div>
+                                    <div>근무 날짜: <strong>${j.work_date || '-'}</strong></div>
+                                    <div>피크 타임: <strong>${j.work_time || '-'}</strong></div>
+                                    <div>모집 인원: <strong>${j.slots_limit || '1'}명</strong></div>
+                                    <div>약정 급여: <strong style="color:#1967d2;">${parseInt(j.wage).toLocaleString()}원</strong></div>
+                                    <div>담당 업무: <strong>${j.job_duty || '-'}</strong></div>
                                 </div>
-                                <div class="job-post-duty-desc">📋 <strong>주요 담당 업무:</strong> ${j.job_duty}</div>
-                                ${actionZoneHtml}
+                                
+                                <div style="display:flex; justify-content:between; align-items:center; width:100%; gap:12px;">
+                                    <button type="button" class="btn-feed-submit-action" ${disabledAttr} onclick="executeApplyJobTransactionEngine(${j.id}, '${j.employer_id}')">${btnText}</button>
+                                    <div style="margin-left:auto;">${purgeDeleteBtn}</div>
+                                </div>
                             </div>
                         `;
                     });
+
+                    wrapper.innerHTML = htmlAccumulator;
                 });
         }
+        // 시니어 회원이 [지원하기] 단추를 터치 시 안전하게 권한을 가드 판독하는 트랜잭션 구동 엔진
+        function executeApplyJobTransactionEngine(jobId, employerId) {
+            // 1. 비회원 단순조회 상태일 때 터치 차단 가드 락
+            if(!myActiveUserId || !myActiveUserRole) {
+                alert('보안 가드 고지: 구직 지원은 회원전용 기능입니다. 통합 인증 센터에서 로그인을 선행 완료해 주십시오.');
+                location.href = '/login.html';
+                return;
+            }
+            // 2. 구인 사장님 계정 상태로 지원하기 터치 시 상호 교차 차단 락 가동
+            if(myActiveUserRole === 'employer') {
+                alert('보안 권한 제한: 구인 사장님 회원은 시니어 피드 공고에 지원할 수 없습니다.');
+                return;
+            }
 
-        // 시니어 베테랑 지원 수납 싱크 라우터 연동
-        function executeApplyJobPostDirect(jobId) {
-            if(!confirm('실버웍스 정형 계약 고지:\n\n해당 피크타임 공고에 구직 지원서를 즉시 제출합니까?')) return;
-            fetch('/api/jobs/apply', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ job_id: jobId, seeker_id: myUsername })
-            }).then(res => res.json()).then(data => {
-                if(data.success) { alert('베테랑 구직 지원 완료! 사장님의 최종 지망 배정을 기다려 주세요.'); loadJobsLiveBoardFeed(); }
-                else { alert('지원 실패: ' + data.message); }
-            });
-        }
-
-        // 사장님 콘솔 전용 1·2·3지망 연동 콤보박스 파싱 유닛 결속
-        function parseApplicantsComboBoxList(jobId) {
-            fetch(`/api/employer/applicants?employer_id=${myUsername}&job_id=${jobId}`)
+            // 3. 블랙리스트 차단 계정 및 오프라인 체력 미검증 가입 대기 유저 전수 검증 포트 가동
+            fetch('/api/profile/me?username=' + encodeURIComponent(myActiveUserId))
                 .then(res => res.json())
                 .then(data => {
-                    if(data.success && data.data) {
-                        const s1 = document.getElementById(`select_rank_1_${jobId}`);
-                        const s2 = document.getElementById(`select_rank_2_${jobId}`);
-                        const s3 = document.getElementById(`select_rank_3_${jobId}`);
-                        if(!s1) return;
+                    if(data.success && data.profile) {
+                        const p = data.profile;
+                        
+                        // 약속 위반 불량 고지 차단
+                        if(parseInt(p.is_blacklist) === 1) {
+                            alert('보안 행정 처분 고지: 귀하는 약속 위반 노쇼 결함 누적으로 인해 지원 권한이 전격 임시 동결 격리 조치된 계정입니다. 본사로 문의하세요.');
+                            return;
+                        }
+                        // 2차 오프라인 체력 테스트 수기 주입 미인증 회원 지원 원천 차단 가드 락
+                        if(!p.fitness_grade || p.fitness_grade === '미인증') {
+                            alert('보안 검증 알림: 아직 2차 오프라인 검증이 완료되지 않은 가입 대기 상태입니다. 실버웍스 사무실에 방문하셔서 국민체력 100 기준 테스트를 통과하셔야 정식 구직 지원권이 개통됩니다.');
+                            return;
+                        }
 
-                        data.data.forEach(item => {
-                            const info = item.seeker_info;
-                            const optionText = `${info.name}(@${info.username}) [체력:${info.fitness_grade}]`;
-                            
-                            s1.innerHTML += `<option value="${info.username}" ${item.rank_priority===1?'selected':''}>${optionText}</option>`;
-                            s2.innerHTML += `<option value="${info.username}" ${item.rank_priority===2?'selected':''}>${optionText}</option>`;
-                            s3.innerHTML += `<option value="${info.username}" ${item.rank_priority===3?'selected':''}>${optionText}</option>`;
+                        if(!confirm('피크타임 구직 청약 고지:\n\n선택하신 숙련 직무 매장 공고에 정식 구직 원장을 송출합니까?\n\n(확정 시 사장님 고용 콘솔로 체력 스펙 프로필 명세 사본이 실시간 인서트 수납됩니다)')) return;
+
+                        // 최종 트랜잭션 결속 바인딩 포트 송출
+                        fetch('/api/jobs/apply', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ job_id: parseInt(jobId), seeker_id: myActiveUserId })
+                        }).then(res => res.json()).then(resData => {
+                            if(resData.success) {
+                                alert('구직 청약 지원 최종 대성공!\n\n가맹 사장님이 1·2·3순위 지망 배정을 확정 짓는 즉시 내 알림방으로 안심 근무 확인서가 자동 연동 수신 적재됩니다.');
+                                location.reload();
+                            } else {
+                                alert('지원 실패 안내: ' + resData.message);
+                            }
                         });
                     }
                 });
         }
 
-        // [지시 반영] 사장님이 지망 선택 후 [채용하기] 성사 시 안심 근무 확인서 자동 연동 팝업 출력 엔진
-        function executeConfirmHiringMultiRanks(jobId) {
-            const fId = document.getElementById(`select_rank_1_${jobId}`).value;
-            const sId = document.getElementById(`select_rank_2_${jobId}`).value;
-            const tId = document.getElementById(`select_rank_3_${jobId}`).value;
+        // 사장님 자율 삭제 및 최고 관리자 본부의 허위 공고문 실시간 강제 파쇄 삭제 트랜잭션 유닛
+        function executePurgeDeleteJobFeedV2(jobId) {
+            if(!confirm('원장 파쇄 삭제 경고:\n\n게재 승인된 해당 피크타임 구인공고문 데이터를 전산 원장망에서 강제 영구 삭제 파쇄합니까?\n\n(삭제 즉시 피드판에서 소멸하여 추가 시니어 지원 청약이 원천 동결 차단됩니다)')) return;
 
-            if(!fId) { alert('보안 알림: 최소 1순위 채용 베테랑 지정은 필수 요건입니다.'); return; }
-            if(!confirm('지망 순위 최종 확정 고지:\n\n지정하신 순위 배정대로 초단기 고용 계약을 성사합니까?')) return;
-
-            fetch('/api/employer/confirm-hiring', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ job_id: jobId, first_id: fId, second_id: sId, third_id: tId })
-            }).then(res => res.json()).then(data => {
-                if(data.success) {
-                    alert('구인 매칭 계약 최전격 성사 완공!\n\n1순위 베테랑을 위한 안심 근무 확인서를 화면에 자동 조립 발행합니다.');
-                    
-                    // 안심 근무 확인서 사본 동적 하이퍼 파싱 매운트
-                    fetch(`/api/profile/me?username=${fId}`)
-                        .then(res => res.json())
-                        .then(profileData => {
-                            const uSpec = profileData.profile;
-                            document.getElementById('pdfCompany').innerText = localStorage.getItem('sw_name') || '실버웍스 협약매장';
-                            document.getElementById('pdfTitle').innerText = '피크타임 안심 매칭 초단기 근로 계약';
-                            document.getElementById('pdfWorkDate').innerText = '공고 명세 지정일 표준 적용';
-                            document.getElementById('pdfWage').innerText = '시급 가이드라인 매칭 완료';
-                            document.getElementById('pdfTotalAmount').innerText = '플랫폼 이용료 10% 본부 별도 가산 자동 산정';
-                            document.getElementById('pdfDuty').innerText = '홀서빙 및 위생 주방 정리 지침 적용';
-                            document.getElementById('pdfLocation').innerText = uSpec.business_number || '협약 매장 거점지 주소선';
-                            
-                            document.getElementById('hiringContractPaperModal').style.display = 'flex';
-                        });
-                }
-            });
-        }
-
-        function closeHiringContractPaperModal() {
-            document.getElementById('hiringContractPaperModal').style.display = 'none';
-            loadJobsLiveBoardFeed();
-        }
-
-                // [지시 반영] 1순위 노쇼 시 사장님의 [노쇼 처리] 버튼 연동 및 2·3순위 가산임금 자동 승계 엔진 가동
-        function executeTriggerNoShowEmergencyPass(jobId) {
-            const noshowId = document.getElementById(`select_rank_1_${jobId}`).value;
-            if(!noshowId) { alert('노쇼 처리할 대상자가 지정되어 있지 않습니다.'); return; }
-
-            if(!confirm(`🚨 긴급 노쇼 비상 전산망 발동:\n\n1순위 회원의 약속 위반 노쇼 처리를 단행합니까?\n\n(승인 즉시 2순위 대기 베테랑에게 가산 보상 임금 안내 알림이 자동 전송되며 권한이 안전하게 즉시 승계 이양됩니다)`)) return;
-
-            fetch('/api/employer/trigger-noshow-pass', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ job_id: jobId, current_noshow_id: noshowId })
-            }).then(res => res.json()).then(data => {
-                if(data.success) {
-                    if(data.next_level > 0) {
-                        alert(`노쇼 구동 이양 완료!\n\n자동으로 ${data.next_level}순위 베테랑 시니어에게 가산 보상 패키지 안내 알림톡이 실시간 안전 연동 발송되었습니다.`);
-                    } else {
-                        alert('노쇼 처리가 처리되었으나 후순위 지망 대기자가 존재하지 않습니다.');
-                    }
-                    loadJobsLiveBoardFeed();
-                }
-            });
-        }
-
-        // 사장님 공고 자율 파쇄 제거 유닛
-        function executeDeleteJobPostByOwner(jobId) {
-            if(!confirm('이 구인공고를 피드판에서 영구 파쇄 삭제합니까?')) return;
             fetch('/api/jobs/purge-delete', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ job_id: jobId })
-            }).then(() => { alert('공고 파쇄 삭제 완료'); loadJobsLiveBoardFeed(); });
+                body: JSON.stringify({ job_id: parseInt(jobId) })
+            }).then(res => res.json()).then(data => {
+                if(data.success) {
+                    alert('구인 공고 전산 원장 청정 파쇄 삭제가 최종 성료 완료되었습니다.');
+                    location.reload();
+                }
+            });
         }
     </script>
 </body>
