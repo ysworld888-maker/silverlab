@@ -9,8 +9,6 @@
     <style>
         @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css');
         body { font-family: "Pretendard", sans-serif; background-color: #f8fafc; color: #1e293b; word-break: keep-all; }
-        .btn-sky { background-color: #0284c7; color: #ffffff; transition: all 0.2s; }
-        .btn-sky:hover { background-color: #0369a1; }
     </style>
 </head>
 <body class="min-h-screen flex flex-col justify-between antialiased">
@@ -52,6 +50,7 @@
             const freshUser = usersRes.users.find(u => u.id === user.id) || user;
             localStorage.setItem('sw_user', JSON.stringify(freshUser));
 
+            // Mark notifications as read
             await fetch(`/api/notifications/${user.id}/read`, { method: 'POST' });
 
             let html = `
@@ -105,6 +104,7 @@
                         <p class="text-xs font-bold">새로운 알림이 없습니다.</p>
                     </div>`;
             } else {
+                // 작고 귀여운 삭제 버튼 UI 반영
                 notiContainer.innerHTML = myNotis.map(n => `
                     <div class="p-5 rounded-2xl bg-sky-50/50 border border-sky-100 flex justify-between items-start text-xs space-y-1">
                         <div>
@@ -112,7 +112,7 @@
                             <p class="text-slate-600 mt-1">${n.content}</p>
                             <span class="text-[10px] text-slate-400 block pt-1">${n.date}</span>
                         </div>
-                        <button onclick="deleteNotification('${n.id}')" class="text-[10px] text-slate-400 hover:text-rose-500 font-bold px-2 py-0.5 rounded border border-slate-200">
+                        <button onclick="deleteNotification('${n.id}')" class="text-[10px] text-slate-400 hover:text-rose-500 font-bold px-2 py-0.5 rounded border border-slate-200 ml-3 shrink-0">
                             삭제
                         </button>
                     </div>

@@ -34,10 +34,10 @@
     </header>
 
     <main class="max-w-7xl mx-auto px-5 py-8 flex-1 w-full space-y-8">
-        <!-- 1. 회원 관리 (시니어 포인트 표시/수정 지원) -->
+        <!-- 1. 회원 관리 및 구독 승인/해지 -->
         <div class="bg-white rounded-3xl p-6 md:p-8 border border-sky-100 shadow-sm space-y-4">
             <h2 class="text-base font-black text-slate-800 flex items-center gap-2">
-                <i class="fa-solid fa-users-gear text-sky-500"></i> 회원 관리 (아이디 클릭 시 상세정보 / 시니어 포인트 클릭 시 수작업 수정)
+                <i class="fa-solid fa-users-gear text-sky-500"></i> 회원 관리 (아이디 클릭 시 상세정보 / 가입 및 구독 승인 / 구독 해지)
             </h2>
             <div class="overflow-x-auto">
                 <table class="w-full text-left border-collapse text-xs">
@@ -57,10 +57,10 @@
             </div>
         </div>
 
-        <!-- 2. 시니어 포인트 정산 완료 승인 (알림 자동 발송 및 포인트 차감) -->
+        <!-- 2. 시니어 포인트 정산 완료 승인 -->
         <div class="bg-white rounded-3xl p-6 md:p-8 border border-sky-100 shadow-sm space-y-4">
             <h2 class="text-base font-black text-slate-800 flex items-center gap-2">
-                <i class="fa-solid fa-hand-holding-dollar text-amber-500"></i> 시니어 포인트 정산 요청 통제 (정산 완료 클릭 시 정산 알림 발송 & 포인트 차감)
+                <i class="fa-solid fa-hand-holding-dollar text-amber-500"></i> 시니어 포인트 정산 요청 통제 (정산 완료 클릭 시 알림 발송 & 포인트 차감)
             </h2>
             <div id="admin-settlement-list" class="space-y-3"></div>
         </div>
@@ -159,6 +159,7 @@
                         <td class="p-3 text-right space-x-1">
                             ${!u.approved ? `<button onclick="approveUser('${u.id}')" class="btn-sky text-[11px] px-2.5 py-1 rounded-lg font-bold">가입승인</button>` : ''}
                             ${u.role === 'employer' && u.subRequested && !u.isSubscribed ? `<button onclick="approveSub('${u.id}')" class="bg-emerald-500 text-white text-[11px] px-2.5 py-1 rounded-lg font-bold hover:bg-emerald-600">구독승인</button>` : ''}
+                            ${u.role === 'employer' && u.isSubscribed ? `<button onclick="cancelSub('${u.id}')" class="bg-rose-100 text-rose-600 text-[11px] px-2.5 py-1 rounded-lg font-bold hover:bg-rose-200">구독해지</button>` : ''}
                         </td>
                     </tr>
                 `).join('');
@@ -227,7 +228,7 @@
                 <p><strong>연락처:</strong> ${u.phone || '미입력'}</p>
                 <p><strong>회원 유형:</strong> ${u.role === 'senior' ? '시니어 구직자' : '구인 사장님'}</p>
                 <p><strong>가입 승인 상태:</strong> ${u.approved ? '승인 완료' : '승인 대기중'}</p>
-                <p><strong>구독 회원 여부:</strong> ${u.isSubscribed ? '구독 회원 (피크 공고 작성 가능)' : '일반 회원'}</p>
+                <p><strong>구독 회원 여부:</strong> ${u.isSubscribed ? '구독 회원 (수수료 절반 및 공고 상단 고정)' : '일반 회원'}</p>
                 <p><strong>보유 포인트:</strong> ${(u.points || 0).toLocaleString()}P</p>
                 <p><strong>문진 이력서 작성 여부:</strong> ${u.hasSurvey ? '작성 완료' : '미작성'}</p>
             `;
@@ -245,6 +246,14 @@
             await fetch(`/api/users/${id}/approve-subscription`, { method: 'POST' });
             alert('사장님의 구독이 승인되어 [구독 회원] 배지가 부여되었으며 알림이 발송되었습니다.');
             loadAdminControl();
+        }
+
+        async function cancelSub(id) {
+            if (confirm('해당 사장님의 구독권을 정말 해지하시겠습니까?')) {
+                await fetch(`/api/users/${id}/cancel-subscription`, { method: 'POST' });
+                alert('구독권이 해지되었습니다.');
+                loadAdminControl();
+            }
         }
 
         async function completeSettlement(settleId) {

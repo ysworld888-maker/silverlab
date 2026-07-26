@@ -9,17 +9,18 @@
     <style>
         @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css');
         body { font-family: "Pretendard", sans-serif; background-color: #f8fafc; color: #1e293b; word-break: keep-all; }
-        .btn-sky { background-color: #0284c7; color: #ffffff; transition: all 0.2s; }
-        .btn-sky:hover { background-color: #0369a1; }
+        .btn-sky { background-color: #0ea5e9; color: #ffffff; transition: all 0.2s; }
+        .btn-sky:hover { background-color: #0284c7; }
         
+        /* Cooler, Brighter Sky Blue Gradient */
         .sky-hero {
-            background: linear-gradient(180deg, #7dd3fc 0%, #bae6fd 50%, #e0f2fe 80%, #f8fafc 100%);
+            background: linear-gradient(180deg, #7dd3fc 0%, #38bdf8 30%, #bae6fd 70%, #f8fafc 100%);
         }
 
         /* Gentle Wave Undulating Animation */
         @keyframes gentleWave {
             0% { transform: translateX(0) scaleY(1); }
-            50% { transform: translateX(-2%) scaleY(1.05); }
+            50% { transform: translateX(-2%) scaleY(1.03); }
             100% { transform: translateX(0) scaleY(1); }
         }
         .anim-gentle-wave {
@@ -64,14 +65,14 @@
 
     <main class="flex-1 pb-16">
         <!-- Hero Section with Gentle Wave Animation -->
-        <section class="sky-hero pt-16 pb-24 px-5 relative overflow-hidden text-center">
+        <section class="sky-hero pt-16 pb-32 px-5 relative overflow-hidden text-center">
             <div class="max-w-4xl mx-auto space-y-3 relative z-10">
-                <span class="inline-block px-3.5 py-1 rounded-full bg-white/90 text-sky-800 text-xs font-bold border border-sky-200">
+                <span class="inline-block px-3.5 py-1 rounded-full bg-white/90 text-sky-800 text-xs font-bold border border-sky-200 shadow-sm">
                     세상을 은빛 지혜로 채우다
                 </span>
                 <h1 class="text-2xl md:text-4xl font-black text-slate-900 leading-tight">
                     변화에 도전할 사장님과<br>
-                    <span class="text-sky-700">파도처럼 시원한</span> 베테랑 시니어의 만남
+                    <span class="text-white drop-shadow-md">파도처럼 시원한</span> 베테랑 시니어의 만남
                 </h1>
                 <p class="text-xs md:text-sm text-slate-700 font-medium">
                     2~3시간 단시간 피크타임 인력 매칭 솔루션
@@ -79,14 +80,14 @@
             </div>
 
             <!-- Gentle Animated Wave Graphic -->
-            <div class="mt-8 opacity-35 anim-gentle-wave pointer-events-none">
+            <div class="mt-12 opacity-50 anim-gentle-wave pointer-events-none">
                 <svg viewBox="0 0 1440 120" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M0 40C320 80 640 0 960 40C1280 80 1440 20 1440 20V120H0V40Z" fill="#0284C7"/>
+                    <path d="M0 40C320 80 640 0 960 40C1280 80 1440 20 1440 20V120H0V40Z" fill="#0ea5e9"/>
                 </svg>
             </div>
 
-            <!-- Prominent CTA Cards Moved Slightly Downward -->
-            <div id="cta-card-container" class="max-w-3xl mx-auto grid grid-cols-1 sm:grid-cols-2 gap-5 pt-8 cta-transition opacity-100 translate-y-0">
+            <!-- Prominent CTA Cards (Moved Slightly Downward) -->
+            <div id="cta-card-container" class="max-w-3xl mx-auto grid grid-cols-1 sm:grid-cols-2 gap-5 mt-6 cta-transition opacity-100 translate-y-0 relative z-20">
                 <a href="/senior-apply.html" class="bg-white p-7 rounded-3xl border border-sky-200/80 shadow-md hover:shadow-lg transition text-left space-y-3 block group">
                     <div class="flex justify-between items-center">
                         <span class="text-xs font-bold text-sky-700 bg-sky-50 px-3 py-1 rounded-lg">구직 시니어 회원</span>
@@ -105,15 +106,15 @@
                 </a>
             </div>
 
-            <!-- Scroll Indicator Component (Moved to Bottom, 2s Gentle Bounce) -->
-            <div class="pt-16 pb-2 flex flex-col items-center gap-1.5 text-sky-700 font-bold text-xs anim-subtle-bounce">
+            <!-- Scroll Indicator Component (Moved Below Cards, 2s Gentle Bounce) -->
+            <div class="mt-8 flex flex-col items-center gap-1.5 text-sky-700 font-bold text-xs anim-subtle-bounce relative z-20">
                 <span>아래로 스크롤</span>
                 <i class="fa-solid fa-chevron-down text-sm"></i>
             </div>
         </section>
 
-        <!-- Main Body Articles: Positioned Further Down (mt-56) -->
-        <section class="max-w-3xl mx-auto px-5 mt-56 space-y-6 text-slate-700 text-xs md:text-sm leading-relaxed">
+        <!-- Main Body Articles: Positioned Further Down (mt-48) -->
+        <section class="max-w-3xl mx-auto px-5 mt-48 space-y-6 text-slate-700 text-xs md:text-sm leading-relaxed">
             <div class="bg-white rounded-3xl p-7 md:p-9 border border-sky-100 shadow-sm space-y-5">
                 <h2 class="text-base md:text-xl font-black text-slate-900 leading-snug">
                     매장을 책임져줄 성실한 사람을 구하는 것은 하늘의 별 따기가 되었습니다.

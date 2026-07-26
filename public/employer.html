@@ -9,8 +9,8 @@
     <style>
         @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css');
         body { font-family: "Pretendard", sans-serif; background-color: #f8fafc; color: #1e293b; word-break: keep-all; }
-        .btn-sky { background-color: #0284c7; color: #ffffff; transition: all 0.2s; }
-        .btn-sky:hover { background-color: #0369a1; }
+        .btn-sky { background-color: #0ea5e9; color: #ffffff; transition: all 0.2s; }
+        .btn-sky:hover { background-color: #0284c7; }
         .input-sky { background-color: #f1f5f9; border: 1px solid transparent; }
         .input-sky:focus { background-color: #ffffff; border-color: #38bdf8; outline: none; }
     </style>
@@ -42,7 +42,7 @@
                     <span class="text-xs font-bold text-slate-400">구독 회원 우대 혜택</span>
                     <span id="sub-badge-area"></span>
                 </div>
-                <h3 class="text-xl font-black text-slate-800">피크 공고 작성 권한</h3>
+                <h3 class="text-xl font-black text-slate-800">공고 상단 고정 권한, 수수료 절반</h3>
                 <p class="text-xs text-slate-500">구독 회원만 상단 고정 피크 공고 등록이 가능합니다.</p>
                 <button onclick="openSubscribeModal()" class="btn-sky text-xs font-bold px-4 py-2 rounded-xl shadow-sm mt-2">구독하기</button>
             </div>
@@ -53,15 +53,15 @@
             </div>
             <div class="bg-sky-500 text-white rounded-3xl p-6 shadow-sm space-y-2">
                 <span class="text-xs font-bold text-sky-100">사업용 지정 계좌</span>
-                <strong class="text-sm font-bold block">KB국민은행 812701-04-182934</strong>
-                <p class="text-[11px] text-sky-100">예금주: 주식회사 실버웍스</p>
+                <strong class="text-sm font-bold block">KB국민은행 275401-04-310474</strong>
+                <p class="text-[11px] text-sky-100">예금주: 민 혁 (silverworks)</p>
             </div>
         </div>
 
         <div class="bg-white rounded-3xl p-6 md:p-8 border border-sky-100 shadow-sm space-y-6">
             <div class="flex justify-between items-center border-b border-sky-100 pb-4">
                 <h2 class="text-lg font-black text-slate-800">내 매장 구인 공고 관리</h2>
-                <button onclick="openCreateJobModal()" class="btn-sky text-xs font-bold px-4 py-2.5 rounded-xl">+ 신규 공고 작성</button>
+                <button onclick="openCreateJobModal()" class="btn-sky text-xs font-bold px-4 py-2.5 rounded-xl">+ 신규 공고 등록</button>
             </div>
             <div class="space-y-4" id="employer-job-list"></div>
         </div>
@@ -76,12 +76,12 @@
             </div>
             <div class="space-y-3 text-xs text-slate-700">
                 <div class="p-4 bg-sky-50 rounded-2xl border border-sky-100 space-y-1">
-                    <p class="font-bold text-sky-800">사업용 계좌 안내</p>
+                    <p class="font-bold text-sky-800">사업용 계좌 안내 <span class="text-sky-500 ml-1">(특가, 평생 구독권 300,000원)</span></p>
                     <p><strong>은행:</strong> KB국민은행</p>
-                    <p><strong>계좌번호:</strong> 812701-04-182934</p>
-                    <p><strong>예금주:</strong> 주식회사 실버웍스</p>
+                    <p><strong>계좌번호:</strong> 275401-04-310474</p>
+                    <p><strong>예금주:</strong> 민 혁 (silverworks)</p>
                 </div>
-                <p class="text-slate-500">입금 후 신청하시면 관리자 확인 후 프로필에 [구독 회원] 배지 부여 및 피크 상단 고정 공고 작성 권한이 부여됩니다.</p>
+                <p class="text-slate-500">입금 후 신청하시면 관리자 확인 후 프로필에 [구독 회원] 배지 부여 및 공고 상단 고정 권한이 부여됩니다.</p>
                 <button onclick="requestSubscription()" class="w-full py-3.5 btn-sky font-bold rounded-xl shadow">입금 완료 및 구독 신청</button>
             </div>
         </div>
@@ -128,6 +128,7 @@
                     </div>
                 </div>
 
+                <!-- Peak Job Option Only for Subscribed Employers -->
                 <div class="p-3.5 bg-sky-50 rounded-xl border border-sky-100 flex items-center justify-between">
                     <div>
                         <strong class="block text-slate-800 font-bold">피크 상단 고정 등록</strong>
@@ -162,10 +163,12 @@
                 return;
             }
 
+            // Sync User data from server
             const usersRes = await fetch('/api/users').then(r => r.json());
             const freshUser = usersRes.users.find(u => u.id === user.id) || user;
             localStorage.setItem('sw_user', JSON.stringify(freshUser));
 
+            // Check Notifications
             const notiRes = await fetch(`/api/notifications/${user.id}`).then(r => r.json());
             const hasUnread = notiRes.hasUnread;
 
@@ -237,8 +240,11 @@
             const user = JSON.parse(localStorage.getItem('sw_user') || '{}');
             const isPeak = document.getElementById('job-is-peak').checked;
 
-            if (isPeak && !user.isSubscribed) {
-                alert('피크 상단 고정 공고는 구독 회원 사장님만 등록할 수 있습니다. 먼저 [구독하기]를 신청해주세요.');
+            const usersRes = await fetch('/api/users').then(r => r.json());
+            const freshUser = usersRes.users.find(u => u.id === user.id);
+
+            if (isPeak && (!freshUser || !freshUser.isSubscribed)) {
+                alert('상단 고정 공고는 구독 회원 사장님만 등록할 수 있습니다. 먼저 [구독하기]를 신청해주세요.');
                 openSubscribeModal();
                 return;
             }
@@ -261,7 +267,7 @@
             }).then(r => r.json());
 
             if (res.success) {
-                alert('구인 공고가 등록되었습니다.');
+                alert('피크타임 구인 공고가 등록되었습니다.');
                 closeCreateJobModal();
                 renderJobList();
             } else {
