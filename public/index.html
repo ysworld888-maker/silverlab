@@ -12,12 +12,10 @@
         .btn-sky { background-color: #0ea5e9; color: #ffffff; transition: all 0.2s; }
         .btn-sky:hover { background-color: #0284c7; }
         
-        /* Cooler, Brighter Sky Blue Gradient */
         .sky-hero {
-            background: linear-gradient(180deg, #7dd3fc 0%, #38bdf8 30%, #bae6fd 70%, #f8fafc 100%);
+            background: linear-gradient(180deg, #38bdf8 0%, #7dd3fc 45%, #bae6fd 80%, #f8fafc 100%);
         }
 
-        /* Gentle Wave Undulating Animation */
         @keyframes gentleWave {
             0% { transform: translateX(0) scaleY(1); }
             50% { transform: translateX(-2%) scaleY(1.03); }
@@ -27,7 +25,6 @@
             animation: gentleWave 6s ease-in-out infinite;
         }
 
-        /* Subtle 2s Bounce Animation (Very Gentle 4px movement) */
         @keyframes subtleBounce {
             0%, 80%, 100% { transform: translateY(0); }
             90% { transform: translateY(-4px); }
@@ -36,8 +33,54 @@
             animation: subtleBounce 2s ease-in-out infinite;
         }
 
-        .cta-transition {
-            transition: opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1), transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        /* --- 3D Card Shuffle Carousel Deck Styles --- */
+        .shuffle-stage {
+            perspective: 1200px;
+            position: relative;
+            width: 100%;
+            max-width: 720px;
+            margin: 0 auto;
+            height: 560px;
+        }
+
+        .shuffle-card {
+            position: absolute;
+            left: 50%;
+            top: 0;
+            width: 100%;
+            background: #ffffff;
+            border-radius: 1.5rem;
+            border: 1px solid #e0f2fe;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
+            transition: all 0.5s cubic-bezier(0.25, 1, 0.5, 1);
+            transform-origin: center bottom;
+            padding: 2.5rem;
+            text-align: left;
+            box-sizing: border-box;
+        }
+
+        /* Center Active Front Card */
+        .card-pos-0 {
+            transform: translateX(-50%) translateZ(0px) scale(1);
+            z-index: 40;
+            opacity: 1;
+            box-shadow: 0 25px 50px -12px rgba(14, 165, 233, 0.25);
+        }
+
+        /* Right Card Behind */
+        .card-pos-1 {
+            transform: translateX(-18%) translateZ(-120px) scale(0.85) rotate(5deg);
+            z-index: 20;
+            opacity: 0.6;
+            cursor: pointer;
+        }
+
+        /* Left Card Behind */
+        .card-pos-2 {
+            transform: translateX(-82%) translateZ(-120px) scale(0.85) rotate(-5deg);
+            z-index: 20;
+            opacity: 0.6;
+            cursor: pointer;
         }
     </style>
 </head>
@@ -64,8 +107,8 @@
     </header>
 
     <main class="flex-1 pb-16">
-        <!-- Hero Section with Gentle Wave Animation -->
-        <section class="sky-hero pt-16 pb-32 px-5 relative overflow-hidden text-center">
+        <!-- Hero Section -->
+        <section class="sky-hero pt-14 pb-28 px-5 relative overflow-hidden text-center">
             <div class="max-w-4xl mx-auto space-y-3 relative z-10">
                 <span class="inline-block px-3.5 py-1 rounded-full bg-white/90 text-sky-800 text-xs font-bold border border-sky-200 shadow-sm">
                     세상을 은빛 지혜로 채우다
@@ -80,83 +123,99 @@
             </div>
 
             <!-- Gentle Animated Wave Graphic -->
-            <div class="mt-12 opacity-50 anim-gentle-wave pointer-events-none">
+            <div class="mt-8 opacity-50 anim-gentle-wave pointer-events-none">
                 <svg viewBox="0 0 1440 120" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M0 40C320 80 640 0 960 40C1280 80 1440 20 1440 20V120H0V40Z" fill="#0ea5e9"/>
+                    <path d="M0 40C320 80 640 0 960 40C1280 80 1440 20 1440 20V120H0V40Z" fill="#0284c7"/>
                 </svg>
             </div>
 
-            <!-- Prominent CTA Cards (Moved Slightly Downward) -->
-            <div id="cta-card-container" class="max-w-3xl mx-auto grid grid-cols-1 sm:grid-cols-2 gap-5 mt-6 cta-transition opacity-100 translate-y-0 relative z-20">
-                <a href="/senior-apply.html" class="bg-white p-7 rounded-3xl border border-sky-200/80 shadow-md hover:shadow-lg transition text-left space-y-3 block group">
-                    <div class="flex justify-between items-center">
-                        <span class="text-xs font-bold text-sky-700 bg-sky-50 px-3 py-1 rounded-lg">구직 시니어 회원</span>
-                        <i class="fa-solid fa-arrow-right text-sky-500 group-hover:translate-x-1 transition"></i>
+            <!-- Top Direct Navigation Cards -->
+            <div class="max-w-3xl mx-auto grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4 relative z-20">
+                <a href="/senior-apply.html" class="bg-white/90 backdrop-blur-md p-5 rounded-2xl border border-sky-200 shadow-sm hover:shadow-md transition text-left flex justify-between items-center">
+                    <div>
+                        <span class="text-[10px] font-bold text-sky-700 bg-sky-50 px-2.5 py-0.5 rounded">구직 시니어</span>
+                        <h3 class="text-sm font-extrabold text-slate-900 mt-1">시니어 건강 문진 이력서 작성 →</h3>
                     </div>
-                    <h3 class="text-lg font-extrabold text-slate-900">시니어 건강 문진 이력서 작성</h3>
-                    <p class="text-xs text-slate-500 leading-relaxed">디지털 인지 능력, 오프라인 체력 검증으로 안전하고 검증된 구직 활동</p>
                 </a>
-                <a href="/employer.html" class="bg-white p-7 rounded-3xl border border-sky-200/80 shadow-md hover:shadow-lg transition text-left space-y-3 block group">
-                    <div class="flex justify-between items-center">
-                        <span class="text-xs font-bold text-sky-700 bg-sky-50 px-3 py-1 rounded-lg">구인 사업장 사장님</span>
-                        <i class="fa-solid fa-arrow-right text-sky-500 group-hover:translate-x-1 transition"></i>
+                <a href="/employer.html" class="bg-white/90 backdrop-blur-md p-5 rounded-2xl border border-sky-200 shadow-sm hover:shadow-md transition text-left flex justify-between items-center">
+                    <div>
+                        <span class="text-[10px] font-bold text-sky-700 bg-sky-50 px-2.5 py-0.5 rounded">구인 사장님</span>
+                        <h3 class="text-sm font-extrabold text-slate-900 mt-1">사장님 구인 공고 등록 →</h3>
                     </div>
-                    <h3 class="text-lg font-extrabold text-slate-900">사장님 구인 공고 등록</h3>
-                    <p class="text-xs text-slate-500 leading-relaxed">2~3시간 피크타임 인력 채용 및 1·2·3순위 노쇼 자동 승계 안전망 시스템</p>
                 </a>
             </div>
 
-            <!-- Scroll Indicator Component (Moved Below Cards, 2s Gentle Bounce) -->
-            <div class="mt-8 flex flex-col items-center gap-1.5 text-sky-700 font-bold text-xs anim-subtle-bounce relative z-20">
+            <!-- Scroll Indicator -->
+            <div class="mt-10 flex flex-col items-center gap-1 text-sky-800 font-bold text-xs anim-subtle-bounce relative z-20">
                 <span>아래로 스크롤</span>
                 <i class="fa-solid fa-chevron-down text-sm"></i>
             </div>
         </section>
 
-        <!-- Main Body Articles: Positioned Further Down (mt-48) -->
-        <section class="max-w-3xl mx-auto px-5 mt-48 space-y-6 text-slate-700 text-xs md:text-sm leading-relaxed">
-            <div class="bg-white rounded-3xl p-7 md:p-9 border border-sky-100 shadow-sm space-y-5">
-                <h2 class="text-base md:text-xl font-black text-slate-900 leading-snug">
-                    매장을 책임져줄 성실한 사람을 구하는 것은 하늘의 별 따기가 되었습니다.
-                </h2>
-                
-                <div class="p-4 rounded-2xl bg-sky-50/60 border-l-4 border-sky-500 text-slate-700 space-y-1">
-                    <p class="font-bold">[자영업자 4명 중 3명이 알바생의 갑작스러운 결근·퇴사 등 '노쇼'로 인해 곤란한 상황을 겪은 것으로 나타났다.]</p>
-                    <p class="text-[11px] text-slate-400">출처: 중장년 알바와 MZ 사장... 문제는 없을까? 직접 들어봤다 | 서울경제</p>
+        <!-- 3D Card Shuffle Carousel Section (Placed Further Down) -->
+        <section class="max-w-4xl mx-auto px-5 mt-48">
+            <div class="text-center space-y-2 mb-8">
+                <span class="text-xs font-bold text-sky-600 bg-sky-50 px-3 py-1 rounded-full border border-sky-100">문서 셔플 시스템</span>
+                <h2 class="text-xl md:text-2xl font-black text-slate-800">좌우 문서를 클릭하여 핵심 스토리를 확인하세요</h2>
+            </div>
+
+            <div class="shuffle-stage" id="shuffle-stage">
+                <!-- Card 0: 메인 글 (Center Default) -->
+                <div class="shuffle-card card-pos-0 space-y-4" onclick="setFrontCard(0)">
+                    <span class="bg-sky-50 text-sky-600 font-extrabold text-[11px] px-3 py-1 rounded-lg">메인 소개글</span>
+                    <h2 class="text-base md:text-lg font-black text-slate-900 leading-snug">
+                        매장을 책임져줄 성실한 사람을 구하는 것은 하늘의 별 따기가 되었습니다.
+                    </h2>
+                    <div class="p-3.5 rounded-2xl bg-sky-50/60 border-l-4 border-sky-500 text-slate-700 space-y-1 text-xs md:text-sm">
+                        <p class="font-bold">[자영업자 4명 중 3명이 알바생의 결근·퇴사 등 '노쇼'로 곤란을 겪음]</p>
+                        <p class="text-[10px] text-slate-400">출처: 서울경제 중장년 알바 분석</p>
+                    </div>
+                    <p class="text-xs md:text-sm text-slate-700">치솟는 최저임금과 고정비 압박 속에서 사장님들의 어깨는 날이 갈수록 무거워집니다. 반면 체력과 열정을 가진 시니어 구직자는 122만 명으로 폭증하고 있습니다.</p>
+                    <div class="p-3.5 rounded-2xl bg-sky-50 border border-sky-100 font-bold text-sky-800 text-xs">
+                        우리는 왜 이 거대한 두 개의 갈증을 단 한 번도 연결하지 못했을까요?
+                    </div>
                 </div>
 
-                <p>치솟는 최저임금과 주휴수당, 퇴직금이라는 고정비 압박 속에서 사장님들의 어깨는 날이 갈수록 무거워지고 있습니다.</p>
-                <p>이런 상황에서, <strong>체력과 열정</strong>을 가지고 일터를 찾는 <strong>시니어들은 해마다 늘어나고 있습니다.</strong></p>
-
-                <div class="p-4 rounded-2xl bg-sky-50/60 border-l-4 border-sky-500 text-slate-700 space-y-1">
-                    <p>(노인 일자리 참여자는 꾸준히 늘고 있다. 2020년 73만7708명이던 참여자는 올해 8월 99만7233명으로 증가했다. 하지만 같은 기간 신청자 수는 82만3754명에서 122만5776명으로 48.8%나 폭증했다.)</p>
-                    <p class="text-[11px] text-slate-400">출처 : 뉴스퀘스트(https://www.newsquest.co.kr)</p>
+                <!-- Card 1: 사장님을 위한 글 + 문의하기 폼 (Right Default) -->
+                <div class="shuffle-card card-pos-1 space-y-4" onclick="setFrontCard(1)">
+                    <span class="bg-indigo-50 text-indigo-600 font-extrabold text-[11px] px-3 py-1 rounded-lg">사장님을 위한 글</span>
+                    <h2 class="text-base md:text-lg font-black text-slate-900">
+                        피크타임 2시간, 인건비 절감과 매출 상승을 동시에!
+                    </h2>
+                    <p class="text-xs md:text-sm text-slate-700">최저임금 상승과 무단결근 고민, 2시간만 일할 알바를 구하기 힘들어 4시간씩 더 고용하셨나요? 4단계 검증된 베테랑 시니어와 연결되세요.</p>
+                    
+                    <!-- Integrated Inquiry Form -->
+                    <div class="mt-2 p-4 bg-sky-50/80 rounded-2xl border border-sky-100 space-y-2.5" onclick="event.stopPropagation()">
+                        <h4 class="font-bold text-slate-800 text-xs flex items-center gap-1.5">
+                            <i class="fa-solid fa-headset text-sky-600"></i> 사장님 맞춤 전화 상담 신청
+                        </h4>
+                        <form onsubmit="handleInquirySubmit(event)" class="space-y-2 text-xs">
+                            <input type="text" id="inq-name" placeholder="성명 입력" required class="w-full p-2.5 rounded-xl border border-slate-200 bg-white font-medium">
+                            <input type="text" id="inq-store" placeholder="가게명 입력" required class="w-full p-2.5 rounded-xl border border-slate-200 bg-white font-medium">
+                            <input type="tel" id="inq-phone" placeholder="전화번호 (010-0000-0000)" required class="w-full p-2.5 rounded-xl border border-slate-200 bg-white font-medium">
+                            <button type="submit" class="w-full py-2.5 btn-sky font-bold rounded-xl shadow-sm">문의하기</button>
+                        </form>
+                    </div>
                 </div>
 
-                <p>하지만 나이라는 장벽에 부딪혀 역량을 펼칠 기회조차 얻지 못하는 게 오늘날의 현실입니다.</p>
-                
-                <div class="p-5 rounded-2xl bg-sky-50 border border-sky-100 space-y-2">
-                    <h3 class="font-extrabold text-sky-700 text-sm md:text-base">우리는 왜 이 거대한 두 개의 갈증을 단 한 번도 연결하지 못했을까요?</h3>
-                    <p class="text-slate-700">
-                        단기 근로를 원하는 숙련된 시니어층과, 피크타임 단기 인력이 절실한 사장님들. 이들이 마침내 하나로 뭉치면서 매장의 관리 구조가 완전히 뒤바뀝니다.
-                    </p>
-                </div>
-
-                <p>
-                    실버웍스는 단순한 인력 소개 게시판이 아닙니다. 사람과 매장을 잇고, 실질적인 인건비 절감을 주도하며, 인력을 사용하면서 발생하는 문제들을 같이 해결하는 동반자 입니다.
-                </p>
-                <p>
-                    실버웍스는 구직을 희망하는 시니어분들의 실제 건강 상태, 스마트 디지털 인지 능력, 그리고 체계적인 오프라인 면접으로 완벽히 검증을 통과한 <strong>'베테랑'</strong> 만을 선발하여 매장에 추천합니다.
-                </p>
-                <div class="pt-4 font-extrabold text-sky-600 border-t border-slate-100 text-sm md:text-base">
-                    변화에 도전 할 사장님과 준비된 베테랑님의 상생 파트너십, 지금 시작됩니다.
+                <!-- Card 2: 시니어를 위한 글 (Left Default) -->
+                <div class="shuffle-card card-pos-2 space-y-4" onclick="setFrontCard(2)">
+                    <span class="bg-emerald-50 text-emerald-600 font-extrabold text-[11px] px-3 py-1 rounded-lg">시니어를 위한 글</span>
+                    <h2 class="text-base md:text-lg font-black text-slate-900">
+                        나이는 가로막는 숫자가 아닌 베테랑의 증명입니다.
+                    </h2>
+                    <p class="text-xs md:text-sm text-slate-700">어디서 일할지 고민되셨나요? 나이 제한 스트레스 없는 일자리를 찾아드립니다. 하루 2~3시간 무리 없이 집중해서 일하고, 남은 하루는 소중한 일상으로 여유롭게 채우세요.</p>
+                    <div class="p-3.5 rounded-2xl bg-sky-50 border border-sky-100 space-y-1 text-xs">
+                        <strong class="text-sky-800 font-bold block">가게 평점 및 정산 안심 시스템</strong>
+                        <p class="text-slate-600">인생 경험을 존중하는 엄선된 매장만 매칭하며, 안전한 정산을 지원합니다.</p>
+                    </div>
                 </div>
             </div>
         </section>
     </main>
 
-    <!-- Official Gray Footer ONLY on Main Page -->
-    <footer class="bg-slate-100 text-slate-500 text-xs py-10 border-t border-slate-200">
+    <!-- Official Gray Footer -->
+    <footer class="bg-slate-100 text-slate-500 text-xs py-10 border-t border-slate-200 mt-20">
         <div class="max-w-6xl mx-auto px-5 space-y-2 leading-relaxed">
             <p class="font-bold text-slate-700 text-sm">실버웍스 (silverworks)</p>
             <p><strong>대표:</strong> 유연성 (010-7464-3657), 민혁 (010-9187-9074)</p>
@@ -168,6 +227,47 @@
     </footer>
 
     <script>
+        // 3D Card Shuffle Deck Carousel Logic
+        let cardOrder = [0, 1, 2];
+
+        function updateCardClasses() {
+            const cards = document.querySelectorAll('.shuffle-card');
+            cards.forEach((card, index) => {
+                const posIndex = cardOrder.indexOf(index);
+                card.className = `shuffle-card card-pos-${posIndex} space-y-4`;
+            });
+        }
+
+        function setFrontCard(targetIndex) {
+            const currentPos = cardOrder.indexOf(targetIndex);
+            if (currentPos === 1) {
+                cardOrder = [cardOrder[1], cardOrder[2], cardOrder[0]];
+            } else if (currentPos === 2) {
+                cardOrder = [cardOrder[2], cardOrder[0], cardOrder[1]];
+            }
+            updateCardClasses();
+        }
+
+        async function handleInquirySubmit(e) {
+            e.preventDefault();
+            const name = document.getElementById('inq-name').value;
+            const storeName = document.getElementById('inq-store').value;
+            const phone = document.getElementById('inq-phone').value;
+
+            const res = await fetch('/api/inquiries', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ name, storeName, phone })
+            }).then(r => r.json());
+
+            if (res.success) {
+                alert('1시간 내로 실버웍스 측에서 전화가 올 예정입니다. 신청해 주셔서 감사합니다.');
+                document.getElementById('inq-name').value = '';
+                document.getElementById('inq-store').value = '';
+                document.getElementById('inq-phone').value = '';
+            }
+        }
+
         async function updateHeaderUI() {
             const userArea = document.getElementById('header-user-area');
             const user = JSON.parse(localStorage.getItem('sw_user') || 'null');
@@ -216,27 +316,6 @@
             alert('로그아웃 되었습니다.');
             location.reload();
         }
-
-        // Scroll Animation ("스르륵")
-        let lastScrollY = window.scrollY;
-        const ctaContainer = document.getElementById('cta-card-container');
-
-        window.addEventListener('scroll', () => {
-            const currentScrollY = window.scrollY;
-            if (currentScrollY > 100) {
-                if (currentScrollY > lastScrollY) {
-                    ctaContainer.classList.add('opacity-0', '-translate-y-4', 'pointer-events-none');
-                    ctaContainer.classList.remove('opacity-100', 'translate-y-0');
-                } else {
-                    ctaContainer.classList.remove('opacity-0', '-translate-y-4', 'pointer-events-none');
-                    ctaContainer.classList.add('opacity-100', 'translate-y-0');
-                }
-            } else {
-                ctaContainer.classList.remove('opacity-0', '-translate-y-4', 'pointer-events-none');
-                ctaContainer.classList.add('opacity-100', 'translate-y-0');
-            }
-            lastScrollY = currentScrollY;
-        });
 
         document.addEventListener('DOMContentLoaded', () => { updateHeaderUI(); });
     </script>
