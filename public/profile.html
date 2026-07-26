@@ -56,7 +56,6 @@
             </div>
         </div>
 
-        <!-- Role Specific Dashboard -->
         <div id="role-dashboard" class="space-y-6"></div>
 
         <!-- 고급진 수수료 납부 명세서 카드 구역 (빨간 직사각형 위치) -->
@@ -65,6 +64,55 @@
             <div id="invoice-card-container" class="space-y-4"></div>
         </div>
     </main>
+
+    <!-- Cancel Hire Modal -->
+    <div id="cancelHireModal" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm hidden z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl max-w-md w-full p-7 space-y-4 shadow-2xl">
+            <div class="flex justify-between items-center border-b border-sky-100 pb-3">
+                <h3 class="text-lg font-black text-slate-800">채용 취소 및 본사 신고</h3>
+                <button onclick="closeCancelModal()" class="text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark text-lg"></i></button>
+            </div>
+            <input type="hidden" id="cancel-job-id">
+            <input type="hidden" id="cancel-senior-id">
+            <p class="text-xs text-slate-600 leading-relaxed">
+                채용 취소를 실행하시면 1순위 지원자의 채용이 취소되며, <strong>2순위(3순위) 지원자에게 승계 채용 알림이 발송</strong>됩니다. (2순위 시급당 +1,000원, 3순위 +2,000원 추가 가산)
+            </p>
+            <div class="p-3.5 bg-rose-50 rounded-xl border border-rose-100 flex items-start gap-2 text-xs">
+                <input type="checkbox" id="cancel-agree-check" class="mt-0.5 rounded text-rose-600">
+                <label for="cancel-agree-check" class="text-rose-700 font-bold cursor-pointer">
+                    지원자 노쇼/근무 불가에 따른 채용 취소에 동의하며 본사 신고를 접수합니다.
+                </label>
+            </div>
+            <button onclick="confirmCancelHire()" class="w-full py-3.5 bg-rose-500 hover:bg-rose-600 text-white font-bold rounded-xl text-xs shadow">
+                채용 취소 및 승계 실행
+            </button>
+        </div>
+    </div>
+
+    <!-- Soft Blue Point Pay Agreement Modal -->
+    <div id="payPointModal" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm hidden z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl max-w-md w-full p-7 space-y-4 shadow-2xl">
+            <div class="flex justify-between items-center border-b border-sky-100 pb-3">
+                <h3 class="text-lg font-black text-slate-800">시니어 근무 대가 포인트 지급</h3>
+                <button onclick="closePayModal()" class="text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark text-lg"></i></button>
+            </div>
+            <input type="hidden" id="pay-job-id">
+            <input type="hidden" id="pay-senior-id">
+            <input type="hidden" id="pay-amount">
+            <p class="text-xs text-slate-600 leading-relaxed">
+                시니어 회원의 실제 근무 확인 후 포인트를 지급합니다. 실수 지급 방지를 위해 아래 동의란을 체크해 주세요.
+            </p>
+            <div class="p-3.5 bg-sky-50 rounded-xl border border-sky-100 flex items-start gap-2 text-xs">
+                <input type="checkbox" id="pay-agree-check" class="mt-0.5 rounded text-sky-600">
+                <label for="pay-agree-check" class="text-sky-800 font-bold cursor-pointer">
+                    시니어 회원의 실제 근무 수행을 확인하였으며 포인트 지급에 동의합니다.
+                </label>
+            </div>
+            <button onclick="confirmPayPoint()" class="w-full py-3.5 bg-sky-400 hover:bg-sky-500 text-white font-bold rounded-xl text-xs shadow">
+                안전하게 지급하기
+            </button>
+        </div>
+    </div>
 
     <!-- Settlement Modal -->
     <div id="subModal" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm hidden z-50 flex items-center justify-center p-4">
@@ -127,10 +175,12 @@
             if (freshUser.role === 'senior') {
                 const surveysRes = await fetch('/api/surveys').then(r => r.json());
                 const mySurvey = (surveysRes.surveys || []).find(s => s.seniorId === freshUser.id);
+
                 const jobsRes = await fetch('/api/jobs').then(r => r.json());
                 const applied = (jobsRes.jobs || []).filter(j => j.candidates && j.candidates.some(c => c.seniorId === freshUser.id));
 
                 let html = '';
+
                 if (mySurvey) {
                     html += `
                         <div class="bg-white rounded-3xl p-6 md:p-8 border border-sky-100 shadow-sm space-y-4">
@@ -152,6 +202,7 @@
                     <div class="bg-white rounded-3xl p-6 md:p-8 border border-sky-100 shadow-sm space-y-4">
                         <h2 class="text-base font-black text-slate-800 border-b border-sky-100 pb-3"><i class="fa-solid fa-briefcase text-sky-500 mr-2"></i>내 구직 신청 및 채용 현황</h2>
                 `;
+
                 if (applied.length === 0) {
                     html += `<p class="text-xs text-slate-400 text-center py-8">아직 지원하신 피크타임 일자리가 없습니다.</p>`;
                 } else {
@@ -180,8 +231,9 @@
 
                 let html = `
                     <div class="bg-white rounded-3xl p-6 md:p-8 border border-sky-100 shadow-sm space-y-6">
-                        <h2 class="text-base font-black text-slate-800 border-b border-sky-100 pb-3"><i class="fa-solid fa-users text-sky-500 mr-2"></i>지원자 순위 지정 / 채용 / 포인트 지급</h2>
+                        <h2 class="text-base font-black text-slate-800 border-b border-sky-100 pb-3"><i class="fa-solid fa-users text-sky-500 mr-2"></i>지원자 순위 지정 / 채용확정 / 채용취소 / 포인트지급</h2>
                 `;
+
                 if (myJobs.length === 0) {
                     html += `<p class="text-xs text-slate-400 text-center py-8">등록하신 구인 공고가 없습니다.</p>`;
                 } else {
@@ -195,19 +247,21 @@
                                 <span class="font-bold text-slate-500">지원자 명단</span>
                                 ${(j.candidates || []).length === 0 ? '<p class="text-slate-400 py-2">지원자가 아직 없습니다.</p>' : 
                                     j.candidates.map(c => `
-                                        <div class="p-3 rounded-xl bg-white border border-slate-200 flex justify-between items-center">
+                                        <div class="p-3 rounded-xl bg-white border border-slate-200 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
                                             <div>
                                                 <strong class="text-slate-800 font-bold">${c.name}</strong> (${c.phone})
                                                 <span class="text-[11px] text-sky-600 block pt-0.5">${c.status}</span>
                                             </div>
-                                            <div class="flex items-center gap-1.5">
-                                                <select onchange="assignRank('${j.id}', '${c.seniorId}', this.value)" class="p-1 rounded border text-[11px]">
-                                                    <option value="">순위선택</option>
+                                            <div class="flex items-center gap-1.5 flex-wrap">
+                                                <select onchange="assignRank('${j.id}', '${c.seniorId}', this.value)" class="p-1.5 rounded border border-slate-200 text-[11px]">
+                                                    <option value="">순위 선택</option>
                                                     <option value="1순위">1순위</option>
                                                     <option value="2순위">2순위</option>
                                                     <option value="3순위">3순위</option>
                                                 </select>
-                                                <button onclick="payPoint('${j.id}', '${c.seniorId}', ${j.pay})" class="bg-sky-400 text-white px-2.5 py-1.5 rounded-lg font-bold text-[11px] hover:bg-sky-500">포인트지급</button>
+                                                <button onclick="hireCandidate('${j.id}', '${c.seniorId}')" class="btn-sky px-2.5 py-1.5 rounded-lg font-bold text-[11px]">채용확정</button>
+                                                <button onclick="openCancelModal('${j.id}', '${c.seniorId}')" class="bg-rose-100 text-rose-600 px-2.5 py-1.5 rounded-lg font-bold text-[11px] hover:bg-rose-200">채용취소</button>
+                                                <button onclick="openPayModal('${j.id}', '${c.seniorId}', ${j.pay})" class="bg-sky-400 text-white px-2.5 py-1.5 rounded-lg font-bold text-[11px] hover:bg-sky-500">포인트지급</button>
                                             </div>
                                         </div>
                                     `).join('')
@@ -219,7 +273,6 @@
                 html += `</div>`;
                 dashboard.innerHTML = html;
 
-                // Load Invoices for Employer (빨간 직사각형 위치)
                 loadInvoices(freshUser.id);
             }
         }
@@ -245,7 +298,7 @@
                             <p class="text-xs text-slate-400">매장명: ${inv.storeName} | 발행일시: ${inv.date}</p>
                         </div>
                         <div class="text-right">
-                            <span class="text-xs text-slate-400 block">청구 수수료</span>
+                            <span class="text-xs text-slate-400 block">청구 금액 (임금 + 수수료)</span>
                             <strong class="text-xl font-black text-sky-400">${inv.amount.toLocaleString()}원</strong>
                         </div>
                     </div>
@@ -255,7 +308,7 @@
                         <p class="text-slate-300"><strong>예금주:</strong> 민 혁 (silverworks)</p>
                     </div>
                     <div class="flex justify-end">
-                        <button onclick="confirmInvoice('${inv.id}')" class="btn-sky px-6 py-3 rounded-xl font-extrabold text-xs shadow-md">
+                        <button onclick="requestInvoiceConfirm('${inv.id}')" class="btn-sky px-6 py-3 rounded-xl font-extrabold text-xs shadow-md">
                             정산 완료 (관리자 확인 요청)
                         </button>
                     </div>
@@ -263,13 +316,74 @@
             `).join('');
         }
 
-        async function confirmInvoice(invoiceId) {
-            await fetch('/api/invoices/confirm', {
+        async function requestInvoiceConfirm(invoiceId) {
+            await fetch('/api/invoices/request-confirm', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ invoiceId })
             });
-            alert('관리자에게 정산 확인 요청이 전송되었습니다.');
+            alert('관리자에게 정산 확인 요청이 전송되었습니다. 관리자 확인 후 명세서가 정리됩니다.');
+            renderProfile();
+        }
+
+        function openCancelModal(jobId, seniorId) {
+            document.getElementById('cancel-job-id').value = jobId;
+            document.getElementById('cancel-senior-id').value = seniorId;
+            document.getElementById('cancel-agree-check').checked = false;
+            document.getElementById('cancelHireModal').classList.remove('hidden');
+        }
+        function closeCancelModal() { document.getElementById('cancelHireModal').classList.add('hidden'); }
+
+        async function confirmCancelHire() {
+            const isAgreed = document.getElementById('cancel-agree-check').checked;
+            if (!isAgreed) {
+                alert('본사 접수 동의 체크박스에 동의해 주셔야 채용 취소 및 자동 승계 처리가 진행됩니다.');
+                return;
+            }
+
+            const jobId = document.getElementById('cancel-job-id').value;
+            const seniorId = document.getElementById('cancel-senior-id').value;
+
+            await fetch(`/api/jobs/${jobId}/cancel-hire`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ seniorId })
+            }).then(r => r.json());
+
+            closeCancelModal();
+
+            alert('회사 신고(노쇼 접수)가 정상 처리되었습니다.\n다음 순위 지원자에게 자동 승계 채용 알림이 발송되었습니다.');
+            renderProfile();
+        }
+
+        function openPayModal(jobId, seniorId, amount) {
+            document.getElementById('pay-job-id').value = jobId;
+            document.getElementById('pay-senior-id').value = seniorId;
+            document.getElementById('pay-amount').value = amount;
+            document.getElementById('pay-agree-check').checked = false;
+            document.getElementById('payPointModal').classList.remove('hidden');
+        }
+        function closePayModal() { document.getElementById('payPointModal').classList.add('hidden'); }
+
+        async function confirmPayPoint() {
+            const isAgreed = document.getElementById('pay-agree-check').checked;
+            if (!isAgreed) {
+                alert('시니어 회원의 실제 근무 확인 동의란을 체크해 주셔야 안전한 포인트 지급이 가능합니다.');
+                return;
+            }
+
+            const jobId = document.getElementById('pay-job-id').value;
+            const seniorId = document.getElementById('pay-senior-id').value;
+            const basePay = document.getElementById('pay-amount').value;
+
+            await fetch(`/api/jobs/${jobId}/pay-points`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ seniorId, basePay })
+            });
+
+            closePayModal();
+            alert('포인트 지급이 완료되었으며 수수료 납부 명세서가 발행되었습니다.');
             renderProfile();
         }
 
@@ -280,17 +394,17 @@
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ seniorId, rank })
             });
-            alert(`${rank} 지정 완료되었습니다.`);
+            alert(`${rank} 지정 완료 및 시니어에게 알림이 발송되었습니다.`);
             renderProfile();
         }
 
-        async function payPoint(jobId, seniorId, pay) {
-            await fetch(`/api/jobs/${jobId}/pay-points`, {
+        async function hireCandidate(jobId, seniorId) {
+            await fetch(`/api/jobs/${jobId}/hire`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ seniorId, basePay: pay })
+                body: JSON.stringify({ seniorId })
             });
-            alert('포인트가 지급되었으며, 실버웍스 수수료 납부 명세서가 발행되었습니다.');
+            alert('채용 확정 및 시니어 회원에게 알림이 발송되었습니다.');
             renderProfile();
         }
 
@@ -322,9 +436,9 @@
 
             if (freshUser.role === 'senior') {
                 html += `
-                    <a href="/profile.html" class="text-xs font-extrabold bg-sky-50 text-sky-600 px-3 py-1.5 rounded-xl border border-sky-100 hover:bg-sky-100 transition">
+                    <button onclick="openSubModal()" class="text-xs font-extrabold bg-sky-50 text-sky-600 px-3 py-1.5 rounded-xl border border-sky-100 hover:bg-sky-100 transition">
                         포인트 ${(freshUser.points || 0).toLocaleString()}P (정산)
-                    </a>
+                    </button>
                 `;
             }
 
@@ -360,7 +474,7 @@
             }).then(r => r.json());
 
             if (res.success) {
-                alert(`정산 신청이 접수되었습니다.`);
+                alert(`[정산 신청 완료]\n\n${bank} ${account}\n요청 금액: ${amount.toLocaleString()}P\n\n관리자 확인 후 포인트가 안전하게 최종 차감됩니다.`);
                 closeSubModal();
                 renderProfile();
             } else {

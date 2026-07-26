@@ -7,7 +7,6 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, 'public')));
 
-// === [Server In-Memory DB] ===
 let usersData = [
   { id: 'admin', pw: '1234', name: '최고관리자', role: 'admin', approved: true, points: 0, isSubscribed: true, hasSurvey: true }
 ];
@@ -15,11 +14,10 @@ let jobsData = [];
 let surveysData = [];
 let settlementsData = [];
 let notificationsData = [];
-let inquiriesData = []; // 사장님 전화 상담 문의 DB
-let invoicesData = []; // 사장님 수수료 납부 명세서 DB
+let inquiriesData = [];
+let invoicesData = []; 
 
-// === [REST API Routes] ===
-
+// Auth & Users API
 app.post('/api/signup', (req, res) => {
   const { id, pw, name, phone, role } = req.body;
   if (usersData.find(u => u.id === id)) return res.status(400).json({ success: false, message: '이미 존재하는 아이디입니다.' });
@@ -48,13 +46,6 @@ app.get('/api/users', (req, res) => res.json({ success: true, users: usersData }
 app.post('/api/users/:id/approve', (req, res) => {
   const user = usersData.find(u => u.id === req.params.id);
   if (user) user.approved = true;
-  res.json({ success: true });
-});
-
-// 강제 탈퇴 API 추가
-app.delete('/api/users/:id', (req, res) => {
-  const idx = usersData.findIndex(u => u.id === req.params.id);
-  if (idx !== -1) usersData.splice(idx, 1);
   res.json({ success: true });
 });
 
@@ -99,7 +90,6 @@ app.post('/api/users/:id/cancel-subscription', (req, res) => {
   res.json({ success: true });
 });
 
-// 관리자 경고 알림 발송 API (1~3차)
 app.post('/api/users/:id/warn', (req, res) => {
   const { step } = req.body;
   const user = usersData.find(u => u.id === req.params.id);
@@ -113,7 +103,13 @@ app.post('/api/users/:id/warn', (req, res) => {
   res.json({ success: true });
 });
 
-// Inquiries (비회원 가능 사장님 문의 API)
+app.delete('/api/users/:id', (req, res) => {
+  const idx = usersData.findIndex(u => u.id === req.params.id);
+  if (idx !== -1) usersData.splice(idx, 1);
+  res.json({ success: true });
+});
+
+// Inquiries API
 app.get('/api/inquiries', (req, res) => res.json({ success: true, inquiries: inquiriesData }));
 app.post('/api/inquiries', (req, res) => {
   const { name, storeName, phone } = req.body;
@@ -121,16 +117,32 @@ app.post('/api/inquiries', (req, res) => {
   res.json({ success: true });
 });
 
-// Invoices (사장님 수수료 납부 명세서 API)
+// Invoices (수수료 명세서) API
+app.get('/api/invoices', (req, res) => res.json({ success: true, invoices: invoicesData }));
 app.get('/api/invoices/:employerId', (req, res) => {
-  const list = invoicesData.filter(i => i.employerId === req.params.employerId && !i.isConfirmed);
+  const list = invoicesData.filter(i => i.employerId === req.params.employerId && !i.isFullyConfirmed);
   res.json({ success: true, invoices: list });
 });
 
-app.post('/api/invoices/confirm', (req, res) => {
+app.post('/api/invoices/request-confirm', (req, res) => {
   const { invoiceId } = req.body;
   const inv = invoicesData.find(i => i.id === invoiceId);
-  if (inv) inv.isConfirmed = true;
+  if (inv) inv.status = 'PENDING_ADMIN';
+  res.json({ success: true });
+});
+
+// 관리자 '확인' 버튼 클릭 시 명세서 최종 처리 및 사장님 알림 발송
+app.post('/api/invoices/admin-confirm', (req, res) => {
+  const { invoiceId } = req.body;
+  const inv = invoicesData.find(i => i.id === invoiceId);
+  if (inv) {
+    inv.isFullyConfirmed = true;
+    notificationsData.unshift({
+      id: 'noti-' + Date.now(), targetUserId: inv.employerId, title: '[명세서 처리 완료]',
+      content: `'${inv.jobTitle}' 건에 대한 실버웍스 플랫폼 수수료 납부 명세서 처리가 완료되었습니다.`,
+      date: new Date().toLocaleString(), isRead: false
+    });
+  }
   res.json({ success: true });
 });
 
@@ -250,10 +262,12 @@ app.post('/api/jobs/:id/cancel-hire', (req, res) => {
   res.json({ success: true });
 });
 
+// 포인트 지급 시 임금의 10% (구독 시 5%) 명세서 금액 자동 발행
 app.post('/api/jobs/:id/pay-points', (req, res) => {
   const { seniorId, basePay } = req.body;
   const job = jobsData.find(j => j.id === req.params.id);
   const senior = usersData.find(u => u.id === seniorId);
+  const employer = usersData.find(u => u.id === job?.employerId);
 
   if (job && senior) {
     const cand = job.candidates.find(c => c.seniorId === seniorId);
@@ -263,10 +277,8 @@ app.post('/api/jobs/:id/pay-points', (req, res) => {
     const totalPay = parseInt(basePay, 10) + bonusTotal;
     senior.points = (senior.points || 0) + totalPay;
 
-    // Issue Invoice to Employer
-    const employer = usersData.find(u => u.id === job.employerId);
     const feeRate = employer && employer.isSubscribed ? 0.05 : 0.10;
-    const feeAmount = Math.round(totalPay * feeRate);
+    const feeAmount = Math.round(totalPay * (1 + feeRate)); // 일당의 10%(또는 5%)가 붙은 총액 명세서
 
     invoicesData.unshift({
       id: 'inv-' + Date.now(),
@@ -275,7 +287,8 @@ app.post('/api/jobs/:id/pay-points', (req, res) => {
       storeName: job.storeName,
       amount: feeAmount,
       date: new Date().toLocaleString(),
-      isConfirmed: false
+      status: 'ISSUED', // ISSUED, PENDING_ADMIN, CONFIRMED
+      isFullyConfirmed: false
     });
 
     notificationsData.unshift({
@@ -285,8 +298,7 @@ app.post('/api/jobs/:id/pay-points', (req, res) => {
 
     notificationsData.unshift({
       id: 'noti-' + Date.now(), targetUserId: job.employerId, title: '[수수료 명세서 발행]',
-      content: `'${job.title}' 채용에 따른 수수료 납부 명세서(${feeAmount.toLocaleString()}원)가 발행되었습니다. 확인 후 정산 완료를 눌러주세요.`,
-      date: new Date().toLocaleString(), isRead: false
+      content: `'${job.title}' 채용에 따른 수수료 납부 명세서(${feeAmount.toLocaleString()}원)가 발행되었습니다.`, date: new Date().toLocaleString(), isRead: false
     });
   }
   res.json({ success: true });
