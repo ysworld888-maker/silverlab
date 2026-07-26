@@ -12,28 +12,27 @@
         .btn-sky { background-color: #0284c7; color: #ffffff; transition: all 0.2s; }
         .btn-sky:hover { background-color: #0369a1; }
         
-        /* Soothing Pastel Sky Gradient */
         .sky-hero {
-            background: linear-gradient(180deg, #BAE6FD 0%, #E0F2FE 50%, #F0F9FF 80%, #F8FAFC 100%);
+            background: linear-gradient(180deg, #7dd3fc 0%, #bae6fd 35%, #e0f2fe 70%, #f8fafc 100%);
         }
 
-        /* 3 Layered Gentle Up-Down Waves Animations */
-        @keyframes waveFloat1 {
-            0%, 100% { transform: translateY(0px); }
-            50% { transform: translateY(-8px); }
+        /* --- 3 Layered Vertical Gentle Breathing Wave Animations --- */
+        @keyframes waveUpAndDown1 {
+            0%, 100% { transform: translateY(0px) scaleY(1); }
+            50% { transform: translateY(-6px) scaleY(1.04); }
         }
-        @keyframes waveFloat2 {
-            0%, 100% { transform: translateY(0px); }
-            50% { transform: translateY(-12px); }
+        @keyframes waveUpAndDown2 {
+            0%, 100% { transform: translateY(0px) scaleY(1); }
+            50% { transform: translateY(-10px) scaleY(1.06); }
         }
-        @keyframes waveFloat3 {
-            0%, 100% { transform: translateY(0px); }
-            50% { transform: translateY(-6px); }
+        @keyframes waveUpAndDown3 {
+            0%, 100% { transform: translateY(0px) scaleY(1); }
+            50% { transform: translateY(-4px) scaleY(1.02); }
         }
 
-        .wave-layer-1 { animation: waveFloat1 5s ease-in-out infinite; }
-        .wave-layer-2 { animation: waveFloat2 7s ease-in-out infinite; }
-        .wave-layer-3 { animation: waveFloat3 4s ease-in-out infinite; }
+        .wave-layer-1 { animation: waveUpAndDown1 6s ease-in-out infinite; }
+        .wave-layer-2 { animation: waveUpAndDown2 8s ease-in-out infinite; }
+        .wave-layer-3 { animation: waveUpAndDown3 4s ease-in-out infinite; }
 
         @keyframes subtleBounce {
             0%, 80%, 100% { transform: translateY(0); }
@@ -54,7 +53,7 @@
             width: 100%;
             max-width: 740px;
             margin: 0 auto;
-            min-height: 600px;
+            min-height: 620px;
         }
 
         .shuffle-card {
@@ -118,59 +117,67 @@
     </header>
 
     <main class="flex-1 pb-16">
-        <!-- Hero Section with Pastel Sky & Layered Gentle Waves -->
-        <section class="sky-hero pt-14 pb-28 px-5 relative overflow-hidden text-center">
+        <!-- Hero Section with 3 Layered Up-Down Gentle Waves -->
+        <section class="sky-hero pt-14 pb-36 px-5 relative overflow-hidden text-center">
             <div class="max-w-4xl mx-auto space-y-3 relative z-10">
                 <span class="inline-block px-3.5 py-1 rounded-full bg-white/90 text-sky-800 text-xs font-bold border border-sky-200 shadow-sm">
                     세상을 은빛 지혜로 채우다
                 </span>
                 <h1 class="text-2xl md:text-4xl font-black text-slate-900 leading-tight">
                     변화에 도전할 사장님과<br>
-                    <span class="text-sky-700 drop-shadow-sm">파도처럼 시원한</span> 베테랑 시니어의 만남
+                    <span class="text-white drop-shadow-md">파도처럼 시원한</span> 베테랑 시니어의 만남
                 </h1>
-                <p class="text-xs md:text-sm text-slate-600 font-medium">
+                <p class="text-xs md:text-sm text-slate-700 font-medium">
                     2~3시간 단시간 피크타임 인력 매칭 솔루션
                 </p>
             </div>
 
-            <!-- 3 Layered Pastel Waves (Up & Down Gentle Floating) -->
-            <div class="mt-8 relative h-16 pointer-events-none overflow-hidden">
-                <div class="absolute inset-0 wave-layer-1 opacity-30">
-                    <svg viewBox="0 0 1440 100" fill="none" class="w-full"><path d="M0 30C360 80 720 0 1080 40C1260 60 1350 30 1440 20V100H0V30Z" fill="#38BDF8"/></svg>
+            <!-- 3 Layered Up-Down Breathing Waves -->
+            <div class="mt-8 relative h-20 pointer-events-none overflow-hidden">
+                <div class="absolute inset-0 wave-layer-1 opacity-35">
+                    <svg viewBox="0 0 1440 100" fill="none" class="w-full"><path d="M0 30C360 80 720 0 1080 40C1260 60 1350 30 1440 20V100H0V30Z" fill="#38bdf8"/></svg>
                 </div>
-                <div class="absolute inset-0 wave-layer-2 opacity-40">
-                    <svg viewBox="0 0 1440 100" fill="none" class="w-full"><path d="M0 50C360 10 720 70 1080 30C1260 10 1350 40 1440 50V100H0V50Z" fill="#0EA5E9"/></svg>
+                <div class="absolute inset-0 wave-layer-2 opacity-45">
+                    <svg viewBox="0 0 1440 100" fill="none" class="w-full"><path d="M0 50C360 10 720 70 1080 30C1260 10 1350 40 1440 50V100H0V50Z" fill="#0284c7"/></svg>
                 </div>
                 <div class="absolute inset-0 wave-layer-3 opacity-25">
-                    <svg viewBox="0 0 1440 100" fill="none" class="w-full"><path d="M0 20C360 60 720 20 1080 60C1260 80 1350 40 1440 30V100H0V20Z" fill="#7DD3FC"/></svg>
+                    <svg viewBox="0 0 1440 100" fill="none" class="w-full"><path d="M0 20C360 60 720 20 1080 60C1260 80 1350 40 1440 30V100H0V20Z" fill="#7dd3fc"/></svg>
                 </div>
             </div>
 
-            <!-- Top Direct Navigation Cards -->
-            <div class="max-w-3xl mx-auto grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4 relative z-20">
-                <a href="/senior-apply.html" class="bg-white/90 backdrop-blur-md p-5 rounded-2xl border border-sky-200 shadow-sm hover:shadow-md transition text-left flex justify-between items-center">
-                    <div>
-                        <span class="text-[10px] font-bold text-sky-700 bg-sky-50 px-2.5 py-0.5 rounded">구직 시니어</span>
-                        <h3 class="text-sm font-extrabold text-slate-900 mt-1">시니어 건강 문진 이력서 작성 →</h3>
+            <!-- Restored High-End Thick Card Buttons -->
+            <div class="max-w-4xl mx-auto grid grid-cols-1 sm:grid-cols-2 gap-6 mt-6 relative z-20 px-2">
+                <a href="/senior-apply.html" class="bg-white p-7 rounded-3xl border-2 border-sky-200 shadow-lg hover:shadow-xl hover:border-sky-400 transition text-left flex justify-between items-center group">
+                    <div class="space-y-1.5">
+                        <span class="text-xs font-extrabold text-sky-700 bg-sky-50 px-3 py-1 rounded-lg border border-sky-100">구직 시니어 회원</span>
+                        <h3 class="text-lg font-black text-slate-900 pt-1">시니어 건강 문진 이력서 작성</h3>
+                        <p class="text-xs text-slate-500 leading-snug">스마트 디지털 인지 능력 및 오프라인 체력 검증</p>
+                    </div>
+                    <div class="w-10 h-10 rounded-2xl bg-sky-50 text-sky-600 flex items-center justify-center group-hover:bg-sky-500 group-hover:text-white transition shrink-0">
+                        <i class="fa-solid fa-arrow-right"></i>
                     </div>
                 </a>
-                <a href="/employer.html" class="bg-white/90 backdrop-blur-md p-5 rounded-2xl border border-sky-200 shadow-sm hover:shadow-md transition text-left flex justify-between items-center">
-                    <div>
-                        <span class="text-[10px] font-bold text-sky-700 bg-sky-50 px-2.5 py-0.5 rounded">구인 사장님</span>
-                        <h3 class="text-sm font-extrabold text-slate-900 mt-1">사장님 구인 공고 등록 →</h3>
+                <a href="/employer.html" class="bg-white p-7 rounded-3xl border-2 border-sky-200 shadow-lg hover:shadow-xl hover:border-sky-400 transition text-left flex justify-between items-center group">
+                    <div class="space-y-1.5">
+                        <span class="text-xs font-extrabold text-sky-700 bg-sky-50 px-3 py-1 rounded-lg border border-sky-100">구인 사업장 사장님</span>
+                        <h3 class="text-lg font-black text-slate-900 pt-1">사장님 구인 공고 등록</h3>
+                        <p class="text-xs text-slate-500 leading-snug">피크타임 인력 채용 및 1·2·3순위 노쇼 자동 승계</p>
+                    </div>
+                    <div class="w-10 h-10 rounded-2xl bg-sky-50 text-sky-600 flex items-center justify-center group-hover:bg-sky-500 group-hover:text-white transition shrink-0">
+                        <i class="fa-solid fa-arrow-right"></i>
                     </div>
                 </a>
             </div>
 
             <!-- Scroll Indicator -->
-            <div class="mt-10 flex flex-col items-center gap-1 text-sky-800 font-bold text-xs anim-subtle-bounce relative z-20">
+            <div class="mt-12 flex flex-col items-center gap-1 text-sky-800 font-bold text-xs anim-subtle-bounce relative z-20">
                 <span>아래로 스크롤</span>
                 <i class="fa-solid fa-chevron-down text-sm"></i>
             </div>
         </section>
 
         <!-- 3D Card Shuffle Carousel Section -->
-        <section class="max-w-5xl mx-auto px-5 mt-20">
+        <section class="max-w-5xl mx-auto px-5 mt-24">
             <div class="text-center space-y-2 mb-10">
                 <span class="text-xs font-bold text-sky-600 bg-sky-50 px-3.5 py-1.5 rounded-full border border-sky-100 shadow-sm">문서 셔플 시스템</span>
                 <h2 class="text-xl md:text-2xl font-black text-slate-800 pt-1">좌우 문서를 클릭하여 핵심 스토리를 확인하세요</h2>
@@ -195,7 +202,7 @@
                     </div>
                 </div>
 
-                <!-- Card 1: 사장님을 위한 글 + 작동하는 문의하기 폼 -->
+                <!-- Card 1: 사장님을 위한 글 + 문의하기 폼 -->
                 <div class="shuffle-card card-pos-1 space-y-4" onclick="setFrontCard(1)">
                     <span class="bg-indigo-50 text-indigo-600 font-extrabold text-xs px-3 py-1 rounded-lg">사장님을 위한 글</span>
                     <h2 class="text-base md:text-xl font-black text-slate-900 leading-snug">
@@ -205,7 +212,7 @@
                         최저임금 상승과 무단결근 고민, 2시간만 일할 알바를 구하기 힘들어 4시간씩 더 고용하셨나요? 4단계 검증(문진, 전화, 면접, 체력)을 통과한 베테랑 시니어와 연결되세요.
                     </p>
                     
-                    <!-- Working Inquiry Form -->
+                    <!-- Fully Functioning Inquiry Form -->
                     <div class="mt-2 p-4 bg-sky-50/80 rounded-2xl border border-sky-100 space-y-2.5" onclick="event.stopPropagation()">
                         <h4 class="font-bold text-slate-800 text-xs flex items-center gap-1.5">
                             <i class="fa-solid fa-headset text-sky-600"></i> 사장님 맞춤 전화 상담 신청
@@ -214,7 +221,7 @@
                             <input type="text" id="inq-name" placeholder="성명 입력" required class="w-full p-2.5 rounded-xl border border-slate-200 bg-white font-medium">
                             <input type="text" id="inq-store" placeholder="가게명 입력" required class="w-full p-2.5 rounded-xl border border-slate-200 bg-white font-medium">
                             <input type="tel" id="inq-phone" placeholder="전화번호 (010-0000-0000)" required class="w-full p-2.5 rounded-xl border border-slate-200 bg-white font-medium">
-                            <button type="submit" class="w-full py-2.5 btn-sky font-bold rounded-xl shadow-sm">문의하기</button>
+                            <button type="submit" class="w-full py-2.5 btn-sky font-bold rounded-xl shadow-sm cursor-pointer">문의하기</button>
                         </form>
                     </div>
                 </div>
@@ -276,17 +283,24 @@
             const storeName = document.getElementById('inq-store').value;
             const phone = document.getElementById('inq-phone').value;
 
-            const res = await fetch('/api/inquiries', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ name, storeName, phone })
-            }).then(r => r.json());
+            try {
+                const res = await fetch('/api/inquiries', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ name, storeName, phone })
+                }).then(r => r.json());
 
-            if (res.success) {
-                alert('1시간 내로 실버웍스 측에서 전화가 갈 예정입니다. 신청해 주셔서 감사합니다.');
-                document.getElementById('inq-name').value = '';
-                document.getElementById('inq-store').value = '';
-                document.getElementById('inq-phone').value = '';
+                if (res.success) {
+                    alert('1시간 내로 실버웍스 측에서 전화가 갈 예정입니다. 신청해 주셔서 감사합니다.');
+                    document.getElementById('inq-name').value = '';
+                    document.getElementById('inq-store').value = '';
+                    document.getElementById('inq-phone').value = '';
+                } else {
+                    alert('문의 접수 중 오류가 발생했습니다.');
+                }
+            } catch (err) {
+                console.error(err);
+                alert('서버 통신 오류가 발생했습니다.');
             }
         }
 
