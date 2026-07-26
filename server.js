@@ -7,6 +7,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, 'public')));
 
+// === [Server In-Memory DB] ===
 let usersData = [
   { id: 'admin', pw: '1234', name: '최고관리자', role: 'admin', approved: true, points: 0, isSubscribed: true, hasSurvey: true }
 ];
@@ -14,8 +15,11 @@ let jobsData = [];
 let surveysData = [];
 let settlementsData = [];
 let notificationsData = [];
+let inquiriesData = []; // 사장님 전화 상담 문의 DB
+let invoicesData = []; // 사장님 수수료 납부 명세서 DB
 
-// 1. Auth & Users API
+// === [REST API Routes] ===
+
 app.post('/api/signup', (req, res) => {
   const { id, pw, name, phone, role } = req.body;
   if (usersData.find(u => u.id === id)) return res.status(400).json({ success: false, message: '이미 존재하는 아이디입니다.' });
@@ -47,6 +51,13 @@ app.post('/api/users/:id/approve', (req, res) => {
   res.json({ success: true });
 });
 
+// 강제 탈퇴 API 추가
+app.delete('/api/users/:id', (req, res) => {
+  const idx = usersData.findIndex(u => u.id === req.params.id);
+  if (idx !== -1) usersData.splice(idx, 1);
+  res.json({ success: true });
+});
+
 app.post('/api/users/:id/update-points', (req, res) => {
   const { points } = req.body;
   const user = usersData.find(u => u.id === req.params.id);
@@ -74,7 +85,6 @@ app.post('/api/users/:id/approve-subscription', (req, res) => {
   res.json({ success: true });
 });
 
-// 구독권 해지 API 추가
 app.post('/api/users/:id/cancel-subscription', (req, res) => {
   const user = usersData.find(u => u.id === req.params.id);
   if (user) {
@@ -89,8 +99,42 @@ app.post('/api/users/:id/cancel-subscription', (req, res) => {
   res.json({ success: true });
 });
 
+// 관리자 경고 알림 발송 API (1~3차)
+app.post('/api/users/:id/warn', (req, res) => {
+  const { step } = req.body;
+  const user = usersData.find(u => u.id === req.params.id);
+  if (user) {
+    notificationsData.unshift({
+      id: 'noti-' + Date.now(), targetUserId: user.id, title: `[긴급] 미납 수수료 납부 독촉 (${step}차 경고)`,
+      content: `사장님, 실버웍스 수수료 미납건과 관련하여 ${step}차 경고 조치 되었습니다. 조속한 처리를 부탁드립니다.`,
+      date: new Date().toLocaleString(), isRead: false
+    });
+  }
+  res.json({ success: true });
+});
 
-// 2. Jobs API
+// Inquiries (비회원 가능 사장님 문의 API)
+app.get('/api/inquiries', (req, res) => res.json({ success: true, inquiries: inquiriesData }));
+app.post('/api/inquiries', (req, res) => {
+  const { name, storeName, phone } = req.body;
+  inquiriesData.unshift({ id: 'inq-' + Date.now(), name, storeName, phone, date: new Date().toLocaleString() });
+  res.json({ success: true });
+});
+
+// Invoices (사장님 수수료 납부 명세서 API)
+app.get('/api/invoices/:employerId', (req, res) => {
+  const list = invoicesData.filter(i => i.employerId === req.params.employerId && !i.isConfirmed);
+  res.json({ success: true, invoices: list });
+});
+
+app.post('/api/invoices/confirm', (req, res) => {
+  const { invoiceId } = req.body;
+  const inv = invoicesData.find(i => i.id === invoiceId);
+  if (inv) inv.isConfirmed = true;
+  res.json({ success: true });
+});
+
+// Jobs API
 app.get('/api/jobs', (req, res) => res.json({ success: true, jobs: jobsData }));
 
 app.post('/api/jobs', (req, res) => {
@@ -219,15 +263,36 @@ app.post('/api/jobs/:id/pay-points', (req, res) => {
     const totalPay = parseInt(basePay, 10) + bonusTotal;
     senior.points = (senior.points || 0) + totalPay;
 
+    // Issue Invoice to Employer
+    const employer = usersData.find(u => u.id === job.employerId);
+    const feeRate = employer && employer.isSubscribed ? 0.05 : 0.10;
+    const feeAmount = Math.round(totalPay * feeRate);
+
+    invoicesData.unshift({
+      id: 'inv-' + Date.now(),
+      employerId: job.employerId,
+      jobTitle: job.title,
+      storeName: job.storeName,
+      amount: feeAmount,
+      date: new Date().toLocaleString(),
+      isConfirmed: false
+    });
+
     notificationsData.unshift({
       id: 'noti-' + Date.now(), targetUserId: seniorId, title: '[포인트 지급 완료]',
-      content: `'${job.title}' 근무 대가로 ${totalPay.toLocaleString()}P 가 지급되었습니다.`, date: new Date().toLocaleString(), isRead: false
+      content: `'${job.title}' 근무 대가로 ${totalPay.toLocaleString()}P가 지급되었습니다.`, date: new Date().toLocaleString(), isRead: false
+    });
+
+    notificationsData.unshift({
+      id: 'noti-' + Date.now(), targetUserId: job.employerId, title: '[수수료 명세서 발행]',
+      content: `'${job.title}' 채용에 따른 수수료 납부 명세서(${feeAmount.toLocaleString()}원)가 발행되었습니다. 확인 후 정산 완료를 눌러주세요.`,
+      date: new Date().toLocaleString(), isRead: false
     });
   }
   res.json({ success: true });
 });
 
-// 3. Surveys & Settlements API
+// Surveys & Settlements API
 app.get('/api/surveys', (req, res) => res.json({ success: true, surveys: surveysData }));
 app.post('/api/surveys', (req, res) => {
   const survey = req.body;
@@ -263,7 +328,7 @@ app.post('/api/settlements/:id/complete', (req, res) => {
   res.json({ success: true });
 });
 
-// 4. Notifications API
+// Notifications API
 app.get('/api/notifications/:userId', (req, res) => {
   const userNotis = notificationsData.filter(n => n.targetUserId === req.params.userId);
   const hasUnread = userNotis.some(n => !n.isRead);

@@ -34,10 +34,30 @@
     </header>
 
     <main class="max-w-7xl mx-auto px-5 py-8 flex-1 w-full space-y-8">
-        <!-- 1. 회원 관리 및 구독 승인/해지 -->
+        <!-- 1. 사장님 전화 상담 문의 접수 내역 (복구 완료) -->
         <div class="bg-white rounded-3xl p-6 md:p-8 border border-sky-100 shadow-sm space-y-4">
             <h2 class="text-base font-black text-slate-800 flex items-center gap-2">
-                <i class="fa-solid fa-users-gear text-sky-500"></i> 회원 관리 (아이디 클릭 시 상세정보 / 가입 및 구독 승인 / 구독 해지)
+                <i class="fa-solid fa-phone-volume text-sky-500"></i> 사장님 전화 상담 문의 접수 내역
+            </h2>
+            <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse text-xs">
+                    <thead>
+                        <tr class="bg-sky-50/50 border-y border-sky-100 text-slate-600 font-bold">
+                            <th class="p-3">접수 일시</th>
+                            <th class="p-3">성명</th>
+                            <th class="p-3">가게명</th>
+                            <th class="p-3">전화번호</th>
+                        </tr>
+                    </thead>
+                    <tbody id="inquiry-table-body" class="divide-y divide-slate-100 text-slate-700"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- 2. 회원 관리, 1~3차 경고 알림, 강제 탈퇴 -->
+        <div class="bg-white rounded-3xl p-6 md:p-8 border border-sky-100 shadow-sm space-y-4">
+            <h2 class="text-base font-black text-slate-800 flex items-center gap-2">
+                <i class="fa-solid fa-users-gear text-sky-500"></i> 회원 관리 (가입승인 / 구독승인 / 1~3차 경고 / 강제탈퇴)
             </h2>
             <div class="overflow-x-auto">
                 <table class="w-full text-left border-collapse text-xs">
@@ -46,7 +66,7 @@
                             <th class="p-3">아이디 (클릭)</th>
                             <th class="p-3">성함/대표명</th>
                             <th class="p-3">회원 유형</th>
-                            <th class="p-3">보유 포인트 (수정)</th>
+                            <th class="p-3">보유 포인트</th>
                             <th class="p-3">가입 승인</th>
                             <th class="p-3">구독 상태</th>
                             <th class="p-3 text-right">관리 통제</th>
@@ -57,20 +77,12 @@
             </div>
         </div>
 
-        <!-- 2. 시니어 포인트 정산 완료 승인 -->
+        <!-- 3. 시니어 포인트 정산 완료 승인 -->
         <div class="bg-white rounded-3xl p-6 md:p-8 border border-sky-100 shadow-sm space-y-4">
             <h2 class="text-base font-black text-slate-800 flex items-center gap-2">
-                <i class="fa-solid fa-hand-holding-dollar text-amber-500"></i> 시니어 포인트 정산 요청 통제 (정산 완료 클릭 시 알림 발송 & 포인트 차감)
+                <i class="fa-solid fa-hand-holding-dollar text-amber-500"></i> 시니어 포인트 정산 요청 통제
             </h2>
             <div id="admin-settlement-list" class="space-y-3"></div>
-        </div>
-
-        <!-- 3. 구인 공고 전체 수정 및 삭제 통제 -->
-        <div class="bg-white rounded-3xl p-6 md:p-8 border border-sky-100 shadow-sm space-y-4">
-            <h2 class="text-base font-black text-slate-800 flex items-center gap-2">
-                <i class="fa-solid fa-list-check text-sky-500"></i> 전체 공고 관리 (내용 전체 수정 / 삭제 시 시니어 자동 알림)
-            </h2>
-            <div id="admin-jobs-list" class="space-y-3"></div>
         </div>
     </main>
 
@@ -85,63 +97,32 @@
         </div>
     </div>
 
-    <!-- Job Edit Full Modal -->
-    <div id="jobEditModal" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm hidden z-50 flex items-center justify-center p-4">
-        <div class="bg-white rounded-3xl max-w-lg w-full p-7 space-y-4 shadow-2xl">
-            <div class="flex justify-between items-center border-b border-sky-100 pb-3">
-                <h3 class="text-lg font-black text-slate-800">공고 전체 내용 수정</h3>
-                <button onclick="closeEditModal()" class="text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark text-lg"></i></button>
-            </div>
-            <form onsubmit="saveJobEdit(event)" class="space-y-3 text-xs">
-                <input type="hidden" id="edit-job-id">
-                <div>
-                    <label class="block font-bold mb-1">매장명</label>
-                    <input type="text" id="edit-store" required class="w-full p-3 rounded-xl input-sky">
-                </div>
-                <div>
-                    <label class="block font-bold mb-1">공고 제목</label>
-                    <input type="text" id="edit-title" required class="w-full p-3 rounded-xl input-sky">
-                </div>
-                <div class="grid grid-cols-2 gap-2">
-                    <div>
-                        <label class="block font-bold mb-1">업종</label>
-                        <select id="edit-category" class="w-full p-3 rounded-xl input-sky font-bold">
-                            <option value="식당·서빙">식당·서빙</option>
-                            <option value="카페·음료">카페·음료</option>
-                            <option value="마트·운반">마트·운반</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label class="block font-bold mb-1">근무 날짜</label>
-                        <input type="date" id="edit-date" required class="w-full p-3 rounded-xl input-sky">
-                    </div>
-                </div>
-                <div class="grid grid-cols-2 gap-2">
-                    <div>
-                        <label class="block font-bold mb-1">근무 시간</label>
-                        <input type="text" id="edit-time" required class="w-full p-3 rounded-xl input-sky">
-                    </div>
-                    <div>
-                        <label class="block font-bold mb-1">일당 (원)</label>
-                        <input type="number" id="edit-pay" required class="w-full p-3 rounded-xl input-sky font-bold text-sky-600">
-                    </div>
-                </div>
-                <button type="submit" class="w-full py-3.5 btn-sky font-bold rounded-xl shadow mt-2">수정 내용 저장</button>
-            </form>
-        </div>
-    </div>
-
     <script>
         async function loadAdminControl() {
             const usersRes = await fetch('/api/users').then(r => r.json());
-            const jobsRes = await fetch('/api/jobs').then(r => r.json());
             const setRes = await fetch('/api/settlements').then(r => r.json());
+            const inqRes = await fetch('/api/inquiries').then(r => r.json());
 
             const users = usersRes.users || [];
-            const jobs = jobsRes.jobs || [];
             const settlements = setRes.settlements || [];
+            const inquiries = inqRes.inquiries || [];
 
-            // 1. User Approval Table
+            // Inquiries Table
+            const inqTable = document.getElementById('inquiry-table-body');
+            if (inquiries.length === 0) {
+                inqTable.innerHTML = `<tr><td colspan="4" class="p-6 text-center text-slate-400">신청된 전화 상담 문의가 없습니다.</td></tr>`;
+            } else {
+                inqTable.innerHTML = inquiries.map(i => `
+                    <tr>
+                        <td class="p-3 text-slate-400">${i.date}</td>
+                        <td class="p-3 font-bold text-slate-800">${i.name}</td>
+                        <td class="p-3 font-bold text-sky-600">${i.storeName}</td>
+                        <td class="p-3 font-mono font-bold">${i.phone}</td>
+                    </tr>
+                `).join('');
+            }
+
+            // User Table with Warning & Force Delete
             const userTable = document.getElementById('user-approval-table');
             if (users.length === 0) {
                 userTable.innerHTML = `<tr><td colspan="7" class="p-6 text-center text-slate-400">가입된 회원이 없습니다.</td></tr>`;
@@ -151,21 +132,24 @@
                         <td class="p-3 font-mono font-bold text-sky-600 cursor-pointer hover:underline" onclick="viewUserDetail('${u.id}')">${u.id}</td>
                         <td class="p-3 font-bold">${u.name}</td>
                         <td class="p-3"><span class="px-2 py-0.5 rounded text-[11px] font-bold ${u.role === 'senior' ? 'bg-sky-100 text-sky-700' : 'bg-indigo-100 text-indigo-700'}">${u.role === 'senior' ? '시니어' : '사장님'}</span></td>
-                        <td class="p-3">
-                            ${u.role === 'senior' ? `<button onclick="editSeniorPoints('${u.id}', ${u.points || 0})" class="bg-sky-50 text-sky-600 font-extrabold px-2 py-1 rounded border border-sky-100 hover:bg-sky-100 text-[11px]">${(u.points || 0).toLocaleString()}P <i class="fa-solid fa-pen text-[9px] ml-0.5"></i></button>` : '<span class="text-slate-300">-</span>'}
-                        </td>
+                        <td class="p-3 font-bold text-sky-600">${(u.points || 0).toLocaleString()}P</td>
                         <td class="p-3"><span class="font-bold ${u.approved ? 'text-emerald-500' : 'text-amber-500'}">${u.approved ? '승인완료' : '승인대기'}</span></td>
                         <td class="p-3"><span class="font-bold ${u.isSubscribed ? 'text-sky-600' : 'text-slate-400'}">${u.isSubscribed ? '구독회원' : (u.subRequested ? '구독신청중' : '일반')}</span></td>
                         <td class="p-3 text-right space-x-1">
-                            ${!u.approved ? `<button onclick="approveUser('${u.id}')" class="btn-sky text-[11px] px-2.5 py-1 rounded-lg font-bold">가입승인</button>` : ''}
-                            ${u.role === 'employer' && u.subRequested && !u.isSubscribed ? `<button onclick="approveSub('${u.id}')" class="bg-emerald-500 text-white text-[11px] px-2.5 py-1 rounded-lg font-bold hover:bg-emerald-600">구독승인</button>` : ''}
-                            ${u.role === 'employer' && u.isSubscribed ? `<button onclick="cancelSub('${u.id}')" class="bg-rose-100 text-rose-600 text-[11px] px-2.5 py-1 rounded-lg font-bold hover:bg-rose-200">구독해지</button>` : ''}
+                            ${!u.approved ? `<button onclick="approveUser('${u.id}')" class="btn-sky text-[11px] px-2.5 py-1 rounded-lg font-bold">승인</button>` : ''}
+                            ${u.role === 'employer' && u.subRequested && !u.isSubscribed ? `<button onclick="approveSub('${u.id}')" class="bg-emerald-500 text-white text-[11px] px-2 py-1 rounded-lg font-bold">구독승인</button>` : ''}
+                            ${u.role === 'employer' ? `
+                                <button onclick="sendWarning('${u.id}', 1)" class="bg-amber-100 text-amber-700 text-[10px] px-1.5 py-1 rounded font-bold">1차경고</button>
+                                <button onclick="sendWarning('${u.id}', 2)" class="bg-amber-500 text-white text-[10px] px-1.5 py-1 rounded font-bold">2차경고</button>
+                                <button onclick="sendWarning('${u.id}', 3)" class="bg-rose-500 text-white text-[10px] px-1.5 py-1 rounded font-bold">3차경고</button>
+                            ` : ''}
+                            <button onclick="forceDeleteUser('${u.id}')" class="bg-rose-100 text-rose-600 text-[11px] px-2 py-1 rounded-lg font-bold hover:bg-rose-200">강제탈퇴</button>
                         </td>
                     </tr>
                 `).join('');
             }
 
-            // 2. Settlements Table
+            // Settlements Table
             const setList = document.getElementById('admin-settlement-list');
             const pendingSettles = settlements.filter(s => s.status === 'PENDING');
             if (pendingSettles.length === 0) {
@@ -178,41 +162,28 @@
                             <p class="text-slate-500 mt-0.5">입금계좌: ${s.bank} ${s.account} | 요청금액: ${s.amount.toLocaleString()}P</p>
                         </div>
                         <button onclick="completeSettlement('${s.id}')" class="bg-amber-500 text-white font-bold px-4 py-2 rounded-xl shadow-sm hover:bg-amber-600">
-                            정산 완료 (알림 발송 & 포인트 차감)
+                            정산 완료
                         </button>
-                    </div>
-                `).join('');
-            }
-
-            // 3. Jobs List
-            const jobsList = document.getElementById('admin-jobs-list');
-            if (jobs.length === 0) {
-                jobsList.innerHTML = `<p class="text-xs text-slate-400 text-center py-6">등록된 공고가 없습니다.</p>`;
-            } else {
-                jobsList.innerHTML = jobs.map(j => `
-                    <div class="p-4 rounded-2xl bg-sky-50/30 border border-sky-100 flex justify-between items-center text-xs">
-                        <div>
-                            <strong class="text-sm font-bold text-slate-800">${j.title}</strong>
-                            <p class="text-slate-500">매장: ${j.storeName} | 일시: ${j.date} (${j.time}) | 일당: ${parseInt(j.pay).toLocaleString()}원</p>
-                        </div>
-                        <div class="flex gap-2">
-                            <button onclick="openEditModal('${j.id}')" class="px-3 py-1.5 rounded-lg bg-sky-100 text-sky-700 font-bold hover:bg-sky-200">수정</button>
-                            <button onclick="deleteJob('${j.id}')" class="px-3 py-1.5 rounded-lg bg-rose-100 text-rose-600 font-bold hover:bg-rose-200">삭제</button>
-                        </div>
                     </div>
                 `).join('');
             }
         }
 
-        async function editSeniorPoints(userId, currentP) {
-            const newP = prompt('수정할 보유 포인트 액수를 입력하세요:', currentP);
-            if (newP !== null && !isNaN(newP)) {
-                await fetch(`/api/users/${userId}/update-points`, {
+        async function sendWarning(userId, step) {
+            if (confirm(`해당 사장님에게 ${step}차 경고 알림을 발송하시겠습니까?`)) {
+                await fetch(`/api/users/${userId}/warn`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ points: parseInt(newP, 10) })
+                    body: JSON.stringify({ step })
                 });
-                alert('시니어 회원의 보유 포인트가 변경되었습니다.');
+                alert(`${step}차 경고 알림이 발송되었습니다.`);
+            }
+        }
+
+        async function forceDeleteUser(userId) {
+            if (confirm(`[주의] ${userId} 회원을 정말 강제 탈퇴(계정 삭제) 처리하시겠습니까?`)) {
+                await fetch(`/api/users/${userId}`, { method: 'DELETE' });
+                alert('회원이 강제 탈퇴 처리되었습니다.');
                 loadAdminControl();
             }
         }
@@ -228,9 +199,8 @@
                 <p><strong>연락처:</strong> ${u.phone || '미입력'}</p>
                 <p><strong>회원 유형:</strong> ${u.role === 'senior' ? '시니어 구직자' : '구인 사장님'}</p>
                 <p><strong>가입 승인 상태:</strong> ${u.approved ? '승인 완료' : '승인 대기중'}</p>
-                <p><strong>구독 회원 여부:</strong> ${u.isSubscribed ? '구독 회원 (수수료 절반 및 공고 상단 고정)' : '일반 회원'}</p>
+                <p><strong>구독 회원 여부:</strong> ${u.isSubscribed ? '구독 회원' : '일반 회원'}</p>
                 <p><strong>보유 포인트:</strong> ${(u.points || 0).toLocaleString()}P</p>
-                <p><strong>문진 이력서 작성 여부:</strong> ${u.hasSurvey ? '작성 완료' : '미작성'}</p>
             `;
             document.getElementById('userDetailModal').classList.remove('hidden');
         }
@@ -244,68 +214,14 @@
 
         async function approveSub(id) {
             await fetch(`/api/users/${id}/approve-subscription`, { method: 'POST' });
-            alert('사장님의 구독이 승인되어 [구독 회원] 배지가 부여되었으며 알림이 발송되었습니다.');
+            alert('사장님 구독이 승인되었습니다.');
             loadAdminControl();
-        }
-
-        async function cancelSub(id) {
-            if (confirm('해당 사장님의 구독권을 정말 해지하시겠습니까?')) {
-                await fetch(`/api/users/${id}/cancel-subscription`, { method: 'POST' });
-                alert('구독권이 해지되었습니다.');
-                loadAdminControl();
-            }
         }
 
         async function completeSettlement(settleId) {
-            if (confirm('정산을 완료하고 해당 시니어 회원의 포인트를 차감하시겠습니까? 완료 알림도 전송됩니다.')) {
+            if (confirm('정산을 완료하시겠습니까? 시니어 회원에게 알림이 전송됩니다.')) {
                 await fetch(`/api/settlements/${settleId}/complete`, { method: 'POST' });
-                alert('정산 완료 처리되었으며 정산 완료 알림이 전송되고 포인트가 차감되었습니다.');
-                loadAdminControl();
-            }
-        }
-
-        async function openEditModal(jobId) {
-            const jobsRes = await fetch('/api/jobs').then(r => r.json());
-            const j = jobsRes.jobs.find(job => job.id === jobId);
-            
-            document.getElementById('edit-job-id').value = j.id;
-            document.getElementById('edit-store').value = j.storeName;
-            document.getElementById('edit-title').value = j.title;
-            document.getElementById('edit-category').value = j.category || '식당·서빙';
-            document.getElementById('edit-date').value = j.date;
-            document.getElementById('edit-time').value = j.time;
-            document.getElementById('edit-pay').value = j.pay;
-            document.getElementById('jobEditModal').classList.remove('hidden');
-        }
-        function closeEditModal() { document.getElementById('jobEditModal').classList.add('hidden'); }
-
-        async function saveJobEdit(e) {
-            e.preventDefault();
-            const id = document.getElementById('edit-job-id').value;
-            const updated = {
-                storeName: document.getElementById('edit-store').value,
-                title: document.getElementById('edit-title').value,
-                category: document.getElementById('edit-category').value,
-                date: document.getElementById('edit-date').value,
-                time: document.getElementById('edit-time').value,
-                pay: document.getElementById('edit-pay').value
-            };
-
-            await fetch(`/api/jobs/${id}`, {
-                method: 'PUT',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(updated)
-            });
-
-            alert('공고 전체 내용이 수정되었습니다.');
-            closeEditModal();
-            loadAdminControl();
-        }
-
-        async function deleteJob(id) {
-            if (confirm('공고를 삭제하시겠습니까? 지원된 시니어 회원에게 알림이 발송됩니다.')) {
-                await fetch(`/api/jobs/${id}`, { method: 'DELETE' });
-                alert('공고가 삭제되었습니다.');
+                alert('정산 완료 처리되었습니다.');
                 loadAdminControl();
             }
         }
