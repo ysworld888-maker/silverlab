@@ -8,68 +8,73 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css');
-        body { font-family: "Pretendard", sans-serif; background-color: #f8fafc; color: #1e293b; word-break: keep-all; }
-        .btn-sky { background-color: #0ea5e9; color: #ffffff; transition: all 0.2s; }
-        .btn-sky:hover { background-color: #0284c7; }
-        .input-sky { background-color: #f1f5f9; border: 1px solid transparent; }
-        .input-sky:focus { background-color: #ffffff; border-color: #38bdf8; outline: none; }
+        body { font-family: "Pretendard", -apple-system, BlinkMacSystemFont, system-ui, sans-serif; background-color: #f8fafc; color: #0f172a; word-break: keep-all; }
+        .btn-toss { background-color: #3182f6; color: #ffffff; transition: all 0.2s; }
+        .btn-toss:hover { background-color: #1b64da; }
+        .input-sky { background-color: #f8fafc; border: 1px solid #e2e8f0; }
+        .input-sky:focus { background-color: #ffffff; border-color: #3182f6; outline: none; }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.95);
+            box-shadow: 0 10px 30px -5px rgba(15, 23, 42, 0.04), 0 0 0 1px rgba(226, 232, 240, 0.6);
+        }
     </style>
 </head>
 <body class="min-h-screen flex flex-col justify-between antialiased">
-    <header class="sticky top-0 z-50 bg-white/90 backdrop-blur-md border-b border-sky-100 shadow-sm">
+    <header class="sticky top-0 z-50 bg-white/80 backdrop-blur-xl border-b border-slate-200/60 shadow-sm">
         <div class="max-w-6xl mx-auto px-5 h-16 flex items-center justify-between">
             <a href="/index.html" class="flex items-center gap-2.5">
-                <div class="p-1.5 rounded-xl bg-sky-100 text-sky-600">
+                <div class="p-1.5 rounded-xl bg-blue-50 text-[#3182f6]">
                     <svg class="w-8 h-8" viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="8" stroke-linecap="round" stroke-linejoin="round">
                         <path d="M 14 58 C 28 72 44 72 58 48 C 72 24 88 18 95 35" />
                         <path d="M 48 70 C 62 82 78 78 86 60" />
                     </svg>
                 </div>
-                <span class="text-xl font-extrabold tracking-tight text-slate-800">silverworks</span>
+                <span class="text-xl font-extrabold tracking-tight text-slate-900">silverworks</span>
             </a>
             <div id="header-user-area" class="flex items-center gap-3"></div>
         </div>
     </header>
 
     <main class="max-w-4xl mx-auto px-5 py-10 flex-1 w-full space-y-8">
-        <!-- User Header Card -->
-        <div class="bg-white rounded-3xl p-6 md:p-8 border border-sky-100 shadow-sm flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+        <div class="glass-card rounded-3xl p-6 md:p-8 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
             <div class="flex items-center gap-4">
-                <div class="w-16 h-16 rounded-full bg-sky-100 text-sky-600 flex items-center justify-center text-2xl font-black border border-sky-200">
+                <div class="w-16 h-16 rounded-full bg-blue-50 text-[#3182f6] flex items-center justify-center text-2xl font-black border border-blue-100">
                     <i class="fa-solid fa-user"></i>
                 </div>
                 <div>
                     <div class="flex items-center gap-2">
-                        <h1 id="profile-name" class="text-xl font-black text-slate-800">회원 성함</h1>
+                        <h1 id="profile-name" class="text-xl font-black text-slate-900">회원 성함</h1>
                         <span id="sub-badge-display"></span>
                     </div>
-                    <span id="profile-role" class="text-xs font-bold text-sky-600 bg-sky-50 px-2.5 py-0.5 rounded-lg border border-sky-100">회원 유형</span>
+                    <span id="profile-role" class="text-xs font-bold text-[#3182f6] bg-blue-50 px-2.5 py-0.5 rounded-lg border border-blue-100">회원 유형</span>
                 </div>
             </div>
             
-            <div id="senior-points-box" class="hidden bg-sky-50/80 p-4 rounded-2xl border border-sky-100 flex items-center gap-4 w-full sm:w-auto justify-between">
+            <div id="senior-points-box" class="hidden bg-blue-50/80 p-4 rounded-2xl border border-blue-100 flex items-center gap-4 w-full sm:w-auto justify-between">
                 <div>
                     <span class="text-[11px] font-bold text-slate-400 block">보유 포인트</span>
-                    <strong id="profile-points" class="text-lg font-black text-sky-600">0P</strong>
+                    <strong id="profile-points" class="text-lg font-black text-[#3182f6]">0P</strong>
                 </div>
-                <button onclick="openSubModal()" class="btn-sky text-xs font-bold px-4 py-2 rounded-xl shadow-sm">정산 신청</button>
+                <button onclick="openSubModal()" class="btn-toss text-xs font-bold px-4 py-2 rounded-xl shadow-sm">정산 신청</button>
             </div>
         </div>
 
         <div id="role-dashboard" class="space-y-6"></div>
 
-        <!-- 고급진 수수료 납부 명세서 카드 구역 -->
         <div id="invoice-section" class="hidden space-y-4">
-            <h2 class="text-base font-black text-slate-800"><i class="fa-solid fa-file-invoice-dollar text-emerald-500 mr-2"></i>실버웍스 플랫폼 수수료 납부 명세서</h2>
+            <h2 class="text-base font-black text-slate-900"><i class="fa-solid fa-file-invoice-dollar text-[#3182f6] mr-2"></i>실버웍스 플랫폼 수수료 납부 명세서</h2>
             <div id="invoice-card-container" class="space-y-4"></div>
         </div>
     </main>
 
     <!-- Cancel Hire Modal -->
-    <div id="cancelHireModal" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm hidden z-50 flex items-center justify-center p-4">
-        <div class="bg-white rounded-3xl max-w-md w-full p-7 space-y-4 shadow-2xl">
-            <div class="flex justify-between items-center border-b border-sky-100 pb-3">
-                <h3 class="text-lg font-black text-slate-800">채용 취소 및 본사 신고</h3>
+    <div id="cancelHireModal" class="fixed inset-0 bg-slate-900/40 backdrop-blur-md hidden z-50 flex items-center justify-center p-4">
+        <div class="bg-white/95 rounded-3xl max-w-md w-full p-7 space-y-4 shadow-2xl border border-white/80">
+            <div class="flex justify-between items-center border-b border-slate-100 pb-3">
+                <h3 class="text-lg font-black text-slate-900">채용 취소 및 본사 신고</h3>
                 <button onclick="closeCancelModal()" class="text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark text-lg"></i></button>
             </div>
             <input type="hidden" id="cancel-job-id">
@@ -90,10 +95,10 @@
     </div>
 
     <!-- Soft Blue Point Pay Agreement Modal -->
-    <div id="payPointModal" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm hidden z-50 flex items-center justify-center p-4">
-        <div class="bg-white rounded-3xl max-w-md w-full p-7 space-y-4 shadow-2xl">
-            <div class="flex justify-between items-center border-b border-sky-100 pb-3">
-                <h3 class="text-lg font-black text-slate-800">시니어 근무 대가 포인트 지급</h3>
+    <div id="payPointModal" class="fixed inset-0 bg-slate-900/40 backdrop-blur-md hidden z-50 flex items-center justify-center p-4">
+        <div class="bg-white/95 rounded-3xl max-w-md w-full p-7 space-y-4 shadow-2xl border border-white/80">
+            <div class="flex justify-between items-center border-b border-slate-100 pb-3">
+                <h3 class="text-lg font-black text-slate-900">시니어 근무 대가 포인트 지급</h3>
                 <button onclick="closePayModal()" class="text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark text-lg"></i></button>
             </div>
             <input type="hidden" id="pay-job-id">
@@ -102,23 +107,23 @@
             <p class="text-xs text-slate-600 leading-relaxed">
                 시니어 회원의 실제 근무 확인 후 포인트를 지급합니다. 실수 지급 방지를 위해 아래 동의란을 체크해 주세요.
             </p>
-            <div class="p-3.5 bg-sky-50 rounded-xl border border-sky-100 flex items-start gap-2 text-xs">
-                <input type="checkbox" id="pay-agree-check" class="mt-0.5 rounded text-sky-600">
-                <label for="pay-agree-check" class="text-sky-800 font-bold cursor-pointer">
+            <div class="p-3.5 bg-blue-50 rounded-xl border border-blue-100 flex items-start gap-2 text-xs">
+                <input type="checkbox" id="pay-agree-check" class="mt-0.5 rounded text-[#3182f6]">
+                <label for="pay-agree-check" class="text-blue-900 font-bold cursor-pointer">
                     시니어 회원의 실제 근무 수행을 확인하였으며 포인트 지급에 동의합니다.
                 </label>
             </div>
-            <button onclick="confirmPayPoint()" class="w-full py-3.5 bg-sky-400 hover:bg-sky-500 text-white font-bold rounded-xl text-xs shadow">
+            <button onclick="confirmPayPoint()" class="w-full py-3.5 btn-toss font-bold rounded-xl text-xs shadow">
                 안전하게 지급하기
             </button>
         </div>
     </div>
 
-    <!-- Settlement Modal (정산 신청 완료 문구 적용) -->
-    <div id="subModal" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm hidden z-50 flex items-center justify-center p-4">
-        <div class="bg-white rounded-3xl max-w-md w-full p-7 space-y-5 shadow-2xl">
-            <div class="flex justify-between items-center border-b border-sky-100 pb-3">
-                <h3 class="text-lg font-black text-slate-800">포인트 현금 정산 신청</h3>
+    <!-- Settlement Modal -->
+    <div id="subModal" class="fixed inset-0 bg-slate-900/40 backdrop-blur-md hidden z-50 flex items-center justify-center p-4">
+        <div class="bg-white/95 rounded-3xl max-w-md w-full p-7 space-y-5 shadow-2xl border border-white/80">
+            <div class="flex justify-between items-center border-b border-slate-100 pb-3">
+                <h3 class="text-lg font-black text-slate-900">포인트 현금 정산 신청</h3>
                 <button onclick="closeSubModal()" class="text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark text-lg"></i></button>
             </div>
             <form onsubmit="handleSettlement(event)" class="space-y-4 text-xs">
@@ -138,9 +143,9 @@
                 </div>
                 <div>
                     <label class="block font-bold text-slate-700 mb-1">정산 요청 금액 (P)</label>
-                    <input type="number" id="settle-amount" placeholder="0" required class="w-full p-3.5 rounded-xl input-sky font-bold text-sky-600">
+                    <input type="number" id="settle-amount" placeholder="0" required class="w-full p-3.5 rounded-xl input-sky font-bold text-[#3182f6]">
                 </div>
-                <button type="submit" class="w-full py-3.5 btn-sky font-bold rounded-xl shadow">정산 신청 완료 (평일 기준 1일 내 입금)</button>
+                <button type="submit" class="w-full py-3.5 btn-toss font-bold rounded-xl shadow">정산 신청 완료 (평일 기준 1일 내 입금)</button>
             </form>
         </div>
     </div>
@@ -181,24 +186,24 @@
                 let html = '';
                 if (mySurvey) {
                     html += `
-                        <div class="bg-white rounded-3xl p-6 md:p-8 border border-sky-100 shadow-sm space-y-4">
-                            <h2 class="text-base font-black text-slate-800 border-b border-sky-100 pb-3 flex items-center justify-between">
-                                <span><i class="fa-solid fa-file-medical text-sky-500 mr-2"></i>내 건강 문진표 양식</span>
+                        <div class="glass-card rounded-3xl p-6 md:p-8 space-y-4">
+                            <h2 class="text-base font-black text-slate-900 border-b border-slate-100 pb-3 flex items-center justify-between">
+                                <span><i class="fa-solid fa-file-medical text-[#3182f6] mr-2"></i>내 건강 문진표 양식</span>
                                 <span class="text-xs text-slate-400 font-normal">${mySurvey.date}</span>
                             </h2>
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs">
-                                <div class="p-3 bg-sky-50/50 rounded-xl"><strong>도우미:</strong> ${mySurvey.answers.q1 || '본인'}</div>
-                                <div class="p-3 bg-sky-50/50 rounded-xl"><strong>생년월일:</strong> ${mySurvey.answers.birth || '미입력'}</div>
-                                <div class="p-3 bg-sky-50/50 rounded-xl"><strong>연락처:</strong> ${mySurvey.phone || '미입력'}</div>
-                                <div class="p-3 bg-sky-50/50 rounded-xl"><strong>희망 동네:</strong> ${mySurvey.location || '미입력'}</div>
+                                <div class="p-3 bg-blue-50/50 rounded-xl"><strong>도우미:</strong> ${mySurvey.answers.q1 || '본인'}</div>
+                                <div class="p-3 bg-blue-50/50 rounded-xl"><strong>생년월일:</strong> ${mySurvey.answers.birth || '미입력'}</div>
+                                <div class="p-3 bg-blue-50/50 rounded-xl"><strong>연락처:</strong> ${mySurvey.phone || '미입력'}</div>
+                                <div class="p-3 bg-blue-50/50 rounded-xl"><strong>희망 동네:</strong> ${mySurvey.location || '미입력'}</div>
                             </div>
                         </div>
                     `;
                 }
 
                 html += `
-                    <div class="bg-white rounded-3xl p-6 md:p-8 border border-sky-100 shadow-sm space-y-4">
-                        <h2 class="text-base font-black text-slate-800 border-b border-sky-100 pb-3"><i class="fa-solid fa-briefcase text-sky-500 mr-2"></i>내 구직 신청 및 채용 현황</h2>
+                    <div class="glass-card rounded-3xl p-6 md:p-8 space-y-4">
+                        <h2 class="text-base font-black text-slate-900 border-b border-slate-100 pb-3"><i class="fa-solid fa-briefcase text-[#3182f6] mr-2"></i>내 구직 신청 및 채용 현황</h2>
                 `;
                 if (applied.length === 0) {
                     html += `<p class="text-xs text-slate-400 text-center py-8">아직 지원하신 피크타임 일자리가 없습니다.</p>`;
@@ -206,12 +211,12 @@
                     html += applied.map(j => {
                         const myCand = j.candidates.find(c => c.seniorId === freshUser.id);
                         return `
-                            <div class="p-4 rounded-2xl bg-sky-50/40 border border-sky-100 flex justify-between items-center text-xs">
+                            <div class="p-4 rounded-2xl bg-blue-50/40 border border-blue-100 flex justify-between items-center text-xs">
                                 <div>
-                                    <strong class="text-sm font-bold text-slate-800">${j.title} (${j.storeName})</strong>
+                                    <strong class="text-sm font-bold text-slate-900">${j.title} (${j.storeName})</strong>
                                     <p class="text-slate-500 mt-1">근무일: ${j.date} (${j.time}) | 일당: ${parseInt(j.pay).toLocaleString()}원</p>
                                 </div>
-                                <span class="font-bold text-sky-600 bg-sky-100/70 px-3 py-1 rounded-full">${myCand.status}</span>
+                                <span class="font-bold text-[#3182f6] bg-blue-100/70 px-3 py-1 rounded-full">${myCand.status}</span>
                             </div>
                         `;
                     }).join('');
@@ -226,17 +231,17 @@
                 const myJobs = (jobsRes.jobs || []).filter(j => j.employerId === freshUser.id);
 
                 let html = `
-                    <div class="bg-white rounded-3xl p-6 md:p-8 border border-sky-100 shadow-sm space-y-6">
-                        <h2 class="text-base font-black text-slate-800 border-b border-sky-100 pb-3"><i class="fa-solid fa-users text-sky-500 mr-2"></i>지원자 순위 지정 / 채용확정 / 채용취소 / 포인트지급</h2>
+                    <div class="glass-card rounded-3xl p-6 md:p-8 space-y-6">
+                        <h2 class="text-base font-black text-slate-900 border-b border-slate-100 pb-3"><i class="fa-solid fa-users text-[#3182f6] mr-2"></i>지원자 순위 지정 / 채용확정 / 채용취소 / 포인트지급</h2>
                 `;
                 if (myJobs.length === 0) {
                     html += `<p class="text-xs text-slate-400 text-center py-8">등록하신 구인 공고가 없습니다.</p>`;
                 } else {
                     html += myJobs.map(j => `
-                        <div class="p-5 rounded-2xl bg-sky-50/30 border border-sky-100 space-y-3 text-xs">
-                            <div class="flex justify-between items-center border-b border-sky-100 pb-2">
-                                <strong class="text-sm font-bold text-slate-800">${j.title} (${j.storeName})</strong>
-                                <span class="font-bold text-sky-600 bg-sky-100 px-3 py-0.5 rounded-full">${j.status}</span>
+                        <div class="p-5 rounded-2xl bg-blue-50/30 border border-blue-100 space-y-3 text-xs">
+                            <div class="flex justify-between items-center border-b border-blue-100 pb-2">
+                                <strong class="text-sm font-bold text-slate-900">${j.title} (${j.storeName})</strong>
+                                <span class="font-bold text-[#3182f6] bg-blue-100 px-3 py-0.5 rounded-full">${j.status}</span>
                             </div>
                             <div class="space-y-2">
                                 <span class="font-bold text-slate-500">지원자 명단</span>
@@ -244,8 +249,8 @@
                                     j.candidates.map(c => `
                                         <div class="p-3 rounded-xl bg-white border border-slate-200 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
                                             <div>
-                                                <strong class="text-slate-800 font-bold">${c.name}</strong> (${c.phone})
-                                                <span class="text-[11px] text-sky-600 block pt-0.5">${c.status}</span>
+                                                <strong class="text-slate-900 font-bold">${c.name}</strong> (${c.phone})
+                                                <span class="text-[11px] text-[#3182f6] block pt-0.5">${c.status}</span>
                                             </div>
                                             <div class="flex items-center gap-1.5 flex-wrap">
                                                 <select onchange="assignRank('${j.id}', '${c.seniorId}', this.value)" class="p-1.5 rounded border border-slate-200 text-[11px]">
@@ -254,9 +259,9 @@
                                                     <option value="2순위">2순위</option>
                                                     <option value="3순위">3순위</option>
                                                 </select>
-                                                <button onclick="hireCandidate('${j.id}', '${c.seniorId}')" class="btn-sky px-2.5 py-1.5 rounded-lg font-bold text-[11px]">채용확정</button>
+                                                <button onclick="hireCandidate('${j.id}', '${c.seniorId}')" class="btn-toss px-2.5 py-1.5 rounded-lg font-bold text-[11px]">채용확정</button>
                                                 <button onclick="openCancelModal('${j.id}', '${c.seniorId}')" class="bg-rose-100 text-rose-600 px-2.5 py-1.5 rounded-lg font-bold text-[11px] hover:bg-rose-200">채용취소</button>
-                                                <button onclick="openPayModal('${j.id}', '${c.seniorId}', ${j.pay})" class="bg-sky-400 text-white px-2.5 py-1.5 rounded-lg font-bold text-[11px] hover:bg-sky-500">포인트지급</button>
+                                                <button onclick="openPayModal('${j.id}', '${c.seniorId}', ${j.pay})" class="bg-[#3182f6] text-white px-2.5 py-1.5 rounded-lg font-bold text-[11px] hover:bg-[#1b64da]">포인트지급</button>
                                             </div>
                                         </div>
                                     `).join('')
@@ -288,22 +293,22 @@
                 <div class="bg-gradient-to-br from-slate-900 to-slate-800 text-white rounded-3xl p-6 md:p-8 shadow-xl space-y-6 border border-slate-700">
                     <div class="flex justify-between items-start border-b border-slate-700 pb-4">
                         <div>
-                            <span class="text-[10px] font-bold px-2.5 py-1 rounded bg-sky-500/20 text-sky-400">실버웍스 공식 수수료 명세서</span>
+                            <span class="text-[10px] font-bold px-2.5 py-1 rounded bg-[#3182f6]/20 text-[#3182f6]">실버웍스 공식 수수료 명세서</span>
                             <h3 class="text-lg font-black mt-2">${inv.jobTitle}</h3>
                             <p class="text-xs text-slate-400">매장명: ${inv.storeName} | 발행일시: ${inv.date}</p>
                         </div>
                         <div class="text-right">
                             <span class="text-xs text-slate-400 block">총 청구 금액 (임금 + 수수료)</span>
-                            <strong class="text-xl font-black text-sky-400">${inv.amount.toLocaleString()}원</strong>
+                            <strong class="text-xl font-black text-[#3182f6]">${inv.amount.toLocaleString()}원</strong>
                         </div>
                     </div>
                     <div class="p-4 rounded-2xl bg-slate-800/80 border border-slate-700/80 space-y-1.5 text-xs">
-                        <p class="font-bold text-sky-300">납부 지정 계좌 안내</p>
+                        <p class="font-bold text-blue-300">납부 지정 계좌 안내</p>
                         <p class="text-slate-300"><strong>국민은행:</strong> <span class="font-mono text-white">275401-04-310474</span></p>
                         <p class="text-slate-300"><strong>예금주:</strong> 민 혁 (silverworks)</p>
                     </div>
                     <div class="flex justify-end">
-                        <button onclick="requestInvoiceConfirm('${inv.id}')" class="btn-sky px-6 py-3 rounded-xl font-extrabold text-xs shadow-md">
+                        <button onclick="requestInvoiceConfirm('${inv.id}')" class="btn-toss px-6 py-3 rounded-xl font-extrabold text-xs shadow-md">
                             정산 완료 (관리자 확인 요청)
                         </button>
                     </div>
@@ -408,7 +413,7 @@
             const user = JSON.parse(localStorage.getItem('sw_user') || 'null');
 
             if (!user) {
-                userArea.innerHTML = `<a href="/login.html" class="text-xs font-bold px-4 py-2 rounded-xl bg-sky-500 text-white hover:bg-sky-600 transition shadow-sm">로그인 및 회원가입</a>`;
+                userArea.innerHTML = `<a href="/login.html" class="text-xs font-bold px-4 py-2 rounded-xl btn-toss shadow-sm">로그인 및 회원가입</a>`;
                 return;
             }
 
@@ -420,25 +425,25 @@
             const hasUnread = notiRes.hasUnread;
 
             let html = `
-                <a href="/notifications.html" class="relative p-2 text-slate-500 hover:text-sky-600 transition" title="알림 센터">
+                <a href="/notifications.html" class="relative p-2 text-slate-500 hover:text-[#3182f6] transition" title="알림 센터">
                     <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                         <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
                         <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
                     </svg>
-                    ${hasUnread ? `<span class="absolute top-1 right-1 w-2.5 h-2.5 bg-sky-500 rounded-full ring-2 ring-white"></span>` : ''}
+                    ${hasUnread ? `<span class="absolute top-1 right-1 w-2.5 h-2.5 bg-[#3182f6] rounded-full ring-2 ring-white"></span>` : ''}
                 </a>
             `;
 
             if (freshUser.role === 'senior') {
                 html += `
-                    <button onclick="openSubModal()" class="text-xs font-extrabold bg-sky-50 text-sky-600 px-3 py-1.5 rounded-xl border border-sky-100 hover:bg-sky-100 transition">
+                    <button onclick="openSubModal()" class="text-xs font-extrabold bg-blue-50 text-[#3182f6] px-3 py-1.5 rounded-xl border border-blue-100 hover:bg-blue-100 transition">
                         포인트 ${(freshUser.points || 0).toLocaleString()}P (정산)
                     </button>
                 `;
             }
 
             html += `
-                <a href="/profile.html" class="w-9 h-9 rounded-full bg-sky-100 text-sky-700 flex items-center justify-center font-bold border border-sky-200 hover:border-sky-400 transition" title="프로필 페이지">
+                <a href="/profile.html" class="w-9 h-9 rounded-full bg-blue-50 text-[#3182f6] flex items-center justify-center font-bold border border-blue-200 hover:border-[#3182f6] transition" title="프로필 페이지">
                     <i class="fa-solid fa-user"></i>
                 </a>
                 <button onclick="handleLogout()" class="text-xs font-bold text-slate-500 hover:text-rose-500 px-2 py-1.5 rounded-lg transition">로그아웃</button>

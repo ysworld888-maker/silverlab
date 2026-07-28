@@ -8,44 +8,50 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css');
-        body { font-family: "Pretendard", sans-serif; background-color: #f0f9ff; color: #1e293b; word-break: keep-all; }
-        .btn-sky { background-color: #0ea5e9; color: #ffffff; transition: all 0.2s; }
-        .btn-sky:hover { background-color: #0284c7; }
+        body { font-family: "Pretendard", -apple-system, BlinkMacSystemFont, system-ui, sans-serif; background-color: #f8fafc; color: #0f172a; word-break: keep-all; }
+        .btn-toss { background-color: #3182f6; color: #ffffff; transition: all 0.2s; }
+        .btn-toss:hover { background-color: #1b64da; }
         .input-sky { background-color: #ffffff; border: 1px solid #e2e8f0; }
-        .input-sky:focus { border-color: #38bdf8; outline: none; }
+        .input-sky:focus { border-color: #3182f6; outline: none; }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.95);
+            box-shadow: 0 10px 30px -5px rgba(15, 23, 42, 0.04), 0 0 0 1px rgba(226, 232, 240, 0.6);
+        }
     </style>
 </head>
 <body class="min-h-screen flex flex-col justify-between antialiased">
-    <header class="bg-white/80 backdrop-blur-md border-b border-sky-100">
+    <header class="bg-white/80 backdrop-blur-xl border-b border-slate-200/60 shadow-sm">
         <div class="max-w-6xl mx-auto px-5 h-16 flex items-center justify-between">
             <a href="/index.html" class="flex items-center gap-2.5">
-                <div class="p-1 rounded-xl bg-sky-100 text-sky-600">
+                <div class="p-1 rounded-xl bg-blue-50 text-[#3182f6]">
                     <svg class="w-7 h-7" viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="8" stroke-linecap="round" stroke-linejoin="round">
                         <path d="M 14 58 C 28 72 44 72 58 48 C 72 24 88 18 95 35" />
                         <path d="M 48 70 C 62 82 78 78 86 60" />
                     </svg>
                 </div>
-                <span class="text-lg font-extrabold text-slate-800">silverworks</span>
+                <span class="text-lg font-extrabold text-slate-900">silverworks</span>
             </a>
             <div id="header-user-area" class="flex items-center gap-3"></div>
         </div>
     </header>
 
     <main class="flex-1 flex items-center justify-center py-10 px-5">
-        <div class="w-full max-w-lg bg-white rounded-3xl p-8 border border-sky-100 shadow-xl space-y-6 text-center">
+        <div class="w-full max-w-lg glass-card rounded-3xl p-8 space-y-6 text-center">
             
-            <!-- Progress Gauge Bar: 1/13 Exact -->
             <div class="space-y-2">
                 <div class="flex justify-between items-center text-xs font-bold text-slate-400">
                     <span>문진 작성 진행률</span>
-                    <span id="step-indicator" class="text-sky-600 font-extrabold">1 / 13</span>
+                    <span id="step-indicator" class="text-[#3182f6] font-extrabold">1 / 13</span>
                 </div>
-                <div class="w-full bg-sky-50 h-2.5 rounded-full overflow-hidden border border-sky-100">
-                    <div id="progress-bar" class="bg-sky-500 h-full transition-all duration-300 rounded-full" style="width: 7.69%;"></div>
+                <div class="w-full bg-blue-50 h-2.5 rounded-full overflow-hidden border border-blue-100">
+                    <div id="progress-bar" class="bg-[#3182f6] h-full transition-all duration-300 rounded-full" style="width: 7.69%;"></div>
                 </div>
             </div>
 
-            <h2 class="text-xl font-bold text-slate-800">구직 베테랑 건강 문진 이력서</h2>
+            <h2 class="text-xl font-bold text-slate-900">구직 베테랑 건강 문진 이력서</h2>
 
             <div id="wizard-content" class="text-left space-y-4 pt-1"></div>
 
@@ -53,7 +59,7 @@
                 <button type="button" onclick="prevStep()" id="prev-btn" class="flex-1 py-3.5 border border-slate-200 font-bold text-xs rounded-xl text-slate-600 hover:bg-slate-50 transition hidden">
                     이전 질문
                 </button>
-                <button type="button" onclick="nextStep()" id="next-btn" class="flex-1 py-3.5 btn-sky font-bold text-xs rounded-xl shadow-md">
+                <button type="button" onclick="nextStep()" id="next-btn" class="flex-1 py-3.5 btn-toss font-bold text-xs rounded-xl shadow-md">
                     다음 단계
                 </button>
             </div>
@@ -69,7 +75,6 @@
             }
         }
 
-        // Exact 13 Questions (Question 6 Included, 8-2 adjusted)
         const questions = [
             { id: "q1", q: "1. 오늘 이 일자리 신청은 누가 도와주고 계시나요?", type: "radio", options: ["어르신 본인이 직접 스마트폰을 보고 있어요.", "아들, 딸, 손주 등 가족이 대신 눌러주고 있어요.", "주변 사람의 도움을 받고 있어요."] },
             { id: "name", q: "2. 성함이 어떻게 되시나요?", type: "text", placeholder: "성함 입력" },
@@ -98,14 +103,14 @@
             document.getElementById('step-indicator').innerText = `${currentStep + 1} / ${total}`;
             document.getElementById('progress-bar').style.width = `${pct}%`;
 
-            let html = `<label class="block font-bold text-slate-800 text-sm mb-3">${item.q}</label>`;
+            let html = `<label class="block font-bold text-slate-900 text-sm mb-3">${item.q}</label>`;
 
             if (item.type === "radio") {
                 html += `<div class="space-y-2">`;
                 item.options.forEach((opt) => {
                     const isSelected = answers[item.id] === opt;
                     html += `
-                        <div onclick="selectRadio('${item.id}', '${opt}')" class="p-3.5 rounded-xl border border-sky-100 text-xs font-medium cursor-pointer hover:border-sky-400 transition ${isSelected ? 'border-sky-500 bg-sky-50 text-sky-700 font-bold' : 'bg-white text-slate-700'}">
+                        <div onclick="selectRadio('${item.id}', '${opt}')" class="p-3.5 rounded-xl border border-slate-200 text-xs font-medium cursor-pointer hover:border-[#3182f6] transition ${isSelected ? 'border-[#3182f6] bg-blue-50 text-[#3182f6] font-bold' : 'bg-white text-slate-700'}">
                             ${opt}
                         </div>
                     `;
@@ -113,7 +118,7 @@
                 html += `</div>`;
                 document.getElementById('next-btn').classList.add('hidden');
             } else if (item.type === "info") {
-                html += `<p class="p-4 bg-sky-50 text-sky-700 rounded-xl font-bold text-xs">안내 사항입니다. 아래 다음 단계 버튼을 눌러 이동하세요.</p>`;
+                html += `<p class="p-4 bg-blue-50 text-[#3182f6] rounded-xl font-bold text-xs">안내 사항입니다. 아래 다음 단계 버튼을 눌러 이동하세요.</p>`;
                 document.getElementById('next-btn').classList.remove('hidden');
             } else {
                 const val = answers[item.id] || '';
@@ -172,7 +177,7 @@
             const user = JSON.parse(localStorage.getItem('sw_user') || 'null');
 
             if (!user) {
-                userArea.innerHTML = `<a href="/login.html" class="text-xs font-bold px-4 py-2 rounded-xl bg-sky-500 text-white hover:bg-sky-600 transition shadow-sm">로그인 및 회원가입</a>`;
+                userArea.innerHTML = `<a href="/login.html" class="text-xs font-bold px-4 py-2 rounded-xl btn-toss shadow-sm">로그인 및 회원가입</a>`;
                 return;
             }
 
@@ -184,25 +189,25 @@
             const hasUnread = notiRes.hasUnread;
 
             let html = `
-                <a href="/notifications.html" class="relative p-2 text-slate-500 hover:text-sky-600 transition" title="알림 센터">
+                <a href="/notifications.html" class="relative p-2 text-slate-500 hover:text-[#3182f6] transition" title="알림 센터">
                     <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                         <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
                         <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
                     </svg>
-                    ${hasUnread ? `<span class="absolute top-1 right-1 w-2.5 h-2.5 bg-sky-500 rounded-full ring-2 ring-white"></span>` : ''}
+                    ${hasUnread ? `<span class="absolute top-1 right-1 w-2.5 h-2.5 bg-[#3182f6] rounded-full ring-2 ring-white"></span>` : ''}
                 </a>
             `;
 
             if (freshUser.role === 'senior') {
                 html += `
-                    <a href="/profile.html" class="text-xs font-extrabold bg-sky-50 text-sky-600 px-3 py-1.5 rounded-xl border border-sky-100 hover:bg-sky-100 transition">
+                    <a href="/profile.html" class="text-xs font-extrabold bg-blue-50 text-[#3182f6] px-3 py-1.5 rounded-xl border border-blue-100 hover:bg-blue-100 transition">
                         포인트 ${(freshUser.points || 0).toLocaleString()}P (정산)
                     </a>
                 `;
             }
 
             html += `
-                <a href="/profile.html" class="w-9 h-9 rounded-full bg-sky-100 text-sky-700 flex items-center justify-center font-bold border border-sky-200 hover:border-sky-400 transition" title="프로필 페이지">
+                <a href="/profile.html" class="w-9 h-9 rounded-full bg-blue-50 text-[#3182f6] flex items-center justify-center font-bold border border-blue-200 hover:border-[#3182f6] transition" title="프로필 페이지">
                     <i class="fa-solid fa-user"></i>
                 </a>
                 <button onclick="handleLogout()" class="text-xs font-bold text-slate-500 hover:text-rose-500 px-2 py-1.5 rounded-lg transition">로그아웃</button>
