@@ -145,11 +145,11 @@ app.post('/api/invoices/admin-confirm', (req, res) => {
   res.json({ success: true });
 });
 
-// Jobs API (대지역 및 세부지역 필드 수신 추가)
+// Jobs API (대지역, 세부지역, 주소, 상세 설명 필드 수신 추가)
 app.get('/api/jobs', (req, res) => res.json({ success: true, jobs: jobsData }));
 
 app.post('/api/jobs', (req, res) => {
-  const { employerId, storeName, title, category, date, time, pay, isPeak, regionMain, regionSub } = req.body;
+  const { employerId, storeName, title, category, date, time, pay, isPeak, regionMain, regionSub, address, description } = req.body;
   const employer = usersData.find(u => u.id === employerId);
   if (isPeak && (!employer || !employer.isSubscribed)) return res.status(403).json({ success: false, message: '상단 고정 공고는 구독 회원 사장님만 이용 가능합니다.' });
 
@@ -165,6 +165,8 @@ app.post('/api/jobs', (req, res) => {
     isPeak: !!isPeak, 
     regionMain: regionMain || '서울특별시', 
     regionSub: regionSub || '전체',
+    address: address || '',
+    description: description || '',
     status: '구직자 모집중', 
     candidates: []
   };
@@ -273,6 +275,7 @@ app.post('/api/jobs/:id/cancel-hire', (req, res) => {
   res.json({ success: true });
 });
 
+// 수수료 명세서 산정 공식 변경: 일당 * 0.967 + 일당 수수료 + 부가가치세(수수료의 10%)
 app.post('/api/jobs/:id/pay-points', (req, res) => {
   const { seniorId, basePay } = req.body;
   const job = jobsData.find(j => j.id === req.params.id);
@@ -288,7 +291,10 @@ app.post('/api/jobs/:id/pay-points', (req, res) => {
     senior.points = (senior.points || 0) + totalPay;
 
     const feeRate = employer && employer.isSubscribed ? 0.05 : 0.10;
-    const feeAmount = Math.round(totalPay * (1 + feeRate));
+    const netPay = totalPay * 0.967;
+    const fee = totalPay * feeRate;
+    const vat = fee * 0.10;
+    const feeAmount = Math.round(netPay + fee + vat);
 
     invoicesData.unshift({
       id: 'inv-' + Date.now(),

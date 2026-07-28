@@ -399,7 +399,8 @@
                 if (keyword) {
                     matchesSearch = (job.title && job.title.toLowerCase().includes(keyword)) ||
                                     (job.storeName && job.storeName.toLowerCase().includes(keyword)) ||
-                                    (job.category && job.category.toLowerCase().includes(keyword));
+                                    (job.category && job.category.toLowerCase().includes(keyword)) ||
+                                    (job.address && job.address.toLowerCase().includes(keyword));
                 }
 
                 return matchesMain && matchesSub && matchesSearch;
@@ -433,7 +434,7 @@
                             ${job.title}
                         </h3>
                         <p class="text-xs text-slate-500 font-medium">
-                            <strong class="text-slate-700">${job.storeName}</strong> | 근무일: ${job.date} (${job.time})
+                            <strong class="text-slate-700">${job.storeName}</strong> ${job.address ? `(${job.address})` : ''} | 근무일: ${job.date} (${job.time})
                         </p>
                     </div>
                     <div class="flex sm:flex-col items-end justify-between sm:justify-center gap-3 border-t sm:border-t-0 pt-3 sm:pt-0 border-slate-100">

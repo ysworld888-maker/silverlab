@@ -65,6 +65,7 @@
                 <div class="space-y-2">
                     <span class="text-xs font-bold text-slate-400 block">${currentJob.storeName}</span>
                     <h1 class="text-2xl font-black text-slate-800">${currentJob.title}</h1>
+                    ${currentJob.address ? `<p class="text-xs font-medium text-slate-600 flex items-center gap-1.5"><i class="fa-solid fa-location-dot text-sky-500"></i> 주소: ${currentJob.address}</p>` : ''}
                 </div>
                 <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-2">
                     <div class="p-4 rounded-2xl bg-sky-50/40 border border-sky-100">
@@ -80,6 +81,13 @@
                         <strong class="text-lg font-black text-sky-600">${parseInt(currentJob.pay).toLocaleString()}원</strong>
                     </div>
                 </div>
+
+                ${currentJob.description ? `
+                <div class="p-5 rounded-2xl bg-slate-50 border border-slate-200 space-y-2">
+                    <h3 class="text-xs font-bold text-slate-700 flex items-center gap-1.5"><i class="fa-solid fa-clipboard-list text-sky-500"></i> 상세 업무 및 요청 사항</h3>
+                    <p class="text-xs text-slate-600 leading-relaxed whitespace-pre-line">${currentJob.description}</p>
+                </div>
+                ` : ''}
 
                 <div class="pt-6 border-t border-slate-100 flex justify-end">
                     <button onclick="applyJob()" class="btn-sky text-sm font-extrabold px-8 py-4 rounded-2xl shadow-md w-full sm:w-auto">
