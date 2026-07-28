@@ -32,7 +32,7 @@
             top: -10%;
             left: -5%;
             width: 65%;
-            height: 60%;
+            height: 65%;
             background: radial-gradient(circle, rgba(49, 130, 246, 0.16) 0%, rgba(255, 255, 255, 0) 70%);
             filter: blur(80px);
             z-index: 0;
@@ -201,33 +201,51 @@
     </header>
 
     <main class="flex-1 pb-16 mesh-bg-container">
-        <!-- Hero Section -->
-        <section class="pt-16 pb-24 px-5 relative overflow-hidden text-center z-10">
-            <div class="max-w-4xl mx-auto space-y-4 relative z-10">
-                <span class="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full bg-blue-50/90 text-[#3182f6] text-xs font-extrabold border border-blue-100/80 shadow-sm backdrop-blur-md">
-                    <i class="fa-solid fa-shield-check text-[#3182f6]"></i> 안심 베테랑 매칭 플랫폼
-                </span>
-                <h1 class="text-2xl md:text-4xl font-black text-slate-900 leading-tight tracking-tight">
-                    변화에 도전할 사장님과<br>
-                    <span class="text-[#3182f6]">파도처럼 시원한</span> 베테랑 시니어의 만남
+        <!-- 1. Hero Title & Wave Section (화면 전체 확장 및 문구 세로 간격 띄움) -->
+        <section class="pt-16 pb-0 relative overflow-hidden text-center z-10 w-full">
+            <div class="max-w-4xl mx-auto relative z-10 px-5">
+                <!-- 상단 뱃지 -->
+                <div>
+                    <span class="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full bg-blue-50/90 text-[#3182f6] text-xs font-extrabold border border-blue-100/80 shadow-sm backdrop-blur-md">
+                        <i class="fa-solid fa-shield-check text-[#3182f6]"></i> 시니어 구인구직 플랫폼
+                    </span>
+                </div>
+
+                <!-- 메인 타이틀 (3번 사진처럼 위아래 여백을 넉넉히 주어 시원하게 분리) -->
+                <h1 class="text-2xl md:text-4xl font-black text-slate-900 tracking-tight space-y-6 md:space-y-8 my-8">
+                    <span class="block">세상을 은빛 지혜로 채우다</span>
+                    <span class="block text-[#3182f6] text-3xl md:text-5xl font-black">일하는 방식의 새로운 ‘물결’</span>
+                    <span class="block">짜투리 시간이 ‘가치’로 바뀐다.</span>
                 </h1>
-                <p class="text-xs md:text-sm text-slate-600 font-medium">
-                    2~3시간 단시간 피크타임 인력 매칭 솔루션
+
+                <!-- 서브 문구 -->
+                <p class="text-xs md:text-sm text-slate-500 font-semibold pt-2">
+                    불성실한 알바, 이제 작별합니다! / 하루 2~4시간 피크타임 인력 제공
                 </p>
             </div>
 
-            <!-- Wave Animation -->
-            <div class="mt-8 relative h-16 pointer-events-none overflow-hidden">
-                <div class="absolute inset-0 wave-layer-1 opacity-25"><svg viewBox="0 0 1440 100" fill="none" class="w-full"><path d="M0 30C360 80 720 0 1080 40C1260 60 1350 30 1440 20V100H0V30Z" fill="#3182f6"/></svg></div>
-                <div class="absolute inset-0 wave-layer-2 opacity-35"><svg viewBox="0 0 1440 100" fill="none" class="w-full"><path d="M0 50C360 10 720 70 1080 30C1260 10 1350 40 1440 50V100H0V50Z" fill="#60a5fa"/></svg></div>
+            <!-- Wave Animation (1번 사진처럼 모니터 양옆 짤림 없이 100% 꽉 차도록 preserveAspectRatio="none" 설정) -->
+            <div class="mt-12 relative h-16 md:h-20 w-full pointer-events-none overflow-hidden">
+                <div class="absolute inset-0 wave-layer-1 opacity-25">
+                    <svg viewBox="0 0 1440 100" fill="none" preserveAspectRatio="none" class="w-full h-full">
+                        <path d="M0 30C360 80 720 0 1080 40C1260 60 1350 30 1440 20V100H0V30Z" fill="#3182f6"/>
+                    </svg>
+                </div>
+                <div class="absolute inset-0 wave-layer-2 opacity-35">
+                    <svg viewBox="0 0 1440 100" fill="none" preserveAspectRatio="none" class="w-full h-full">
+                        <path d="M0 50C360 10 720 70 1080 30C1260 10 1350 40 1440 50V100H0V50Z" fill="#60a5fa"/>
+                    </svg>
+                </div>
             </div>
+        </section>
 
-            <!-- Main CTA Cards -->
-            <div class="max-w-4xl mx-auto grid grid-cols-1 sm:grid-cols-2 gap-6 mt-4 relative z-20 px-2">
+        <!-- 2. Main CTA Cards Section -->
+        <section class="max-w-4xl mx-auto px-5 relative z-20 mt-6">
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
                 <a href="/senior-apply.html" class="glass-card p-7 rounded-3xl text-left flex justify-between items-center group">
                     <div class="space-y-1.5">
                         <span class="text-xs font-extrabold text-[#3182f6] bg-blue-50 px-3 py-1 rounded-lg border border-blue-100">구직 시니어 회원</span>
-                        <h3 class="text-lg font-black text-slate-900 pt-1">시니어 건강 문진 이력서 작성</h3>
+                        <h3 class="text-lg font-black text-slate-900 pt-1">시니어 질문지 작성</h3>
                         <p class="text-xs text-slate-500">스마트 디지털 인지 능력 및 오프라인 체력 검증</p>
                     </div>
                     <div class="w-10 h-10 rounded-2xl bg-blue-50 text-[#3182f6] flex items-center justify-center group-hover:bg-[#3182f6] group-hover:text-white transition-all shrink-0 shadow-sm">
@@ -236,18 +254,20 @@
                 </a>
                 <a href="/employer.html" class="glass-card p-7 rounded-3xl text-left flex justify-between items-center group">
                     <div class="space-y-1.5">
-                        <span class="text-xs font-extrabold text-[#3182f6] bg-blue-50 px-3 py-1 rounded-lg border border-blue-100">구인 사업장 사장님</span>
+                        <span class="text-xs font-extrabold text-[#3182f6] bg-blue-50 px-3 py-1 rounded-lg border border-blue-100">구인 사장님 회원</span>
                         <h3 class="text-lg font-black text-slate-900 pt-1">사장님 구인 공고 등록</h3>
-                        <p class="text-xs text-slate-500">피크타임 인력 채용 및 1·2·3순위 노쇼 자동 승계</p>
+                        <p class="text-xs text-slate-500">피크타임 공고 등록 및 인력 채용</p>
                     </div>
                     <div class="w-10 h-10 rounded-2xl bg-blue-50 text-[#3182f6] flex items-center justify-center group-hover:bg-[#3182f6] group-hover:text-white transition-all shrink-0 shadow-sm">
                         <i class="fa-solid fa-arrow-right"></i>
                     </div>
                 </a>
             </div>
+        </section>
 
-            <!-- 시니어 / 사장님 맞춤형 사용설명서 버튼 분리 -->
-            <div class="max-w-md mx-auto grid grid-cols-2 gap-3 mt-6 relative z-20">
+        <!-- 3. 시니어 / 사장님 사용설명서 버튼 & SCROLL DOWN 안내 -->
+        <section class="max-w-md mx-auto flex flex-col items-center mt-5 px-5 relative z-20">
+            <div class="grid grid-cols-2 gap-3 w-full">
                 <button onclick="openManualModal('senior')" class="py-3 px-4 rounded-2xl bg-white/90 hover:bg-blue-50/80 text-slate-700 hover:text-[#3182f6] font-extrabold text-xs shadow-sm border border-slate-200/80 transition-all flex items-center justify-center gap-2 backdrop-blur-md">
                     <i class="fa-solid fa-book-open text-[#3182f6]"></i> 시니어 사용설명서
                 </button>
@@ -255,10 +275,50 @@
                     <i class="fa-solid fa-book-bookmark text-[#3182f6]"></i> 사장님 사용설명서
                 </button>
             </div>
+
+            <!-- 스크롤 다운 안내 -->
+            <div onclick="window.scrollTo({top: 750, behavior: 'smooth'})" class="flex flex-col items-center justify-center mt-8 text-slate-400 hover:text-[#3182f6] transition-colors cursor-pointer group">
+                <span class="text-[11px] font-extrabold tracking-widest text-slate-400 group-hover:text-[#3182f6] transition-colors mb-1">SCROLL DOWN</span>
+                <i class="fa-solid fa-chevron-down text-xs text-slate-400 group-hover:text-[#3182f6] animate-bounce"></i>
+            </div>
         </section>
 
-        <!-- 실버웍스 핵심 특징 아이콘 시각화 섹션 -->
-        <section class="max-w-5xl mx-auto px-5 py-16 relative z-10">
+        <!-- 4. 스키마 바이토가 제공하는 가치 카드 3개 섹션 -->
+        <section class="max-w-5xl mx-auto px-5 pt-24 pb-12 relative z-10">
+            <div class="text-center space-y-2 mb-12">
+                <span class="text-xs font-extrabold text-[#3182f6] bg-blue-50 px-3.5 py-1.5 rounded-full border border-blue-100/80">일하는 방식의 가치</span>
+                <h2 class="text-xl md:text-2xl font-black text-slate-900 pt-1">실버웍스가 연결하는 새로운 틈새 일자리</h2>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <!-- 카드 1 -->
+                <div class="glass-card p-8 rounded-3xl space-y-3.5 text-center">
+                    <div class="w-14 h-14 mx-auto rounded-2xl bg-blue-50 text-[#3182f6] flex items-center justify-center text-2xl font-bold shadow-inner">
+                        <i class="fa-solid fa-bolt"></i>
+                    </div>
+                    <h3 class="font-extrabold text-slate-900 text-base">짧게 일하고 돈을 바로 받는다</h3>
+                    <p class="text-xs text-slate-500 leading-relaxed">하루 2~3시간 부담 없이 집중해서 일하고, 일한 대가는 빠르게 당일 정산받으세요.</p>
+                </div>
+                <!-- 카드 2 -->
+                <div class="glass-card p-8 rounded-3xl space-y-3.5 text-center">
+                    <div class="w-14 h-14 mx-auto rounded-2xl bg-blue-50 text-[#3182f6] flex items-center justify-center text-2xl font-bold shadow-inner">
+                        <i class="fa-solid fa-location-dot"></i>
+                    </div>
+                    <h3 class="font-extrabold text-slate-900 text-base">일하고 싶은 시간, 장소에서 일한다</h3>
+                    <p class="text-xs text-slate-500 leading-relaxed">고정 스케줄 스트레스 없이, 내 생활에 맞춰 원하는 시간과 가까운 동네에서 자율적으로 근무하세요.</p>
+                </div>
+                <!-- 카드 3 -->
+                <div class="glass-card p-8 rounded-3xl space-y-3.5 text-center">
+                    <div class="w-14 h-14 mx-auto rounded-2xl bg-blue-50 text-[#3182f6] flex items-center justify-center text-2xl font-bold shadow-inner">
+                        <i class="fa-solid fa-piggy-bank"></i>
+                    </div>
+                    <h3 class="font-extrabold text-slate-900 text-base">버려지던 1시간, 오늘 통장에 찍히는 진짜 현금</h3>
+                    <p class="text-xs text-slate-500 leading-relaxed">무심코 흘려보내던 짜투리 시간을 소중한 수입과 보람찬 가치로 바꿀 수 있습니다.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 5. 핵심 특장점 섹션 -->
+        <section class="max-w-5xl mx-auto px-5 py-20 relative z-10">
             <div class="text-center space-y-2 mb-12">
                 <span class="text-xs font-extrabold text-[#3182f6] bg-blue-50 px-3.5 py-1.5 rounded-full border border-blue-100/80">핵심 특장점</span>
                 <h2 class="text-xl md:text-2xl font-black text-slate-900 pt-1">왜 사장님과 시니어 모두 실버웍스를 선택할까요?</h2>
@@ -288,9 +348,9 @@
             </div>
         </section>
 
-        <!-- 3D Card Shuffle Carousel Section -->
-        <section class="max-w-5xl mx-auto px-5 mt-10 relative z-10">
-            <div class="text-center space-y-2 mb-10">
+        <!-- 6. 3D Card Shuffle Carousel Section -->
+        <section class="max-w-5xl mx-auto px-5 pt-16 pb-20 relative z-10">
+            <div class="text-center space-y-2 mb-12">
                 <span class="text-xs font-extrabold text-[#3182f6] bg-blue-50 px-3.5 py-1.5 rounded-full border border-blue-100">문서 셔플 시스템</span>
                 <h2 class="text-xl md:text-2xl font-black text-slate-900 pt-1">좌우 문서를 클릭하여 핵심 스토리를 확인하세요</h2>
             </div>
