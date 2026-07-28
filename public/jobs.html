@@ -14,7 +14,7 @@
         .input-sky { background-color: #ffffff; border: 1px solid #e2e8f0; }
         .input-sky:focus { border-color: #38bdf8; outline: none; }
 
-        /* 대한민국 17개 행정구역 5x5 격자 지도 모티브 */
+        /* 대한민국 17개 행정구역 5x5 지형 모티브 격자 */
         .korea-grid-map {
             display: grid;
             grid-template-columns: repeat(5, 1fr);
@@ -46,6 +46,13 @@
         .area-busan     { grid-area: busan; }
         .area-jeju      { grid-area: jeju; }
 
+        /* 소분류 지역별 dynamic grid style */
+        .sub-grid-map {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+            gap: 8px;
+        }
+
         .map-tile {
             transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
             cursor: pointer;
@@ -53,7 +60,7 @@
         }
         .map-tile:hover {
             transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(14, 165, 233, 0.15);
+            box-shadow: 0 4px 12px rgba(14, 165, 233, 0.18);
         }
         .map-tile.active {
             background-color: #0ea5e9 !important;
@@ -61,6 +68,7 @@
             border-color: #0284c7 !important;
             box-shadow: 0 4px 14px rgba(14, 165, 233, 0.35);
         }
+        .map-tile.active .tile-text { color: #ffffff !important; }
         .map-tile.active .badge {
             background-color: #ffffff !important;
             color: #0ea5e9 !important;
@@ -69,7 +77,6 @@
 </head>
 <body class="min-h-screen flex flex-col justify-between antialiased">
 
-    <!-- 상단 GNB 헤더 (모든 페이지 공통 스타일) -->
     <header class="sticky top-0 z-50 bg-white/90 backdrop-blur-md border-b border-sky-100 shadow-sm">
         <div class="max-w-6xl mx-auto px-5 h-16 flex items-center justify-between">
             <a href="/index.html" class="flex items-center gap-2.5">
@@ -90,142 +97,67 @@
         </div>
     </header>
 
-    <!-- 메인 컨텐츠 영역 -->
     <main class="max-w-6xl mx-auto px-5 py-8 flex-1 w-full space-y-6">
 
-        <!-- 1번 사진 스타일: 필터 컨트롤 카드 -->
+        <!-- 상단 필터 & 항시 오픈 지도 카드 -->
         <div class="bg-white rounded-3xl p-6 md:p-8 border border-sky-100 shadow-sm space-y-6">
             
             <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-sky-100 pb-5">
                 <div>
                     <h1 class="text-2xl font-black text-slate-800 tracking-tight">맞춤 피크타임 일자리 찾기</h1>
-                    <p class="text-xs text-slate-500 mt-1 font-medium">원하는 대지역을 클릭한 후, 세부 동네를 선택하여 초단기(2~3시간) 공고를 빠르게 조회하세요.</p>
+                    <p class="text-xs text-slate-500 mt-1 font-medium">원하는 대지역을 클릭한 후, 지도의 세부 동네를 눌러 초단기(2~3시간) 공고를 조회하세요.</p>
                 </div>
-                <!-- 검색창 및 지도 토글 버튼 -->
-                <div class="flex items-center gap-2">
-                    <div class="relative w-full sm:w-64">
-                        <input type="text" id="searchInput" placeholder="공고 제목, 매장명 검색..." 
-                               class="w-full pl-9 pr-4 py-2.5 rounded-xl input-sky text-xs font-medium focus:ring-2 focus:ring-sky-400">
-                        <i class="fa-solid fa-magnifying-glass absolute left-3 top-3 text-slate-400 text-xs"></i>
-                    </div>
-                    <button onclick="toggleMapModal()" class="px-3.5 py-2.5 bg-sky-50 hover:bg-sky-100 text-sky-700 text-xs font-bold rounded-xl border border-sky-200 transition whitespace-nowrap">
-                        <i class="fa-solid fa-map-location-dot mr-1 text-sky-600"></i> <span id="mapToggleBtnText">지도형 보기</span>
-                    </button>
+                
+                <!-- 공고 검색창 -->
+                <div class="relative w-full sm:w-72">
+                    <input type="text" id="searchInput" placeholder="공고 제목, 매장명 검색..." 
+                           class="w-full pl-9 pr-4 py-2.5 rounded-xl input-sky text-xs font-medium focus:ring-2 focus:ring-sky-400">
+                    <i class="fa-solid fa-magnifying-glass absolute left-3 top-3 text-slate-400 text-xs"></i>
                 </div>
             </div>
 
-            <!-- 5x5 대한민국 지도 격자 배치도 (토글형 접기/펴기 가능) -->
-            <div id="gridMapSection" class="hidden p-5 bg-sky-50/50 rounded-2xl border border-sky-100 space-y-3">
+            <!-- 항시 열려있는 지형 타일 지도 섹션 -->
+            <div class="p-5 bg-sky-50/50 rounded-2xl border border-sky-100 space-y-3">
                 <div class="flex justify-between items-center pb-1">
-                    <span class="text-xs font-bold text-slate-700"><i class="fa-solid fa-earth-asia text-sky-600 mr-1.5"></i>대한민국 17개 광역시·도 지도 타일</span>
-                    <span class="text-[11px] text-slate-400">원하는 지형 위치 타일을 직접 클릭하세요</span>
+                    <div class="flex items-center gap-2">
+                        <span id="mapTitleLabel" class="text-xs font-bold text-slate-800">
+                            <i class="fa-solid fa-earth-asia text-sky-600 mr-1.5"></i>대한민국 17개 광역시·도 지도
+                        </span>
+                    </div>
+                    <button id="backToNationalBtn" onclick="selectMainRegion('전체보기')" class="hidden px-2.5 py-1 bg-white hover:bg-sky-100 text-sky-700 text-[11px] font-bold rounded-lg border border-sky-200 transition">
+                        <i class="fa-solid fa-arrow-left mr-1"></i> 전국 지도 보기
+                    </button>
                 </div>
-                <div class="korea-grid-map max-w-2xl mx-auto">
-                    <button onclick="selectMainRegion('인천')" data-map-region="인천" class="map-tile area-incheon bg-white hover:bg-sky-50 border border-slate-200 p-2 rounded-xl flex flex-col items-center justify-center min-h-[56px]">
-                        <span class="text-xs font-bold text-slate-800">인천</span>
-                        <span class="badge text-[10px] bg-sky-100 text-sky-700 font-extrabold px-1.5 py-0.5 rounded-full mt-1" id="badge-인천">0</span>
-                    </button>
-                    <button onclick="selectMainRegion('서울')" data-map-region="서울" class="map-tile area-seoul bg-white hover:bg-sky-50 border border-slate-200 p-2 rounded-xl flex flex-col items-center justify-center min-h-[56px]">
-                        <span class="text-xs font-bold text-slate-800">서울</span>
-                        <span class="badge text-[10px] bg-sky-100 text-sky-700 font-extrabold px-1.5 py-0.5 rounded-full mt-1" id="badge-서울">0</span>
-                    </button>
-                    <button onclick="selectMainRegion('경기')" data-map-region="경기" class="map-tile area-gyeonggi bg-white hover:bg-sky-50 border border-slate-200 p-2 rounded-xl flex flex-col items-center justify-center min-h-[56px]">
-                        <span class="text-xs font-bold text-slate-800">경기</span>
-                        <span class="badge text-[10px] bg-sky-100 text-sky-700 font-extrabold px-1.5 py-0.5 rounded-full mt-1" id="badge-경기">0</span>
-                    </button>
-                    <button onclick="selectMainRegion('강원')" data-map-region="강원" class="map-tile area-gangwon bg-white hover:bg-sky-50 border border-slate-200 p-2 rounded-xl flex flex-col items-center justify-center min-h-[56px]">
-                        <span class="text-xs font-bold text-slate-800">강원</span>
-                        <span class="badge text-[10px] bg-sky-100 text-sky-700 font-extrabold px-1.5 py-0.5 rounded-full mt-1" id="badge-강원">0</span>
-                    </button>
 
-                    <button onclick="selectMainRegion('충남')" data-map-region="충남" class="map-tile area-chungnam bg-white hover:bg-sky-50 border border-slate-200 p-2 rounded-xl flex flex-col items-center justify-center min-h-[56px]">
-                        <span class="text-xs font-bold text-slate-800">충남</span>
-                        <span class="badge text-[10px] bg-sky-100 text-sky-700 font-extrabold px-1.5 py-0.5 rounded-full mt-1" id="badge-충남">0</span>
-                    </button>
-                    <button onclick="selectMainRegion('세종')" data-map-region="세종" class="map-tile area-sejong bg-white hover:bg-sky-50 border border-slate-200 p-2 rounded-xl flex flex-col items-center justify-center min-h-[56px]">
-                        <span class="text-xs font-bold text-slate-800">세종</span>
-                        <span class="badge text-[10px] bg-sky-100 text-sky-700 font-extrabold px-1.5 py-0.5 rounded-full mt-1" id="badge-세종">0</span>
-                    </button>
-                    <button onclick="selectMainRegion('대전')" data-map-region="대전" class="map-tile area-daejeon bg-white hover:bg-sky-50 border border-slate-200 p-2 rounded-xl flex flex-col items-center justify-center min-h-[56px]">
-                        <span class="text-xs font-bold text-slate-800">대전</span>
-                        <span class="badge text-[10px] bg-sky-100 text-sky-700 font-extrabold px-1.5 py-0.5 rounded-full mt-1" id="badge-대전">0</span>
-                    </button>
-                    <button onclick="selectMainRegion('충북')" data-map-region="충북" class="map-tile area-chungbuk bg-white hover:bg-sky-50 border border-slate-200 p-2 rounded-xl flex flex-col items-center justify-center min-h-[56px]">
-                        <span class="text-xs font-bold text-slate-800">충북</span>
-                        <span class="badge text-[10px] bg-sky-100 text-sky-700 font-extrabold px-1.5 py-0.5 rounded-full mt-1" id="badge-충북">0</span>
-                    </button>
-                    <button onclick="selectMainRegion('경북')" data-map-region="경북" class="map-tile area-gyeongbuk bg-white hover:bg-sky-50 border border-slate-200 p-2 rounded-xl flex flex-col items-center justify-center min-h-[56px]">
-                        <span class="text-xs font-bold text-slate-800">경북</span>
-                        <span class="badge text-[10px] bg-sky-100 text-sky-700 font-extrabold px-1.5 py-0.5 rounded-full mt-1" id="badge-경북">0</span>
-                    </button>
-
-                    <button onclick="selectMainRegion('전북')" data-map-region="전북" class="map-tile area-jeonbuk bg-white hover:bg-sky-50 border border-slate-200 p-2 rounded-xl flex flex-col items-center justify-center min-h-[56px]">
-                        <span class="text-xs font-bold text-slate-800">전북</span>
-                        <span class="badge text-[10px] bg-sky-100 text-sky-700 font-extrabold px-1.5 py-0.5 rounded-full mt-1" id="badge-전북">0</span>
-                    </button>
-                    <button onclick="selectMainRegion('광주')" data-map-region="광주" class="map-tile area-gwangju bg-white hover:bg-sky-50 border border-slate-200 p-2 rounded-xl flex flex-col items-center justify-center min-h-[56px]">
-                        <span class="text-xs font-bold text-slate-800">광주</span>
-                        <span class="badge text-[10px] bg-sky-100 text-sky-700 font-extrabold px-1.5 py-0.5 rounded-full mt-1" id="badge-광주">0</span>
-                    </button>
-                    <button onclick="selectMainRegion('전남')" data-map-region="전남" class="map-tile area-jeonnam bg-white hover:bg-sky-50 border border-slate-200 p-2 rounded-xl flex flex-col items-center justify-center min-h-[56px]">
-                        <span class="text-xs font-bold text-slate-800">전남</span>
-                        <span class="badge text-[10px] bg-sky-100 text-sky-700 font-extrabold px-1.5 py-0.5 rounded-full mt-1" id="badge-전남">0</span>
-                    </button>
-                    <button onclick="selectMainRegion('대구')" data-map-region="대구" class="map-tile area-daegu bg-white hover:bg-sky-50 border border-slate-200 p-2 rounded-xl flex flex-col items-center justify-center min-h-[56px]">
-                        <span class="text-xs font-bold text-slate-800">대구</span>
-                        <span class="badge text-[10px] bg-sky-100 text-sky-700 font-extrabold px-1.5 py-0.5 rounded-full mt-1" id="badge-대구">0</span>
-                    </button>
-                    <button onclick="selectMainRegion('울산')" data-map-region="울산" class="map-tile area-ulsan bg-white hover:bg-sky-50 border border-slate-200 p-2 rounded-xl flex flex-col items-center justify-center min-h-[56px]">
-                        <span class="text-xs font-bold text-slate-800">울산</span>
-                        <span class="badge text-[10px] bg-sky-100 text-sky-700 font-extrabold px-1.5 py-0.5 rounded-full mt-1" id="badge-울산">0</span>
-                    </button>
-
-                    <button onclick="selectMainRegion('경남')" data-map-region="경남" class="map-tile area-gyeongnam bg-white hover:bg-sky-50 border border-slate-200 p-2 rounded-xl flex flex-col items-center justify-center min-h-[56px]">
-                        <span class="text-xs font-bold text-slate-800">경남</span>
-                        <span class="badge text-[10px] bg-sky-100 text-sky-700 font-extrabold px-1.5 py-0.5 rounded-full mt-1" id="badge-경남">0</span>
-                    </button>
-                    <button onclick="selectMainRegion('부산')" data-map-region="부산" class="map-tile area-busan bg-white hover:bg-sky-50 border border-slate-200 p-2 rounded-xl flex flex-col items-center justify-center min-h-[56px]">
-                        <span class="text-xs font-bold text-slate-800">부산</span>
-                        <span class="badge text-[10px] bg-sky-100 text-sky-700 font-extrabold px-1.5 py-0.5 rounded-full mt-1" id="badge-부산">0</span>
-                    </button>
-                    <button onclick="selectMainRegion('제주')" data-map-region="제주" class="map-tile area-jeju bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 p-2 rounded-xl flex flex-col items-center justify-center min-h-[56px]">
-                        <span class="text-xs font-bold text-emerald-900">제주</span>
-                        <span class="badge text-[10px] bg-emerald-200 text-emerald-800 font-extrabold px-1.5 py-0.5 rounded-full mt-1" id="badge-제주">0</span>
-                    </button>
+                <!-- 지도가 출력되는 동적 컨테이너 -->
+                <div id="mapRenderContainer" class="max-w-2xl mx-auto">
                 </div>
             </div>
 
-            <!-- 1단계: 대지역 선택 버튼 바 (1번 사진 디자인 동일) -->
+            <!-- 1단계: 대지역 선택 버튼 바 -->
             <div class="space-y-2">
                 <div class="flex items-center gap-2 text-xs font-bold text-emerald-600">
                     <i class="fa-solid fa-map text-emerald-500"></i> 1단계: 대지역 선택
                 </div>
-                <div id="mainRegionContainer" class="flex flex-wrap gap-2 pt-1">
-                    <!-- JS로 동적 생성 -->
-                </div>
+                <div id="mainRegionContainer" class="flex flex-wrap gap-2 pt-1"></div>
             </div>
 
-            <!-- 2단계: 세부 지역 선택 버튼 바 (1번 사진 디자인 동일) -->
+            <!-- 2단계: 세부 지역 선택 버튼 바 -->
             <div id="subRegionWrapper" class="space-y-2 border-t border-slate-100 pt-4">
                 <div class="flex items-center gap-2 text-xs font-bold text-emerald-600">
                     <i class="fa-solid fa-location-crosshairs text-emerald-500"></i> 
                     2단계: 세부 지역 선택 (<span id="selectedMainRegionLabel" class="font-extrabold text-sky-600">전체보기</span>)
                 </div>
-                <div id="subRegionContainer" class="flex flex-wrap gap-2 pt-1">
-                    <!-- JS로 동적 생성 -->
-                </div>
+                <div id="subRegionContainer" class="flex flex-wrap gap-2 pt-1"></div>
             </div>
 
         </div>
 
-        <!-- 1번 사진 스타일: 공고 목록 / 등록된 공고 없음 안내 카드 -->
-        <div id="jobsFeedCard" class="space-y-4">
-            <!-- JS 동적 생성 영역 -->
-        </div>
+        <!-- 공고 목록 피드 -->
+        <div id="jobsFeedCard" class="space-y-4"></div>
 
     </main>
 
-    <!-- 푸터 -->
     <footer class="bg-slate-100 text-slate-500 text-xs py-8 border-t border-slate-200 mt-12">
         <div class="max-w-6xl mx-auto px-5 text-center space-y-1">
             <p class="font-bold text-slate-700">실버웍스 (silverworks)</p>
@@ -233,42 +165,37 @@
         </div>
     </footer>
 
-    <!-- 스크립트 및 서버 API 연동 복구 -->
     <script>
-        // 17개 행정구역 및 세부 지역 데이터 정의
-        const regionsData = {
-            "전체보기": [],
-            "서울특별시": ["전체", "강남구", "강동구", "강북구", "강서구", "관악구", "광진구", "구로구", "금천구", "노원구", "도봉구", "동대문구", "동작구", "마포구", "서대문구", "서초구", "성동구", "성북구", "송파구", "양천구", "영등포구", "용산구", "은평구", "종로구", "중구", "중랑구"],
-            "경기도": ["전체", "수원시", "성남시", "고양시", "용인시", "부천시", "안산시", "남양주시", "안양시", "평택시", "시흥시", "파주시", "의정부시", "김포시", "광주시", "광명시", "군포시", "하남시", "오산시", "양주시", "이천시", "구리시", "안성시", "포천시", "의왕시", "양평군", "여주시", "동두천시", "가평군", "연천군"],
-            "인천광역시": ["전체", "중구", "동구", "미추홀구", "연수구", "남동구", "부평구", "계양구", "서구", "강화군", "옹진군"],
-            "부산광역시": ["전체", "해운대구", "부산진구", "동래구", "남구", "북구", "사하구", "금정구", "연제구", "수영구", "사상구", "중구", "동구", "서구", "영도구"],
-            "대구광역시": ["전체", "중구", "동구", "서구", "남구", "북구", "수성구", "달서구", "달성군"],
-            "대전광역시": ["전체", "동구", "중구", "서구", "유성구", "대덕구"],
-            "광주광역시": ["전체", "동구", "서구", "남구", "북구", "광산구"],
-            "강원특별자치도": ["전체", "춘천시", "원주시", "강릉시", "동해시", "태백시", "속초시", "삼척시", "홍천군", "횡성군"],
-            "제주특별자치도": ["전체", "제주시", "서귀포시"]
+        const regionMapData = {
+            "서울특별시": ["강남구", "강동구", "강북구", "강서구", "관악구", "광진구", "구로구", "금천구", "노원구", "도봉구", "동대문구", "동작구", "마포구", "서대문구", "서초구", "성동구", "성북구", "송파구", "양천구", "영등포구", "용산구", "은평구", "종로구", "중구", "중랑구"],
+            "경기도": ["수원시", "성남시", "화성시(동탄)", "고양시", "용인시", "부천시", "안산시", "남양주시", "안양시", "평택시", "시흥시", "파주시", "의정부시", "김포시", "광주시", "하남시", "오산시", "이천시", "양평군", "여주시"],
+            "인천광역시": ["중구", "동구", "미추홀구", "연수구", "남동구", "부평구", "계양구", "서구", "강화군"],
+            "부산광역시": ["해운대구", "부산진구", "동래구", "남구", "북구", "사하구", "금정구", "연제구", "수영구", "사상구"],
+            "대구광역시": ["중구", "동구", "서구", "남구", "북구", "수성구", "달서구", "달성군"],
+            "대전광역시": ["동구", "중구", "서구", "유성구", "대덕구"],
+            "광주광역시": ["동구", "서구", "남구", "북구", "광산구"],
+            "강원특별자치도": ["춘천시", "원주시", "강릉시", "동해시", "태백시", "속초시", "삼척시", "홍천군"],
+            "제주특별자치도": ["제주시", "서귀포시"],
+            "충청남도": ["천안시", "공주시", "보령시", "아산시", "서산시", "논산시", "당진시"],
+            "충청북도": ["청주시", "충주시", "제천시", "음성군", "진천군"],
+            "경상북도": ["포항시", "경주시", "김천시", "안동시", "구미시", "영주시"],
+            "경상남도": ["창원시", "진주시", "통영시", "사천시", "김해시", "밀양시", "거제시", "양산시"],
+            "전라북도": ["전주시", "군산시", "익산시", "정읍시", "남원시", "김제시"],
+            "전라남도": ["목포시", "여수시", "순천시", "나주시", "광양시"]
         };
 
-        // 약칭 매핑 (5x5 지도용)
-        const shortRegionMap = {
-            "서울": "서울특별시",
-            "경기": "경기도",
-            "인천": "인천광역시",
-            "부산": "부산광역시",
-            "대구": "대구광역시",
-            "대전": "대전광역시",
-            "광주": "광주광역시",
-            "강원": "강원특별자치도",
-            "제주": "제주특별자치도",
-            "충남": "충남", "세종": "세종", "충북": "충북", "경북": "경북",
-            "전북": "전북", "전남": "전남", "울산": "울산", "경남": "경남"
+        const shortToFull = {
+            "서울": "서울특별시", "경기": "경기도", "인천": "인천광역시",
+            "부산": "부산광역시", "대구": "대구광역시", "대전": "대전광역시",
+            "광주": "광주광역시", "강원": "강원특별자치도", "제주": "제주특별자치도",
+            "충남": "충청남도", "충북": "충청북도", "경북": "경상북도",
+            "경남": "경상남도", "전북": "전라북도", "전남": "전라남도", "세종": "세종특별자치시", "울산": "울산광역시"
         };
 
         let allServerJobs = [];
         let currentMainRegion = "전체보기";
         let currentSubRegion = "전체";
 
-        // GNB 헤더 사용자 정보 및 알림 연동
         async function updateHeaderUI() {
             const userArea = document.getElementById('header-user-area');
             const user = JSON.parse(localStorage.getItem('sw_user') || 'null');
@@ -318,26 +245,12 @@
             location.href = '/index.html';
         }
 
-        // 지도 토글 처리
-        function toggleMapModal() {
-            const grid = document.getElementById('gridMapSection');
-            const btnText = document.getElementById('mapToggleBtnText');
-            if (grid.classList.contains('hidden')) {
-                grid.classList.remove('hidden');
-                btnText.innerText = "지도 닫기";
-            } else {
-                grid.classList.add('hidden');
-                btnText.innerText = "지도형 보기";
-            }
-        }
-
-        // 백엔드 서버(`/api/jobs`)에서 실제 공고 데이터 가져오기
         async function fetchJobsFromServer() {
             try {
                 const res = await fetch('/api/jobs').then(r => r.json());
                 if (res.success) {
                     allServerJobs = res.jobs || [];
-                    updateMapBadges();
+                    renderMapGrid();
                     renderFilterButtons();
                     applyFiltersAndRender();
                 }
@@ -346,112 +259,221 @@
             }
         }
 
-        // 지도 타일 배지 건수 동적 업데이트
-        function updateMapBadges() {
-            Object.keys(shortRegionMap).forEach(shortName => {
-                const fullName = shortRegionMap[shortName];
-                const count = allServerJobs.filter(j => 
-                    (j.title && j.title.includes(shortName)) || 
-                    (j.storeName && j.storeName.includes(shortName))
-                ).length;
-                const badgeEl = document.getElementById(`badge-${shortName}`);
-                if (badgeEl) badgeEl.innerText = count;
-            });
+        function renderMapGrid() {
+            const mapContainer = document.getElementById('mapRenderContainer');
+            const titleLabel = document.getElementById('mapTitleLabel');
+            const backBtn = document.getElementById('backToNationalBtn');
+
+            if (currentMainRegion === "전체보기") {
+                titleLabel.innerHTML = `<i class="fa-solid fa-earth-asia text-sky-600 mr-1.5"></i>대한민국 17개 광역시·도 지도`;
+                backBtn.classList.add('hidden');
+
+                mapContainer.innerHTML = `
+                    <div class="korea-grid-map">
+                        <button onclick="selectMainRegion('인천광역시')" class="map-tile area-incheon bg-white border border-slate-200 p-2 rounded-xl flex flex-col items-center justify-center min-h-[56px]">
+                            <span class="text-xs font-bold text-slate-800 tile-text">인천</span>
+                            <span class="badge text-[10px] bg-sky-100 text-sky-700 font-extrabold px-1.5 py-0.5 rounded-full mt-1">${countJobs('인천광역시')}</span>
+                        </button>
+                        <button onclick="selectMainRegion('서울특별시')" class="map-tile area-seoul bg-white border border-slate-200 p-2 rounded-xl flex flex-col items-center justify-center min-h-[56px]">
+                            <span class="text-xs font-bold text-slate-800 tile-text">서울</span>
+                            <span class="badge text-[10px] bg-sky-100 text-sky-700 font-extrabold px-1.5 py-0.5 rounded-full mt-1">${countJobs('서울특별시')}</span>
+                        </button>
+                        <button onclick="selectMainRegion('경기도')" class="map-tile area-gyeonggi bg-white border border-slate-200 p-2 rounded-xl flex flex-col items-center justify-center min-h-[56px]">
+                            <span class="text-xs font-bold text-slate-800 tile-text">경기</span>
+                            <span class="badge text-[10px] bg-sky-100 text-sky-700 font-extrabold px-1.5 py-0.5 rounded-full mt-1">${countJobs('경기도')}</span>
+                        </button>
+                        <button onclick="selectMainRegion('강원특별자치도')" class="map-tile area-gangwon bg-white border border-slate-200 p-2 rounded-xl flex flex-col items-center justify-center min-h-[56px]">
+                            <span class="text-xs font-bold text-slate-800 tile-text">강원</span>
+                            <span class="badge text-[10px] bg-sky-100 text-sky-700 font-extrabold px-1.5 py-0.5 rounded-full mt-1">${countJobs('강원특별자치도')}</span>
+                        </button>
+
+                        <button onclick="selectMainRegion('충청남도')" class="map-tile area-chungnam bg-white border border-slate-200 p-2 rounded-xl flex flex-col items-center justify-center min-h-[56px]">
+                            <span class="text-xs font-bold text-slate-800 tile-text">충남</span>
+                            <span class="badge text-[10px] bg-sky-100 text-sky-700 font-extrabold px-1.5 py-0.5 rounded-full mt-1">${countJobs('충청남도')}</span>
+                        </button>
+                        <button onclick="selectMainRegion('세종특별자치시')" class="map-tile area-sejong bg-white border border-slate-200 p-2 rounded-xl flex flex-col items-center justify-center min-h-[56px]">
+                            <span class="text-xs font-bold text-slate-800 tile-text">세종</span>
+                            <span class="badge text-[10px] bg-sky-100 text-sky-700 font-extrabold px-1.5 py-0.5 rounded-full mt-1">${countJobs('세종특별자치시')}</span>
+                        </button>
+                        <button onclick="selectMainRegion('대전광역시')" class="map-tile area-daejeon bg-white border border-slate-200 p-2 rounded-xl flex flex-col items-center justify-center min-h-[56px]">
+                            <span class="text-xs font-bold text-slate-800 tile-text">대전</span>
+                            <span class="badge text-[10px] bg-sky-100 text-sky-700 font-extrabold px-1.5 py-0.5 rounded-full mt-1">${countJobs('대전광역시')}</span>
+                        </button>
+                        <button onclick="selectMainRegion('충청북도')" class="map-tile area-chungbuk bg-white border border-slate-200 p-2 rounded-xl flex flex-col items-center justify-center min-h-[56px]">
+                            <span class="text-xs font-bold text-slate-800 tile-text">충북</span>
+                            <span class="badge text-[10px] bg-sky-100 text-sky-700 font-extrabold px-1.5 py-0.5 rounded-full mt-1">${countJobs('충청북도')}</span>
+                        </button>
+                        <button onclick="selectMainRegion('경상북도')" class="map-tile area-gyeongbuk bg-white border border-slate-200 p-2 rounded-xl flex flex-col items-center justify-center min-h-[56px]">
+                            <span class="text-xs font-bold text-slate-800 tile-text">경북</span>
+                            <span class="badge text-[10px] bg-sky-100 text-sky-700 font-extrabold px-1.5 py-0.5 rounded-full mt-1">${countJobs('경상북도')}</span>
+                        </button>
+
+                        <button onclick="selectMainRegion('전라북도')" class="map-tile area-jeonbuk bg-white border border-slate-200 p-2 rounded-xl flex flex-col items-center justify-center min-h-[56px]">
+                            <span class="text-xs font-bold text-slate-800 tile-text">전북</span>
+                            <span class="badge text-[10px] bg-sky-100 text-sky-700 font-extrabold px-1.5 py-0.5 rounded-full mt-1">${countJobs('전라북도')}</span>
+                        </button>
+                        <button onclick="selectMainRegion('광주광역시')" class="map-tile area-gwangju bg-white border border-slate-200 p-2 rounded-xl flex flex-col items-center justify-center min-h-[56px]">
+                            <span class="text-xs font-bold text-slate-800 tile-text">광주</span>
+                            <span class="badge text-[10px] bg-sky-100 text-sky-700 font-extrabold px-1.5 py-0.5 rounded-full mt-1">${countJobs('광주광역시')}</span>
+                        </button>
+                        <button onclick="selectMainRegion('전라남도')" class="map-tile area-jeonnam bg-white border border-slate-200 p-2 rounded-xl flex flex-col items-center justify-center min-h-[56px]">
+                            <span class="text-xs font-bold text-slate-800 tile-text">전남</span>
+                            <span class="badge text-[10px] bg-sky-100 text-sky-700 font-extrabold px-1.5 py-0.5 rounded-full mt-1">${countJobs('전라남도')}</span>
+                        </button>
+                        <button onclick="selectMainRegion('대구광역시')" class="map-tile area-daegu bg-white border border-slate-200 p-2 rounded-xl flex flex-col items-center justify-center min-h-[56px]">
+                            <span class="text-xs font-bold text-slate-800 tile-text">대구</span>
+                            <span class="badge text-[10px] bg-sky-100 text-sky-700 font-extrabold px-1.5 py-0.5 rounded-full mt-1">${countJobs('대구광역시')}</span>
+                        </button>
+                        <button onclick="selectMainRegion('울산광역시')" class="map-tile area-ulsan bg-white border border-slate-200 p-2 rounded-xl flex flex-col items-center justify-center min-h-[56px]">
+                            <span class="text-xs font-bold text-slate-800 tile-text">울산</span>
+                            <span class="badge text-[10px] bg-sky-100 text-sky-700 font-extrabold px-1.5 py-0.5 rounded-full mt-1">${countJobs('울산광역시')}</span>
+                        </button>
+
+                        <button onclick="selectMainRegion('경상남도')" class="map-tile area-gyeongnam bg-white border border-slate-200 p-2 rounded-xl flex flex-col items-center justify-center min-h-[56px]">
+                            <span class="text-xs font-bold text-slate-800 tile-text">경남</span>
+                            <span class="badge text-[10px] bg-sky-100 text-sky-700 font-extrabold px-1.5 py-0.5 rounded-full mt-1">${countJobs('경상남도')}</span>
+                        </button>
+                        <button onclick="selectMainRegion('부산광역시')" class="map-tile area-busan bg-white border border-slate-200 p-2 rounded-xl flex flex-col items-center justify-center min-h-[56px]">
+                            <span class="text-xs font-bold text-slate-800 tile-text">부산</span>
+                            <span class="badge text-[10px] bg-sky-100 text-sky-700 font-extrabold px-1.5 py-0.5 rounded-full mt-1">${countJobs('부산광역시')}</span>
+                        </button>
+                        <button onclick="selectMainRegion('제주특별자치도')" class="map-tile area-jeju bg-emerald-50 border border-emerald-200 p-2 rounded-xl flex flex-col items-center justify-center min-h-[56px]">
+                            <span class="text-xs font-bold text-emerald-900 tile-text">제주</span>
+                            <span class="badge text-[10px] bg-emerald-200 text-emerald-800 font-extrabold px-1.5 py-0.5 rounded-full mt-1">${countJobs('제주특별자치도')}</span>
+                        </button>
+                    </div>
+                `;
+            } else {
+                titleLabel.innerHTML = `<i class="fa-solid fa-location-dot text-emerald-500 mr-1.5"></i><strong>${currentMainRegion}</strong> 세부 지형 지도`;
+                backBtn.classList.remove('hidden');
+
+                const subList = regionMapData[currentMainRegion] || ["전체"];
+                
+                let subButtonsHtml = `
+                    <button onclick="selectSubRegion('전체')" class="map-tile ${currentSubRegion === '전체' ? 'active' : ''} bg-white border border-slate-200 p-2.5 rounded-xl flex flex-col items-center justify-center">
+                        <span class="text-xs font-bold text-slate-800 tile-text">전체</span>
+                        <span class="badge text-[10px] bg-sky-100 text-sky-700 font-extrabold px-2 py-0.5 rounded-full mt-1">${countJobs(currentMainRegion, '전체')}</span>
+                    </button>
+                `;
+
+                subButtonsHtml += subList.map(sub => {
+                    const isActive = currentSubRegion === sub;
+                    return `
+                        <button onclick="selectSubRegion('${sub}')" class="map-tile ${isActive ? 'active' : ''} bg-white border border-slate-200 p-2.5 rounded-xl flex flex-col items-center justify-center min-h-[56px]">
+                            <span class="text-xs font-bold text-slate-800 tile-text">${sub}</span>
+                            <span class="badge text-[10px] bg-sky-100 text-sky-700 font-extrabold px-1.5 py-0.5 rounded-full mt-1">${countJobs(currentMainRegion, sub)}</span>
+                        </button>
+                    `;
+                }).join('');
+
+                mapContainer.innerHTML = `<div class="sub-grid-map">${subButtonsHtml}</div>`;
+            }
         }
 
-        // 1단계 & 2단계 필터 버튼 렌더링
+        function countJobs(mainRegion, subRegion = "전체") {
+            return allServerJobs.filter(j => {
+                const mainMatch = (j.regionMain === mainRegion) || 
+                                 (shortToFull[j.regionMain] === mainRegion) ||
+                                 (j.title && j.title.includes(mainRegion.substring(0, 2))) ||
+                                 (j.storeName && j.storeName.includes(mainRegion.substring(0, 2)));
+
+                if (!mainMatch) return false;
+                if (subRegion === "전체") return true;
+
+                return (j.regionSub === subRegion) || 
+                       (j.title && j.title.includes(subRegion)) || 
+                       (j.storeName && j.storeName.includes(subRegion));
+            }).length;
+        }
+
         function renderFilterButtons() {
             const mainContainer = document.getElementById('mainRegionContainer');
             mainContainer.innerHTML = '';
 
-            Object.keys(regionsData).forEach(region => {
-                const isSelected = currentMainRegion === region || shortRegionMap[currentMainRegion] === region;
+            const mainList = ["전체보기", ...Object.keys(regionMapData)];
+            mainList.forEach(region => {
+                const isSelected = currentMainRegion === region;
                 const btn = document.createElement('button');
                 btn.type = 'button';
                 btn.className = `px-3.5 py-2 rounded-xl text-xs font-bold transition ${
-                    isSelected 
-                    ? 'bg-sky-500 text-white shadow-sm' 
-                    : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                    isSelected ? 'bg-sky-500 text-white shadow-sm' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
                 }`;
                 btn.innerText = region;
                 btn.onclick = () => selectMainRegion(region);
                 mainContainer.appendChild(btn);
             });
 
-            // 2단계 세부지역 렌더링
             const subWrapper = document.getElementById('subRegionWrapper');
             const subContainer = document.getElementById('subRegionContainer');
             const selectedLabel = document.getElementById('selectedMainRegionLabel');
-            
+
             selectedLabel.innerText = currentMainRegion;
             subContainer.innerHTML = '';
 
-            const subList = regionsData[currentMainRegion] || regionsData[shortRegionMap[currentMainRegion]] || [];
+            const subList = regionMapData[currentMainRegion] || [];
 
             if (subList.length === 0) {
                 subWrapper.classList.add('hidden');
             } else {
                 subWrapper.classList.remove('hidden');
+                
+                const allBtn = document.createElement('button');
+                allBtn.type = 'button';
+                allBtn.className = `px-3 py-1.5 rounded-lg text-xs font-bold transition ${currentSubRegion === '전체' ? 'bg-emerald-500 text-white shadow-sm' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'}`;
+                allBtn.innerText = "전체";
+                allBtn.onclick = () => selectSubRegion("전체");
+                subContainer.appendChild(allBtn);
+
                 subList.forEach(sub => {
                     const isSubSelected = currentSubRegion === sub;
                     const btn = document.createElement('button');
                     btn.type = 'button';
                     btn.className = `px-3 py-1.5 rounded-lg text-xs font-bold transition ${
-                        isSubSelected 
-                        ? 'bg-emerald-500 text-white shadow-sm' 
-                        : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                        isSubSelected ? 'bg-emerald-500 text-white shadow-sm' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
                     }`;
                     btn.innerText = sub;
                     btn.onclick = () => selectSubRegion(sub);
                     subContainer.appendChild(btn);
                 });
             }
-
-            // 5x5 지도 타일 액티브 스타일 동기화
-            document.querySelectorAll('.map-tile').forEach(tile => {
-                const r = tile.getAttribute('data-map-region');
-                if (r === currentMainRegion || shortRegionMap[r] === currentMainRegion) {
-                    tile.classList.add('active');
-                } else {
-                    tile.classList.remove('active');
-                }
-            });
         }
 
         function selectMainRegion(region) {
-            currentMainRegion = shortRegionMap[region] || region;
+            currentMainRegion = region;
             currentSubRegion = "전체";
+            renderMapGrid();
             renderFilterButtons();
             applyFiltersAndRender();
         }
 
         function selectSubRegion(sub) {
             currentSubRegion = sub;
+            renderMapGrid();
             renderFilterButtons();
             applyFiltersAndRender();
         }
 
-        // 필터링 적용 및 화면 출력 (1번 사진의 '공고 없음' UI 및 카드 디자인 적용)
         function applyFiltersAndRender() {
             const keyword = document.getElementById('searchInput').value.trim().toLowerCase();
             const feedCard = document.getElementById('jobsFeedCard');
 
             const filtered = allServerJobs.filter(job => {
-                // 지역 필터 (제목 또는 매장명 기준)
                 let matchesMain = true;
                 if (currentMainRegion !== "전체보기") {
-                    const cleanMain = currentMainRegion.replace(/(서울특별시|경기도|광역시|특별자치도)/g, '').trim();
-                    matchesMain = (job.title && (job.title.includes(currentMainRegion) || job.title.includes(cleanMain))) ||
-                                 (job.storeName && (job.storeName.includes(currentMainRegion) || job.storeName.includes(cleanMain)));
+                    const mainShort = currentMainRegion.substring(0, 2);
+                    matchesMain = (job.regionMain === currentMainRegion) || 
+                                 (shortToFull[job.regionMain] === currentMainRegion) ||
+                                 (job.title && job.title.includes(mainShort)) ||
+                                 (job.storeName && job.storeName.includes(mainShort));
                 }
 
                 let matchesSub = true;
                 if (currentSubRegion !== "전체") {
-                    matchesSub = (job.title && job.title.includes(currentSubRegion)) ||
+                    matchesSub = (job.regionSub === currentSubRegion) ||
+                                 (job.title && job.title.includes(currentSubRegion)) ||
                                  (job.storeName && job.storeName.includes(currentSubRegion));
                 }
 
-                // 키워드 검색
                 let matchesSearch = true;
                 if (keyword) {
                     matchesSearch = (job.title && job.title.toLowerCase().includes(keyword)) ||
@@ -462,28 +484,27 @@
                 return matchesMain && matchesSub && matchesSearch;
             });
 
-            // 1번 사진 스타일: 공고 없을 때 표시되는 안심 안내 카드 UI
             if (filtered.length === 0) {
-                const targetRegionText = currentSubRegion !== "전체" ? `${currentMainRegion} ${currentSubRegion}` : currentMainRegion;
+                const targetText = currentSubRegion !== "전체" ? `${currentMainRegion} ${currentSubRegion}` : currentMainRegion;
                 feedCard.innerHTML = `
                     <div class="bg-white rounded-3xl p-16 border border-sky-100 shadow-sm text-center flex flex-col items-center justify-center space-y-3">
                         <div class="w-14 h-14 rounded-full bg-sky-200/80 text-white flex items-center justify-center text-2xl font-black shadow-inner mb-1">
                             <i class="fa-solid fa-exclamation"></i>
                         </div>
                         <p class="text-slate-500 font-bold text-sm">
-                            '${targetRegionText}' 지역에 등록된 구인 공고가 없습니다.
+                            '${targetText}' 지역에 등록된 구인 공고가 없습니다.
                         </p>
                     </div>
                 `;
                 return;
             }
 
-            // 공고 카드 목록 출력
             feedCard.innerHTML = filtered.map(job => `
                 <div class="bg-white rounded-3xl p-6 md:p-7 border border-sky-100 shadow-sm hover:border-sky-300 transition flex flex-col sm:flex-row sm:items-center justify-between gap-5">
                     <div class="space-y-2">
                         <div class="flex items-center gap-2">
-                            <span class="text-xs font-bold text-sky-600 bg-sky-50 px-2.5 py-1 rounded-lg border border-sky-100">${job.category || '기타'}</span>
+                            <span class="text-xs font-bold text-sky-600 bg-sky-50 px-2.5 py-1 rounded-lg border border-sky-100">${job.category || '식당·서빙'}</span>
+                            <span class="text-xs font-bold text-sky-700 bg-sky-100 px-2.5 py-1 rounded-lg">${job.regionMain || '서울특별시'} ${job.regionSub || ''}</span>
                             ${job.isPeak ? '<span class="text-xs font-extrabold text-amber-600 bg-amber-50 px-2.5 py-1 rounded-lg border border-amber-200"><i class="fa-solid fa-thumbtack mr-1"></i>상단 고정</span>' : ''}
                             <span class="text-xs font-bold text-emerald-600 bg-emerald-50 px-2.5 py-1 rounded-lg border border-emerald-100">${job.status}</span>
                         </div>
@@ -504,10 +525,8 @@
             `).join('');
         }
 
-        // 검색창 실시간 반응
         document.getElementById('searchInput').addEventListener('input', applyFiltersAndRender);
 
-        // 최초 페이지 초기화
         document.addEventListener('DOMContentLoaded', () => {
             updateHeaderUI();
             fetchJobsFromServer();

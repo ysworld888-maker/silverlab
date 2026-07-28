@@ -131,7 +131,6 @@ app.post('/api/invoices/request-confirm', (req, res) => {
   res.json({ success: true });
 });
 
-// 관리자 '확인' 버튼 클릭 시 명세서 최종 처리 및 사장님 알림 발송
 app.post('/api/invoices/admin-confirm', (req, res) => {
   const { invoiceId } = req.body;
   const inv = invoicesData.find(i => i.id === invoiceId);
@@ -146,16 +145,28 @@ app.post('/api/invoices/admin-confirm', (req, res) => {
   res.json({ success: true });
 });
 
-// Jobs API
+// Jobs API (대지역 및 세부지역 필드 수신 추가)
 app.get('/api/jobs', (req, res) => res.json({ success: true, jobs: jobsData }));
 
 app.post('/api/jobs', (req, res) => {
-  const { employerId, storeName, title, category, date, time, pay, isPeak } = req.body;
+  const { employerId, storeName, title, category, date, time, pay, isPeak, regionMain, regionSub } = req.body;
   const employer = usersData.find(u => u.id === employerId);
   if (isPeak && (!employer || !employer.isSubscribed)) return res.status(403).json({ success: false, message: '상단 고정 공고는 구독 회원 사장님만 이용 가능합니다.' });
 
   const newJob = {
-    id: 'job-' + Date.now(), employerId, storeName, title: isPeak ? `[상단 고정] ${title}` : title, category, date, time, pay: parseInt(pay, 10), isPeak: !!isPeak, status: '구직자 모집중', candidates: []
+    id: 'job-' + Date.now(), 
+    employerId, 
+    storeName, 
+    title: isPeak ? `[상단 고정] ${title}` : title, 
+    category, 
+    date, 
+    time, 
+    pay: parseInt(pay, 10), 
+    isPeak: !!isPeak, 
+    regionMain: regionMain || '서울특별시', 
+    regionSub: regionSub || '전체',
+    status: '구직자 모집중', 
+    candidates: []
   };
   jobsData.unshift(newJob);
   res.json({ success: true, job: newJob });
@@ -262,7 +273,6 @@ app.post('/api/jobs/:id/cancel-hire', (req, res) => {
   res.json({ success: true });
 });
 
-// 포인트 지급 시 임금의 10% (구독 시 5%) 명세서 금액 자동 발행
 app.post('/api/jobs/:id/pay-points', (req, res) => {
   const { seniorId, basePay } = req.body;
   const job = jobsData.find(j => j.id === req.params.id);
@@ -278,7 +288,7 @@ app.post('/api/jobs/:id/pay-points', (req, res) => {
     senior.points = (senior.points || 0) + totalPay;
 
     const feeRate = employer && employer.isSubscribed ? 0.05 : 0.10;
-    const feeAmount = Math.round(totalPay * (1 + feeRate)); // 일당의 10%(또는 5%)가 붙은 총액 명세서
+    const feeAmount = Math.round(totalPay * (1 + feeRate));
 
     invoicesData.unshift({
       id: 'inv-' + Date.now(),
@@ -287,7 +297,7 @@ app.post('/api/jobs/:id/pay-points', (req, res) => {
       storeName: job.storeName,
       amount: feeAmount,
       date: new Date().toLocaleString(),
-      status: 'ISSUED', // ISSUED, PENDING_ADMIN, CONFIRMED
+      status: 'ISSUED',
       isFullyConfirmed: false
     });
 
@@ -324,6 +334,7 @@ app.post('/api/settlements', (req, res) => {
   settlementsData.unshift(newSettle);
   res.json({ success: true, settlement: newSettle });
 });
+
 app.post('/api/settlements/:id/complete', (req, res) => {
   const settle = settlementsData.find(s => s.id === req.params.id);
   if (settle && settle.status === 'PENDING') {
@@ -346,10 +357,12 @@ app.get('/api/notifications/:userId', (req, res) => {
   const hasUnread = userNotis.some(n => !n.isRead);
   res.json({ success: true, notifications: userNotis, hasUnread });
 });
+
 app.post('/api/notifications/:userId/read', (req, res) => {
   notificationsData.forEach(n => { if (n.targetUserId === req.params.userId) n.isRead = true; });
   res.json({ success: true });
 });
+
 app.delete('/api/notifications/item/:id', (req, res) => {
   const idx = notificationsData.findIndex(n => n.id === req.params.id);
   if (idx !== -1) notificationsData.splice(idx, 1);
