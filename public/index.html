@@ -62,6 +62,64 @@
             100% { transform: translate(-8%, -10%) scale(1.15); }
         }
 
+        /* 메인 타이틀 고급 스위칭 애니메이션 (1초간 부드럽게 전환) */
+        .hero-title-container {
+            position: relative;
+            width: 100%;
+            min-height: 270px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        @media (min-width: 768px) {
+            .hero-title-container {
+                min-height: 310px;
+            }
+        }
+
+        .text-slide {
+            position: absolute;
+            width: 100%;
+            left: 0;
+            top: 50%;
+            transition: opacity 1.0s cubic-bezier(0.16, 1, 0.3, 1), 
+                        transform 1.0s cubic-bezier(0.16, 1, 0.3, 1), 
+                        filter 1.0s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .text-slide.hidden-slide {
+            opacity: 0;
+            transform: translateY(-38%) scale(0.97);
+            filter: blur(8px);
+            pointer-events: none;
+        }
+        .text-slide.active-slide {
+            opacity: 1;
+            transform: translateY(-50%) scale(1);
+            filter: blur(0px);
+            pointer-events: auto;
+        }
+
+        /* 아이폰 OS 스타일 입체 투명 물방울 (Waterdrop Glassmorphism) 디자인 */
+        .water-droplet {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0.05em 0.45em;
+            margin: 0 0.1em;
+            background: rgba(255, 255, 255, 0.65);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border-radius: 999px;
+            border: 2px solid rgba(255, 255, 255, 0.95);
+            box-shadow: 
+                0 12px 28px -4px rgba(37, 99, 235, 0.22),
+                inset 0 3px 6px rgba(255, 255, 255, 1),
+                inset 0 -3px 6px rgba(37, 99, 235, 0.15);
+            color: #2563eb;
+            position: relative;
+            text-shadow: 0 1px 2px rgba(255, 255, 255, 0.8);
+        }
+
         /* 토스 블루 버튼 & 미세 인터랙션 */
         .btn-toss { 
             background-color: #3182f6; 
@@ -110,9 +168,9 @@
             perspective: 1200px;
             position: relative;
             width: 100%;
-            max-width: 740px;
+            max-width: 760px;
             margin: 0 auto;
-            min-height: 620px;
+            min-height: 600px;
         }
 
         .shuffle-card {
@@ -120,16 +178,35 @@
             left: 50%;
             top: 0;
             width: 100%;
-            background: rgba(255, 255, 255, 0.88);
+            height: 580px;
+            background: rgba(255, 255, 255, 0.92);
             backdrop-filter: blur(24px);
             -webkit-backdrop-filter: blur(24px);
             border-radius: 2rem;
             border: 1px solid rgba(255, 255, 255, 0.95);
             transition: all 0.55s cubic-bezier(0.16, 1, 0.3, 1);
             transform-origin: center bottom;
-            padding: 2.75rem;
+            padding: 2.25rem 2.5rem;
             text-align: left;
             box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .shuffle-card-content {
+            overflow-y: auto;
+            height: 100%;
+            padding-right: 0.6rem;
+        }
+        .shuffle-card-content::-webkit-scrollbar {
+            width: 5px;
+        }
+        .shuffle-card-content::-webkit-scrollbar-thumb {
+            background-color: rgba(49, 130, 246, 0.35);
+            border-radius: 10px;
+        }
+        .shuffle-card-content::-webkit-scrollbar-track {
+            background: transparent;
         }
 
         .card-pos-0 { 
@@ -201,7 +278,7 @@
     </header>
 
     <main class="flex-1 pb-16 mesh-bg-container">
-        <!-- 1. Hero Title & Wave Section (화면 전체 확장 및 문구 세로 간격 띄움) -->
+        <!-- 1. Hero Title & Wave Section (6초 유지 + 1초 모션 = 총 7초 간격 교차 스위칭) -->
         <section class="pt-16 pb-0 relative overflow-hidden text-center z-10 w-full">
             <div class="max-w-4xl mx-auto relative z-10 px-5">
                 <!-- 상단 뱃지 -->
@@ -211,20 +288,37 @@
                     </span>
                 </div>
 
-                <!-- 메인 타이틀 (3번 사진처럼 위아래 여백을 넉넉히 주어 시원하게 분리) -->
-                <h1 class="text-2xl md:text-4xl font-black text-slate-900 tracking-tight space-y-6 md:space-y-8 my-8">
-                    <span class="block">세상을 은빛 지혜로 채우다</span>
-                    <span class="block text-[#3182f6] text-3xl md:text-5xl font-black">일하는 방식의 새로운 ‘물결’</span>
-                    <span class="block">짜투리 시간이 ‘가치’로 바뀐다.</span>
-                </h1>
+                <!-- 메인 타이틀 7초 교차 컨테이너 -->
+                <div class="hero-title-container my-4">
+                    <!-- 슬라이드 1 (1번 사진: 폰트 균일화 + 진한 파스텔 파랑 + 물결 물방울 디자인) -->
+                    <div id="hero-slide-1" class="text-slide active-slide">
+                        <h1 class="text-2xl md:text-4xl font-black text-slate-900 tracking-tight space-y-6 md:space-y-8">
+                            <span class="block">세상을 은빛 지혜로 채우다</span>
+                            <span class="block text-[#2563eb] font-black">
+                                일하는 방식의 새로운 <span class="water-droplet">‘물결’</span>
+                            </span>
+                            <span class="block">짜투리 시간이 ‘가치’로 바뀐다.</span>
+                        </h1>
+                    </div>
+
+                    <!-- 슬라이드 2 (2번 사진: 검정색 & 폰트 크기/두께 동일화) -->
+                    <div id="hero-slide-2" class="text-slide hidden-slide">
+                        <h1 class="text-2xl md:text-4xl font-black text-slate-900 tracking-tight space-y-4 md:space-y-6">
+                            <span class="block">인건비 절감.</span>
+                            <span class="block">베테랑 인력.</span>
+                            <span class="block">전화를 통한 관리.</span>
+                            <span class="block">엄청난 홍보효과.</span>
+                        </h1>
+                    </div>
+                </div>
 
                 <!-- 서브 문구 -->
-                <p class="text-xs md:text-sm text-slate-500 font-semibold pt-2">
+                <p class="text-xs md:text-sm text-slate-500 font-semibold pt-1">
                     불성실한 알바, 이제 작별합니다! / 하루 2~4시간 피크타임 인력 제공
                 </p>
             </div>
 
-            <!-- Wave Animation (1번 사진처럼 모니터 양옆 짤림 없이 100% 꽉 차도록 preserveAspectRatio="none" 설정) -->
+            <!-- Wave Animation -->
             <div class="mt-12 relative h-16 md:h-20 w-full pointer-events-none overflow-hidden">
                 <div class="absolute inset-0 wave-layer-1 opacity-25">
                     <svg viewBox="0 0 1440 100" fill="none" preserveAspectRatio="none" class="w-full h-full">
@@ -356,59 +450,218 @@
             </div>
 
             <div class="shuffle-stage" id="shuffle-stage">
-                <!-- Card 0: 메인 글 -->
-                <div class="shuffle-card card-pos-0 space-y-4" onclick="setFrontCard(0)">
-                    <span class="bg-blue-50 text-[#3182f6] font-extrabold text-xs px-3 py-1 rounded-lg border border-blue-100">메인 소개글</span>
-                    <h2 class="text-base md:text-xl font-black text-slate-900 leading-snug">
-                        매장을 책임져줄 성실한 사람을 구하는 것은 하늘의 별 따기가 되었습니다.
-                    </h2>
-                    <div class="p-3.5 rounded-2xl bg-blue-50/70 border-l-4 border-[#3182f6] text-slate-700 space-y-1 text-xs md:text-sm">
-                        <p class="font-bold">[자영업자 4명 중 3명이 알바생의 결근·퇴사 등 '노쇼'로 곤란을 겪음]</p>
-                        <p class="text-[10px] text-slate-400">출처: 서울경제 중장년 알바 분석</p>
-                    </div>
-                    <p class="text-xs md:text-sm text-slate-600 leading-relaxed">
-                        최저임금과 고정비 압박 속에서 사장님들의 어깨는 날이 갈수록 무거워집니다. 반면 체력과 열정을 가진 시니어 구직자 신청자 수는 122만 명으로 48.8%나 폭증했습니다.
-                    </p>
-                    <div class="p-4 rounded-2xl bg-blue-50/80 border border-blue-100 font-bold text-[#3182f6] text-xs md:text-sm">
-                        우리는 왜 이 거대한 두 개의 갈증을 단 한 번도 연결하지 못했을까요?
+                <!-- Card 0: 메인 글 (회사 소개) -->
+                <div class="shuffle-card card-pos-0" onclick="setFrontCard(0)">
+                    <div class="shuffle-card-content space-y-4">
+                        <div class="flex items-center justify-between">
+                            <span class="bg-blue-50 text-[#3182f6] font-extrabold text-xs px-3 py-1 rounded-lg border border-blue-100">&lt;메인 소개글&gt;</span>
+                            <span class="text-[11px] text-slate-400 font-medium"><i class="fa-solid fa-arrows-up-down mr-1"></i>내부 스크롤 가능</span>
+                        </div>
+                        
+                        <h2 class="text-base md:text-lg font-black text-slate-900 leading-snug">
+                            매장을 책임져줄 성실한 사람을 구하는 것은 하늘의 별 따기가 되었습니다.
+                        </h2>
+
+                        <p class="text-xs md:text-sm text-slate-700 leading-relaxed">
+                            치솟는 <strong class="text-slate-900 font-bold">최저임금</strong>과 <strong class="text-slate-900 font-bold">주휴수당</strong>, <strong class="text-slate-900 font-bold">퇴직금</strong>이라는 고정비 압박 속에서 사장님들의 어깨는 날이 갈수록 무거워지고 있습니다.
+                        </p>
+
+                        <p class="text-xs md:text-sm text-slate-700 leading-relaxed">
+                            이런 상황에서, <strong class="text-slate-900 font-bold">체력과 열정</strong>을 가지고 일터를 찾는 <strong class="text-slate-900 font-bold">시니어</strong>들은 해 마다 늘어나고 있습니다.
+                        </p>
+
+                        <!-- 뉴스 인용 통계 박스 -->
+                        <div class="p-3.5 rounded-2xl bg-blue-50/70 border-l-4 border-[#3182f6] text-slate-700 text-xs md:text-sm leading-relaxed space-y-1.5">
+                            <p>(노인 일자리 참여자는 꾸준히 늘고 있다. 2020년 73만7708명이던 참여자는 올해 8월 99만7233명으로 증가했다. 하지만 같은 기간 신청자 수는 82만3754명에서 <strong class="text-[#3182f6]">122만5776명</strong>으로 <strong class="text-[#3182f6]">48.8%</strong>나 폭증했다.)</p>
+                            <p class="text-[11px] text-slate-400 font-medium pt-1">출처 : 뉴스퀘스트(https://www.newsquest.co.kr)</p>
+                        </div>
+
+                        <p class="text-xs md:text-sm text-slate-700 leading-relaxed">
+                            하지만 나이라는 장벽에 부딪혀 <strong class="text-slate-900 font-bold">역량</strong>을 펼칠 기회조차 얻지 못하는 게 오늘날의 현실입니다.
+                        </p>
+
+                        <div class="p-3.5 rounded-2xl bg-blue-50/90 border border-blue-100 font-bold text-[#3182f6] text-xs md:text-sm">
+                            우리는 왜 이 <strong class="text-[#3182f6] font-black">거대한 두 개의 갈증</strong>을 단 한 번도 연결하지 못했을까요?
+                        </div>
+
+                        <ul class="space-y-1.5 text-xs md:text-sm text-slate-800 font-bold pl-1">
+                            <li class="flex items-center gap-2"><i class="fa-solid fa-circle-check text-[#3182f6] text-xs"></i> 단기 근로를 원하는 <span class="underline decoration-blue-200">숙련된 시니어층</span>과,</li>
+                            <li class="flex items-center gap-2"><i class="fa-solid fa-circle-check text-[#3182f6] text-xs"></i> <span class="underline decoration-blue-200">피크타임 단기 인력</span>이 절실한 사장님들.</li>
+                        </ul>
+
+                        <p class="text-xs md:text-sm text-slate-700 leading-relaxed">
+                            이들이 마침내 <strong class="text-slate-900 font-bold">하나</strong>로 뭉치면서 매장의 관리 구조가 완전히 뒤바뀝니다.
+                        </p>
+
+                        <p class="text-xs md:text-sm text-slate-700 leading-relaxed">
+                            실버랩은 단순한 인력 소개 게시판이 아닙니다. <strong class="text-slate-900 font-bold">사람과 매장을 이어주는 다리</strong>이자, 실질적인 인건비 절감을 주도하며, 인력을 사용하면서 발생하는 문제들을 같이 해결하는 <strong class="text-[#3182f6] font-bold">동반자</strong> 입니다.
+                        </p>
+
+                        <p class="text-xs md:text-sm font-bold text-slate-900">
+                            물론, 아무나 실버웍스의 팀원이 될 수는 없습니다.
+                        </p>
+
+                        <p class="text-xs md:text-sm text-slate-700 leading-relaxed">
+                            실버웍스는 구직을 희망하는 시니어분들의 실제 건강 상태, 스마트 디지털 인지 능력, 그리고 <strong class="text-slate-900 font-bold">체계적인 검증을 통과한 '베테랑'</strong>만을 선발합니다.
+                        </p>
+
+                        <p class="text-xs md:text-sm text-slate-700 leading-relaxed">
+                            더불어, '베테랑'의 오랜 인생 경험과 근면함을 존중할 줄 아는 품격 있는 사장님들의 <strong class="text-slate-900 font-bold">매장을 엄선하여 서로를 연결</strong>합니다.
+                        </p>
+
+                        <p class="text-xs md:text-sm font-black text-[#3182f6] pt-2 border-t border-slate-100">
+                            변화에 도전 할 사장님과 준비된 베테랑님의 상생 파트너십. 지금 시작됩니다.
+                        </p>
+
+                        <p class="text-right font-bold text-slate-700 text-xs pt-1">-실버웍스 올림-</p>
                     </div>
                 </div>
 
-                <!-- Card 1: 사장님을 위한 글 + 문의하기 -->
-                <div class="shuffle-card card-pos-1 space-y-4" onclick="setFrontCard(1)">
-                    <span class="bg-blue-50 text-[#3182f6] font-extrabold text-xs px-3 py-1 rounded-lg border border-blue-100">사장님을 위한 글</span>
-                    <h2 class="text-base md:text-xl font-black text-slate-900 leading-snug">
-                        피크타임 2시간, 인건비 절감과 매출 상승을 동시에!
-                    </h2>
-                    <p class="text-xs md:text-sm text-slate-600 leading-relaxed">
-                        최저임금 상승과 무단결근 고민, 2시간만 일할 알바를 구하기 힘들어 4시간씩 더 고용하셨나요? 4단계 검증(문진, 전화, 면접, 체력)을 통과한 베테랑 시니어와 연결되세요.
-                    </p>
-                    
-                    <div class="mt-2 p-4 bg-white/90 rounded-2xl border border-slate-200/80 shadow-sm space-y-2.5" onclick="event.stopPropagation()">
-                        <h4 class="font-bold text-slate-800 text-xs flex items-center gap-1.5">
-                            <i class="fa-solid fa-headset text-[#3182f6]"></i> 사장님 맞춤 전화 상담 신청 (비회원 가능)
-                        </h4>
-                        <form onsubmit="handleInquirySubmit(event)" class="space-y-2 text-xs">
-                            <input type="text" id="inq-name" placeholder="성명 입력" required class="w-full p-2.5 rounded-xl border border-slate-200 bg-slate-50/50 font-medium focus:bg-white focus:border-[#3182f6] focus:outline-none transition-all">
-                            <input type="text" id="inq-store" placeholder="가게명 입력" required class="w-full p-2.5 rounded-xl border border-slate-200 bg-slate-50/50 font-medium focus:bg-white focus:border-[#3182f6] focus:outline-none transition-all">
-                            <input type="tel" id="inq-phone" placeholder="전화번호 (010-0000-0000)" required class="w-full p-2.5 rounded-xl border border-slate-200 bg-slate-50/50 font-medium focus:bg-white focus:border-[#3182f6] focus:outline-none transition-all">
-                            <button type="submit" class="w-full py-2.5 btn-toss font-bold rounded-xl shadow-sm cursor-pointer">문의하기</button>
-                        </form>
+                <!-- Card 1: 사장님을 위한 글 -->
+                <div class="shuffle-card card-pos-1" onclick="setFrontCard(1)">
+                    <div class="shuffle-card-content space-y-4">
+                        <div class="flex items-center justify-between">
+                            <span class="bg-blue-50 text-[#3182f6] font-extrabold text-xs px-3 py-1 rounded-lg border border-blue-100">&lt;사장님을 위한 글&gt;</span>
+                            <span class="text-[11px] text-slate-400 font-medium"><i class="fa-solid fa-arrows-up-down mr-1"></i>스크롤하여 전체 읽기</span>
+                        </div>
+
+                        <!-- 일반적 인식 리스트 -->
+                        <div class="space-y-1.5 p-3.5 bg-slate-50 rounded-2xl border border-slate-200/80 text-xs md:text-sm">
+                            <p class="font-bold text-slate-800">일을 잘 못할 것 같다.</p>
+                            <p class="font-bold text-slate-800">일 하다가 다칠 확률이 높다.</p>
+                            <p class="font-bold text-slate-800">일 하면서 사장인 나의 지시를 잘 따르지 않을 것 같다.</p>
+                        </div>
+
+                        <p class="text-xs md:text-sm text-slate-600 leading-relaxed">
+                            시니어 고용에 대한 사람들의 <strong class="text-slate-900 font-bold">일반적인 인식</strong>입니다. 틀린 이야기는 아닙니다. '알바' 라는 형태의 일자리에 종사하는 대다수가 젊은 세대인걸 생각하면, 시니어층은 이들 보다는 부족한것이 사실입니다.
+                        </p>
+
+                        <div class="p-3.5 bg-blue-50/60 rounded-2xl border border-blue-100 text-xs md:text-sm space-y-1.5">
+                            <strong class="block text-slate-900 font-extrabold">그러나</strong>
+                            <ol class="list-decimal pl-4 space-y-1 font-bold text-slate-800">
+                                <li>점점 오르는 최저임금 [ 2026 10,320 -> 2027 10,900 (예상) ],</li>
+                                <li>이에 당연히 오르는 주휴수당.</li>
+                                <li>mz 세대 알바생들의 짧은 근보기간 및 무단결근.</li>
+                            </ol>
+                        </div>
+
+                        <p class="text-xs md:text-sm text-slate-600 leading-relaxed">
+                            위 세가지만 고려해도 사람들의 일반적인 인식은 틀리지 않지만 맞지도 않습니다. 잠시, <strong class="text-slate-900 font-bold">일반적인 인식을 내려놓고, 실버웍스의 이야기</strong>를 들어보시죠.
+                        </p>
+
+                        <!-- 1. 검증 시스템 -->
+                        <div class="space-y-2 pt-2">
+                            <h3 class="font-black text-[#3182f6] text-sm md:text-base">1. 검증 시스템.</h3>
+                            <p class="text-xs md:text-sm text-slate-600 leading-relaxed">
+                                실버랩은 <strong class="text-slate-900 font-bold">시니어 고용 리스크</strong>를 이해하고 있습니다. 따라서 이 리스크를 <strong class="text-[#3182f6] font-bold">상쇄</strong> 하기 위한 <strong class="text-slate-900 font-bold">검증시스템</strong>을 도입하였습니다.
+                            </p>
+
+                            <!-- 검증 표 -->
+                            <div class="overflow-x-auto my-2">
+                                <table class="w-full text-xs text-left border-collapse border border-slate-200 rounded-xl overflow-hidden">
+                                    <tbody class="divide-y divide-slate-200">
+                                        <tr class="bg-blue-50/70"><td class="p-2 font-black text-[#3182f6] border-r border-slate-200 w-16 text-center">Step1</td><td class="p-2 text-slate-700 font-medium">실버랩 자체제작 질문지를 통해, 구직자분의 건강상태 및 희망업종을 확인.</td></tr>
+                                        <tr><td class="p-2 font-black text-[#3182f6] border-r border-slate-200 text-center">Step2</td><td class="p-2 text-slate-700 font-medium">질문지 답변 내용을 통한 전화상담</td></tr>
+                                        <tr class="bg-blue-50/70"><td class="p-2 font-black text-[#3182f6] border-r border-slate-200 text-center">Step3</td><td class="p-2 text-slate-700 font-medium">오프라인 면접 및 체력테스트</td></tr>
+                                        <tr><td class="p-2 font-black text-[#3182f6] border-r border-slate-200 text-center">Step4</td><td class="p-2 text-slate-700 font-medium">합격시, 보건증 발급 안내 및 간단한 교육 진행.</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            <p class="text-xs md:text-sm font-bold text-slate-800 pt-1">
+                                어디 아프신곳은 없을까?”, “ 일 하는걸 너무 힘들어하는거 아닐까?” 와 같은 고민들은 내려놓으세요. <span class="text-[#3182f6]">실버웍스가 먼저 고민하고, 해결했습니다!</span>
+                            </p>
+                        </div>
+
+                        <!-- 2. 피크타임 -->
+                        <div class="space-y-2 pt-2">
+                            <h3 class="font-black text-[#3182f6] text-sm md:text-base">2. 놓칠 수 없는 피크타임! 손님을 더 많이 받아보세요!</h3>
+                            <p class="text-xs md:text-sm text-slate-600 leading-relaxed">
+                                피크타임은 바쁩니다. 점심시간 그리고 저녁시간 입니다. <strong class="text-slate-900 font-bold">2시간씩 하루에 단 두 번.</strong> 짧은 시간에 <strong class="text-slate-900 font-bold">대다수의 매출</strong>이 이루어 집니다.
+                            </p>
+
+                            <div class="p-3 bg-blue-50/80 rounded-xl border border-blue-100 font-black text-slate-900 text-xs md:text-sm">
+                                "2시간 만" 딱 일하는 알바를 구하기는 어렵습니다.
+                            </div>
+
+                            <p class="text-xs md:text-sm font-bold text-slate-900">사장님, 이제는 걱정하지 마세요.</p>
+                            <p class="text-xs md:text-sm text-slate-600">실버랩은 2시간 정도 일하고 싶어하시는 <strong class="text-[#3182f6] font-bold">베테랑</strong> 인력들을 제공 합니다.</p>
+                            <p class="text-xs md:text-sm font-black text-[#3182f6]">실버웍스를 통해 인건비도 줄이고 매출도 높여보는건 어떨까요?</p>
+                        </div>
+
+                        <!-- 3. 책임을 다하는 실버랩 -->
+                        <div class="space-y-2 pt-2">
+                            <h3 class="font-black text-[#3182f6] text-sm md:text-base">3. 끝까지 책임을 다하는 실버랩</h3>
+                            <p class="text-xs md:text-sm text-slate-600 leading-relaxed">
+                                고용하신 이후, 사장님과 고용하신 직원에게 <strong class="text-slate-900 font-bold underline decoration-[#3182f6] underline-offset-4">주 에 1번 전화</strong>를 드릴 예정입니다. 직원이 <strong class="text-slate-900 font-bold">나이가 있어서</strong> 지적하기 어렵거나, 개선을 요구하고 싶지만 말씀 드리기 어렵다면 저희에게 말씀해 주세요.
+                            </p>
+                            <p class="text-xs md:text-sm font-bold text-slate-800">서로 기분이 상할 일이 없도록, 실버랩이 중간에서 의견을 전달해 드립니다.</p>
+                            <p class="text-xs md:text-sm font-black text-[#3182f6]">더 이상, 직원 관리로 스트레스 받지 마세요!</p>
+                        </div>
+
+                        <!-- 4. 가게 홍보 -->
+                        <div class="space-y-2 pt-2">
+                            <h3 class="font-black text-[#3182f6] text-sm md:text-base">4. 고용 시 자연스럽게 이루어지는 가게 홍보!</h3>
+                            <p class="text-xs md:text-sm font-bold text-slate-900">
+                                시니어분들은 온라인 검색을 통해서 식당을 찾아가는 경우가 드뭅니다.
+                            </p>
+                            <p class="text-xs md:text-sm text-slate-600 leading-relaxed">
+                                갔던 곳을 계속 가시거나, <strong class="text-slate-900 font-bold">입소문</strong>을 통해서, <strong class="text-slate-900 font-bold">지인분</strong>을 통해서 가게를 찾아갑니다.
+                            </p>
+                            <p class="text-xs md:text-sm font-bold text-slate-800">그리고 입소문 만큼 강하고, 빠른 홍보수단은 없죠.</p>
+                            <p class="text-xs md:text-sm text-slate-700 leading-relaxed">
+                                실버랩은 시니어분들의 <strong class="text-slate-900 font-bold">커뮤니티 기능을 수행</strong>. 가게에 대한 <strong class="text-[#3182f6] font-bold underline decoration-blue-200">자연스러운 홍보</strong>가 가능합니다.
+                            </p>
+                        </div>
+
+                        <!-- 사장님 전화 상담 신청 폼 -->
+                        <div class="mt-4 p-4 bg-white/95 rounded-2xl border border-blue-200 shadow-sm space-y-2.5" onclick="event.stopPropagation()">
+                            <h4 class="font-bold text-slate-800 text-xs flex items-center gap-1.5">
+                                <i class="fa-solid fa-headset text-[#3182f6]"></i> 사장님 맞춤 전화 상담 신청 (비회원 가능)
+                            </h4>
+                            <form onsubmit="handleInquirySubmit(event)" class="space-y-2 text-xs">
+                                <input type="text" id="inq-name" placeholder="성명 입력" required class="w-full p-2.5 rounded-xl border border-slate-200 bg-slate-50 font-medium focus:bg-white focus:border-[#3182f6] focus:outline-none transition-all">
+                                <input type="text" id="inq-store" placeholder="가게명 입력" required class="w-full p-2.5 rounded-xl border border-slate-200 bg-slate-50 font-medium focus:bg-white focus:border-[#3182f6] focus:outline-none transition-all">
+                                <input type="tel" id="inq-phone" placeholder="전화번호 (010-0000-0000)" required class="w-full p-2.5 rounded-xl border border-slate-200 bg-slate-50 font-medium focus:bg-white focus:border-[#3182f6] focus:outline-none transition-all">
+                                <button type="submit" class="w-full py-2.5 btn-toss font-bold rounded-xl shadow-sm cursor-pointer">문의하기</button>
+                            </form>
+                        </div>
                     </div>
                 </div>
 
                 <!-- Card 2: 시니어를 위한 글 -->
-                <div class="shuffle-card card-pos-2 space-y-4" onclick="setFrontCard(2)">
-                    <span class="bg-blue-50 text-[#3182f6] font-extrabold text-xs px-3 py-1 rounded-lg border border-blue-100">시니어를 위한 글</span>
-                    <h2 class="text-base md:text-xl font-black text-slate-900 leading-snug">
-                        나이는 가로막는 숫자가 아닌 베테랑의 증명입니다.
-                    </h2>
-                    <p class="text-xs md:text-sm text-slate-600 leading-relaxed">
-                        어디서 일할지 고민되셨나요? 나이 제한 스트레스 없는 일자리를 찾아드립니다. 하루 2~3시간 무리 없이 집중해서 일하고, 남은 하루는 소중한 일상으로 여유롭게 채우세요.
-                    </p>
-                    <div class="p-4 rounded-2xl bg-blue-50/80 border border-blue-100 space-y-1 text-xs">
-                        <strong class="text-[#3182f6] font-bold block">가게 평점 및 정산 안심 시스템</strong>
-                        <p class="text-slate-600">인생 경험과 근면함을 존중하는 엄선된 매장만 매칭하며, 함부로 대하는 사장님은 엄격히 퇴출합니다.</p>
+                <div class="shuffle-card card-pos-2" onclick="setFrontCard(2)">
+                    <div class="shuffle-card-content space-y-4">
+                        <div class="flex items-center justify-between">
+                            <span class="bg-blue-50 text-[#3182f6] font-extrabold text-xs px-3 py-1 rounded-lg border border-blue-100">&lt;시니어를 위한 글&gt;</span>
+                            <span class="text-[11px] text-slate-400 font-medium"><i class="fa-solid fa-book-open mr-1"></i>시니어 가이드</span>
+                        </div>
+
+                        <h2 class="text-base md:text-xl font-black text-slate-900 leading-snug">
+                            일자리에서 나이가 한계가 되지 않는 그날까지.
+                        </h2>
+
+                        <p class="text-sm md:text-base font-bold text-slate-800">
+                            나이는 여러분을 가로막는 숫자가 아닌 <span class="text-[#3182f6] font-extrabold">베테랑의 증명</span> 입니다.
+                        </p>
+
+                        <p class="text-xs md:text-sm text-slate-600 leading-relaxed">
+                            실버웍스는 '베테랑'이라는 이름으로 당신의 가치를 높게 평가합니다.
+                        </p>
+
+                        <div class="p-4 rounded-2xl bg-blue-50/80 border border-blue-100 space-y-2 text-xs md:text-sm my-3">
+                            <strong class="text-slate-900 font-extrabold block text-sm">몸에 무리 없는 시간만 일해주세요.</strong>
+                            <p class="text-slate-700 leading-relaxed">
+                                근로시간이 길지 않기를 원하신다면 <strong class="text-slate-900 font-bold">2~3시간 집중해서 일하고 깔끔하게 퇴근하세요.</strong>
+                            </p>
+                            <p class="text-slate-700 leading-relaxed">
+                                체력에 무리를 주지 않으면서, <strong class="text-[#3182f6] font-bold">남은 하루는 소중한 취미와 일상으로 여유롭게 채울 수 있습니다.</strong>
+                            </p>
+                        </div>
+
+                        <p class="text-xs md:text-sm font-bold text-slate-800 leading-relaxed pt-2">
+                            또한, 실버웍스는 <span class="underline decoration-[#3182f6] underline-offset-4">당신의 오랜 인생 경험과 근면함을 존중하는 매장만을 엄선하여 등록합니다.</span>
+                        </p>
                     </div>
                 </div>
             </div>
@@ -447,13 +700,40 @@
             }
         }
 
+        /* 메인 타이틀 6초 유지 + 1초 모션 = 총 7초 간격 교차 스위칭 스크립트 */
+        function initHeroSlider() {
+            const slide1 = document.getElementById('hero-slide-1');
+            const slide2 = document.getElementById('hero-slide-2');
+            if (!slide1 || !slide2) return;
+
+            let currentSlide = 1;
+
+            setInterval(() => {
+                if (currentSlide === 1) {
+                    slide1.classList.remove('active-slide');
+                    slide1.classList.add('hidden-slide');
+
+                    slide2.classList.remove('hidden-slide');
+                    slide2.classList.add('active-slide');
+                    currentSlide = 2;
+                } else {
+                    slide2.classList.remove('active-slide');
+                    slide2.classList.add('hidden-slide');
+
+                    slide1.classList.remove('hidden-slide');
+                    slide1.classList.add('active-slide');
+                    currentSlide = 1;
+                }
+            }, 7000); // 총 7초 간격 (6초 화면 고정 + 1초 부드러운 모션 전환)
+        }
+
         let cardOrder = [0, 1, 2];
 
         function updateCardClasses() {
             const cards = document.querySelectorAll('.shuffle-card');
             cards.forEach((card, index) => {
                 const posIndex = cardOrder.indexOf(index);
-                card.className = `shuffle-card card-pos-${posIndex} space-y-4`;
+                card.className = `shuffle-card card-pos-${posIndex}`;
             });
         }
 
@@ -570,7 +850,10 @@
             location.reload();
         }
 
-        document.addEventListener('DOMContentLoaded', () => { updateHeaderUI(); });
+        document.addEventListener('DOMContentLoaded', () => { 
+            updateHeaderUI(); 
+            initHeroSlider();
+        });
     </script>
 </body>
 </html>
