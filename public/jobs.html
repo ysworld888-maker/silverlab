@@ -34,15 +34,33 @@
     </header>
 
     <main class="max-w-6xl mx-auto px-5 py-10 flex-1 w-full space-y-8">
-        <div class="bg-white rounded-3xl p-6 border border-sky-100 shadow-sm space-y-4">
-            <h1 class="text-2xl font-black text-slate-800">맞춤 피크타임 일자리 찾기</h1>
-            <p class="text-xs text-slate-500">원하는 초단기(2~3시간) 공고를 조회하고 실시간 지원하세요.</p>
+        <div class="bg-white rounded-3xl p-6 md:p-8 border border-sky-100 shadow-sm space-y-5">
+            <div>
+                <h1 class="text-2xl font-black text-slate-800">맞춤 피크타임 일자리 찾기</h1>
+                <p class="text-xs text-slate-500 mt-1">원하는 지역 버튼을 클릭하여 초단기(2~3시간) 공고를 빠르게 조회하세요.</p>
+            </div>
+
+            <!-- 한국 지도 스타일 지역별 필터 버튼 (신규 추가) -->
+            <div class="space-y-2 pt-2 border-t border-sky-50">
+                <span class="text-xs font-bold text-slate-400 block"><i class="fa-solid fa-map-location-dot text-emerald-500 mr-1"></i> 지역별 빠른 필터</span>
+                <div class="flex flex-wrap gap-2" id="region-filter-buttons">
+                    <button onclick="filterByRegion('전체')" class="region-btn px-3 py-1.5 rounded-xl text-xs font-bold bg-sky-500 text-white shadow-sm transition">전체보기</button>
+                    <button onclick="filterByRegion('성남시')" class="region-btn px-3 py-1.5 rounded-xl text-xs font-bold bg-slate-100 text-slate-600 hover:bg-emerald-50 hover:text-emerald-700 transition">성남시</button>
+                    <button onclick="filterByRegion('서울')" class="region-btn px-3 py-1.5 rounded-xl text-xs font-bold bg-slate-100 text-slate-600 hover:bg-emerald-50 hover:text-emerald-700 transition">서울</button>
+                    <button onclick="filterByRegion('경기')" class="region-btn px-3 py-1.5 rounded-xl text-xs font-bold bg-slate-100 text-slate-600 hover:bg-emerald-50 hover:text-emerald-700 transition">경기도</button>
+                    <button onclick="filterByRegion('인천')" class="region-btn px-3 py-1.5 rounded-xl text-xs font-bold bg-slate-100 text-slate-600 hover:bg-emerald-50 hover:text-emerald-700 transition">인천</button>
+                    <button onclick="filterByRegion('부산')" class="region-btn px-3 py-1.5 rounded-xl text-xs font-bold bg-slate-100 text-slate-600 hover:bg-emerald-50 hover:text-emerald-700 transition">부산</button>
+                </div>
+            </div>
         </div>
 
         <div id="jobs-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5"></div>
     </main>
 
     <script>
+        let allJobs = [];
+        let currentRegion = '전체';
+
         function checkPermission() {
             const user = JSON.parse(localStorage.getItem('sw_user') || 'null');
             if (user && user.role === 'employer') {
@@ -100,26 +118,50 @@
             location.href = '/index.html';
         }
 
-        async function renderJobs() {
+        async function loadJobs() {
             const jobsRes = await fetch('/api/jobs').then(r => r.json());
-            const jobs = jobsRes.jobs || [];
-            const container = document.getElementById('jobs-container');
+            allJobs = jobsRes.jobs || [];
+            renderFilteredJobs();
+        }
 
-            if (jobs.length === 0) {
+        function filterByRegion(region) {
+            currentRegion = region;
+            
+            document.querySelectorAll('.region-btn').forEach(btn => {
+                if (btn.innerText.includes(region)) {
+                    btn.className = "region-btn px-3 py-1.5 rounded-xl text-xs font-bold bg-sky-500 text-white shadow-sm transition";
+                } else {
+                    btn.className = "region-btn px-3 py-1.5 rounded-xl text-xs font-bold bg-slate-100 text-slate-600 hover:bg-emerald-50 hover:text-emerald-700 transition";
+                }
+            });
+
+            renderFilteredJobs();
+        }
+
+        function renderFilteredJobs() {
+            const container = document.getElementById('jobs-container');
+            let filtered = allJobs;
+
+            if (currentRegion !== '전체') {
+                filtered = allJobs.filter(j => j.storeName.includes(currentRegion) || j.title.includes(currentRegion) || (j.category && j.category.includes(currentRegion)));
+            }
+
+            if (filtered.length === 0) {
                 container.innerHTML = `
                     <div class="col-span-full py-16 text-center text-slate-400 bg-white rounded-3xl border border-sky-100">
                         <i class="fa-solid fa-circle-exclamation text-3xl mb-2 text-sky-300"></i>
-                        <p class="text-xs font-bold">현재 등록된 구인 공고가 없습니다.</p>
+                        <p class="text-xs font-bold">'${currentRegion}' 지역에 등록된 구인 공고가 없습니다.</p>
                     </div>`;
                 return;
             }
 
-            container.innerHTML = jobs.map(j => `
+            container.innerHTML = filtered.map(j => `
                 <div class="bg-white rounded-3xl p-6 border border-sky-100 shadow-sm flex flex-col justify-between space-y-4">
                     <div class="space-y-2">
-                        <span class="bg-sky-50 text-sky-600 text-[11px] font-bold px-2.5 py-1 rounded-lg">${j.category}</span>
+                        <span class="bg-sky-50 text-sky-600 text-[11px] font-bold px-2.5 py-1 rounded-lg">${j.category || '일반'}</span>
                         <h3 class="text-base font-extrabold text-slate-800">${j.title}</h3>
-                        <p class="text-xs text-slate-500">일시: ${j.date} ${j.time}</p>
+                        <p class="text-xs text-slate-500"><i class="fa-solid fa-store mr-1"></i> 매장: ${j.storeName}</p>
+                        <p class="text-xs text-slate-500"><i class="fa-solid fa-clock mr-1"></i> ${j.date} ${j.time}</p>
                     </div>
                     <div class="pt-3 border-t border-slate-100 flex justify-between items-center">
                         <strong class="text-base font-black text-sky-600">${parseInt(j.pay).toLocaleString()}원</strong>
@@ -132,7 +174,7 @@
         document.addEventListener('DOMContentLoaded', () => {
             checkPermission();
             updateHeaderUI();
-            renderJobs();
+            loadJobs();
         });
     </script>
 </body>

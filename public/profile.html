@@ -58,9 +58,9 @@
 
         <div id="role-dashboard" class="space-y-6"></div>
 
-        <!-- 고급진 수수료 납부 명세서 카드 구역 (빨간 직사각형 위치) -->
+        <!-- 고급진 수수료 납부 명세서 카드 구역 -->
         <div id="invoice-section" class="hidden space-y-4">
-            <h2 class="text-base font-black text-slate-800"><i class="fa-solid fa-file-invoice-dollar text-sky-500 mr-2"></i>실버웍스 플랫폼 수수료 납부 명세서</h2>
+            <h2 class="text-base font-black text-slate-800"><i class="fa-solid fa-file-invoice-dollar text-emerald-500 mr-2"></i>실버웍스 플랫폼 수수료 납부 명세서</h2>
             <div id="invoice-card-container" class="space-y-4"></div>
         </div>
     </main>
@@ -75,7 +75,7 @@
             <input type="hidden" id="cancel-job-id">
             <input type="hidden" id="cancel-senior-id">
             <p class="text-xs text-slate-600 leading-relaxed">
-                채용 취소를 실행하시면 1순위 지원자의 채용이 취소되며, <strong>2순위(3순위) 지원자에게 승계 채용 알림이 발송</strong>됩니다. (2순위 시급당 +1,000원, 3순위 +2,000원 추가 가산)
+                채용 취소를 실행하시면 1순위 지원자의 채용이 취소되며, <strong>2순위(3순위) 지원자에게 자동 승계 알림이 발송</strong>됩니다. (2순위 시급당 +1,000원, 3순위 +2,000원 추가 가산)
             </p>
             <div class="p-3.5 bg-rose-50 rounded-xl border border-rose-100 flex items-start gap-2 text-xs">
                 <input type="checkbox" id="cancel-agree-check" class="mt-0.5 rounded text-rose-600">
@@ -114,7 +114,7 @@
         </div>
     </div>
 
-    <!-- Settlement Modal -->
+    <!-- Settlement Modal (정산 신청 완료 문구 적용) -->
     <div id="subModal" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm hidden z-50 flex items-center justify-center p-4">
         <div class="bg-white rounded-3xl max-w-md w-full p-7 space-y-5 shadow-2xl">
             <div class="flex justify-between items-center border-b border-sky-100 pb-3">
@@ -140,7 +140,7 @@
                     <label class="block font-bold text-slate-700 mb-1">정산 요청 금액 (P)</label>
                     <input type="number" id="settle-amount" placeholder="0" required class="w-full p-3.5 rounded-xl input-sky font-bold text-sky-600">
                 </div>
-                <button type="submit" class="w-full py-3.5 btn-sky font-bold rounded-xl shadow">정산 신청 제출</button>
+                <button type="submit" class="w-full py-3.5 btn-sky font-bold rounded-xl shadow">정산 신청 완료 (평일 기준 1일 내 입금)</button>
             </form>
         </div>
     </div>
@@ -175,12 +175,10 @@
             if (freshUser.role === 'senior') {
                 const surveysRes = await fetch('/api/surveys').then(r => r.json());
                 const mySurvey = (surveysRes.surveys || []).find(s => s.seniorId === freshUser.id);
-
                 const jobsRes = await fetch('/api/jobs').then(r => r.json());
                 const applied = (jobsRes.jobs || []).filter(j => j.candidates && j.candidates.some(c => c.seniorId === freshUser.id));
 
                 let html = '';
-
                 if (mySurvey) {
                     html += `
                         <div class="bg-white rounded-3xl p-6 md:p-8 border border-sky-100 shadow-sm space-y-4">
@@ -202,7 +200,6 @@
                     <div class="bg-white rounded-3xl p-6 md:p-8 border border-sky-100 shadow-sm space-y-4">
                         <h2 class="text-base font-black text-slate-800 border-b border-sky-100 pb-3"><i class="fa-solid fa-briefcase text-sky-500 mr-2"></i>내 구직 신청 및 채용 현황</h2>
                 `;
-
                 if (applied.length === 0) {
                     html += `<p class="text-xs text-slate-400 text-center py-8">아직 지원하신 피크타임 일자리가 없습니다.</p>`;
                 } else {
@@ -224,7 +221,6 @@
                 document.getElementById('invoice-section').classList.add('hidden');
 
             } else {
-                // Employer Profile
                 dashboard.innerHTML = '';
                 const jobsRes = await fetch('/api/jobs').then(r => r.json());
                 const myJobs = (jobsRes.jobs || []).filter(j => j.employerId === freshUser.id);
@@ -233,7 +229,6 @@
                     <div class="bg-white rounded-3xl p-6 md:p-8 border border-sky-100 shadow-sm space-y-6">
                         <h2 class="text-base font-black text-slate-800 border-b border-sky-100 pb-3"><i class="fa-solid fa-users text-sky-500 mr-2"></i>지원자 순위 지정 / 채용확정 / 채용취소 / 포인트지급</h2>
                 `;
-
                 if (myJobs.length === 0) {
                     html += `<p class="text-xs text-slate-400 text-center py-8">등록하신 구인 공고가 없습니다.</p>`;
                 } else {
@@ -298,7 +293,7 @@
                             <p class="text-xs text-slate-400">매장명: ${inv.storeName} | 발행일시: ${inv.date}</p>
                         </div>
                         <div class="text-right">
-                            <span class="text-xs text-slate-400 block">청구 금액 (임금 + 수수료)</span>
+                            <span class="text-xs text-slate-400 block">총 청구 금액 (임금 + 수수료)</span>
                             <strong class="text-xl font-black text-sky-400">${inv.amount.toLocaleString()}원</strong>
                         </div>
                     </div>
@@ -474,7 +469,7 @@
             }).then(r => r.json());
 
             if (res.success) {
-                alert(`[정산 신청 완료]\n\n${bank} ${account}\n요청 금액: ${amount.toLocaleString()}P\n\n관리자 확인 후 포인트가 안전하게 최종 차감됩니다.`);
+                alert(`[정산 신청 완료]\n\n${bank} ${account}\n요청 금액: ${amount.toLocaleString()}P\n\n(평일 기준 1일 내 입금) 관리자 확인 후 최종 차감됩니다.`);
                 closeSubModal();
                 renderProfile();
             } else {
