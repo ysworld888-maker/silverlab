@@ -4,6 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>silverworks - 세상을 은빛지혜로 채우다</title>
+    
+    <!-- 1. 브라우저 탭 파비콘 연결 -->
+    <link rel="icon" href="/logo.png" type="image/png">
+
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
@@ -160,11 +164,9 @@
     <header class="sticky top-0 z-50 bg-white/80 backdrop-blur-xl border-b border-slate-200/60 shadow-sm transition-all">
         <div class="max-w-6xl mx-auto px-5 h-16 flex items-center justify-between">
             <a href="/index.html" class="flex items-center gap-2.5 group">
-                <div class="p-1.5 rounded-xl bg-blue-50 text-[#3182f6] group-hover:scale-105 transition-transform">
-                    <svg class="w-8 h-8" viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="8" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M 14 58 C 28 72 44 72 58 48 C 72 24 88 18 95 35" />
-                        <path d="M 48 70 C 62 82 78 78 86 60" />
-                    </svg>
+                <!-- 2. 상단 헤더 로고 이미지 적용 부분 -->
+                <div class="p-1.5 rounded-xl bg-blue-50 flex items-center justify-center group-hover:scale-105 transition-transform">
+                    <img src="/logo.png" alt="silverworks logo" class="w-8 h-8 object-contain">
                 </div>
                 <span class="text-xl font-extrabold tracking-tight text-slate-900">silverworks <span class="text-xs px-2 py-0.5 rounded-full bg-[#3182f6] text-white font-bold">PRO</span></span>
             </a>
