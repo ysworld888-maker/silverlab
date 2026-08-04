@@ -1,7 +1,15 @@
 const express = require('express');
 const path = require('path');
+const { Pool } = require('pg'); // <-- 1. pg 모듈 불러오기 추가
+
 const app = express();
 const PORT = process.env.PORT || 3000;
+
+// <-- 2. Render PostgreSQL DB 연결 설정 추가
+const pool = new Pool({
+  connectionString: process.env.DATABASE_URL,
+  ssl: process.env.DATABASE_URL ? { rejectUnauthorized: false } : false
+});
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -10,7 +18,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 // In-Memory Data Storage
 let usersData = [
   { id: 'silverworks', pw: 'silverworks1@', name: '최고관리자', role: 'admin', approved: true, points: 0, isSubscribed: true, hasSurvey: true, isVeteran: true },
-  { id: 'admin', pw: '1234', name: '최고관리자(구)', role: 'admin', approved: true, points: 0, isSubscribed: true, hasSurvey: true, isVeteran: true }
+  { id: 'admin', pw: '12345678', name: '최고관리자(구)', role: 'admin', approved: true, points: 0, isSubscribed: true, hasSurvey: true, isVeteran: true }
 ];
 let jobsData = [];
 let surveysData = [];
