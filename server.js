@@ -7,7 +7,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, 'public')));
 
-// In-Memory Data Storage (무료 배포 환경 무오류 최적화)
+// In-Memory Data Storage
 let usersData = [
   { id: 'silverworks', pw: 'silverworks1@', name: '최고관리자', role: 'admin', approved: true, points: 0, isSubscribed: true, hasSurvey: true, isVeteran: true },
   { id: 'admin', pw: '1234', name: '최고관리자(구)', role: 'admin', approved: true, points: 0, isSubscribed: true, hasSurvey: true, isVeteran: true }
@@ -20,37 +20,22 @@ let invoicesData = [];
 let liveLogsData = [];
 let chatInquiriesData = [];
 
-// Helper: 라이브 활동 피드 로그 저장
 function addLiveLog(type, message) {
   const timestamp = new Date().toLocaleString('ko-KR');
   liveLogsData.unshift({ id: 'log-' + Date.now(), type, message, timestamp });
   if (liveLogsData.length > 50) liveLogsData.pop();
 }
 
-// 초기 시스템 가동 로그
 addLiveLog('SYSTEM', '실버웍스 플랫폼 서버가 정상 가동되었습니다.');
 
-// ----------------------------------------------------
 // Auth & Users API
-// ----------------------------------------------------
 app.post('/api/signup', (req, res) => {
   const { id, pw, name, phone, role } = req.body;
+  if (!id || !pw || !name || !role) return res.status(400).json({ success: false, message: '필수 회원가입 정보가 누락되었습니다.' });
+  if (pw.length < 8) return res.status(400).json({ success: false, message: '비밀번호는 최소 8자리 이상이어야 합니다.' });
+  if (usersData.find(u => u.id === id)) return res.status(400).json({ success: false, message: '이미 존재하는 아이디입니다.' });
 
-  if (!id || !pw || !name || !role) {
-    return res.status(400).json({ success: false, message: '필수 회원가입 정보가 누락되었습니다.' });
-  }
-
-  if (pw.length < 8) {
-    return res.status(400).json({ success: false, message: '비밀번호는 최소 8자리 이상이어야 합니다.' });
-  }
-
-  if (usersData.find(u => u.id === id)) {
-    return res.status(400).json({ success: false, message: '이미 존재하는 아이디입니다.' });
-  }
-
-  const newUser = {
-    id, pw, name, phone: phone || '', role, approved: false, points: 0, isSubscribed: false, subRequested: false, hasSurvey: false, isVeteran: false
-  };
+  const newUser = { id, pw, name, phone: phone || '', role, approved: false, points: 0, isSubscribed: false, subRequested: false, hasSurvey: false, isVeteran: false };
   usersData.push(newUser);
 
   notificationsData.unshift({
@@ -68,8 +53,6 @@ app.post('/api/signup', (req, res) => {
 
 app.post('/api/login', (req, res) => {
   const { id, pw, role } = req.body;
-
-  // 관리자 마스터 계정 바로 처리
   if ((id === 'silverworks' && pw === 'silverworks1@') || (id === 'admin' && pw === '1234')) {
     const adminUser = usersData.find(u => u.id === id) || { id, pw, name: '최고관리자', role: 'admin', approved: true, points: 0, isSubscribed: true, hasSurvey: true, isVeteran: true };
     return res.json({ success: true, user: adminUser });
@@ -84,9 +67,7 @@ app.post('/api/login', (req, res) => {
   res.json({ success: true, user });
 });
 
-app.get('/api/users', (req, res) => {
-  res.json({ success: true, users: usersData });
-});
+app.get('/api/users', (req, res) => res.json({ success: true, users: usersData }));
 
 app.post('/api/users/:id/approve', (req, res) => {
   const user = usersData.find(u => u.id === req.params.id);
@@ -192,17 +173,8 @@ app.delete('/api/users/:id', (req, res) => {
   res.json({ success: true });
 });
 
-// ----------------------------------------------------
-// Live Log & 1:1 Live Chat API
-// ----------------------------------------------------
-app.get('/api/live-logs', (req, res) => {
-  res.json({ success: true, logs: liveLogsData });
-});
-
-app.get('/api/chat-inquiries', (req, res) => {
-  res.json({ success: true, chats: chatInquiriesData });
-});
-
+app.get('/api/live-logs', (req, res) => res.json({ success: true, logs: liveLogsData }));
+app.get('/api/chat-inquiries', (req, res) => res.json({ success: true, chats: chatInquiriesData }));
 app.post('/api/chat-inquiries', (req, res) => {
   const { userId, userName, sender, message } = req.body;
   const timestamp = new Date().toLocaleString('ko-KR');
@@ -212,13 +184,7 @@ app.post('/api/chat-inquiries', (req, res) => {
   res.json({ success: true });
 });
 
-// ----------------------------------------------------
-// Invoices (수수료 명세서) API
-// ----------------------------------------------------
-app.get('/api/invoices', (req, res) => {
-  res.json({ success: true, invoices: invoicesData });
-});
-
+app.get('/api/invoices', (req, res) => res.json({ success: true, invoices: invoicesData }));
 app.get('/api/invoices/:employerId', (req, res) => {
   const list = invoicesData.filter(i => i.employerId === req.params.employerId && !i.isFullyConfirmed);
   res.json({ success: true, invoices: list });
@@ -272,16 +238,10 @@ app.post('/api/invoices/admin-approve-cancel', (req, res) => {
   res.json({ success: true });
 });
 
-// ----------------------------------------------------
-// Jobs API
-// ----------------------------------------------------
-app.get('/api/jobs', (req, res) => {
-  res.json({ success: true, jobs: jobsData });
-});
+app.get('/api/jobs', (req, res) => res.json({ success: true, jobs: jobsData }));
 
 app.post('/api/jobs', (req, res) => {
   const { employerId, storeName, title, category, date, time, pay, isPeak, regionMain, regionSub, address, description } = req.body;
-
   const employer = usersData.find(u => u.id === employerId);
   if (isPeak && (!employer || !employer.isSubscribed)) {
     return res.status(403).json({ success: false, message: '상단 고정 공고는 구독 회원 사장님만 이용 가능합니다.' });
@@ -418,6 +378,7 @@ app.post('/api/jobs/:id/cancel-hire', (req, res) => {
   res.json({ success: true });
 });
 
+// 명세서 금액 계산 공식 전면 수정: 기본일당 + 수수료 + 부가가치세 = 최종 청구액
 app.post('/api/jobs/:id/pay-points', (req, res) => {
   const { seniorId, basePay } = req.body;
   const job = jobsData.find(j => j.id === req.params.id);
@@ -431,7 +392,8 @@ app.post('/api/jobs/:id/pay-points', (req, res) => {
     const feeRate = employer && employer.isSubscribed ? 0.05 : 0.10;
     const feeAmount = Math.round(payAmount * feeRate);
     const vat = Math.round(feeAmount * 0.10);
-    const totalAmount = feeAmount + vat;
+    // 수정: 기본일당 + 수수료 + VAT = 최종 청구액
+    const totalAmount = payAmount + feeAmount + vat;
 
     invoicesData.unshift({
       id: 'inv-' + Date.now(),
@@ -464,7 +426,7 @@ app.post('/api/jobs/:id/pay-points', (req, res) => {
       id: 'noti-' + Date.now() + '-2',
       targetUserId: job.employerId,
       title: '[수수료 명세서 발행]',
-      content: `'${job.title}' 채용에 따른 수수료 명세서(청구액 ${totalAmount.toLocaleString()}원)가 발행되었습니다. (사장님이 시니어에게 직접 현금을 지급하지 않아도 플랫폼을 통해 안전 정산됩니다)`,
+      content: `'${job.title}' 채용에 따른 수수료 명세서(최종 청구액 ${totalAmount.toLocaleString()}원)가 발행되었습니다. (사장님이 시니어에게 직접 현금을 지급하지 않아도 플랫폼을 통해 안전 정산됩니다)`,
       date: new Date().toLocaleString('ko-KR'),
       isRead: false
     });
@@ -474,9 +436,6 @@ app.post('/api/jobs/:id/pay-points', (req, res) => {
   res.json({ success: true });
 });
 
-// ----------------------------------------------------
-// Surveys & Settlements API
-// ----------------------------------------------------
 app.get('/api/surveys', (req, res) => res.json({ success: true, surveys: surveysData }));
 app.post('/api/surveys', (req, res) => {
   const { seniorId, q1, q2, q3 } = req.body;
@@ -519,9 +478,6 @@ app.post('/api/settlements/:id/complete', (req, res) => {
   res.json({ success: true });
 });
 
-// ----------------------------------------------------
-// Notifications API
-// ----------------------------------------------------
 app.get('/api/notifications/:userId', (req, res) => {
   const userNotis = notificationsData.filter(n => n.targetUserId === req.params.userId);
   const hasUnread = userNotis.some(n => !n.isRead);
@@ -539,9 +495,6 @@ app.delete('/api/notifications/item/:id', (req, res) => {
   res.json({ success: true });
 });
 
-// ----------------------------------------------------
-// 라우터 및 서버 실행
-// ----------------------------------------------------
 const pages = ['index', 'jobs', 'job-detail', 'senior-apply', 'employer', 'admin', 'notifications', 'login', 'profile'];
 pages.forEach(page => app.get(`/${page}`, (req, res) => res.sendFile(path.join(__dirname, 'public', `${page}.html`))));
 app.get('/', (req, res) => res.sendFile(path.join(__dirname, 'public', 'index.html')));

@@ -37,7 +37,6 @@
     </header>
 
     <main class="max-w-4xl mx-auto px-5 py-10 flex-1 w-full space-y-8">
-        <!-- 프로필 헤더 카드 -->
         <div class="glass-card rounded-3xl p-6 md:p-8 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
             <div class="flex items-center gap-4">
                 <div class="w-16 h-16 rounded-full bg-blue-50 text-[#3182f6] flex items-center justify-center text-2xl font-black border border-blue-100">
@@ -62,7 +61,6 @@
             </div>
         </div>
 
-        <!-- 고객센터 직통 문의 배너 -->
         <div class="glass-card p-5 rounded-3xl flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 border-l-8 border-l-[#3182f6]">
             <div class="space-y-0.5">
                 <strong class="text-sm font-bold text-slate-900 flex items-center gap-2">
@@ -80,17 +78,14 @@
             </div>
         </div>
 
-        <!-- 역할별 대시보드 -->
         <div id="role-dashboard" class="space-y-6"></div>
 
-        <!-- 사장님 명세서 섹션 -->
         <div id="invoice-section" class="hidden space-y-4">
             <h2 class="text-base font-black text-slate-900"><i class="fa-solid fa-file-invoice-dollar text-[#3182f6] mr-2"></i>실버웍스 플랫폼 수수료 납부 명세서</h2>
             <div id="invoice-card-container" class="space-y-4"></div>
         </div>
     </main>
 
-    <!-- 1:1 라이브 채팅 문의 모달 -->
     <div id="chatModal" class="fixed inset-0 bg-slate-900/40 backdrop-blur-md hidden z-50 flex items-center justify-center p-4">
         <div class="bg-white/95 rounded-3xl max-w-md w-full p-6 space-y-4 shadow-2xl border border-white/80">
             <div class="flex justify-between items-center border-b border-slate-100 pb-3">
@@ -105,7 +100,6 @@
         </div>
     </div>
 
-    <!-- 채용 취소 모달 -->
     <div id="cancelHireModal" class="fixed inset-0 bg-slate-900/40 backdrop-blur-md hidden z-50 flex items-center justify-center p-4">
         <div class="bg-white/95 rounded-3xl max-w-md w-full p-7 space-y-4 shadow-2xl border border-white/80">
             <div class="flex justify-between items-center border-b border-slate-100 pb-3">
@@ -129,7 +123,6 @@
         </div>
     </div>
 
-    <!-- 포인트 지급 확인 모달 -->
     <div id="payPointModal" class="fixed inset-0 bg-slate-900/40 backdrop-blur-md hidden z-50 flex items-center justify-center p-4">
         <div class="bg-white/95 rounded-3xl max-w-md w-full p-7 space-y-4 shadow-2xl border border-white/80">
             <div class="flex justify-between items-center border-b border-slate-100 pb-3">
@@ -154,7 +147,6 @@
         </div>
     </div>
 
-    <!-- 정산 모달 (10개 시중 은행 확정) -->
     <div id="subModal" class="fixed inset-0 bg-slate-900/40 backdrop-blur-md hidden z-50 flex items-center justify-center p-4">
         <div class="bg-white/95 rounded-3xl max-w-md w-full p-7 space-y-5 shadow-2xl border border-white/80">
             <div class="flex justify-between items-center border-b border-slate-100 pb-3">
@@ -200,7 +192,8 @@
             }
 
             const usersRes = await fetch('/api/users').then(r => r.json());
-            const freshUser = (usersRes.users || []).find(u => u.id === user.id) || user;
+            const allUsers = usersRes.users || [];
+            const freshUser = allUsers.find(u => u.id === user.id) || user;
             localStorage.setItem('sw_user', JSON.stringify(freshUser));
 
             document.getElementById('profile-name').innerText = freshUser.name;
@@ -287,25 +280,34 @@
                             <div class="space-y-2">
                                 <span class="font-bold text-slate-500">지원자 명단</span>
                                 ${(j.candidates || []).length === 0 ? '<p class="text-slate-400 py-2">지원자가 아직 없습니다.</p>' : 
-                                    j.candidates.map(c => `
-                                        <div class="p-3 rounded-xl bg-white border border-slate-200 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
-                                            <div>
-                                                <strong class="text-slate-900 font-bold">${c.name}</strong> (${c.phone || '연락처 미입력'})
-                                                <span class="text-[11px] text-[#3182f6] block pt-0.5">${c.status}</span>
+                                    j.candidates.map(c => {
+                                        const candUser = allUsers.find(u => u.id === c.seniorId);
+                                        const isVet = candUser && candUser.isVeteran;
+                                        return `
+                                            <div class="p-3 rounded-xl bg-white border border-slate-200 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
+                                                <div>
+                                                    <div class="flex items-center gap-1.5">
+                                                        <strong class="text-slate-900 font-bold">${c.name}</strong>
+                                                        <span class="text-slate-400 text-[11px]">(${c.seniorId})</span>
+                                                        ${isVet ? '<span class="bg-amber-100 text-amber-800 border border-amber-300 font-extrabold text-[10px] px-2 py-0.5 rounded-md">★ 인증 베테랑</span>' : ''}
+                                                    </div>
+                                                    <p class="text-slate-500 text-[11px] mt-0.5">연락처: ${c.phone || '미입력'}</p>
+                                                    <span class="text-[11px] text-[#3182f6] font-bold block pt-0.5">${c.status}</span>
+                                                </div>
+                                                <div class="flex items-center gap-1.5 flex-wrap">
+                                                    <select onchange="assignRank('${j.id}', '${c.seniorId}', this.value)" class="p-1.5 rounded border border-slate-200 text-[11px]">
+                                                        <option value="">순위 선택</option>
+                                                        <option value="1순위" ${c.rank === '1순위' ? 'selected' : ''}>1순위</option>
+                                                        <option value="2순위" ${c.rank === '2순위' ? 'selected' : ''}>2순위</option>
+                                                        <option value="3순위" ${c.rank === '3순위' ? 'selected' : ''}>3순위</option>
+                                                    </select>
+                                                    <button onclick="hireCandidate('${j.id}', '${c.seniorId}')" class="btn-toss px-2.5 py-1.5 rounded-lg font-bold text-[11px]">채용확정</button>
+                                                    <button onclick="openCancelModal('${j.id}', '${c.seniorId}')" class="bg-rose-100 text-rose-600 px-2.5 py-1.5 rounded-lg font-bold text-[11px] hover:bg-rose-200">채용취소</button>
+                                                    <button onclick="openPayModal('${j.id}', '${c.seniorId}', ${j.pay})" class="bg-[#3182f6] text-white px-2.5 py-1.5 rounded-lg font-bold text-[11px] hover:bg-[#1b64da]">포인트지급</button>
+                                                </div>
                                             </div>
-                                            <div class="flex items-center gap-1.5 flex-wrap">
-                                                <select onchange="assignRank('${j.id}', '${c.seniorId}', this.value)" class="p-1.5 rounded border border-slate-200 text-[11px]">
-                                                    <option value="">순위 선택</option>
-                                                    <option value="1순위" ${c.rank === '1순위' ? 'selected' : ''}>1순위</option>
-                                                    <option value="2순위" ${c.rank === '2순위' ? 'selected' : ''}>2순위</option>
-                                                    <option value="3순위" ${c.rank === '3순위' ? 'selected' : ''}>3순위</option>
-                                                </select>
-                                                <button onclick="hireCandidate('${j.id}', '${c.seniorId}')" class="btn-toss px-2.5 py-1.5 rounded-lg font-bold text-[11px]">채용확정</button>
-                                                <button onclick="openCancelModal('${j.id}', '${c.seniorId}')" class="bg-rose-100 text-rose-600 px-2.5 py-1.5 rounded-lg font-bold text-[11px] hover:bg-rose-200">채용취소</button>
-                                                <button onclick="openPayModal('${j.id}', '${c.seniorId}', ${j.pay})" class="bg-[#3182f6] text-white px-2.5 py-1.5 rounded-lg font-bold text-[11px] hover:bg-[#1b64da]">포인트지급</button>
-                                            </div>
-                                        </div>
-                                    `).join('')
+                                        `;
+                                    }).join('')
                                 }
                             </div>
                         </div>
@@ -514,7 +516,6 @@
             location.href = '/index.html';
         }
 
-        // 1:1 라이브 채팅 함수
         function openChatModal() {
             document.getElementById('chatModal').classList.remove('hidden');
             loadChatHistory();
