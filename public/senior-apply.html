@@ -146,11 +146,9 @@
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
                         seniorId: user.id,
-                        name: answers.name || user.name,
-                        phone: answers.phone || user.phone,
-                        location: answers.location,
-                        stairs: answers.stairs,
-                        answers,
+                        q1: answers.q1,
+                        q2: answers.name,
+                        q3: answers.location,
                         date: new Date().toLocaleString()
                     })
                 });
@@ -180,7 +178,7 @@
             }
 
             const usersRes = await fetch('/api/users').then(r => r.json());
-            const freshUser = usersRes.users.find(u => u.id === user.id) || user;
+            const freshUser = (usersRes.users || []).find(u => u.id === user.id) || user;
             localStorage.setItem('sw_user', JSON.stringify(freshUser));
 
             const notiRes = await fetch(`/api/notifications/${user.id}`).then(r => r.json());

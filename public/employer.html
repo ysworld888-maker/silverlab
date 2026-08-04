@@ -47,9 +47,9 @@
                     <span class="text-xs font-bold text-slate-400">구독 회원 우대 혜택</span>
                     <span id="sub-badge-area"></span>
                 </div>
-                <h3 class="text-xl font-black text-slate-900">공고 상단 고정 권한, 수수료 절반</h3>
-                <p class="text-xs text-slate-500">구독 회원만 상단 고정 피크 공고 등록이 가능합니다.</p>
-                <button onclick="openSubscribeModal()" class="btn-toss text-xs font-bold px-4 py-2 rounded-xl shadow-sm mt-2">구독하기</button>
+                <h3 class="text-xl font-black text-slate-900">공고 상단 고정, 수수료 절반 (5%)</h3>
+                <p class="text-xs text-slate-500">월 20,000원 정기 구독 회원만 피크 공고 상단 고정이 가능합니다.</p>
+                <button onclick="openSubscribeModal()" class="btn-toss text-xs font-bold px-4 py-2 rounded-xl shadow-sm mt-2">구독 신청하기</button>
             </div>
             <div class="glass-card rounded-3xl p-6 space-y-2">
                 <span class="text-xs font-bold text-slate-400">등록한 구인 공고</span>
@@ -72,7 +72,7 @@
         </div>
     </main>
 
-    <!-- Create Job Modal -->
+    <!-- Create Job Modal (업종 6종 확장 내장) -->
     <div id="createJobModal" class="fixed inset-0 bg-slate-900/40 backdrop-blur-md hidden z-50 flex items-center justify-center p-4">
         <div class="bg-white/95 rounded-3xl max-w-lg w-full p-7 space-y-5 shadow-2xl overflow-y-auto max-h-[90vh] border border-white/80">
             <div class="flex justify-between items-center border-b border-slate-100 pb-3">
@@ -108,11 +108,14 @@
 
                 <div class="grid grid-cols-2 gap-3">
                     <div>
-                        <label class="block font-bold text-slate-700 mb-1">업종</label>
+                        <label class="block font-bold text-slate-700 mb-1">업종 분류 (6종)</label>
                         <select id="job-category" class="w-full p-3.5 rounded-xl input-sky font-bold">
-                            <option value="식당·서빙">식당·서빙</option>
-                            <option value="카페·음료">카페·음료</option>
-                            <option value="마트·운반">마트·운반</option>
+                            <option value="음식">음식</option>
+                            <option value="소매">소매</option>
+                            <option value="물류">물류</option>
+                            <option value="사무실 작업">사무실 작업</option>
+                            <option value="호텔">호텔</option>
+                            <option value="기타">기타</option>
                         </select>
                     </div>
                     <div>
@@ -152,7 +155,7 @@
         </div>
     </div>
 
-    <!-- Subscribe Modal -->
+    <!-- Subscribe Modal (월 20,000원 정기 구독 표기) -->
     <div id="subscribeModal" class="fixed inset-0 bg-slate-900/40 backdrop-blur-md hidden z-50 flex items-center justify-center p-4">
         <div class="bg-white/95 rounded-3xl max-w-md w-full p-7 space-y-5 shadow-2xl border border-white/80">
             <div class="flex justify-between items-center border-b border-slate-100 pb-3">
@@ -161,12 +164,12 @@
             </div>
             <div class="space-y-3 text-xs text-slate-700">
                 <div class="p-4 bg-blue-50/80 rounded-2xl border border-blue-100 space-y-1">
-                    <p class="font-bold text-[#3182f6]">사업용 계좌 안내 <span class="text-[#1b64da] ml-1">(특가, 평생 구독권 300,000원)</span></p>
+                    <p class="font-bold text-[#3182f6]">사업용 계좌 안내 <span class="text-[#1b64da] ml-1">(월 20,000원 정기 구독)</span></p>
                     <p><strong>은행:</strong> KB국민은행</p>
                     <p><strong>계좌번호:</strong> 275401-04-310474</p>
                     <p><strong>예금주:</strong> 민 혁 (silverworks)</p>
                 </div>
-                <p class="text-slate-500">입금 후 신청하시면 관리자 확인 후 프로필에 [구독 회원] 배지 부여 및 공고 상단 고정 권한이 부여됩니다.</p>
+                <p class="text-slate-500">입금 후 신청하시면 관리자 확인 후 프로필에 [구독 회원] 배지 부여, 공고 상단 고정 및 플랫폼 수수료 절반(5%) 혜택이 적용됩니다.</p>
                 <button onclick="requestSubscription()" class="w-full py-3.5 btn-toss font-bold rounded-xl shadow">입금 완료 및 구독 신청</button>
             </div>
         </div>
@@ -222,13 +225,13 @@
             }
 
             const usersRes = await fetch('/api/users').then(r => r.json());
-            const freshUser = usersRes.users.find(u => u.id === user.id) || user;
+            const freshUser = (usersRes.users || []).find(u => u.id === user.id) || user;
             localStorage.setItem('sw_user', JSON.stringify(freshUser));
 
             const notiRes = await fetch(`/api/notifications/${user.id}`).then(r => r.json());
             const hasUnread = notiRes.hasUnread;
 
-            const subBadge = freshUser.isSubscribed ? `<span class="bg-amber-100 text-amber-700 text-[10px] font-bold px-2 py-0.5 rounded-md border border-amber-200">구독 회원</span>` : '';
+            const subBadge = freshUser.isSubscribed ? `<span class="bg-amber-100 text-amber-700 text-[10px] font-bold px-2 py-0.5 rounded-md border border-amber-200">구독 회원 (월 2만)</span>` : '';
             document.getElementById('sub-badge-area').innerHTML = subBadge;
 
             userArea.innerHTML = `
@@ -266,20 +269,32 @@
             }
 
             container.innerHTML = myJobs.map(j => `
-                <div class="p-5 rounded-2xl bg-blue-50/30 border border-blue-100 flex justify-between items-center text-xs">
+                <div class="p-5 rounded-2xl bg-blue-50/30 border border-blue-100 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 text-xs">
                     <div>
                         <div class="flex items-center gap-1.5 mb-1">
-                            <span class="text-[10px] font-bold text-[#3182f6] bg-blue-100 px-2 py-0.5 rounded">${j.regionMain || '전체'} ${j.regionSub || ''}</span>
+                            <span class="text-[10px] font-bold text-[#3182f6] bg-blue-100 px-2 py-0.5 rounded">${j.category || '음식'}</span>
+                            <span class="text-[10px] font-bold text-slate-600 bg-slate-100 px-2 py-0.5 rounded">${j.regionMain || '전체'} ${j.regionSub || ''}</span>
                         </div>
                         <strong class="text-sm font-bold text-slate-800">${j.title}</strong>
-                        <p class="text-slate-500 mt-1">주소: ${j.address || '미입력'} | 일시: ${j.date} ${j.time} | 일당: ${parseInt(j.pay).toLocaleString()}원</p>
+                        <p class="text-slate-500 mt-1">주소: ${j.address || '미입력'} | 일시: ${j.date} (${j.time}) | 일당: ${parseInt(j.pay).toLocaleString()}원</p>
                     </div>
-                    <div class="flex items-center gap-3">
+                    <div class="flex items-center gap-2 self-end sm:self-auto">
                         <span class="font-bold text-[#3182f6] bg-blue-100/60 px-3 py-1 rounded-full">${j.status}</span>
-                        <a href="/profile.html" class="btn-toss px-3 py-1.5 rounded-xl font-bold">지원자 관리/채용 →</a>
+                        <button onclick="deleteJobByEmployer('${j.id}')" class="bg-rose-100 text-rose-600 hover:bg-rose-200 px-3 py-1.5 rounded-xl font-bold transition">공고 삭제</button>
+                        <a href="/profile.html" class="btn-toss px-3 py-1.5 rounded-xl font-bold">지원자 관리 →</a>
                     </div>
                 </div>
             `).join('');
+        }
+
+        async function deleteJobByEmployer(jobId) {
+            if (confirm('공고를 삭제하시겠습니까? 지원하신 시니어 회원들에게 공고 삭제 알림이 발송됩니다.')) {
+                const res = await fetch(`/api/jobs/${jobId}`, { method: 'DELETE' }).then(r => r.json());
+                if (res.success) {
+                    alert('공고가 삭제되었습니다.');
+                    renderJobList();
+                }
+            }
         }
 
         function openSubscribeModal() { document.getElementById('subscribeModal').classList.remove('hidden'); }
@@ -290,7 +305,7 @@
         async function requestSubscription() {
             const user = JSON.parse(localStorage.getItem('sw_user') || '{}');
             await fetch(`/api/users/${user.id}/subscribe-request`, { method: 'POST' });
-            alert('구독 신청이 접수되었습니다. 관리자 확인 후 구독 회원 배지가 부여됩니다.');
+            alert('월 20,000원 구독 신청이 접수되었습니다. 관리자 확인 후 배지가 부여됩니다.');
             closeSubscribeModal();
         }
 
@@ -321,7 +336,7 @@
             }).then(r => r.json());
 
             if (res.success) {
-                alert('지정하신 지역으로 구인 공고가 등록되었습니다.');
+                alert('구인 공고가 정상적으로 등록되었습니다.');
                 closeCreateJobModal();
                 renderJobList();
             } else {

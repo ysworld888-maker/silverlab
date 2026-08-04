@@ -4,7 +4,7 @@
     <link rel="icon" href="/logo.png" type="image/png">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>silverworks - 관리자 HQ통제센터</title>
+    <title>silverworks - 관리자 HQ 통제 센터</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
@@ -19,6 +19,18 @@
             border: 1px solid rgba(255, 255, 255, 0.95);
             box-shadow: 0 10px 30px -5px rgba(15, 23, 42, 0.04), 0 0 0 1px rgba(226, 232, 240, 0.6);
         }
+        /* 실시간 라이브 활동 피드 채팅창 터미널 스타일 */
+        .live-chat-terminal {
+            background-color: #0f172a;
+            color: #38bdf8;
+            font-family: monospace;
+            height: 220px;
+            overflow-y: auto;
+            border-radius: 1rem;
+            padding: 1rem;
+        }
+        .live-chat-terminal::-webkit-scrollbar { width: 6px; }
+        .live-chat-terminal::-webkit-scrollbar-thumb { background-color: #334155; border-radius: 4px; }
     </style>
 </head>
 <body class="min-h-screen flex flex-col justify-between antialiased">
@@ -26,18 +38,48 @@
         <div class="max-w-7xl mx-auto px-5 h-16 flex items-center justify-between">
             <a href="/index.html" class="flex items-center gap-2.5">
                 <div class="p-1.5 rounded-xl bg-blue-50 text-[#3182f6]">
-                    <!-- ✨ 대신 이 한 줄을 넣는 것입니다 -->
-<img src="/logo.png" alt="silverworks logo" class="w-8 h-8 object-contain">
+                    <img src="/logo.png" alt="silverworks logo" class="w-8 h-8 object-contain">
                 </div>
                 <span class="text-xl font-extrabold text-slate-900 tracking-tight">silverworks <span class="text-xs px-2 py-0.5 rounded bg-[#3182f6] text-white">최고관리자 1.0</span></span>
             </a>
-            <span class="text-xs font-bold px-3 py-1.5 rounded-full bg-blue-50 text-[#3182f6] border border-blue-200">
-                <i class="fa-solid fa-shield-halved mr-1"></i> 최고 통제 모드
-            </span>
+            <div class="flex items-center gap-3">
+                <span class="text-xs font-bold px-3 py-1.5 rounded-full bg-blue-50 text-[#3182f6] border border-blue-200">
+                    <i class="fa-solid fa-shield-halved mr-1"></i> 최고 통제 모드
+                </span>
+                <button onclick="handleLogout()" class="text-xs font-bold text-slate-500 hover:text-rose-500 transition">로그아웃</button>
+            </div>
         </div>
     </header>
 
     <main class="max-w-7xl mx-auto px-5 py-8 flex-1 w-full space-y-8">
+        
+        <!-- 1. 실시간 라이브 활동 피드 (Live Event Log) -->
+        <div class="glass-card rounded-3xl p-6 md:p-8 space-y-3">
+            <div class="flex justify-between items-center">
+                <h2 class="text-base font-black text-slate-900 flex items-center gap-2">
+                    <i class="fa-solid fa-[#3182f6] fa-satellite-dish text-[#3182f6] animate-pulse"></i> 실시간 라이브 활동 피드 (Live Event Log)
+                </h2>
+                <span class="text-[11px] font-bold text-slate-400">자동 동기화 중 (2초 간격)</span>
+            </div>
+            <div id="live-log-container" class="live-chat-terminal text-xs space-y-2">
+                <p class="text-slate-500">&gt; 실시간 서버 이벤트 로그 스트림 초기화 완료...</p>
+            </div>
+        </div>
+
+        <!-- 2. 1:1 핀포인트 알림 발송 창구 -->
+        <div class="glass-card rounded-3xl p-6 md:p-8 space-y-4">
+            <h2 class="text-base font-black text-slate-900 flex items-center gap-2">
+                <i class="fa-solid fa-paper-plane text-[#3182f6]"></i> 특정 회원 1:1 핀포인트 알림 발송
+            </h2>
+            <form onsubmit="sendDirectNotification(event)" class="grid grid-cols-1 md:grid-cols-4 gap-3 text-xs">
+                <input type="text" id="direct-target-id" placeholder="수신 대상 회원 ID 입력" required class="p-3 rounded-xl border border-slate-200 font-bold focus:border-[#3182f6] focus:outline-none">
+                <input type="text" id="direct-title" placeholder="알림 제목 입력" required class="p-3 rounded-xl border border-slate-200 font-bold focus:border-[#3182f6] focus:outline-none">
+                <input type="text" id="direct-content" placeholder="알림 본문 상세 내용을 입력하세요" required class="p-3 rounded-xl border border-slate-200 font-medium md:col-span-1 focus:border-[#3182f6] focus:outline-none">
+                <button type="submit" class="btn-toss font-bold px-4 py-3 rounded-xl shadow-sm">1:1 알림 즉시 발송</button>
+            </form>
+        </div>
+
+        <!-- 3. 사장님 수수료 정산 확인 관리 -->
         <div class="glass-card rounded-3xl p-6 md:p-8 space-y-4">
             <h2 class="text-base font-black text-slate-900 flex items-center gap-2">
                 <i class="fa-solid fa-file-invoice-dollar text-[#3182f6]"></i> 사장님 수수료 정산 확인 관리 (확인 시 사장님 페이지에서 명세서 소멸)
@@ -45,29 +87,22 @@
             <div id="admin-invoice-list" class="space-y-3"></div>
         </div>
 
+        <!-- 4. 1:1 실시간 통합 상담 센터 -->
         <div class="glass-card rounded-3xl p-6 md:p-8 space-y-4">
             <h2 class="text-base font-black text-slate-900 flex items-center gap-2">
-                <i class="fa-solid fa-phone-volume text-[#3182f6]"></i> 사장님 전화 상담 문의 접수 내역
+                <i class="fa-solid fa-headset text-[#3182f6]"></i> 1:1 실시간 통합 상담 대시보드
             </h2>
-            <div class="overflow-x-auto">
-                <table class="w-full text-left border-collapse text-xs">
-                    <thead>
-                        <tr class="bg-blue-50/50 border-y border-blue-100 text-slate-600 font-bold">
-                            <th class="p-3">접수 일시</th>
-                            <th class="p-3">성명</th>
-                            <th class="p-3">가게명</th>
-                            <th class="p-3">전화번호</th>
-                        </tr>
-                    </thead>
-                    <tbody id="inquiry-table-body" class="divide-y divide-slate-100 text-slate-700"></tbody>
-                </table>
-            </div>
+            <div id="chat-inquiry-container" class="space-y-3 max-h-80 overflow-y-auto p-2"></div>
         </div>
 
+        <!-- 5. 회원 통합 관리 (가입승인 / 구독승인 / 인증 베테랑 / 경고 / 강제탈퇴) -->
         <div class="glass-card rounded-3xl p-6 md:p-8 space-y-4">
-            <h2 class="text-base font-black text-slate-900 flex items-center gap-2">
-                <i class="fa-solid fa-users-gear text-[#3182f6]"></i> 회원 관리 (가입승인 / 구독승인 / 1~3차 경고 / 강제탈퇴)
-            </h2>
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-3">
+                <h2 class="text-base font-black text-slate-900 flex items-center gap-2">
+                    <i class="fa-solid fa-users-gear text-[#3182f6]"></i> 전체 회원 관리 (인증 베테랑 / 승인 / 구독 / 경고 / 강제탈퇴)
+                </h2>
+                <input type="text" id="user-search-input" oninput="filterUserTable()" placeholder="회원 ID 또는 성함 검색..." class="p-2.5 rounded-xl border border-slate-200 text-xs font-medium w-full md:w-64 focus:border-[#3182f6] focus:outline-none">
+            </div>
             <div class="overflow-x-auto">
                 <table class="w-full text-left border-collapse text-xs">
                     <thead>
@@ -75,6 +110,7 @@
                             <th class="p-3">아이디 (클릭)</th>
                             <th class="p-3">성함/대표명</th>
                             <th class="p-3">회원 유형</th>
+                            <th class="p-3">인증 베테랑</th>
                             <th class="p-3">보유 포인트 (수정)</th>
                             <th class="p-3">가입 승인</th>
                             <th class="p-3">구독 상태</th>
@@ -86,6 +122,7 @@
             </div>
         </div>
 
+        <!-- 6. 시니어 포인트 정산 요청 통제 -->
         <div class="glass-card rounded-3xl p-6 md:p-8 space-y-4">
             <h2 class="text-base font-black text-slate-900 flex items-center gap-2">
                 <i class="fa-solid fa-hand-holding-dollar text-amber-500"></i> 시니어 포인트 정산 요청 통제
@@ -106,77 +143,62 @@
     </div>
 
     <script>
+        let allUsersList = [];
+
+        // 관리자 접근 권한 검증
+        function checkAdminAccess() {
+            const user = JSON.parse(localStorage.getItem('sw_user') || 'null');
+            if (!user || user.role !== 'admin') {
+                alert('관리자 전용 접근 통제 구역입니다.');
+                location.href = '/index.html';
+            }
+        }
+
+        function handleLogout() {
+            localStorage.removeItem('sw_user');
+            alert('관리자 로그아웃 되었습니다.');
+            location.href = '/index.html';
+        }
+
         async function loadAdminControl() {
             const usersRes = await fetch('/api/users').then(r => r.json());
             const setRes = await fetch('/api/settlements').then(r => r.json());
-            const inqRes = await fetch('/api/inquiries').then(r => r.json());
             const invRes = await fetch('/api/invoices').then(r => r.json());
 
-            const users = usersRes.users || [];
+            allUsersList = usersRes.users || [];
             const settlements = setRes.settlements || [];
-            const inquiries = inqRes.inquiries || [];
             const invoices = invRes.invoices || [];
 
+            renderUserTable(allUsersList);
+
+            // 명세서 목록 출력
             const invContainer = document.getElementById('admin-invoice-list');
-            const pendingInvoices = invoices.filter(i => i.status === 'PENDING_ADMIN' && !i.isFullyConfirmed);
+            const pendingInvoices = invoices.filter(i => (i.status === 'PENDING_ADMIN' || i.cancelRequested) && !i.isFullyConfirmed);
             if (pendingInvoices.length === 0) {
-                invContainer.innerHTML = `<p class="text-xs text-slate-400 text-center py-6">사장님이 확인 요청한 수수료 명세서가 없습니다.</p>`;
+                invContainer.innerHTML = `<p class="text-xs text-slate-400 text-center py-6">확인 대기 중인 수수료 명세서가 없습니다.</p>`;
             } else {
                 invContainer.innerHTML = pendingInvoices.map(i => `
                     <div class="p-4 rounded-2xl bg-blue-50/50 border border-blue-100 flex justify-between items-center text-xs">
                         <div>
                             <strong class="text-sm font-bold text-slate-900">${i.storeName} (${i.jobTitle})</strong>
-                            <p class="text-slate-500 mt-0.5">청구 수수료: ${i.amount.toLocaleString()}원 | 발행일시: ${i.date}</p>
+                            <p class="text-slate-500 mt-0.5">청구액: ${i.totalAmount ? i.totalAmount.toLocaleString() : i.amount.toLocaleString()}원 | 발행일시: ${i.date}</p>
+                            ${i.cancelRequested ? '<span class="text-rose-600 font-bold block pt-1">[채용 취소에 따른 명세서 취소 요청 건]</span>' : ''}
                         </div>
-                        <button onclick="adminConfirmInvoice('${i.id}')" class="btn-toss font-bold px-4 py-2 rounded-xl shadow-sm">
-                            확인 (사장님 명세서 소멸)
-                        </button>
+                        <div class="flex gap-2">
+                            ${i.cancelRequested ? `
+                                <button onclick="adminApproveCancelInvoice('${i.id}')" class="bg-rose-500 hover:bg-rose-600 text-white font-bold px-3 py-2 rounded-xl text-xs">
+                                    취소 승인 (명세서 삭제)
+                                </button>
+                            ` : ''}
+                            <button onclick="adminConfirmInvoice('${i.id}')" class="btn-toss font-bold px-4 py-2 rounded-xl shadow-sm">
+                                입금 확인 완료 (명세서 소멸)
+                            </button>
+                        </div>
                     </div>
                 `).join('');
             }
 
-            const inqTable = document.getElementById('inquiry-table-body');
-            if (inquiries.length === 0) {
-                inqTable.innerHTML = `<tr><td colspan="4" class="p-6 text-center text-slate-400">신청된 전화 상담 문의가 없습니다.</td></tr>`;
-            } else {
-                inqTable.innerHTML = inquiries.map(i => `
-                    <tr>
-                        <td class="p-3 text-slate-400">${i.date}</td>
-                        <td class="p-3 font-bold text-slate-900">${i.name}</td>
-                        <td class="p-3 font-bold text-[#3182f6]">${i.storeName}</td>
-                        <td class="p-3 font-mono font-bold">${i.phone}</td>
-                    </tr>
-                `).join('');
-            }
-
-            const userTable = document.getElementById('user-approval-table');
-            if (users.length === 0) {
-                userTable.innerHTML = `<tr><td colspan="7" class="p-6 text-center text-slate-400">가입된 회원이 없습니다.</td></tr>`;
-            } else {
-                userTable.innerHTML = users.map(u => `
-                    <tr>
-                        <td class="p-3 font-mono font-bold text-[#3182f6] cursor-pointer hover:underline" onclick="viewUserDetail('${u.id}')">${u.id}</td>
-                        <td class="p-3 font-bold">${u.name}</td>
-                        <td class="p-3"><span class="px-2 py-0.5 rounded text-[11px] font-bold ${u.role === 'senior' ? 'bg-blue-100 text-[#3182f6]' : 'bg-slate-200 text-slate-700'}">${u.role === 'senior' ? '시니어' : '사장님'}</span></td>
-                        <td class="p-3">
-                            ${u.role === 'senior' ? `<button onclick="editSeniorPoints('${u.id}', ${u.points || 0})" class="bg-blue-50 text-[#3182f6] font-extrabold px-2 py-1 rounded border border-blue-100 hover:bg-blue-100 text-[11px]">${(u.points || 0).toLocaleString()}P <i class="fa-solid fa-pen text-[9px] ml-0.5"></i></button>` : '<span class="text-slate-300">-</span>'}
-                        </td>
-                        <td class="p-3"><span class="font-bold ${u.approved ? 'text-[#3182f6]' : 'text-amber-500'}">${u.approved ? '승인완료' : '승인대기'}</span></td>
-                        <td class="p-3"><span class="font-bold ${u.isSubscribed ? 'text-[#3182f6]' : 'text-slate-400'}">${u.isSubscribed ? '구독회원' : (u.subRequested ? '구독신청중' : '일반')}</span></td>
-                        <td class="p-3 text-right space-x-1">
-                            ${!u.approved ? `<button onclick="approveUser('${u.id}')" class="btn-toss text-[11px] px-2.5 py-1 rounded-lg font-bold">승인</button>` : ''}
-                            ${u.role === 'employer' && u.subRequested && !u.isSubscribed ? `<button onclick="approveSub('${u.id}')" class="btn-toss text-[11px] px-2.5 py-1 rounded-lg font-bold">구독승인</button>` : ''}
-                            ${u.role === 'employer' ? `
-                                <button onclick="sendWarning('${u.id}', 1)" class="bg-amber-100 text-amber-700 text-[10px] px-1.5 py-1 rounded font-bold">1차경고</button>
-                                <button onclick="sendWarning('${u.id}', 2)" class="bg-amber-500 text-white text-[10px] px-1.5 py-1 rounded font-bold">2차경고</button>
-                                <button onclick="sendWarning('${u.id}', 3)" class="bg-rose-500 text-white text-[10px] px-1.5 py-1 rounded font-bold">3차경고</button>
-                            ` : ''}
-                            <button onclick="forceDeleteUser('${u.id}')" class="bg-rose-100 text-rose-600 text-[11px] px-2 py-1 rounded-lg font-bold hover:bg-rose-200">강제탈퇴</button>
-                        </td>
-                    </tr>
-                `).join('');
-            }
-
+            // 정산 요청 목록 출력
             const setList = document.getElementById('admin-settlement-list');
             const pendingSettles = settlements.filter(s => s.status === 'PENDING');
             if (pendingSettles.length === 0) {
@@ -194,16 +216,160 @@
                     </div>
                 `).join('');
             }
+
+            loadLiveLogs();
+            loadChatInquiries();
+        }
+
+        function renderUserTable(users) {
+            const userTable = document.getElementById('user-approval-table');
+            if (users.length === 0) {
+                userTable.innerHTML = `<tr><td colspan="8" class="p-6 text-center text-slate-400">가입된 회원이 없습니다.</td></tr>`;
+            } else {
+                userTable.innerHTML = users.map(u => `
+                    <tr>
+                        <td class="p-3 font-mono font-bold text-[#3182f6] cursor-pointer hover:underline" onclick="viewUserDetail('${u.id}')">${u.id}</td>
+                        <td class="p-3 font-bold">${u.name}</td>
+                        <td class="p-3"><span class="px-2 py-0.5 rounded text-[11px] font-bold ${u.role === 'senior' ? 'bg-blue-100 text-[#3182f6]' : 'bg-slate-200 text-slate-700'}">${u.role === 'senior' ? '시니어' : '사장님'}</span></td>
+                        <td class="p-3">
+                            ${u.role === 'senior' ? `
+                                <button onclick="toggleVeteranBadge('${u.id}', ${u.isVeteran ? 0 : 1})" class="px-2 py-1 rounded text-[11px] font-bold border transition ${u.isVeteran ? 'bg-amber-100 text-amber-800 border-amber-300' : 'bg-slate-100 text-slate-400 border-slate-200'}">
+                                    ${u.isVeteran ? '★ 인증 베테랑' : '일반 시니어'}
+                                </button>
+                            ` : '<span class="text-slate-300">-</span>'}
+                        </td>
+                        <td class="p-3">
+                            ${u.role === 'senior' ? `<button onclick="editSeniorPoints('${u.id}', ${u.points || 0})" class="bg-blue-50 text-[#3182f6] font-extrabold px-2 py-1 rounded border border-blue-100 hover:bg-blue-100 text-[11px]">${(u.points || 0).toLocaleString()}P <i class="fa-solid fa-pen text-[9px] ml-0.5"></i></button>` : '<span class="text-slate-300">-</span>'}
+                        </td>
+                        <td class="p-3"><span class="font-bold ${u.approved ? 'text-[#3182f6]' : 'text-amber-500'}">${u.approved ? '승인완료' : '승인대기'}</span></td>
+                        <td class="p-3"><span class="font-bold ${u.isSubscribed ? 'text-[#3182f6]' : 'text-slate-400'}">${u.isSubscribed ? '구독회원(월2만)' : (u.subRequested ? '구독신청중' : '일반')}</span></td>
+                        <td class="p-3 text-right space-x-1">
+                            ${!u.approved ? `<button onclick="approveUser('${u.id}')" class="btn-toss text-[11px] px-2.5 py-1 rounded-lg font-bold">승인</button>` : ''}
+                            ${u.role === 'employer' && u.subRequested && !u.isSubscribed ? `<button onclick="approveSub('${u.id}')" class="btn-toss text-[11px] px-2.5 py-1 rounded-lg font-bold">구독승인</button>` : ''}
+                            ${u.role === 'employer' ? `
+                                <button onclick="sendWarning('${u.id}', 1)" class="bg-amber-100 text-amber-700 text-[10px] px-1.5 py-1 rounded font-bold">1차경고</button>
+                                <button onclick="sendWarning('${u.id}', 2)" class="bg-amber-500 text-white text-[10px] px-1.5 py-1 rounded font-bold">2차경고</button>
+                                <button onclick="sendWarning('${u.id}', 3)" class="bg-rose-500 text-white text-[10px] px-1.5 py-1 rounded font-bold">3차경고</button>
+                            ` : ''}
+                            <button onclick="forceDeleteUser('${u.id}')" class="bg-rose-100 text-rose-600 text-[11px] px-2 py-1 rounded-lg font-bold hover:bg-rose-200">강제탈퇴</button>
+                        </td>
+                    </tr>
+                `).join('');
+            }
+        }
+
+        function filterUserTable() {
+            const query = document.getElementById('user-search-input').value.toLowerCase().trim();
+            const filtered = allUsersList.filter(u => u.id.toLowerCase().includes(query) || u.name.toLowerCase().includes(query));
+            renderUserTable(filtered);
+        }
+
+        // 실시간 라이브 활동 피드 불러오기
+        async function loadLiveLogs() {
+            try {
+                const res = await fetch('/api/live-logs').then(r => r.json());
+                const logs = res.logs || [];
+                const container = document.getElementById('live-log-container');
+                if (logs.length > 0) {
+                    container.innerHTML = logs.map(l => `<p><span class="text-slate-500">[${l.timestamp}]</span> <span class="text-sky-400 font-bold">${l.message}</span></p>`).join('');
+                }
+            } catch(e) { console.error(e); }
+        }
+
+        // 1:1 라이브 채팅 문의 내역 불러오기
+        async function loadChatInquiries() {
+            try {
+                const res = await fetch('/api/chat-inquiries').then(r => r.json());
+                const chats = res.chats || [];
+                const container = document.getElementById('chat-inquiry-container');
+
+                if (chats.length === 0) {
+                    container.innerHTML = `<p class="text-xs text-slate-400 text-center py-4">접수된 1:1 실시간 상담 메시지가 없습니다.</p>`;
+                    return;
+                }
+
+                container.innerHTML = chats.map(c => `
+                    <div class="p-3.5 rounded-2xl bg-slate-50 border border-slate-200/80 text-xs space-y-1">
+                        <div class="flex justify-between items-center">
+                            <strong class="text-slate-900 font-bold">${c.userName} (${c.userId}) - <span class="text-[#3182f6]">${c.sender === 'admin' ? '관리자 답변' : '회원 질문'}</span></strong>
+                            <span class="text-[10px] text-slate-400">${c.timestamp}</span>
+                        </div>
+                        <p class="text-slate-700 font-medium">${c.message}</p>
+                        ${c.sender !== 'admin' ? `
+                            <button onclick="replyChatModal('${c.userId}', '${c.userName}')" class="mt-1 text-[11px] font-bold text-[#3182f6] hover:underline">
+                                💬 답변 전송하기
+                            </button>
+                        ` : ''}
+                    </div>
+                `).join('');
+            } catch(e) { console.error(e); }
+        }
+
+        async function replyChatModal(userId, userName) {
+            const replyMsg = prompt(`[${userName}] 회원에게 전송할 답변 메시지를 입력하세요:`);
+            if (replyMsg) {
+                await fetch('/api/chat-inquiries', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ userId, userName, sender: 'admin', message: replyMsg })
+                });
+                alert('답변이 전송되었습니다.');
+                loadChatInquiries();
+            }
+        }
+
+        async function toggleVeteranBadge(userId, isVeteran) {
+            await fetch(`/api/users/${userId}/toggle-veteran`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ isVeteran })
+            });
+            alert(`시니어 회원의 인증 베테랑 상태가 변경되었습니다.`);
+            loadAdminControl();
+        }
+
+        async function sendDirectNotification(e) {
+            e.preventDefault();
+            const targetUserId = document.getElementById('direct-target-id').value;
+            const title = document.getElementById('direct-title').value;
+            const content = document.getElementById('direct-content').value;
+
+            const res = await fetch('/api/notifications/send-direct', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ targetUserId, title, content })
+            }).then(r => r.json());
+
+            if (res.success) {
+                alert(`[${targetUserId}] 회원에게 핀포인트 알림 메시지가 발송되었습니다.`);
+                document.getElementById('direct-target-id').value = '';
+                document.getElementById('direct-title').value = '';
+                document.getElementById('direct-content').value = '';
+            } else {
+                alert(res.message);
+            }
         }
 
         async function adminConfirmInvoice(invoiceId) {
-            if (confirm('해당 명세서 처리를 완료하시겠습니까? 사장님 페이지에서 명세서가 사라집니다.')) {
+            if (confirm('해당 명세서 입금 처리를 완료하시겠습니까? 사장님 페이지에서 명세서가 정리됩니다.')) {
                 await fetch('/api/invoices/admin-confirm', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ invoiceId })
                 });
                 alert('명세서 처리가 완료되었습니다.');
+                loadAdminControl();
+            }
+        }
+
+        async function adminApproveCancelInvoice(invoiceId) {
+            if (confirm('채용 취소건에 대해 수수료 명세서를 취소/삭제하시겠습니까?')) {
+                await fetch('/api/invoices/admin-approve-cancel', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ invoiceId })
+                });
+                alert('명세서 취소가 승인되었습니다.');
                 loadAdminControl();
             }
         }
@@ -222,8 +388,7 @@
         }
 
         async function viewUserDetail(id) {
-            const usersRes = await fetch('/api/users').then(r => r.json());
-            const u = usersRes.users.find(user => user.id === id);
+            const u = allUsersList.find(user => user.id === id);
             const modalBody = document.getElementById('user-modal-body');
             
             modalBody.innerHTML = `
@@ -231,8 +396,9 @@
                 <p><strong>성함/대표자명:</strong> ${u.name}</p>
                 <p><strong>연락처:</strong> ${u.phone || '미입력'}</p>
                 <p><strong>회원 유형:</strong> ${u.role === 'senior' ? '시니어 구직자' : '구인 사장님'}</p>
+                <p><strong>인증 베테랑 여부:</strong> ${u.isVeteran ? '인증 베테랑 시니어' : '일반 시니어'}</p>
                 <p><strong>가입 승인 상태:</strong> ${u.approved ? '승인 완료' : '승인 대기중'}</p>
-                <p><strong>구독 회원 여부:</strong> ${u.isSubscribed ? '구독 회원' : '일반 회원'}</p>
+                <p><strong>구독 회원 여부:</strong> ${u.isSubscribed ? '구독 회원 (월 20,000원)' : '일반 회원'}</p>
                 <p><strong>보유 포인트:</strong> ${(u.points || 0).toLocaleString()}P</p>
             `;
             document.getElementById('userDetailModal').classList.remove('hidden');
@@ -247,7 +413,7 @@
 
         async function approveSub(id) {
             await fetch(`/api/users/${id}/approve-subscription`, { method: 'POST' });
-            alert('사장님 구독이 승인되었습니다.');
+            alert('사장님 월 20,000원 구독이 승인되었습니다.');
             loadAdminControl();
         }
 
@@ -278,7 +444,12 @@
             }
         }
 
-        document.addEventListener('DOMContentLoaded', loadAdminControl);
+        document.addEventListener('DOMContentLoaded', () => {
+            checkAdminAccess();
+            loadAdminControl();
+            // 2초 간격 실시간 활동 피드 자동 갱신
+            setInterval(loadLiveLogs, 2000);
+        });
     </script>
 </body>
 </html>

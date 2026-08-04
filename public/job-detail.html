@@ -64,7 +64,7 @@
 
             container.innerHTML = `
                 <div class="flex justify-between items-center border-b border-slate-100 pb-4">
-                    <span class="bg-blue-50 text-[#3182f6] text-xs font-bold px-3 py-1 rounded-lg border border-blue-100">${currentJob.category}</span>
+                    <span class="bg-blue-50 text-[#3182f6] text-xs font-bold px-3 py-1 rounded-lg border border-blue-100">${currentJob.category || '음식'}</span>
                     <span class="text-xs font-extrabold text-[#3182f6] bg-blue-50 px-3 py-1 rounded-full border border-blue-100">${currentJob.status}</span>
                 </div>
                 <div class="space-y-2">
@@ -142,7 +142,7 @@
             }
 
             const usersRes = await fetch('/api/users').then(r => r.json());
-            const freshUser = usersRes.users.find(u => u.id === user.id) || user;
+            const freshUser = (usersRes.users || []).find(u => u.id === user.id) || user;
             localStorage.setItem('sw_user', JSON.stringify(freshUser));
 
             const notiRes = await fetch(`/api/notifications/${user.id}`).then(r => r.json());
